@@ -14,7 +14,7 @@
     <button
       :disabled="loading || !name"
       class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
-      @click="() => submit(name)"
+      @click="onSubmit"
     >
       {{ loading ? 'Sending...' : 'Say Hello' }}
     </button>
@@ -40,4 +40,12 @@ import { useGreeter } from '@/composables/useGreeter';
 const name = ref('');
 
 const { response, error, loading, submit } = useGreeter();
+
+function onSubmit() {
+  if (name.value.trim()) {
+    submit({
+      name: name.value.trim(),
+    });
+  }
+}
 </script>

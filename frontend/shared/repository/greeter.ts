@@ -1,16 +1,13 @@
-import type { MessageInitShape } from '@bufbuild/protobuf';
-import { create } from '@bufbuild/protobuf';
-import { SayHelloRequestSchema } from '../../gen/greeter/v1/hello_pb';
 import type { Client } from '@connectrpc/connect';
-import type { GreeterService } from '../../gen/greeter/v1/greeter_pb';
+
+import type { SayHelloRequest, SayHelloResponse } from '~~/gen/greeter/v1/hello_pb';
+import type { GreeterService } from '~~/gen/greeter/v1/greeter_pb';
 
 export const greeterRepository = (client: Client<typeof GreeterService>) => ({
-  async sayHello(req: MessageInitShape<typeof SayHelloRequestSchema>) {
-    const request = create(SayHelloRequestSchema, req);
-
+  async sayHello(req: SayHelloRequest): Promise<SayHelloResponse> {
     try {
-      const response = await client.sayHello(request);
-      return response.message;
+      const response = await client.sayHello(req);
+      return response;
     } catch (error) {
       console.error('Error greeting:', error);
       throw error;
