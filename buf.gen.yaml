@@ -1,0 +1,33 @@
+version: v2
+clean: true
+managed:
+  enabled: true
+  override:
+    - module: buf.build/hrz8/starter
+      file_option: go_package_prefix
+      value: github.com/hrz8/starter/gen
+plugins:
+  # Go protobuf plugin
+  - remote: buf.build/protocolbuffers/go:v1.36.6
+    out: gen
+    opt:
+      - paths=source_relative
+  # Go gRPC plugin
+  - remote: buf.build/grpc/go:v1.5.1
+    out: gen
+    opt:
+      - paths=source_relative
+  # Connect plugin for dual-protocol support (gRPC and HTTP)
+  - remote: buf.build/connectrpc/go:v1.17.0
+    out: gen
+    opt:
+      - paths=source_relative
+  # Connect ecosystem for TypeScript
+  - remote: buf.build/bufbuild/es:v2.6.3
+    out: frontend/gen
+    opt:
+      - target=ts
+      - import_extension=js
+    include_imports: true
+inputs:
+  - directory: proto
