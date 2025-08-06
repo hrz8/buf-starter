@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package greeter.v1;
 
-option go_package = "github.com/hrz8/starter/gen/greeter/v1;greeterv1";
+option go_package = "github.com/hrz8/altalune/gen/greeter/v1;greeterv1";
 
 import "buf/validate/validate.proto";
 import "greeter/v1/hello.proto";

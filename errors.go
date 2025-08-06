@@ -1,4 +1,4 @@
-package starter
+package altalune
 
 import (
 	"errors"
@@ -11,13 +11,13 @@ import (
 
 // Error code constants for consistent error handling across the application
 const (
-	// Validation Errors (INVALID_ARGUMENT)
+	// Validation Errors
 	CodeInvalidPayload = "INVALID_PAYLOAD"
 
-	// Resource Errors
-	CodeGreetingUnrecognize = "GREETING_UNRECOGNIZE"
+	// Resource/Domain Errors
+	CodeGreetingUnrecognized = "GREETING_UNRECOGNIZED"
 
-	// Internal Errors (INTERNAL)
+	// Internal Errors
 	CodeInternalError   = "INTERNAL_ERROR"
 	CodeUnexpectedError = "UNEXPECTED_ERROR"
 )
@@ -77,7 +77,6 @@ func (e *AppError) GRPCStatus() *status.Status {
 	return status.New(e.GRPCCode, e.Error())
 }
 
-// Validation Errors
 func NewInvalidPayloadError(message string) *AppError {
 	return &AppError{
 		Code:     CodeInvalidPayload,
@@ -86,10 +85,9 @@ func NewInvalidPayloadError(message string) *AppError {
 	}
 }
 
-// Resource Errors
 func NewGreetingUnrecognize(greeting string) *AppError {
 	return &AppError{
-		Code:     CodeGreetingUnrecognize,
+		Code:     CodeGreetingUnrecognized,
 		Message:  fmt.Sprintf("Greeting to '%s' is not recognized", greeting),
 		GRPCCode: codes.InvalidArgument,
 		Details: map[string]any{
@@ -98,7 +96,6 @@ func NewGreetingUnrecognize(greeting string) *AppError {
 	}
 }
 
-// Internal Errors
 func NewInternalError(message string, err error) *AppError {
 	details := make(map[string]any)
 	if err != nil {
@@ -125,20 +122,4 @@ func NewUnexpectedError(err error) *AppError {
 		GRPCCode: codes.Internal,
 		Details:  details,
 	}
-}
-
-// Helper function to check if an error is a specific type
-func IsErrorCode(err error, code string) bool {
-	if appErr, ok := err.(*AppError); ok {
-		return appErr.Code == code
-	}
-	return false
-}
-
-// Helper function to extract error code from any error
-func GetErrorCode(err error) string {
-	if appErr, ok := err.(*AppError); ok {
-		return appErr.Code
-	}
-	return CodeUnexpectedError
 }

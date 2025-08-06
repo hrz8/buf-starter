@@ -8,13 +8,16 @@ export default defineNuxtConfig({
     '@nuxt/image',
     '@nuxt/fonts',
   ],
+  imports: {
+    scan: false,
+  },
   $development: {
     ssr: false,
     devtools: {
       enabled: true,
     },
     devServer: {
-      port: 3000,
+      port: 8180,
     },
   },
   $production: {

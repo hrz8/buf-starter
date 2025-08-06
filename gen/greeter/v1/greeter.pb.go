@@ -28,8 +28,8 @@ const file_greeter_v1_greeter_proto_rawDesc = "" +
 	"\x18greeter/v1/greeter.proto\x12\n" +
 	"greeter.v1\x1a\x1bbuf/validate/validate.proto\x1a\x16greeter/v1/hello.proto2Y\n" +
 	"\x0eGreeterService\x12G\n" +
-	"\bSayHello\x12\x1b.greeter.v1.SayHelloRequest\x1a\x1c.greeter.v1.SayHelloResponse\"\x00B\x99\x01\n" +
-	"\x0ecom.greeter.v1B\fGreeterProtoP\x01Z0github.com/hrz8/starter/gen/greeter/v1;greeterv1\xa2\x02\x03GXX\xaa\x02\n" +
+	"\bSayHello\x12\x1b.greeter.v1.SayHelloRequest\x1a\x1c.greeter.v1.SayHelloResponse\"\x00B\x9a\x01\n" +
+	"\x0ecom.greeter.v1B\fGreeterProtoP\x01Z1github.com/hrz8/altalune/gen/greeter/v1;greeterv1\xa2\x02\x03GXX\xaa\x02\n" +
 	"Greeter.V1\xca\x02\n" +
 	"Greeter\\V1\xe2\x02\x16Greeter\\V1\\GPBMetadata\xea\x02\vGreeter::V1b\x06proto3"
 

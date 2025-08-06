@@ -119,9 +119,9 @@ const file_greeter_v1_hello_proto_rawDesc = "" +
 	"\x0fSayHelloRequest\x122\n" +
 	"\x04name\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x16\x10\x03\x1822\x10^[A-Za-z0-9_-]+$R\x04name\",\n" +
 	"\x10SayHelloResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessageB\x97\x01\n" +
+	"\amessage\x18\x01 \x01(\tR\amessageB\x98\x01\n" +
 	"\x0ecom.greeter.v1B\n" +
-	"HelloProtoP\x01Z0github.com/hrz8/starter/gen/greeter/v1;greeterv1\xa2\x02\x03GXX\xaa\x02\n" +
+	"HelloProtoP\x01Z1github.com/hrz8/altalune/gen/greeter/v1;greeterv1\xa2\x02\x03GXX\xaa\x02\n" +
 	"Greeter.V1\xca\x02\n" +
 	"Greeter\\V1\xe2\x02\x16Greeter\\V1\\GPBMetadata\xea\x02\vGreeter::V1b\x06proto3"
 

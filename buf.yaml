@@ -1,7 +1,7 @@
 version: v2
 modules:
   - path: proto
-    name: buf.build/hrz8/gowapi
+    name: buf.build/hrz8/altalune
 deps:
   - buf.build/bufbuild/protovalidate:v0.14.2
 lint:

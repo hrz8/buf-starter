@@ -3,9 +3,9 @@ clean: true
 managed:
   enabled: true
   override:
-    - module: buf.build/hrz8/starter
+    - module: buf.build/hrz8/altalune
       file_option: go_package_prefix
-      value: github.com/hrz8/starter/gen
+      value: github.com/hrz8/altalune/gen
 plugins:
   # Go protobuf plugin
   - remote: buf.build/protocolbuffers/go:v1.36.6

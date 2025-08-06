@@ -21,7 +21,7 @@ export default withNuxt(
     },
   },
   {
-    files: ['**/pages/**/*.vue', '**/layouts/**/*.vue', '**/components/ui/**/*.vue'],
+    files: ['**/pages/**/*.vue', '**/layouts/**/*.vue', '**/components/ui/**/*.vue', 'app/*.vue'],
     rules: {
       'vue/multi-word-component-names': 'off',
     },

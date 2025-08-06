@@ -1,0 +1,26 @@
+# altalune configuration
+# This file demonstrates all available configuration options
+# CLI flags take precedence over these values
+
+# Server configuration
+server:
+  host: "localhost"       # Server host (default: localhost)
+  port: 3100              # Server port (default: 3100)
+  logLevel: "info"        # Log level: debug, info, warn, error (default: info)
+  enableCORS: true        # Enable CORS headers (default: true)
+  readTimeout: 15         # HTTP read timeout in seconds (default: 15)
+  writeTimeout: 15        # HTTP write timeout in seconds (default: 15)
+  idleTimeout: 60         # HTTP idle timeout in seconds (default: 60)
+  cleanupTimeout: 10      # HTTP cleanup timeout in seconds (default: 10)
+
+# Database configuration
+database:
+  url: "postgres://postgres:toor@localhost:5432/altalune?sslmode=disable"   # PostgreSQL connection string
+  maxConnections: 25                                                      # Maximum database connections (default: 25)
+  maxIdleTime: 300                                                        # Max idle time for connections in seconds (default: 300)
+  connectTimeout: 10                                                      # Database connection timeout in seconds (default: 10)
+
+# Security configuration
+security:
+  allowedOrigins:   # CORS allowed origins (default: ["*"])
+    - "*"
