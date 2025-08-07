@@ -49,7 +49,6 @@ var allowedNameMap = map[string]bool{
 }
 
 func (s *Service) SayHello(ctx context.Context, req *greeterv1.SayHelloRequest) (*greeterv1.SayHelloResponse, error) {
-	// s.log.JSON.Debug("Received SayHello request", "name", req.Name)
 	if err := s.validator.Validate(req); err != nil {
 		return nil, altalune.NewInvalidPayloadError(err.Error())
 	}

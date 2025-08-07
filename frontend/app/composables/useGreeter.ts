@@ -1,48 +1,46 @@
-import type { ValidationResult } from '@bufbuild/protovalidate';
 import { create, type MessageInitShape } from '@bufbuild/protobuf';
+import { SayHelloRequestSchema } from '~~/gen/greeter/v1/hello_pb';
 
 import { greeterRepository } from '#shared/repository/greeter';
-import { SayHelloRequestSchema, type SayHelloRequest } from '~~/gen/greeter/v1/hello_pb';
+import { useErrorMessage } from './useErrorMessage';
+import { useConnectValidator } from './useConnectValidator';
 
 export function useGreeter() {
-  const { $validator, $greeterClient } = useNuxtApp();
+  const { $greeterClient } = useNuxtApp();
   const greeter = greeterRepository($greeterClient);
+
+  const { validate, errors: validationErrors } = useConnectValidator(SayHelloRequestSchema);
+  const { parseError } = useErrorMessage();
 
   const response = ref('');
   const error = ref('');
   const loading = ref(false);
-
-  function validate(req: SayHelloRequest): ValidationResult {
-    return $validator.validate(SayHelloRequestSchema, req);
-  }
 
   async function submit(req: MessageInitShape<typeof SayHelloRequestSchema>): Promise<void> {
     loading.value = true;
     response.value = '';
     error.value = '';
 
-    const request = create(SayHelloRequestSchema, req);
-    const validated = validate(request);
-
-    if (validated.kind === 'invalid') {
-      error.value = validated.violations.map((e) => e.message).join(', ');
+    if (!validate(req)) {
       loading.value = false;
       return;
     }
 
     try {
-      const result = await greeter.sayHello(request);
+      const message = create(SayHelloRequestSchema, req);
+      const result = await greeter.sayHello(message);
       response.value = result.message;
-    } catch (err: any) {
-      error.value = err?.message || 'Something went wrong';
+    } catch (err) {
+      error.value = parseError(err);
     } finally {
       loading.value = false;
     }
-  };
+  }
 
   return {
     response: readonly(response),
     error: readonly(error),
+    validationErrors,
     loading: readonly(loading),
     submit,
   };

@@ -7,6 +7,8 @@ export default defineNuxtConfig({
     '@nuxt/icon',
     '@nuxt/image',
     '@nuxt/fonts',
+    '@nuxtjs/i18n',
+    '@vueuse/nuxt',
   ],
   imports: {
     scan: false,
@@ -36,5 +38,23 @@ export default defineNuxtConfig({
   },
   eslint: {
     checker: true,
+  },
+  i18n: {
+    strategy: 'no_prefix',
+    defaultLocale: 'en-US',
+    locales: [
+      {
+        code: 'en-US',
+        name: 'English',
+        file: 'en-US.json',
+        dir: 'ltr',
+      },
+      {
+        code: 'id-ID',
+        name: 'Bahasa Indonesia',
+        file: 'id-ID.json',
+        dir: 'ltr',
+      },
+    ],
   },
 });

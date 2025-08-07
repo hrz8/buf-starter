@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+message ErrorDetail {
+  string code = 1;
+  map<string, string> meta = 3;
+}

@@ -1,0 +1,16 @@
+{
+  "errorCodes": {
+    "6001": "Invalid input",
+    "6101": "Greeting to '{name}' is not recognized",
+    "6901": "Server Error",
+    "6902": "Server Error",
+    "6999": "Unknown Error"
+  },
+  "errorPage.goHome": "Go back Home",
+  "example.error": "Error",
+  "example.header": "Check Greeting",
+  "example.inputPlaceholder": "Enter your name",
+  "example.response": "Response",
+  "example.submitBtn": "Say Hello",
+  "example.submitBtnProgress": "Sending..."
+}

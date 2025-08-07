@@ -3,16 +3,16 @@ tmp_dir = "tmp"
 
 [build]
 bin = "./tmp/app"
-pre_cmd = ["cd frontend && pnpm generate"]
-cmd = "go build -o ./tmp/app cmd/cli/*.go"
+pre_cmd = ["cd frontend && pnpm lint:fix && pnpm generate"]
+cmd = "go build -o ./tmp/app cmd/altalune/*.go"
 post_cmd = []
 full_bin = ""
-args_bin = []
+args_bin = ["serve -c config.yaml"]
 include_file = []
 include_dir = []
 include_ext = ["go", "html", "ts", "vue"]
 exclude_file = []
-exclude_dir = ["bin", "tmp", "vendor", "frontend/node_modules"]
+exclude_dir = ["bin", "tmp", "vendor", "frontend/node_modules", "frontend/dist", "frontend/.output"]
 exclude_regex = ["_test.go"]
 exclude_unchanged = false
 follow_symlink = false

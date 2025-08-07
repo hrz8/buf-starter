@@ -6,4 +6,4 @@ clean:
 	@rm -rf ./bin
 
 build: clean
-	@env GOARCH=arm64 go build -ldflags="-s -w" -o ./bin/app cmd/cli/*.go
+	@env GOARCH=arm64 go build -ldflags="-s -w" -o ./bin/app cmd/altalune/*.go

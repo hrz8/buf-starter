@@ -1,0 +1,16 @@
+{
+  "errorCodes": {
+    "6001": "Input tidak valid",
+    "6101": "Sapa kepada '{name}' tidak dikenali",
+    "6901": "Kesalahan Server",
+    "6902": "Kesalahan Server",
+    "6999": "Kesalahan Tidak Dikenal"
+  },
+  "errorPage.goHome": "Kembali ke Beranda",
+  "example.error": "Error",
+  "example.header": "Cek Sapa",
+  "example.inputPlaceholder": "Masukkan nama Anda",
+  "example.response": "Respon",
+  "example.submitBtn": "Katakan Halo",
+  "example.submitBtnProgress": "Mengirim..."
+}

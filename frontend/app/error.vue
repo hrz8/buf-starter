@@ -7,13 +7,15 @@ const props = defineProps({
     default: () => ({ statusCode: 500, message: 'Unknown error' }),
   },
 });
+
+const { t } = useI18n();
 </script>
 
 <template>
   <div>
     <h1>{{ props.error.statusCode }}</h1>
     <NuxtLink to="/">
-      Go back home
+      {{ t('errorPage.goHome') }}
     </NuxtLink>
   </div>
 </template>
