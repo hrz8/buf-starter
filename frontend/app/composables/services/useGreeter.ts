@@ -2,8 +2,8 @@ import { create, type MessageInitShape } from '@bufbuild/protobuf';
 import { SayHelloRequestSchema } from '~~/gen/greeter/v1/hello_pb';
 import { GetAllowedNamesRequestSchema } from '~~/gen/greeter/v1/name_pb';
 import { greeterRepository } from '#shared/repository/greeter';
-import { useErrorMessage } from './useErrorMessage';
-import { useConnectValidator } from './useConnectValidator';
+import { useErrorMessage } from '../useErrorMessage';
+import { useConnectValidator } from '../useConnectValidator';
 import type { PaginationMetaSchema } from '~~/gen/greeter/v1/common_pb';
 
 export function useGreeter() {

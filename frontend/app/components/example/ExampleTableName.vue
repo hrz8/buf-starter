@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useGreeter } from '@/composables/useGreeter';
+import { useGreeter } from '~/composables/services/useGreeter';
 
 const { list } = useGreeter();
 const { t } = useI18n();
