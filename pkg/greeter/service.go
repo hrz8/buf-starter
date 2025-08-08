@@ -2,16 +2,16 @@ package greeter
 
 import (
 	"context"
+	"math"
+	"time"
 
 	"buf.build/go/protovalidate"
 	"github.com/hrz8/altalune"
-
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
 )
 
 type Service struct {
 	greeterv1.UnimplementedGreeterServiceServer
-
 	validator   protovalidate.Validator
 	log         altalune.Logger
 	greeterRepo Repositor
@@ -25,39 +25,58 @@ func NewService(v protovalidate.Validator, log altalune.Logger, greeterRepo Repo
 	}
 }
 
-var allowedNameMap = map[string]bool{
-	"Alina": true, "Bryce": true, "Carmen": true, "Darius": true, "Elena": true,
-	"Felix": true, "Gianna": true, "Hassan": true, "Irene": true, "Jasper": true,
-	"Kiana": true, "Luther": true, "Maya": true, "Nolan": true, "Orlando": true,
-	"Priya": true, "Quincy": true, "Rafael": true, "Sienna": true, "Tobias": true,
-	"Umair": true, "Vera": true, "Wesley": true, "Xavier": true, "Yasmin": true,
-	"Zane": true, "Adriana": true, "Bennett": true, "Clarissa": true, "Devonte": true,
-	"Estella": true, "Finnegan": true, "Gracelyn": true, "Harvey": true, "Isidora": true,
-	"Jovani": true, "Katarina": true, "Leonidas": true, "Mirella": true, "Nikolas": true,
-	"Octavia": true, "Percival": true, "Quintessa": true, "Romero": true, "Salvador": true,
-	"Theodora": true, "Ulrich": true, "Valeria": true, "Winslow": true, "Xiomara": true,
-	"Yuridia": true, "Zephyrus": true, "Aurelius": true, "Bellatrix": true, "Caspian": true,
-	"Demetrius": true, "Evangeline": true, "Florentino": true, "Galadriel": true, "Hermione": true,
-	"Ignatius": true, "Julianna": true, "Kristoffer": true, "Lysandra": true, "Maximiliano": true,
-	"Nefertari": true, "Olivander": true, "Philomena": true, "Quetzalcoatl": true, "Rhiannon": true,
-	"Sebastiana": true, "Thessalonia": true, "Ulyssiana": true, "Vladimir": true, "Wilhelmina": true,
-	"Xenophilius": true, "Yggdrasila": true, "Zaphkiel": true, "Alejandrina": true, "Balthazar": true,
-	"Christabelle": true, "Domenico": true, "Euphrosyne": true, "Featherstone": true, "Gwendolyn": true,
-	"Hyacinthus": true, "Isambard": true, "Jacqueline": true, "Kallistrate": true, "Leontius": true,
-	"Marcellinus": true, "Nicomachus": true, "Ozymandias": true, "Petronella": true, "Quintilius": true,
-	"Rosencrantz": true, "Seraphimiel": true, "Timotheus": true, "Ultraviolet": true, "Valentinian": true,
-}
-
 func (s *Service) SayHello(ctx context.Context, req *greeterv1.SayHelloRequest) (*greeterv1.SayHelloResponse, error) {
+	time.Sleep(700 * time.Millisecond) // Simulate some processing delay
 	if err := s.validator.Validate(req); err != nil {
 		return nil, altalune.NewInvalidPayloadError(err.Error())
 	}
+
+	allowedNameMap := getAllowedNameMap()
 	if _, ok := allowedNameMap[req.Name]; !ok {
 		return nil, altalune.NewGreetingUnrecognize(req.Name)
 	}
+
 	msg := s.greeterRepo.GetGreeterTemplate(req.Name)
 	response := &greeterv1.SayHelloResponse{
 		Message: msg,
 	}
 	return response, nil
+}
+
+func getAllowedNameMap() map[string]bool {
+	m := make(map[string]bool, len(allowedNames))
+	for _, name := range allowedNames {
+		m[name] = true
+	}
+	return m
+}
+
+func (s *Service) GetAllowedNames(ctx context.Context, req *greeterv1.GetAllowedNamesRequest) (*greeterv1.GetAllowedNamesResponse, error) {
+	time.Sleep(700 * time.Millisecond) // Simulate some processing delay
+
+	if err := s.validator.Validate(req); err != nil {
+		return nil, altalune.NewInvalidPayloadError(err.Error())
+	}
+
+	// Get paginated names and total count
+	names, total := s.greeterRepo.GetAllowedNamesWithTotal(req.Page, req.Limit)
+
+	// Calculate pagination metadata
+	totalPages := int32(math.Ceil(float64(total) / float64(req.Limit)))
+	hasNext := req.Page < totalPages
+	hasPrev := req.Page > 1
+
+	meta := &greeterv1.PaginationMeta{
+		Total:      total,
+		Page:       req.Page,
+		Limit:      req.Limit,
+		TotalPages: totalPages,
+		HasNext:    hasNext,
+		HasPrev:    hasPrev,
+	}
+
+	return &greeterv1.GetAllowedNamesResponse{
+		Names: names,
+		Meta:  meta,
+	}, nil
 }

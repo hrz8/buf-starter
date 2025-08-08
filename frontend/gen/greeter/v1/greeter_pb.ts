@@ -4,15 +4,16 @@
 
 import type { GenFile, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
-import { file_buf_validate_validate } from "../../buf/validate/validate_pb.js";
 import type { SayHelloRequestSchema, SayHelloResponseSchema } from "./hello_pb.js";
 import { file_greeter_v1_hello } from "./hello_pb.js";
+import type { GetAllowedNamesRequestSchema, GetAllowedNamesResponseSchema } from "./name_pb.js";
+import { file_greeter_v1_name } from "./name_pb.js";
 
 /**
  * Describes the file greeter/v1/greeter.proto.
  */
 export const file_greeter_v1_greeter: GenFile = /*@__PURE__*/
-  fileDesc("ChhncmVldGVyL3YxL2dyZWV0ZXIucHJvdG8SCmdyZWV0ZXIudjEyWQoOR3JlZXRlclNlcnZpY2USRwoIU2F5SGVsbG8SGy5ncmVldGVyLnYxLlNheUhlbGxvUmVxdWVzdBocLmdyZWV0ZXIudjEuU2F5SGVsbG9SZXNwb25zZSIAQpoBCg5jb20uZ3JlZXRlci52MUIMR3JlZXRlclByb3RvUAFaMWdpdGh1Yi5jb20vaHJ6OC9hbHRhbHVuZS9nZW4vZ3JlZXRlci92MTtncmVldGVydjGiAgNHWFiqAgpHcmVldGVyLlYxygIKR3JlZXRlclxWMeICFkdyZWV0ZXJcVjFcR1BCTWV0YWRhdGHqAgtHcmVldGVyOjpWMWIGcHJvdG8z", [file_buf_validate_validate, file_greeter_v1_hello]);
+  fileDesc("ChhncmVldGVyL3YxL2dyZWV0ZXIucHJvdG8SCmdyZWV0ZXIudjEytwEKDkdyZWV0ZXJTZXJ2aWNlEkcKCFNheUhlbGxvEhsuZ3JlZXRlci52MS5TYXlIZWxsb1JlcXVlc3QaHC5ncmVldGVyLnYxLlNheUhlbGxvUmVzcG9uc2UiABJcCg9HZXRBbGxvd2VkTmFtZXMSIi5ncmVldGVyLnYxLkdldEFsbG93ZWROYW1lc1JlcXVlc3QaIy5ncmVldGVyLnYxLkdldEFsbG93ZWROYW1lc1Jlc3BvbnNlIgBCmgEKDmNvbS5ncmVldGVyLnYxQgxHcmVldGVyUHJvdG9QAVoxZ2l0aHViLmNvbS9ocno4L2FsdGFsdW5lL2dlbi9ncmVldGVyL3YxO2dyZWV0ZXJ2MaICA0dYWKoCCkdyZWV0ZXIuVjHKAgpHcmVldGVyXFYx4gIWR3JlZXRlclxWMVxHUEJNZXRhZGF0YeoCC0dyZWV0ZXI6OlYxYgZwcm90bzM", [file_greeter_v1_hello, file_greeter_v1_name]);
 
 /**
  * @generated from service greeter.v1.GreeterService
@@ -25,6 +26,14 @@ export const GreeterService: GenService<{
     methodKind: "unary";
     input: typeof SayHelloRequestSchema;
     output: typeof SayHelloResponseSchema;
+  },
+  /**
+   * @generated from rpc greeter.v1.GreeterService.GetAllowedNames
+   */
+  getAllowedNames: {
+    methodKind: "unary";
+    input: typeof GetAllowedNamesRequestSchema;
+    output: typeof GetAllowedNamesResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_greeter_v1_greeter, 0);

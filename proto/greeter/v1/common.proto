@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package greeter.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/greeter/v1;greeterv1";
+
+message PaginationMeta {
+  int32 total = 1;
+  int32 page = 2;
+  int32 limit = 3;
+  int32 total_pages = 4;
+  bool has_next = 5;
+  bool has_prev = 6;
+}

@@ -1,47 +1,88 @@
 import { create, type MessageInitShape } from '@bufbuild/protobuf';
 import { SayHelloRequestSchema } from '~~/gen/greeter/v1/hello_pb';
-
+import { GetAllowedNamesRequestSchema } from '~~/gen/greeter/v1/name_pb';
 import { greeterRepository } from '#shared/repository/greeter';
 import { useErrorMessage } from './useErrorMessage';
 import { useConnectValidator } from './useConnectValidator';
+import type { PaginationMetaSchema } from '~~/gen/greeter/v1/common_pb';
 
 export function useGreeter() {
   const { $greeterClient } = useNuxtApp();
   const greeter = greeterRepository($greeterClient);
 
-  const { validate, errors: validationErrors } = useConnectValidator(SayHelloRequestSchema);
+  const helloValidator = useConnectValidator(SayHelloRequestSchema);
+  const nameValidator = useConnectValidator(GetAllowedNamesRequestSchema);
+
   const { parseError } = useErrorMessage();
 
-  const response = ref('');
-  const error = ref('');
-  const loading = ref(false);
+  const submitState = reactive({
+    loading: false,
+    error: '',
+    response: '',
+  });
+
+  async function list(
+    req: MessageInitShape<typeof GetAllowedNamesRequestSchema>,
+  ): Promise<{
+    names: string[];
+    meta: MessageInitShape<typeof PaginationMetaSchema> | undefined;
+  }> {
+    nameValidator.reset();
+
+    if (!nameValidator.validate(req)) {
+      console.warn('Validation failed for GetAllowedNamesRequest:', nameValidator.errors.value);
+      return {
+        names: [],
+        meta: { total: 0, page: 1, limit: 10, totalPages: 1, hasNext: false, hasPrev: false },
+      };
+    }
+
+    try {
+      const message = create(GetAllowedNamesRequestSchema, req);
+      const result = await greeter.getAllowedNames(message);
+      return {
+        names: result.names,
+        meta: result.meta,
+      };
+    } catch (err) {
+      const errorMessage = parseError(err);
+      throw new Error(errorMessage);
+    }
+  }
 
   async function submit(req: MessageInitShape<typeof SayHelloRequestSchema>): Promise<void> {
-    loading.value = true;
-    response.value = '';
-    error.value = '';
+    submitState.loading = true;
+    submitState.response = '';
+    submitState.error = '';
 
-    if (!validate(req)) {
-      loading.value = false;
+    if (!helloValidator.validate(req)) {
+      submitState.loading = false;
       return;
     }
 
     try {
       const message = create(SayHelloRequestSchema, req);
       const result = await greeter.sayHello(message);
-      response.value = result.message;
+      submitState.response = result.message;
     } catch (err) {
-      error.value = parseError(err);
+      submitState.error = parseError(err);
     } finally {
-      loading.value = false;
+      submitState.loading = false;
     }
   }
 
   return {
-    response: readonly(response),
-    error: readonly(error),
-    validationErrors,
-    loading: readonly(loading),
+    // List
+    list,
+
+    // Submit
     submit,
+    submitLoading: computed(() => submitState.loading),
+    submitError: computed(() => submitState.error),
+    submitResponse: computed(() => submitState.response),
+
+    // Validation
+    helloValidationErrors: helloValidator.errors,
+    nameValidationErrors: nameValidator.errors,
   };
 }

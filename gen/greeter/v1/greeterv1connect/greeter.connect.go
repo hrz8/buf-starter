@@ -35,17 +35,22 @@ const (
 const (
 	// GreeterServiceSayHelloProcedure is the fully-qualified name of the GreeterService's SayHello RPC.
 	GreeterServiceSayHelloProcedure = "/greeter.v1.GreeterService/SayHello"
+	// GreeterServiceGetAllowedNamesProcedure is the fully-qualified name of the GreeterService's
+	// GetAllowedNames RPC.
+	GreeterServiceGetAllowedNamesProcedure = "/greeter.v1.GreeterService/GetAllowedNames"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
-	greeterServiceServiceDescriptor        = v1.File_greeter_v1_greeter_proto.Services().ByName("GreeterService")
-	greeterServiceSayHelloMethodDescriptor = greeterServiceServiceDescriptor.Methods().ByName("SayHello")
+	greeterServiceServiceDescriptor               = v1.File_greeter_v1_greeter_proto.Services().ByName("GreeterService")
+	greeterServiceSayHelloMethodDescriptor        = greeterServiceServiceDescriptor.Methods().ByName("SayHello")
+	greeterServiceGetAllowedNamesMethodDescriptor = greeterServiceServiceDescriptor.Methods().ByName("GetAllowedNames")
 )
 
 // GreeterServiceClient is a client for the greeter.v1.GreeterService service.
 type GreeterServiceClient interface {
 	SayHello(context.Context, *connect.Request[v1.SayHelloRequest]) (*connect.Response[v1.SayHelloResponse], error)
+	GetAllowedNames(context.Context, *connect.Request[v1.GetAllowedNamesRequest]) (*connect.Response[v1.GetAllowedNamesResponse], error)
 }
 
 // NewGreeterServiceClient constructs a client for the greeter.v1.GreeterService service. By
@@ -64,12 +69,19 @@ func NewGreeterServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(greeterServiceSayHelloMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		getAllowedNames: connect.NewClient[v1.GetAllowedNamesRequest, v1.GetAllowedNamesResponse](
+			httpClient,
+			baseURL+GreeterServiceGetAllowedNamesProcedure,
+			connect.WithSchema(greeterServiceGetAllowedNamesMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // greeterServiceClient implements GreeterServiceClient.
 type greeterServiceClient struct {
-	sayHello *connect.Client[v1.SayHelloRequest, v1.SayHelloResponse]
+	sayHello        *connect.Client[v1.SayHelloRequest, v1.SayHelloResponse]
+	getAllowedNames *connect.Client[v1.GetAllowedNamesRequest, v1.GetAllowedNamesResponse]
 }
 
 // SayHello calls greeter.v1.GreeterService.SayHello.
@@ -77,9 +89,15 @@ func (c *greeterServiceClient) SayHello(ctx context.Context, req *connect.Reques
 	return c.sayHello.CallUnary(ctx, req)
 }
 
+// GetAllowedNames calls greeter.v1.GreeterService.GetAllowedNames.
+func (c *greeterServiceClient) GetAllowedNames(ctx context.Context, req *connect.Request[v1.GetAllowedNamesRequest]) (*connect.Response[v1.GetAllowedNamesResponse], error) {
+	return c.getAllowedNames.CallUnary(ctx, req)
+}
+
 // GreeterServiceHandler is an implementation of the greeter.v1.GreeterService service.
 type GreeterServiceHandler interface {
 	SayHello(context.Context, *connect.Request[v1.SayHelloRequest]) (*connect.Response[v1.SayHelloResponse], error)
+	GetAllowedNames(context.Context, *connect.Request[v1.GetAllowedNamesRequest]) (*connect.Response[v1.GetAllowedNamesResponse], error)
 }
 
 // NewGreeterServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -94,10 +112,18 @@ func NewGreeterServiceHandler(svc GreeterServiceHandler, opts ...connect.Handler
 		connect.WithSchema(greeterServiceSayHelloMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	greeterServiceGetAllowedNamesHandler := connect.NewUnaryHandler(
+		GreeterServiceGetAllowedNamesProcedure,
+		svc.GetAllowedNames,
+		connect.WithSchema(greeterServiceGetAllowedNamesMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/greeter.v1.GreeterService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case GreeterServiceSayHelloProcedure:
 			greeterServiceSayHelloHandler.ServeHTTP(w, r)
+		case GreeterServiceGetAllowedNamesProcedure:
+			greeterServiceGetAllowedNamesHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -109,4 +135,8 @@ type UnimplementedGreeterServiceHandler struct{}
 
 func (UnimplementedGreeterServiceHandler) SayHello(context.Context, *connect.Request[v1.SayHelloRequest]) (*connect.Response[v1.SayHelloResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("greeter.v1.GreeterService.SayHello is not implemented"))
+}
+
+func (UnimplementedGreeterServiceHandler) GetAllowedNames(context.Context, *connect.Request[v1.GetAllowedNamesRequest]) (*connect.Response[v1.GetAllowedNamesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("greeter.v1.GreeterService.GetAllowedNames is not implemented"))
 }

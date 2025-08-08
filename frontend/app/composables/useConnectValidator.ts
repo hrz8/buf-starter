@@ -35,8 +35,13 @@ export function useConnectValidator<T extends DescMessage>(schema: T) {
     return true;
   }
 
+  function reset() {
+    errors.value = {};
+  }
+
   return {
     validate,
+    reset,
     errors: readonly(errors),
   };
 }

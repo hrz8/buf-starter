@@ -26,3 +26,14 @@ func (h *Handler) SayHello(
 	}
 	return connect.NewResponse(response), nil
 }
+
+func (h *Handler) GetAllowedNames(
+	ctx context.Context,
+	req *connect.Request[greeterv1.GetAllowedNamesRequest],
+) (*connect.Response[greeterv1.GetAllowedNamesResponse], error) {
+	response, err := h.svc.GetAllowedNames(ctx, req.Msg)
+	if err != nil {
+		return nil, altalune.ToConnectError(err)
+	}
+	return connect.NewResponse(response), nil
+}

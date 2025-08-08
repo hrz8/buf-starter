@@ -1,16 +1,15 @@
-<script lang="ts" setup>
+<script setup lang="ts">
 import { useGreeter } from '@/composables/useGreeter';
-import ExampleLanguageSelector from './ExampleLanguageSelector.vue';
 
 const name = ref('');
 const { t } = useI18n();
 
 const {
-  response,
-  error: serverError,
-  validationErrors,
-  loading,
   submit,
+  submitLoading,
+  submitError,
+  submitResponse,
+  helloValidationErrors,
 } = useGreeter();
 
 function onSubmit() {
@@ -19,9 +18,7 @@ function onSubmit() {
 </script>
 
 <template>
-  <div class="max-w-md mx-auto mt-10 p-6 bg-white shadow-md rounded-md space-y-4">
-    <ExampleLanguageSelector />
-
+  <div class="space-y-4">
     <h2 class="text-xl font-semibold text-gray-800">
       {{ t('example.header') }}
     </h2>
@@ -32,8 +29,9 @@ function onSubmit() {
       :placeholder="t('example.inputPlaceholder')"
       class="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
     >
+
     <p
-      v-for="(errorMsg, index) in validationErrors.name"
+      v-for="(errorMsg, index) in helloValidationErrors"
       :key="index"
       class="text-red-600 text-sm"
     >
@@ -41,25 +39,25 @@ function onSubmit() {
     </p>
 
     <button
-      :disabled="loading || !name"
+      :disabled="submitLoading || !name"
       class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 disabled:opacity-50"
       @click="onSubmit"
     >
-      {{ loading ? t('example.submitBtnProgress') : t('example.submitBtn') }}
+      {{ submitLoading ? t('example.submitBtnProgress') : t('example.submitBtn') }}
     </button>
 
     <p
-      v-if="response"
+      v-if="submitResponse"
       class="text-green-600 font-medium"
     >
-      {{ t('example.response') }}: {{ response }}
+      {{ t('example.response') }}: {{ submitResponse }}
     </p>
 
     <p
-      v-if="serverError"
+      v-if="submitError"
       class="text-red-600 font-medium"
     >
-      {{ t('example.error') }}: {{ serverError }}
+      {{ t('example.error') }}: {{ submitError }}
     </p>
   </div>
 </template>

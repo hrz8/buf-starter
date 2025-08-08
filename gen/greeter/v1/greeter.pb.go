@@ -7,7 +7,6 @@
 package greeterv1
 
 import (
-	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -26,22 +25,27 @@ var File_greeter_v1_greeter_proto protoreflect.FileDescriptor
 const file_greeter_v1_greeter_proto_rawDesc = "" +
 	"\n" +
 	"\x18greeter/v1/greeter.proto\x12\n" +
-	"greeter.v1\x1a\x1bbuf/validate/validate.proto\x1a\x16greeter/v1/hello.proto2Y\n" +
+	"greeter.v1\x1a\x16greeter/v1/hello.proto\x1a\x15greeter/v1/name.proto2\xb7\x01\n" +
 	"\x0eGreeterService\x12G\n" +
-	"\bSayHello\x12\x1b.greeter.v1.SayHelloRequest\x1a\x1c.greeter.v1.SayHelloResponse\"\x00B\x9a\x01\n" +
+	"\bSayHello\x12\x1b.greeter.v1.SayHelloRequest\x1a\x1c.greeter.v1.SayHelloResponse\"\x00\x12\\\n" +
+	"\x0fGetAllowedNames\x12\".greeter.v1.GetAllowedNamesRequest\x1a#.greeter.v1.GetAllowedNamesResponse\"\x00B\x9a\x01\n" +
 	"\x0ecom.greeter.v1B\fGreeterProtoP\x01Z1github.com/hrz8/altalune/gen/greeter/v1;greeterv1\xa2\x02\x03GXX\xaa\x02\n" +
 	"Greeter.V1\xca\x02\n" +
 	"Greeter\\V1\xe2\x02\x16Greeter\\V1\\GPBMetadata\xea\x02\vGreeter::V1b\x06proto3"
 
 var file_greeter_v1_greeter_proto_goTypes = []any{
-	(*SayHelloRequest)(nil),  // 0: greeter.v1.SayHelloRequest
-	(*SayHelloResponse)(nil), // 1: greeter.v1.SayHelloResponse
+	(*SayHelloRequest)(nil),         // 0: greeter.v1.SayHelloRequest
+	(*GetAllowedNamesRequest)(nil),  // 1: greeter.v1.GetAllowedNamesRequest
+	(*SayHelloResponse)(nil),        // 2: greeter.v1.SayHelloResponse
+	(*GetAllowedNamesResponse)(nil), // 3: greeter.v1.GetAllowedNamesResponse
 }
 var file_greeter_v1_greeter_proto_depIdxs = []int32{
 	0, // 0: greeter.v1.GreeterService.SayHello:input_type -> greeter.v1.SayHelloRequest
-	1, // 1: greeter.v1.GreeterService.SayHello:output_type -> greeter.v1.SayHelloResponse
-	1, // [1:2] is the sub-list for method output_type
-	0, // [0:1] is the sub-list for method input_type
+	1, // 1: greeter.v1.GreeterService.GetAllowedNames:input_type -> greeter.v1.GetAllowedNamesRequest
+	2, // 2: greeter.v1.GreeterService.SayHello:output_type -> greeter.v1.SayHelloResponse
+	3, // 3: greeter.v1.GreeterService.GetAllowedNames:output_type -> greeter.v1.GetAllowedNamesResponse
+	2, // [2:4] is the sub-list for method output_type
+	0, // [0:2] is the sub-list for method input_type
 	0, // [0:0] is the sub-list for extension type_name
 	0, // [0:0] is the sub-list for extension extendee
 	0, // [0:0] is the sub-list for field type_name
@@ -53,6 +57,7 @@ func file_greeter_v1_greeter_proto_init() {
 		return
 	}
 	file_greeter_v1_hello_proto_init()
+	file_greeter_v1_name_proto_init()
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
