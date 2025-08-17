@@ -31,8 +31,8 @@ const onReset = () => {
 </script>
 
 <template>
-  <div class="flex items-center justify-between">
-    <div class="flex flex-1 items-center space-x-2">
+  <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-3">
+    <div class="flex flex-1 flex-wrap items-center gap-2">
       <slot
         name="filters"
         :table="table"
@@ -40,6 +40,7 @@ const onReset = () => {
       <Button
         v-if="isFiltered"
         variant="ghost"
+        size="sm"
         class="h-8 px-2 lg:px-3"
         @click="onReset"
       >
@@ -50,7 +51,7 @@ const onReset = () => {
         />
       </Button>
     </div>
-    <div class="flex items-center space-x-2">
+    <div class="flex items-center gap-2">
       <Button
         variant="outline"
         size="sm"
@@ -61,7 +62,6 @@ const onReset = () => {
           class="h-4 w-4"
         />
       </Button>
-
       <DataTableViewOptions :table="table" />
     </div>
   </div>

@@ -177,85 +177,92 @@ function reset() {
 </script>
 
 <template>
-  <div class="px-5 py-3">
-    <DataTable
-      ref="dataTableRef"
-      v-model:page="page"
-      v-model:page-size="pageSize"
-      :columns="columns"
-      :data="data"
-      :pending="pending"
-      :row-count="rowCount"
-      @refresh="refresh()"
-      @reset="reset()"
-    >
-      <template #filters>
-        <Input
-          v-model="keyword"
-          placeholder="Search employees..."
-          class="h-8 w-[150px] lg:w-[250px]"
-        />
+  <div class="space-y-5 px-4 py-3 sm:px-6 lg:px-8">
+    <div class="container mx-auto flex justify-end">
+      <Button size="sm">
+        Add Employee
+      </Button>
+    </div>
+    <div class="container mx-auto">
+      <DataTable
+        ref="dataTableRef"
+        v-model:page="page"
+        v-model:page-size="pageSize"
+        :columns="columns"
+        :data="data"
+        :pending="pending"
+        :row-count="rowCount"
+        @refresh="refresh()"
+        @reset="reset()"
+      >
+        <template #filters>
+          <Input
+            v-model="keyword"
+            placeholder="Search employees..."
+            class="h-8 w-[150px] lg:w-[250px]"
+          />
 
-        <DataTableFacetedFilter
-          v-if="roleOptions.length > 0"
-          v-model="roleFilter.filterValues.value"
-          title="Role"
-          :options="roleOptions"
-          @update="roleFilter.setFilter"
-          @clear="roleFilter.clearFilter"
-        />
+          <DataTableFacetedFilter
+            v-if="roleOptions.length > 0"
+            v-model="roleFilter.filterValues.value"
+            title="Role"
+            :options="roleOptions"
+            @update="roleFilter.setFilter"
+            @clear="roleFilter.clearFilter"
+          />
 
-        <DataTableFacetedFilter
-          v-if="departmentOptions.length > 0"
-          v-model="departmentFilter.filterValues.value"
-          title="Department"
-          :options="departmentOptions!"
-          @update="departmentFilter.setFilter"
-          @clear="departmentFilter.clearFilter"
-        />
-      </template>
-      <template #loading>
-        <div class="flex flex-col items-center justify-center space-y-4 py-12">
-          <div class="relative">
-            <Icon
-              name="lucide:loader-2"
-              class="w-8 h-8 animate-spin text-primary"
-            />
+          <DataTableFacetedFilter
+            v-if="departmentOptions.length > 0"
+            v-model="departmentFilter.filterValues.value"
+            title="Department"
+            :options="departmentOptions!"
+            @update="departmentFilter.setFilter"
+            @clear="departmentFilter.clearFilter"
+          />
+        </template>
+        <template #loading>
+          <div class="flex flex-col items-center justify-center space-y-4 py-12">
+            <div class="relative">
+              <Icon
+                name="lucide:loader-2"
+                class="w-8 h-8 animate-spin text-primary"
+              />
+            </div>
+            <div class="text-center">
+              <p class="font-medium">
+                Loading employee data...
+              </p>
+              <p class="text-sm text-muted-foreground">
+                This may take a moment
+              </p>
+            </div>
           </div>
-          <div class="text-center">
-            <p class="font-medium">
-              Loading employee data...
-            </p>
-            <p class="text-sm text-muted-foreground">
-              This may take a moment
-            </p>
+        </template>
+        <template #empty>
+          <div class="flex flex-col items-center justify-center space-y-6 py-16">
+            <div class="relative">
+              <Icon
+                name="lucide:users-x"
+                class="w-16 h-16 text-muted-foreground/50"
+              />
+            </div>
+            <div class="text-center space-y-2">
+              <h3 class="text-lg font-semibold">
+                No employees found
+              </h3>
+              <p class="text-muted-foreground max-w-md">
+                We couldn't find any employees matching your criteria.
+                Try adjusting your filters or search terms.
+              </p>
+            </div>
+            <div class="flex space-x-2">
+              <Button size="sm">
+                Add Employee
+              </Button>
+            </div>
           </div>
-        </div>
-      </template>
-      <template #empty>
-        <div class="flex flex-col items-center justify-center space-y-6 py-16">
-          <div class="relative">
-            <Icon
-              name="lucide:users-x"
-              class="w-16 h-16 text-muted-foreground/50"
-            />
-          </div>
-          <div class="text-center space-y-2">
-            <h3 class="text-lg font-semibold">
-              No employees found
-            </h3>
-            <p class="text-muted-foreground max-w-md">
-              We couldn't find any employees matching your criteria.
-              Try adjusting your filters or search terms.
-            </p>
-          </div>
-          <div class="flex space-x-2">
-            <Button size="sm">
-              Add Employee
-            </Button>
-          </div>
-        </div>
-      </template>
-    </DataTable>
+        </template>
+      </DataTable>
+    </div>
   </div>
 </template>

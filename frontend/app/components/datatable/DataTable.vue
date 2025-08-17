@@ -19,7 +19,6 @@ interface Props {
   columns: ColumnDef<any, any>[];
   data: any[];
   pending?: boolean;
-
   page?: number;
   pageSize?: number;
   rowCount?: number;
@@ -116,14 +115,10 @@ defineExpose({
       :show-border="true"
     >
       <template #loading>
-        <slot
-          name="loading"
-        />
+        <slot name="loading" />
       </template>
       <template #empty>
-        <slot
-          name="empty"
-        />
+        <slot name="empty" />
       </template>
     </DataTableContent>
     <DataTablePagination
