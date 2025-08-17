@@ -1,5 +1,5 @@
-import { ConnectError } from '@connectrpc/connect';
 import { ErrorDetailSchema } from '~~/gen/altalune/v1/common_pb';
+import { ConnectError } from '@connectrpc/connect';
 
 export function useErrorMessage() {
   const { t } = useI18n();

@@ -9,6 +9,7 @@ export default defineNuxtConfig({
     '@nuxt/fonts',
     '@nuxtjs/i18n',
     '@vueuse/nuxt',
+    'shadcn-nuxt',
   ],
   imports: {
     scan: false,
@@ -38,6 +39,10 @@ export default defineNuxtConfig({
   },
   eslint: {
     checker: true,
+  },
+  shadcn: {
+    prefix: '',
+    componentDir: './app/components/ui',
   },
   i18n: {
     strategy: 'no_prefix',

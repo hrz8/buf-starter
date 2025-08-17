@@ -9,7 +9,10 @@ const pageSize = ref(10);
 
 const { data: response, pending, error, refresh } = useAsyncData(
   computed(() => `allowed-names-${currentPage.value}-${pageSize.value}`),
-  () => list({ page: currentPage.value, limit: pageSize.value }),
+  () => list({
+    page: currentPage.value,
+    limit: pageSize.value,
+  }),
   {
     server: false,
     watch: [currentPage, pageSize],
@@ -130,51 +133,50 @@ const {
           </tbody>
         </table>
       </div>
+    </div>
+    <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
+      <div class="text-sm text-gray-600">
+        <span v-if="meta">
+          {{ t('example.allowedNames.paginationInfo', {
+            from: ((currentPage - 1) * pageSize) + 1,
+            to: Math.min(currentPage * pageSize, meta.total ?? 0),
+            total: meta.total
+          }) }}
+        </span>
+        <span v-else>
+          {{ t('example.allowedNames.showingCount', { count: names.length }) }}
+        </span>
+      </div>
 
-      <div class="flex flex-col sm:flex-row justify-between items-center gap-4">
-        <div class="text-sm text-gray-600">
-          <span v-if="meta">
-            {{ t('example.allowedNames.paginationInfo', {
-              from: ((currentPage - 1) * pageSize) + 1,
-              to: Math.min(currentPage * pageSize, meta.total ?? 0),
-              total: meta.total
-            }) }}
-          </span>
-          <span v-else>
-            {{ t('example.allowedNames.showingCount', { count: names.length }) }}
-          </span>
-        </div>
-
-        <div
-          v-if="pageCount > 1"
-          class="flex items-center space-x-2"
+      <div
+        v-if="pageCount > 1"
+        class="flex items-center space-x-2"
+      >
+        <button
+          :disabled="isFirstPage || pending"
+          class="
+            px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50
+            disabled:opacity-50 disabled:cursor-not-allowed transition-colors
+          "
+          @click="prev()"
         >
-          <button
-            :disabled="isFirstPage || pending"
-            class="
-              px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50
-              disabled:opacity-50 disabled:cursor-not-allowed transition-colors
-            "
-            @click="prev()"
-          >
-            {{ t('example.allowedNames.previousBtn') }}
-          </button>
+          {{ t('example.allowedNames.previousBtn') }}
+        </button>
 
-          <span class="text-sm text-gray-600 px-2">
-            {{ t('example.allowedNames.pageInfo', { current: currentPage, total: pageCount }) }}
-          </span>
+        <span class="text-sm text-gray-600 px-2">
+          {{ t('example.allowedNames.pageInfo', { current: currentPage, total: pageCount }) }}
+        </span>
 
-          <button
-            :disabled="isLastPage || pending"
-            class="
-              px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50
-              disabled:opacity-50 disabled:cursor-not-allowed transition-colors
-            "
-            @click="next()"
-          >
-            {{ t('example.allowedNames.nextBtn') }}
-          </button>
-        </div>
+        <button
+          :disabled="isLastPage || pending"
+          class="
+            px-3 py-2 text-sm border border-gray-300 rounded-md bg-white hover:bg-gray-50
+            disabled:opacity-50 disabled:cursor-not-allowed transition-colors
+          "
+          @click="next()"
+        >
+          {{ t('example.allowedNames.nextBtn') }}
+        </button>
       </div>
     </div>
   </div>

@@ -1,8 +1,7 @@
-import { createClient } from '@connectrpc/connect';
-import { createValidator } from '@bufbuild/protovalidate';
 import { createConnectTransport } from '@connectrpc/connect-web';
-
 import { GreeterService } from '~~/gen/greeter/v1/greeter_pb';
+import { createValidator } from '@bufbuild/protovalidate';
+import { createClient } from '@connectrpc/connect';
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
@@ -15,6 +14,9 @@ export default defineNuxtPlugin(() => {
   const greeterClient = createClient(GreeterService, transport);
 
   return {
-    provide: { validator, greeterClient },
+    provide: {
+      validator,
+      greeterClient,
+    },
   };
 });

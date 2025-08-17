@@ -4,7 +4,10 @@ import type { NuxtError } from '#app';
 const props = defineProps({
   error: {
     type: Object as () => NuxtError,
-    default: () => ({ statusCode: 500, message: 'Unknown error' }),
+    default: () => ({
+      statusCode: 500,
+      message: 'Unknown error',
+    }),
   },
 });
 

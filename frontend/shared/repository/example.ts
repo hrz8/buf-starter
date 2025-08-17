@@ -1,0 +1,1216 @@
+import type { QueryOptions } from '../types/query';
+
+type PaginatedResponse<T> = {
+  data: T[];
+  meta: {
+    rowCount: number;
+    pageCount: number;
+    filters?: {
+      [key: string]: string[];
+    };
+  };
+};
+
+export type Employee = {
+  id: number;
+  name: string;
+  email: string;
+  role: string;
+  department: string;
+  status: 'active' | 'inactive';
+  createdAt: string;
+};
+
+const mockEmployees: Employee[] = [
+  {
+    id: 1,
+    name: 'John Smith',
+    email: 'john.smith@example.com',
+    role: 'Senior Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-12-08T09:30:00.000Z',
+  },
+  {
+    id: 2,
+    name: 'Jane Johnson',
+    email: 'jane.johnson@example.com',
+    role: 'Product Manager',
+    department: 'Product Management',
+    status: 'active',
+    createdAt: '2021-04-22T14:45:00.000Z',
+  },
+  {
+    id: 3,
+    name: 'Michael Williams',
+    email: 'michael.williams@example.com',
+    role: 'UI Designer',
+    department: 'Design',
+    status: 'active',
+    createdAt: '2021-05-10T09:15:00.000Z',
+  },
+  {
+    id: 4,
+    name: 'Emily Brown',
+    email: 'emily.brown@example.com',
+    role: 'Data Analyst',
+    department: 'Data Analytics',
+    status: 'active',
+    createdAt: '2021-06-28T16:20:00.000Z',
+  },
+  {
+    id: 5,
+    name: 'David Jones',
+    email: 'david.jones@example.com',
+    role: 'DevOps Engineer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2021-07-05T11:00:00.000Z',
+  },
+  {
+    id: 6,
+    name: 'Sarah Garcia',
+    email: 'sarah.garcia@example.com',
+    role: 'Business Consultant',
+    department: 'Business Development',
+    status: 'active',
+    createdAt: '2021-08-14T13:30:00.000Z',
+  },
+  {
+    id: 7,
+    name: 'Robert Miller',
+    email: 'robert.miller@example.com',
+    role: 'Operations Director',
+    department: 'Operations',
+    status: 'active',
+    createdAt: '2021-09-20T08:45:00.000Z',
+  },
+  {
+    id: 8,
+    name: 'Lisa Davis',
+    email: 'lisa.davis@example.com',
+    role: 'HR Specialist',
+    department: 'Human Resources',
+    status: 'inactive',
+    createdAt: '2021-10-01T15:10:00.000Z',
+  },
+  {
+    id: 9,
+    name: 'James Rodriguez',
+    email: 'james.rodriguez@example.com',
+    role: 'Marketing Coordinator',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2021-11-18T10:00:00.000Z',
+  },
+  {
+    id: 10,
+    name: 'Mary Martinez',
+    email: 'mary.martinez@example.com',
+    role: 'System Admin',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2021-12-05T12:25:00.000Z',
+  },
+  {
+    id: 11,
+    name: 'William Anderson',
+    email: 'william.anderson@example.com',
+    role: 'Frontend Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-01-10T09:30:00.000Z',
+  },
+  {
+    id: 12,
+    name: 'Patricia Taylor',
+    email: 'patricia.taylor@example.com',
+    role: 'QA Engineer',
+    department: 'Quality Assurance',
+    status: 'active',
+    createdAt: '2022-01-25T11:15:00.000Z',
+  },
+  {
+    id: 13,
+    name: 'Richard Thomas',
+    email: 'richard.thomas@example.com',
+    role: 'Sales Manager',
+    department: 'Sales',
+    status: 'active',
+    createdAt: '2022-02-08T14:00:00.000Z',
+  },
+  {
+    id: 14,
+    name: 'Jennifer Moore',
+    email: 'jennifer.moore@example.com',
+    role: 'Content Specialist',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2022-02-20T10:45:00.000Z',
+  },
+  {
+    id: 15,
+    name: 'Thomas Jackson',
+    email: 'thomas.jackson@example.com',
+    role: 'Backend Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-03-05T13:20:00.000Z',
+  },
+  {
+    id: 16,
+    name: 'Linda Martin',
+    email: 'linda.martin@example.com',
+    role: 'Finance Manager',
+    department: 'Finance',
+    status: 'active',
+    createdAt: '2022-03-18T15:30:00.000Z',
+  },
+  {
+    id: 17,
+    name: 'Charles Lee',
+    email: 'charles.lee@example.com',
+    role: 'Security Analyst',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2022-04-02T08:00:00.000Z',
+  },
+  {
+    id: 18,
+    name: 'Barbara Thompson',
+    email: 'barbara.thompson@example.com',
+    role: 'UX Designer',
+    department: 'Design',
+    status: 'inactive',
+    createdAt: '2022-04-15T12:10:00.000Z',
+  },
+  {
+    id: 19,
+    name: 'Joseph White',
+    email: 'joseph.white@example.com',
+    role: 'Project Manager',
+    department: 'Operations',
+    status: 'active',
+    createdAt: '2022-05-01T09:45:00.000Z',
+  },
+  {
+    id: 20,
+    name: 'Susan Harris',
+    email: 'susan.harris@example.com',
+    role: 'Legal Advisor',
+    department: 'Legal',
+    status: 'active',
+    createdAt: '2022-05-14T11:30:00.000Z',
+  },
+  {
+    id: 21,
+    name: 'Christopher Clark',
+    email: 'christopher.clark@example.com',
+    role: 'Mobile Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-05-28T14:15:00.000Z',
+  },
+  {
+    id: 22,
+    name: 'Jessica Lewis',
+    email: 'jessica.lewis@example.com',
+    role: 'HR Manager',
+    department: 'Human Resources',
+    status: 'active',
+    createdAt: '2022-06-10T10:20:00.000Z',
+  },
+  {
+    id: 23,
+    name: 'Daniel Robinson',
+    email: 'daniel.robinson@example.com',
+    role: 'Cloud Architect',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-06-25T13:00:00.000Z',
+  },
+  {
+    id: 24,
+    name: 'Karen Walker',
+    email: 'karen.walker@example.com',
+    role: 'Sales Representative',
+    department: 'Sales',
+    status: 'active',
+    createdAt: '2022-07-08T15:45:00.000Z',
+  },
+  {
+    id: 25,
+    name: 'Matthew Hall',
+    email: 'matthew.hall@example.com',
+    role: 'Database Admin',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2022-07-20T08:30:00.000Z',
+  },
+  {
+    id: 26,
+    name: 'Nancy Allen',
+    email: 'nancy.allen@example.com',
+    role: 'Marketing Director',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2022-08-02T11:15:00.000Z',
+  },
+  {
+    id: 27,
+    name: 'Anthony Young',
+    email: 'anthony.young@example.com',
+    role: 'Full Stack Developer',
+    department: 'Engineering',
+    status: 'inactive',
+    createdAt: '2022-08-15T14:40:00.000Z',
+  },
+  {
+    id: 28,
+    name: 'Betty King',
+    email: 'betty.king@example.com',
+    role: 'Customer Success Manager',
+    department: 'Customer Service',
+    status: 'active',
+    createdAt: '2022-08-28T09:25:00.000Z',
+  },
+  {
+    id: 29,
+    name: 'Mark Wright',
+    email: 'mark.wright@example.com',
+    role: 'Technical Writer',
+    department: 'Product Management',
+    status: 'active',
+    createdAt: '2022-09-10T12:50:00.000Z',
+  },
+  {
+    id: 30,
+    name: 'Helen Lopez',
+    email: 'helen.lopez@example.com',
+    role: 'Research Analyst',
+    department: 'Research & Development',
+    status: 'active',
+    createdAt: '2022-09-22T10:35:00.000Z',
+  },
+  {
+    id: 31,
+    name: 'Donald Hill',
+    email: 'donald.hill@example.com',
+    role: 'Network Engineer',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2022-10-05T13:15:00.000Z',
+  },
+  {
+    id: 32,
+    name: 'Sandra Scott',
+    email: 'sandra.scott@example.com',
+    role: 'Graphic Designer',
+    department: 'Design',
+    status: 'active',
+    createdAt: '2022-10-18T15:00:00.000Z',
+  },
+  {
+    id: 33,
+    name: 'Steven Green',
+    email: 'steven.green@example.com',
+    role: 'Solutions Architect',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-11-01T08:45:00.000Z',
+  },
+  {
+    id: 34,
+    name: 'Donna Adams',
+    email: 'donna.adams@example.com',
+    role: 'Compliance Officer',
+    department: 'Legal',
+    status: 'active',
+    createdAt: '2022-11-14T11:20:00.000Z',
+  },
+  {
+    id: 35,
+    name: 'Paul Baker',
+    email: 'paul.baker@example.com',
+    role: 'Backend Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-11-28T14:05:00.000Z',
+  },
+  {
+    id: 36,
+    name: 'Carol Nelson',
+    email: 'carol.nelson@example.com',
+    role: 'Product Owner',
+    department: 'Product Management',
+    status: 'inactive',
+    createdAt: '2022-12-10T09:30:00.000Z',
+  },
+  {
+    id: 37,
+    name: 'Andrew Carter',
+    email: 'andrew.carter@example.com',
+    role: 'Scrum Master',
+    department: 'Operations',
+    status: 'active',
+    createdAt: '2022-12-22T12:15:00.000Z',
+  },
+  {
+    id: 38,
+    name: 'Ruth Mitchell',
+    email: 'ruth.mitchell@example.com',
+    role: 'Business Analyst',
+    department: 'Business Development',
+    status: 'active',
+    createdAt: '2023-01-05T10:00:00.000Z',
+  },
+  {
+    id: 39,
+    name: 'Kenneth Roberts',
+    email: 'kenneth.roberts@example.com',
+    role: 'Senior Engineer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2023-01-18T13:45:00.000Z',
+  },
+  {
+    id: 40,
+    name: 'Sharon Turner',
+    email: 'sharon.turner@example.com',
+    role: 'Recruitment Specialist',
+    department: 'Human Resources',
+    status: 'active',
+    createdAt: '2023-02-01T15:30:00.000Z',
+  },
+  {
+    id: 41,
+    name: 'Joshua Phillips',
+    email: 'joshua.phillips@example.com',
+    role: 'AI Engineer',
+    department: 'Research & Development',
+    status: 'active',
+    createdAt: '2023-02-14T08:15:00.000Z',
+  },
+  {
+    id: 42,
+    name: 'Michelle Campbell',
+    email: 'michelle.campbell@example.com',
+    role: 'Social Media Manager',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2023-02-27T11:00:00.000Z',
+  },
+  {
+    id: 43,
+    name: 'Kevin Parker',
+    email: 'kevin.parker@example.com',
+    role: 'Infrastructure Engineer',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2023-03-12T14:25:00.000Z',
+  },
+  {
+    id: 44,
+    name: 'Laura Evans',
+    email: 'laura.evans@example.com',
+    role: 'Chief Technology Officer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2023-03-25T09:10:00.000Z',
+  },
+  {
+    id: 45,
+    name: 'Brian Edwards',
+    email: 'brian.edwards@example.com',
+    role: 'Sales Executive',
+    department: 'Sales',
+    status: 'inactive',
+    createdAt: '2023-04-07T12:40:00.000Z',
+  },
+  {
+    id: 46,
+    name: 'Amy Collins',
+    email: 'amy.collins@example.com',
+    role: 'Training Coordinator',
+    department: 'Human Resources',
+    status: 'active',
+    createdAt: '2023-04-20T10:55:00.000Z',
+  },
+  {
+    id: 47,
+    name: 'George Stewart',
+    email: 'george.stewart@example.com',
+    role: 'Machine Learning Engineer',
+    department: 'Data Analytics',
+    status: 'active',
+    createdAt: '2023-05-03T13:20:00.000Z',
+  },
+  {
+    id: 48,
+    name: 'Angela Morris',
+    email: 'angela.morris@example.com',
+    role: 'Executive Assistant',
+    department: 'Administration',
+    status: 'active',
+    createdAt: '2023-05-16T15:05:00.000Z',
+  },
+  {
+    id: 49,
+    name: 'Raymond Rogers',
+    email: 'raymond.rogers@example.com',
+    role: 'Security Engineer',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2023-05-29T08:50:00.000Z',
+  },
+  {
+    id: 50,
+    name: 'Deborah Reed',
+    email: 'deborah.reed@example.com',
+    role: 'Content Manager',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2023-06-11T11:35:00.000Z',
+  },
+  {
+    id: 51,
+    name: 'Gregory Cook',
+    email: 'gregory.cook@example.com',
+    role: 'iOS Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2023-06-24T14:00:00.000Z',
+  },
+  {
+    id: 52,
+    name: 'Virginia Morgan',
+    email: 'virginia.morgan@example.com',
+    role: 'Financial Analyst',
+    department: 'Finance',
+    status: 'active',
+    createdAt: '2023-07-07T09:45:00.000Z',
+  },
+  {
+    id: 53,
+    name: 'Patrick Bell',
+    email: 'patrick.bell@example.com',
+    role: 'Android Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2023-07-20T12:30:00.000Z',
+  },
+  {
+    id: 54,
+    name: 'Katherine Murphy',
+    email: 'katherine.murphy@example.com',
+    role: 'Operations Manager',
+    department: 'Operations',
+    status: 'inactive',
+    createdAt: '2023-08-02T10:15:00.000Z',
+  },
+  {
+    id: 55,
+    name: 'Harold Rivera',
+    email: 'harold.rivera@example.com',
+    role: 'QA Lead',
+    department: 'Quality Assurance',
+    status: 'active',
+    createdAt: '2023-08-15T13:00:00.000Z',
+  },
+  {
+    id: 56,
+    name: 'Christine Cooper',
+    email: 'christine.cooper@example.com',
+    role: 'Brand Manager',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2023-08-28T15:45:00.000Z',
+  },
+  {
+    id: 57,
+    name: 'Ryan Richardson',
+    email: 'ryan.richardson@example.com',
+    role: 'Site Reliability Engineer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2023-09-10T08:30:00.000Z',
+  },
+  {
+    id: 58,
+    name: 'Debra Cox',
+    email: 'debra.cox@example.com',
+    role: 'Payroll Specialist',
+    department: 'Finance',
+    status: 'active',
+    createdAt: '2023-09-23T11:15:00.000Z',
+  },
+  {
+    id: 59,
+    name: 'Jacob Howard',
+    email: 'jacob.howard@example.com',
+    role: 'Data Engineer',
+    department: 'Data Analytics',
+    status: 'active',
+    createdAt: '2023-10-06T14:40:00.000Z',
+  },
+  {
+    id: 60,
+    name: 'Maria Ward',
+    email: 'maria.ward@example.com',
+    role: 'Customer Support Lead',
+    department: 'Customer Service',
+    status: 'active',
+    createdAt: '2023-10-19T09:25:00.000Z',
+  },
+  {
+    id: 61,
+    name: 'Timothy Torres',
+    email: 'timothy.torres@example.com',
+    role: 'Release Manager',
+    department: 'Operations',
+    status: 'active',
+    createdAt: '2023-11-01T12:10:00.000Z',
+  },
+  {
+    id: 62,
+    name: 'Brenda Peterson',
+    email: 'brenda.peterson@example.com',
+    role: 'UI/UX Lead',
+    department: 'Design',
+    status: 'active',
+    createdAt: '2023-11-14T10:55:00.000Z',
+  },
+  {
+    id: 63,
+    name: 'Jerry Gray',
+    email: 'jerry.gray@example.com',
+    role: 'Performance Engineer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2023-11-27T13:35:00.000Z',
+  },
+  {
+    id: 64,
+    name: 'Janet Ramirez',
+    email: 'janet.ramirez@example.com',
+    role: 'Legal Counsel',
+    department: 'Legal',
+    status: 'inactive',
+    createdAt: '2023-12-10T15:20:00.000Z',
+  },
+  {
+    id: 65,
+    name: 'Carl James',
+    email: 'carl.james@example.com',
+    role: 'Principal Engineer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2023-12-23T08:05:00.000Z',
+  },
+  {
+    id: 66,
+    name: 'Joyce Watson',
+    email: 'joyce.watson@example.com',
+    role: 'Procurement Manager',
+    department: 'Operations',
+    status: 'active',
+    createdAt: '2024-01-05T11:40:00.000Z',
+  },
+  {
+    id: 67,
+    name: 'Albert Brooks',
+    email: 'albert.brooks@example.com',
+    role: 'Blockchain Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-01-18T14:15:00.000Z',
+  },
+  {
+    id: 68,
+    name: 'Diane Kelly',
+    email: 'diane.kelly@example.com',
+    role: 'Event Coordinator',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2024-01-31T09:00:00.000Z',
+  },
+  {
+    id: 69,
+    name: 'Ralph Sanders',
+    email: 'ralph.sanders@example.com',
+    role: 'Database Architect',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2024-02-13T12:45:00.000Z',
+  },
+  {
+    id: 70,
+    name: 'Kathryn Price',
+    email: 'kathryn.price@example.com',
+    role: 'Growth Manager',
+    department: 'Business Development',
+    status: 'active',
+    createdAt: '2024-02-26T10:30:00.000Z',
+  },
+  {
+    id: 71,
+    name: 'Eugene Bennett',
+    email: 'eugene.bennett@example.com',
+    role: 'Technical Lead',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-03-10T13:15:00.000Z',
+  },
+  {
+    id: 72,
+    name: 'Teresa Wood',
+    email: 'teresa.wood@example.com',
+    role: 'Office Manager',
+    department: 'Administration',
+    status: 'inactive',
+    createdAt: '2024-03-23T15:00:00.000Z',
+  },
+  {
+    id: 73,
+    name: 'Russell Barnes',
+    email: 'russell.barnes@example.com',
+    role: 'API Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-04-05T08:45:00.000Z',
+  },
+  {
+    id: 74,
+    name: 'Rachel Ross',
+    email: 'rachel.ross@example.com',
+    role: 'Communications Manager',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2024-04-18T11:20:00.000Z',
+  },
+  {
+    id: 75,
+    name: 'Dennis Henderson',
+    email: 'dennis.henderson@example.com',
+    role: 'Test Engineer',
+    department: 'Quality Assurance',
+    status: 'active',
+    createdAt: '2024-05-01T14:05:00.000Z',
+  },
+  {
+    id: 76,
+    name: 'Carolyn Coleman',
+    email: 'carolyn.coleman@example.com',
+    role: 'Benefits Administrator',
+    department: 'Human Resources',
+    status: 'active',
+    createdAt: '2024-05-14T09:50:00.000Z',
+  },
+  {
+    id: 77,
+    name: 'Peter Jenkins',
+    email: 'peter.jenkins@example.com',
+    role: 'Lead Architect',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-05-27T12:35:00.000Z',
+  },
+  {
+    id: 78,
+    name: 'Ann Perry',
+    email: 'ann.perry@example.com',
+    role: 'Account Manager',
+    department: 'Sales',
+    status: 'active',
+    createdAt: '2024-06-09T10:20:00.000Z',
+  },
+  {
+    id: 79,
+    name: 'Willie Powell',
+    email: 'willie.powell@example.com',
+    role: 'Systems Analyst',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2024-06-22T13:05:00.000Z',
+  },
+  {
+    id: 80,
+    name: 'Frances Long',
+    email: 'frances.long@example.com',
+    role: 'Partnership Manager',
+    department: 'Business Development',
+    status: 'inactive',
+    createdAt: '2024-07-05T15:50:00.000Z',
+  },
+  {
+    id: 81,
+    name: 'Henry Patterson',
+    email: 'henry.patterson@example.com',
+    role: 'Automation Engineer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-07-18T08:35:00.000Z',
+  },
+  {
+    id: 82,
+    name: 'Judith Hughes',
+    email: 'judith.hughes@example.com',
+    role: 'Risk Analyst',
+    department: 'Finance',
+    status: 'active',
+    createdAt: '2024-07-31T11:20:00.000Z',
+  },
+  {
+    id: 83,
+    name: 'Roy Flores',
+    email: 'roy.flores@example.com',
+    role: 'Platform Engineer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-08-13T14:05:00.000Z',
+  },
+  {
+    id: 84,
+    name: 'Marilyn Washington',
+    email: 'marilyn.washington@example.com',
+    role: 'Content Strategist',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2024-08-26T09:40:00.000Z',
+  },
+  {
+    id: 85,
+    name: 'Benjamin Butler',
+    email: 'benjamin.butler@example.com',
+    role: 'Research Scientist',
+    department: 'Research & Development',
+    status: 'active',
+    createdAt: '2024-09-08T12:25:00.000Z',
+  },
+  {
+    id: 86,
+    name: 'Evelyn Simmons',
+    email: 'evelyn.simmons@example.com',
+    role: 'Talent Acquisition',
+    department: 'Human Resources',
+    status: 'active',
+    createdAt: '2024-09-21T10:10:00.000Z',
+  },
+  {
+    id: 87,
+    name: 'Russell Foster',
+    email: 'russell.foster@example.com',
+    role: 'Game Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-10-04T13:55:00.000Z',
+  },
+  {
+    id: 88,
+    name: 'Alice Gonzalez',
+    email: 'alice.gonzalez@example.com',
+    role: 'PR Manager',
+    department: 'Marketing',
+    status: 'inactive',
+    createdAt: '2024-10-17T15:30:00.000Z',
+  },
+  {
+    id: 89,
+    name: 'Howard Bryant',
+    email: 'howard.bryant@example.com',
+    role: 'Integration Specialist',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2024-10-30T08:15:00.000Z',
+  },
+  {
+    id: 90,
+    name: 'Joan Alexander',
+    email: 'joan.alexander@example.com',
+    role: 'Facilities Manager',
+    department: 'Administration',
+    status: 'active',
+    createdAt: '2024-11-12T11:00:00.000Z',
+  },
+  {
+    id: 91,
+    name: 'Joe Russell',
+    email: 'joe.russell@example.com',
+    role: 'Software Architect',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-11-25T14:45:00.000Z',
+  },
+  {
+    id: 92,
+    name: 'Mildred Griffin',
+    email: 'mildred.griffin@example.com',
+    role: 'Learning Manager',
+    department: 'Human Resources',
+    status: 'active',
+    createdAt: '2024-11-25T14:45:00.000Z',
+  },
+  {
+    id: 93,
+    name: 'Lawrence Diaz',
+    email: 'lawrence.diaz@example.com',
+    role: 'DevSecOps Engineer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2024-12-21T12:15:00.000Z',
+  },
+  {
+    id: 94,
+    name: 'Lillian Hayes',
+    email: 'lillian.hayes@example.com',
+    role: 'Strategy Consultant',
+    department: 'Business Development',
+    status: 'active',
+    createdAt: '2025-01-03T10:00:00.000Z',
+  },
+  {
+    id: 95,
+    name: 'Fred Myers',
+    email: 'fred.myers@example.com',
+    role: 'Technical Support Lead',
+    department: 'Customer Service',
+    status: 'active',
+    createdAt: '2025-01-16T13:45:00.000Z',
+  },
+  {
+    id: 96,
+    name: 'Gloria Ford',
+    email: 'gloria.ford@example.com',
+    role: 'SEO Specialist',
+    department: 'Marketing',
+    status: 'inactive',
+    createdAt: '2021-03-29T15:20:00.000Z',
+  },
+  {
+    id: 97,
+    name: 'Earl Hamilton',
+    email: 'earl.hamilton@example.com',
+    role: 'Embedded Systems Engineer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2021-04-11T08:05:00.000Z',
+  },
+  {
+    id: 98,
+    name: 'Theresa Graham',
+    email: 'theresa.graham@example.com',
+    role: 'Budget Analyst',
+    department: 'Finance',
+    status: 'active',
+    createdAt: '2021-05-24T11:50:00.000Z',
+  },
+  {
+    id: 99,
+    name: 'Sean Sullivan',
+    email: 'sean.sullivan@example.com',
+    role: '3D Artist',
+    department: 'Design',
+    status: 'active',
+    createdAt: '2021-06-06T14:35:00.000Z',
+  },
+  {
+    id: 100,
+    name: 'Julie Chapman',
+    email: 'julie.chapman@example.com',
+    role: 'Vendor Manager',
+    department: 'Operations',
+    status: 'active',
+    createdAt: '2021-07-19T09:20:00.000Z',
+  },
+  {
+    id: 101,
+    name: 'Albert Oliver',
+    email: 'albert.oliver@example.com',
+    role: 'Firmware Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2021-08-01T12:05:00.000Z',
+  },
+  {
+    id: 102,
+    name: 'Nicole Montgomery',
+    email: 'nicole.montgomery@example.com',
+    role: 'Email Marketing Manager',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2021-09-14T10:40:00.000Z',
+  },
+  {
+    id: 103,
+    name: 'Samuel Perez',
+    email: 'samuel.perez@example.com',
+    role: 'Solutions Engineer',
+    department: 'Engineering',
+    status: 'inactive',
+    createdAt: '2021-10-27T13:25:00.000Z',
+  },
+  {
+    id: 104,
+    name: 'Christina Hunt',
+    email: 'christina.hunt@example.com',
+    role: 'Compensation Analyst',
+    department: 'Human Resources',
+    status: 'active',
+    createdAt: '2021-11-09T15:10:00.000Z',
+  },
+  {
+    id: 105,
+    name: 'Johnny Black',
+    email: 'johnny.black@example.com',
+    role: 'Unity Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2021-12-22T08:55:00.000Z',
+  },
+  {
+    id: 106,
+    name: 'Katherine Owens',
+    email: 'katherine.owens@example.com',
+    role: 'Policy Analyst',
+    department: 'Legal',
+    status: 'active',
+    createdAt: '2022-01-04T11:40:00.000Z',
+  },
+  {
+    id: 107,
+    name: 'Louis Pierce',
+    email: 'louis.pierce@example.com',
+    role: 'Data Scientist',
+    department: 'Data Analytics',
+    status: 'active',
+    createdAt: '2022-02-17T14:25:00.000Z',
+  },
+  {
+    id: 108,
+    name: 'Emma Nichols',
+    email: 'emma.nichols@example.com',
+    role: 'Community Manager',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2022-03-02T09:10:00.000Z',
+  },
+  {
+    id: 109,
+    name: 'Billy Grant',
+    email: 'billy.grant@example.com',
+    role: 'Golang Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-04-15T12:55:00.000Z',
+  },
+  {
+    id: 110,
+    name: 'Victoria Lane',
+    email: 'victoria.lane@example.com',
+    role: 'Executive Recruiter',
+    department: 'Human Resources',
+    status: 'inactive',
+    createdAt: '2022-05-28T10:30:00.000Z',
+  },
+  {
+    id: 111,
+    name: 'Harry Stevens',
+    email: 'harry.stevens@example.com',
+    role: 'Kubernetes Engineer',
+    department: 'IT Support',
+    status: 'active',
+    createdAt: '2022-06-10T13:15:00.000Z',
+  },
+  {
+    id: 112,
+    name: 'Julia Castillo',
+    email: 'julia.castillo@example.com',
+    role: 'Campaign Manager',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2022-07-23T15:00:00.000Z',
+  },
+  {
+    id: 113,
+    name: 'Jack Morales',
+    email: 'jack.morales@example.com',
+    role: 'React Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-08-05T08:45:00.000Z',
+  },
+  {
+    id: 114,
+    name: 'Rose Gutierrez',
+    email: 'rose.gutierrez@example.com',
+    role: 'Supply Chain Manager',
+    department: 'Operations',
+    status: 'active',
+    createdAt: '2022-09-18T11:30:00.000Z',
+  },
+  {
+    id: 115,
+    name: 'Philip Alvarez',
+    email: 'philip.alvarez@example.com',
+    role: 'Python Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-10-31T14:15:00.000Z',
+  },
+  {
+    id: 116,
+    name: 'Lois Fisher',
+    email: 'lois.fisher@example.com',
+    role: 'Internal Auditor',
+    department: 'Finance',
+    status: 'active',
+    createdAt: '2022-11-13T09:00:00.000Z',
+  },
+  {
+    id: 117,
+    name: 'Jesse Ortiz',
+    email: 'jesse.ortiz@example.com',
+    role: 'Vue.js Developer',
+    department: 'Engineering',
+    status: 'active',
+    createdAt: '2022-12-26T12:45:00.000Z',
+  },
+  {
+    id: 118,
+    name: 'Annie Freeman',
+    email: 'annie.freeman@example.com',
+    role: 'Workplace Coordinator',
+    department: 'Administration',
+    status: 'inactive',
+    createdAt: '2023-01-08T10:20:00.000Z',
+  },
+  {
+    id: 119,
+    name: 'Brandon Wells',
+    email: 'brandon.wells@example.com',
+    role: 'Technical Product Manager',
+    department: 'Product Management',
+    status: 'active',
+    createdAt: '2023-02-21T13:05:00.000Z',
+  },
+  {
+    id: 120,
+    name: 'Phyllis Webb',
+    email: 'phyllis.webb@example.com',
+    role: 'Chief Marketing Officer',
+    department: 'Marketing',
+    status: 'active',
+    createdAt: '2023-03-06T15:50:00.000Z',
+  },
+];
+
+const getDistinctValues = (employees: Employee[]) => {
+  const uniqueRoles = [...new Set(employees.map((emp) => emp.role))];
+  const uniqueDepartments = [...new Set(employees.map((emp) => emp.department))];
+
+  return {
+    roles: uniqueRoles,
+    departments: uniqueDepartments,
+  };
+};
+
+function filterEmployees(employees: Employee[], params: QueryOptions): PaginatedResponse<Employee> {
+  const { pagination, keyword, sorting, filters } = params;
+
+  const page = pagination?.page ?? 1;
+  const pageSize = pagination?.pageSize ?? 10;
+  const normalizedKeyword = keyword?.toLowerCase() || '';
+  const sortBy = sorting?.field as keyof Employee | undefined;
+  const sortOrder = sorting?.order ?? 'asc';
+
+  let filteredEmployees = [...employees];
+
+  // Apply global search
+  if (normalizedKeyword) {
+    filteredEmployees = filteredEmployees.filter((employee) => {
+      const searchableText = `
+        ${employee.name.toLowerCase()}
+        ${employee.email.toLowerCase()}
+        ${employee.role.toLowerCase()}
+        ${employee.department.toLowerCase()}
+        ${employee.status.toLowerCase()}
+      `;
+      return searchableText.includes(normalizedKeyword);
+    });
+  }
+
+  // Apply column-specific filters
+  if (filters) {
+    for (const key of Object.keys(filters)) {
+      const filterVal = filters[key];
+      if (filterVal == null) continue;
+      const columnName = key as keyof Employee;
+      if (!(columnName in (employees[0] ?? {}))) continue;
+
+      filteredEmployees = filteredEmployees.filter((employee) => {
+        const cellValue = String(employee[columnName]).toLowerCase();
+
+        if (Array.isArray(filterVal)) {
+          const normalizedFilters = filterVal.map((val) =>
+            typeof val === 'string'
+              ? val.toLowerCase()
+              : String(val).toLowerCase(),
+          );
+          return normalizedFilters.includes(cellValue);
+        }
+
+        const normalizedFilter = typeof filterVal === 'string'
+          ? filterVal.toLowerCase()
+          : String(filterVal).toLowerCase();
+
+        return cellValue === normalizedFilter;
+      });
+    }
+  }
+
+  // Apply sorting
+  if (sortBy && sortBy in (employees[0] ?? {})) {
+    filteredEmployees.sort((a, b) => {
+      const aVal = a[sortBy];
+      const bVal = b[sortBy];
+
+      if (typeof aVal === 'number' && typeof bVal === 'number') {
+        return sortOrder === 'asc' ? aVal - bVal : bVal - aVal;
+      }
+
+      const aStr = String(aVal).toLowerCase();
+      const bStr = String(bVal).toLowerCase();
+
+      if (aStr < bStr) return sortOrder === 'asc' ? -1 : 1;
+      if (aStr > bStr) return sortOrder === 'asc' ? 1 : -1;
+      return 0;
+    });
+  }
+
+  // Pagination
+  const totalRows = filteredEmployees.length;
+  const totalPages = Math.ceil(totalRows / pageSize);
+  const startIndex = (page - 1) * pageSize;
+  const paginatedData = filteredEmployees.slice(startIndex, startIndex + pageSize);
+
+  const { roles, departments } = getDistinctValues(employees);
+
+  return {
+    data: paginatedData,
+    meta: {
+      rowCount: totalRows,
+      pageCount: totalPages,
+      filters: {
+        roles,
+        departments,
+      },
+    },
+  };
+}
+
+export const exampleRepository = () => ({
+  async query(params: QueryOptions): Promise<PaginatedResponse<Employee>> {
+    await new Promise((resolve) => setTimeout(resolve, 600));
+    return filterEmployees(mockEmployees, params);
+  },
+});

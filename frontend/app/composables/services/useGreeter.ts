@@ -1,10 +1,12 @@
-import { create, type MessageInitShape } from '@bufbuild/protobuf';
-import { SayHelloRequestSchema } from '~~/gen/greeter/v1/hello_pb';
 import { GetAllowedNamesRequestSchema } from '~~/gen/greeter/v1/name_pb';
-import { greeterRepository } from '#shared/repository/greeter';
-import { useErrorMessage } from '../useErrorMessage';
-import { useConnectValidator } from '../useConnectValidator';
+import { type MessageInitShape, create } from '@bufbuild/protobuf';
+import { SayHelloRequestSchema } from '~~/gen/greeter/v1/hello_pb';
+
 import type { PaginationMetaSchema } from '~~/gen/greeter/v1/common_pb';
+
+import { greeterRepository } from '#shared/repository/greeter';
+import { useConnectValidator } from '../useConnectValidator';
+import { useErrorMessage } from '../useErrorMessage';
 
 export function useGreeter() {
   const { $greeterClient } = useNuxtApp();
@@ -33,7 +35,14 @@ export function useGreeter() {
       console.warn('Validation failed for GetAllowedNamesRequest:', nameValidator.errors.value);
       return {
         names: [],
-        meta: { total: 0, page: 1, limit: 10, totalPages: 1, hasNext: false, hasPrev: false },
+        meta: {
+          total: 0,
+          page: 1,
+          limit: 10,
+          totalPages: 1,
+          hasNext: false,
+          hasPrev: false,
+        },
       };
     }
 
