@@ -4,7 +4,62 @@ package altalune.v1;
 
 option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
 
+import "buf/validate/validate.proto";
+
 message ErrorDetail {
   string code = 1;
   map<string, string> meta = 3;
+}
+
+message StringList {
+  repeated string values = 1 [
+    (buf.validate.field).repeated = { min_items: 1 }
+  ];
+}
+
+message Pagination {
+  int32 page = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = { gt: 0 }
+  ];
+  int32 page_size = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).int32 = { gt: 0, lte: 10000 }
+  ];
+}
+
+enum SortOrder {
+  SORT_ORDER_UNSPECIFIED = 0;
+  SORT_ORDER_ASC = 1;
+  SORT_ORDER_DESC = 2;
+}
+
+message Sorting {
+  string field = 1 [
+    (buf.validate.field).required = true
+  ];
+  SortOrder order = 2 [
+    (buf.validate.field).enum = { defined_only: true }
+  ];
+}
+
+message QueryRequest {
+  Pagination pagination = 1 [ (buf.validate.field).required = true ];
+  string keyword = 2 [ (buf.validate.field).string = { max_len: 256 } ];
+  map<string, StringList> filters = 3;
+  Sorting sorting = 4;
+}
+
+message FiltersCatalog {
+  map<string, FilterValues> filters = 1;
+}
+
+message FilterValues {
+  repeated string values = 1;
+}
+
+message QueryMeta {
+  int32 row_count = 1;
+  int32 page_count = 2;
+  map<string, FilterValues> filters = 3;
 }

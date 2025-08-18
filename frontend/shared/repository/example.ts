@@ -1,15 +1,4 @@
-import type { QueryOptions } from '../types/query';
-
-type PaginatedResponse<T> = {
-  data: T[];
-  meta: {
-    rowCount: number;
-    pageCount: number;
-    filters?: {
-      [key: string]: string[];
-    };
-  };
-};
+import type { PaginatedResponse, QueryOptions } from '../types/query';
 
 export type Employee = {
   id: number;

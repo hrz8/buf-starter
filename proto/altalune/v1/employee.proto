@@ -1,0 +1,72 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "altalune/v1/common.proto";
+
+enum EmployeeStatus {
+  EMPLOYEE_STATUS_UNSPECIFIED = 0;
+  EMPLOYEE_STATUS_ACTIVE = 1;
+  EMPLOYEE_STATUS_INACTIVE = 2;
+}
+
+message Employee {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 50
+    }
+  ];
+
+  string email = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string.email = true
+  ];
+
+  string role = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { min_len: 1, max_len: 100 }
+  ];
+
+  string department = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { min_len: 1, max_len: 100 }
+  ];
+
+  EmployeeStatus status = 6 [
+    (buf.validate.field).enum = { defined_only: true }
+  ];
+
+  google.protobuf.Timestamp created_at = 7;
+}
+
+message QueryEmployeesRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  QueryRequest query = 2;
+}
+
+message QueryEmployeesResponse {
+  repeated Employee data = 1;
+  QueryMeta meta = 2;
+}
+
+service EmployeeService {
+  rpc QueryEmployees(QueryEmployeesRequest) returns (QueryEmployeesResponse) {}
+}

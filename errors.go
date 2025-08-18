@@ -16,14 +16,19 @@ import (
 // Error code constants for consistent error handling across the application
 const (
 	// Validation Errors
-	CodeInvalidPayload = "6001"
+	CodeInvalidPayload = "60001"
 
-	// Resource/Domain Errors
-	CodeGreetingUnrecognized = "6101"
+	// Greeting Domain Errors (601XX)
+	CodeGreetingUnrecognized = "60101"
+
+	// Employee/Example Domain Errors (602XX)
+	CodeEmployeeNotFound = "60201"
+
+	// Project Domain Errors (603XX)
+	CodeProjectNotFound = "60301"
 
 	// Internal Errors
-	CodeInternalError   = "6901"
-	CodeUnexpectedError = "6902"
+	CodeUnexpectedError = "69001"
 )
 
 // AppError represents a structured application error
@@ -104,6 +109,7 @@ func (e *AppError) GRPCStatus() *status.Status {
 
 }
 
+// common
 func NewInvalidPayloadError(message string) *AppError {
 	return &AppError{
 		code:     CodeInvalidPayload,
@@ -112,6 +118,46 @@ func NewInvalidPayloadError(message string) *AppError {
 	}
 }
 
+func NewUnexpectedError(message string, err error) *AppError {
+	code := CodeUnexpectedError
+
+	details := make(map[string]string)
+	if err != nil {
+		// TODO: should exclude expose runtime error in prod env
+		details["underlying_error"] = message + ": " + err.Error()
+	}
+
+	return &AppError{
+		code:     code,
+		message:  "An unexpected error occurred",
+		grpcCode: codes.Internal,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: details,
+			},
+		},
+	}
+}
+
+func NewProjectNotFound(projectID string) *AppError {
+	code := CodeProjectNotFound
+	return &AppError{
+		code:     code,
+		message:  "Project not found",
+		grpcCode: codes.NotFound,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"project_id": projectID,
+				},
+			},
+		},
+	}
+}
+
+// domain-based
 func NewGreetingUnrecognize(greeting string) *AppError {
 	code := CodeGreetingUnrecognized
 	return &AppError{
@@ -129,43 +175,19 @@ func NewGreetingUnrecognize(greeting string) *AppError {
 	}
 }
 
-func NewInternalError(message string, err error) *AppError {
-	code := CodeGreetingUnrecognized
-
-	details := make(map[string]string)
-	if err != nil {
-		details["underlying_error"] = err.Error()
-	}
-
+// NewEmployeeNotFoundError creates an error for when an employee is not found
+func NewEmployeeNotFoundError(publicID string) *AppError {
+	code := CodeEmployeeNotFound
 	return &AppError{
 		code:     code,
-		message:  message,
-		grpcCode: codes.Internal,
+		message:  fmt.Sprintf("Employee with ID '%s' not found", publicID),
+		grpcCode: codes.NotFound,
 		details: []proto.Message{
 			&altalunev1.ErrorDetail{
 				Code: code,
-				Meta: details,
-			},
-		},
-	}
-}
-
-func NewUnexpectedError(err error) *AppError {
-	code := CodeUnexpectedError
-
-	details := make(map[string]string)
-	if err != nil {
-		details["underlying_error"] = err.Error()
-	}
-
-	return &AppError{
-		code:     code,
-		message:  "An unexpected error occurred",
-		grpcCode: codes.Internal,
-		details: []proto.Message{
-			&altalunev1.ErrorDetail{
-				Code: code,
-				Meta: details,
+				Meta: map[string]string{
+					"employee_id": publicID,
+				},
 			},
 		},
 	}

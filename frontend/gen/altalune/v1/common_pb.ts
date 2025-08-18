@@ -2,15 +2,16 @@
 // @generated from file altalune/v1/common.proto (package altalune.v1, syntax proto3)
 /* eslint-disable */
 
-import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
-import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import type { GenEnum, GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
+import { enumDesc, fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
+import { file_buf_validate_validate } from "../../buf/validate/validate_pb.js";
 import type { Message } from "@bufbuild/protobuf";
 
 /**
  * Describes the file altalune/v1/common.proto.
  */
 export const file_altalune_v1_common: GenFile = /*@__PURE__*/
-  fileDesc("ChhhbHRhbHVuZS92MS9jb21tb24ucHJvdG8SC2FsdGFsdW5lLnYxInoKC0Vycm9yRGV0YWlsEgwKBGNvZGUYASABKAkSMAoEbWV0YRgDIAMoCzIiLmFsdGFsdW5lLnYxLkVycm9yRGV0YWlsLk1ldGFFbnRyeRorCglNZXRhRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4AUKgAQoPY29tLmFsdGFsdW5lLnYxQgtDb21tb25Qcm90b1ABWjNnaXRodWIuY29tL2hyejgvYWx0YWx1bmUvZ2VuL2FsdGFsdW5lL3YxO2FsdGFsdW5ldjGiAgNBWFiqAgtBbHRhbHVuZS5WMcoCC0FsdGFsdW5lXFYx4gIXQWx0YWx1bmVcVjFcR1BCTWV0YWRhdGHqAgxBbHRhbHVuZTo6VjFiBnByb3RvMw");
+  fileDesc("ChhhbHRhbHVuZS92MS9jb21tb24ucHJvdG8SC2FsdGFsdW5lLnYxInoKC0Vycm9yRGV0YWlsEgwKBGNvZGUYASABKAkSMAoEbWV0YRgDIAMoCzIiLmFsdGFsdW5lLnYxLkVycm9yRGV0YWlsLk1ldGFFbnRyeRorCglNZXRhRW50cnkSCwoDa2V5GAEgASgJEg0KBXZhbHVlGAIgASgJOgI4ASImCgpTdHJpbmdMaXN0EhgKBnZhbHVlcxgBIAMoCUIIukgFkgECCAEiSAoKUGFnaW5hdGlvbhIYCgRwYWdlGAEgASgFQgq6SAfIAQEaAiAAEiAKCXBhZ2Vfc2l6ZRgCIAEoBUINukgKyAEBGgUYkE4gACJRCgdTb3J0aW5nEhUKBWZpZWxkGAEgASgJQga6SAPIAQESLwoFb3JkZXIYAiABKA4yFi5hbHRhbHVuZS52MS5Tb3J0T3JkZXJCCLpIBYIBAhABIocCCgxRdWVyeVJlcXVlc3QSMwoKcGFnaW5hdGlvbhgBIAEoCzIXLmFsdGFsdW5lLnYxLlBhZ2luYXRpb25CBrpIA8gBARIZCgdrZXl3b3JkGAIgASgJQgi6SAVyAxiAAhI3CgdmaWx0ZXJzGAMgAygLMiYuYWx0YWx1bmUudjEuUXVlcnlSZXF1ZXN0LkZpbHRlcnNFbnRyeRIlCgdzb3J0aW5nGAQgASgLMhQuYWx0YWx1bmUudjEuU29ydGluZxpHCgxGaWx0ZXJzRW50cnkSCwoDa2V5GAEgASgJEiYKBXZhbHVlGAIgASgLMhcuYWx0YWx1bmUudjEuU3RyaW5nTGlzdDoCOAEilgEKDkZpbHRlcnNDYXRhbG9nEjkKB2ZpbHRlcnMYASADKAsyKC5hbHRhbHVuZS52MS5GaWx0ZXJzQ2F0YWxvZy5GaWx0ZXJzRW50cnkaSQoMRmlsdGVyc0VudHJ5EgsKA2tleRgBIAEoCRIoCgV2YWx1ZRgCIAEoCzIZLmFsdGFsdW5lLnYxLkZpbHRlclZhbHVlczoCOAEiHgoMRmlsdGVyVmFsdWVzEg4KBnZhbHVlcxgBIAMoCSKzAQoJUXVlcnlNZXRhEhEKCXJvd19jb3VudBgBIAEoBRISCgpwYWdlX2NvdW50GAIgASgFEjQKB2ZpbHRlcnMYAyADKAsyIy5hbHRhbHVuZS52MS5RdWVyeU1ldGEuRmlsdGVyc0VudHJ5GkkKDEZpbHRlcnNFbnRyeRILCgNrZXkYASABKAkSKAoFdmFsdWUYAiABKAsyGS5hbHRhbHVuZS52MS5GaWx0ZXJWYWx1ZXM6AjgBKlAKCVNvcnRPcmRlchIaChZTT1JUX09SREVSX1VOU1BFQ0lGSUVEEAASEgoOU09SVF9PUkRFUl9BU0MQARITCg9TT1JUX09SREVSX0RFU0MQAkKgAQoPY29tLmFsdGFsdW5lLnYxQgtDb21tb25Qcm90b1ABWjNnaXRodWIuY29tL2hyejgvYWx0YWx1bmUvZ2VuL2FsdGFsdW5lL3YxO2FsdGFsdW5ldjGiAgNBWFiqAgtBbHRhbHVuZS5WMcoCC0FsdGFsdW5lXFYx4gIXQWx0YWx1bmVcVjFcR1BCTWV0YWRhdGHqAgxBbHRhbHVuZTo6VjFiBnByb3RvMw", [file_buf_validate_validate]);
 
 /**
  * @generated from message altalune.v1.ErrorDetail
@@ -33,4 +34,184 @@ export type ErrorDetail = Message<"altalune.v1.ErrorDetail"> & {
  */
 export const ErrorDetailSchema: GenMessage<ErrorDetail> = /*@__PURE__*/
   messageDesc(file_altalune_v1_common, 0);
+
+/**
+ * @generated from message altalune.v1.StringList
+ */
+export type StringList = Message<"altalune.v1.StringList"> & {
+  /**
+   * @generated from field: repeated string values = 1;
+   */
+  values: string[];
+};
+
+/**
+ * Describes the message altalune.v1.StringList.
+ * Use `create(StringListSchema)` to create a new message.
+ */
+export const StringListSchema: GenMessage<StringList> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_common, 1);
+
+/**
+ * @generated from message altalune.v1.Pagination
+ */
+export type Pagination = Message<"altalune.v1.Pagination"> & {
+  /**
+   * @generated from field: int32 page = 1;
+   */
+  page: number;
+
+  /**
+   * @generated from field: int32 page_size = 2;
+   */
+  pageSize: number;
+};
+
+/**
+ * Describes the message altalune.v1.Pagination.
+ * Use `create(PaginationSchema)` to create a new message.
+ */
+export const PaginationSchema: GenMessage<Pagination> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_common, 2);
+
+/**
+ * @generated from message altalune.v1.Sorting
+ */
+export type Sorting = Message<"altalune.v1.Sorting"> & {
+  /**
+   * @generated from field: string field = 1;
+   */
+  field: string;
+
+  /**
+   * @generated from field: altalune.v1.SortOrder order = 2;
+   */
+  order: SortOrder;
+};
+
+/**
+ * Describes the message altalune.v1.Sorting.
+ * Use `create(SortingSchema)` to create a new message.
+ */
+export const SortingSchema: GenMessage<Sorting> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_common, 3);
+
+/**
+ * @generated from message altalune.v1.QueryRequest
+ */
+export type QueryRequest = Message<"altalune.v1.QueryRequest"> & {
+  /**
+   * @generated from field: altalune.v1.Pagination pagination = 1;
+   */
+  pagination?: Pagination;
+
+  /**
+   * @generated from field: string keyword = 2;
+   */
+  keyword: string;
+
+  /**
+   * @generated from field: map<string, altalune.v1.StringList> filters = 3;
+   */
+  filters: { [key: string]: StringList };
+
+  /**
+   * @generated from field: altalune.v1.Sorting sorting = 4;
+   */
+  sorting?: Sorting;
+};
+
+/**
+ * Describes the message altalune.v1.QueryRequest.
+ * Use `create(QueryRequestSchema)` to create a new message.
+ */
+export const QueryRequestSchema: GenMessage<QueryRequest> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_common, 4);
+
+/**
+ * @generated from message altalune.v1.FiltersCatalog
+ */
+export type FiltersCatalog = Message<"altalune.v1.FiltersCatalog"> & {
+  /**
+   * @generated from field: map<string, altalune.v1.FilterValues> filters = 1;
+   */
+  filters: { [key: string]: FilterValues };
+};
+
+/**
+ * Describes the message altalune.v1.FiltersCatalog.
+ * Use `create(FiltersCatalogSchema)` to create a new message.
+ */
+export const FiltersCatalogSchema: GenMessage<FiltersCatalog> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_common, 5);
+
+/**
+ * @generated from message altalune.v1.FilterValues
+ */
+export type FilterValues = Message<"altalune.v1.FilterValues"> & {
+  /**
+   * @generated from field: repeated string values = 1;
+   */
+  values: string[];
+};
+
+/**
+ * Describes the message altalune.v1.FilterValues.
+ * Use `create(FilterValuesSchema)` to create a new message.
+ */
+export const FilterValuesSchema: GenMessage<FilterValues> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_common, 6);
+
+/**
+ * @generated from message altalune.v1.QueryMeta
+ */
+export type QueryMeta = Message<"altalune.v1.QueryMeta"> & {
+  /**
+   * @generated from field: int32 row_count = 1;
+   */
+  rowCount: number;
+
+  /**
+   * @generated from field: int32 page_count = 2;
+   */
+  pageCount: number;
+
+  /**
+   * @generated from field: map<string, altalune.v1.FilterValues> filters = 3;
+   */
+  filters: { [key: string]: FilterValues };
+};
+
+/**
+ * Describes the message altalune.v1.QueryMeta.
+ * Use `create(QueryMetaSchema)` to create a new message.
+ */
+export const QueryMetaSchema: GenMessage<QueryMeta> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_common, 7);
+
+/**
+ * @generated from enum altalune.v1.SortOrder
+ */
+export enum SortOrder {
+  /**
+   * @generated from enum value: SORT_ORDER_UNSPECIFIED = 0;
+   */
+  UNSPECIFIED = 0,
+
+  /**
+   * @generated from enum value: SORT_ORDER_ASC = 1;
+   */
+  ASC = 1,
+
+  /**
+   * @generated from enum value: SORT_ORDER_DESC = 2;
+   */
+  DESC = 2,
+}
+
+/**
+ * Describes the enum altalune.v1.SortOrder.
+ */
+export const SortOrderSchema: GenEnum<SortOrder> = /*@__PURE__*/
+  enumDesc(file_altalune_v1_common, 0);
 

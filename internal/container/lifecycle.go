@@ -7,8 +7,8 @@ import (
 
 // Shutdown gracefully shuts down all components
 func (c *Container) Shutdown() error {
-	if c.dbManager != nil {
-		if err := c.dbManager.Close(); err != nil {
+	if c.GetDBManager() != nil {
+		if err := c.GetDBManager().Close(); err != nil {
 			return fmt.Errorf("failed to close database connection: %w", err)
 		}
 	}
@@ -22,7 +22,7 @@ func (c *Container) Health(ctx context.Context) map[string]error {
 	// Check database health
 	if c.db == nil {
 		health["database"] = fmt.Errorf("database not initialized")
-	} else if err := c.dbManager.TestConnection(ctx); err != nil {
+	} else if err := c.GetDBManager().TestConnection(ctx); err != nil {
 		health["database"] = err
 	} else {
 		health["database"] = nil

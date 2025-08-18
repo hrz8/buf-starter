@@ -7,6 +7,7 @@
 package altalunev1
 
 import (
+	_ "buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
@@ -20,6 +21,55 @@ const (
 	// Verify that runtime/protoimpl is sufficiently up-to-date.
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
+
+type SortOrder int32
+
+const (
+	SortOrder_SORT_ORDER_UNSPECIFIED SortOrder = 0
+	SortOrder_SORT_ORDER_ASC         SortOrder = 1
+	SortOrder_SORT_ORDER_DESC        SortOrder = 2
+)
+
+// Enum value maps for SortOrder.
+var (
+	SortOrder_name = map[int32]string{
+		0: "SORT_ORDER_UNSPECIFIED",
+		1: "SORT_ORDER_ASC",
+		2: "SORT_ORDER_DESC",
+	}
+	SortOrder_value = map[string]int32{
+		"SORT_ORDER_UNSPECIFIED": 0,
+		"SORT_ORDER_ASC":         1,
+		"SORT_ORDER_DESC":        2,
+	}
+)
+
+func (x SortOrder) Enum() *SortOrder {
+	p := new(SortOrder)
+	*p = x
+	return p
+}
+
+func (x SortOrder) String() string {
+	return protoimpl.X.EnumStringOf(x.Descriptor(), protoreflect.EnumNumber(x))
+}
+
+func (SortOrder) Descriptor() protoreflect.EnumDescriptor {
+	return file_altalune_v1_common_proto_enumTypes[0].Descriptor()
+}
+
+func (SortOrder) Type() protoreflect.EnumType {
+	return &file_altalune_v1_common_proto_enumTypes[0]
+}
+
+func (x SortOrder) Number() protoreflect.EnumNumber {
+	return protoreflect.EnumNumber(x)
+}
+
+// Deprecated: Use SortOrder.Descriptor instead.
+func (SortOrder) EnumDescriptor() ([]byte, []int) {
+	return file_altalune_v1_common_proto_rawDescGZIP(), []int{0}
+}
 
 type ErrorDetail struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -73,17 +123,422 @@ func (x *ErrorDetail) GetMeta() map[string]string {
 	return nil
 }
 
+type StringList struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Values        []string               `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StringList) Reset() {
+	*x = StringList{}
+	mi := &file_altalune_v1_common_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StringList) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StringList) ProtoMessage() {}
+
+func (x *StringList) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_common_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StringList.ProtoReflect.Descriptor instead.
+func (*StringList) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_common_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *StringList) GetValues() []string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+type Pagination struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Page          int32                  `protobuf:"varint,1,opt,name=page,proto3" json:"page,omitempty"`
+	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Pagination) Reset() {
+	*x = Pagination{}
+	mi := &file_altalune_v1_common_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Pagination) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Pagination) ProtoMessage() {}
+
+func (x *Pagination) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_common_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Pagination.ProtoReflect.Descriptor instead.
+func (*Pagination) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_common_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *Pagination) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+func (x *Pagination) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+type Sorting struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Field         string                 `protobuf:"bytes,1,opt,name=field,proto3" json:"field,omitempty"`
+	Order         SortOrder              `protobuf:"varint,2,opt,name=order,proto3,enum=altalune.v1.SortOrder" json:"order,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Sorting) Reset() {
+	*x = Sorting{}
+	mi := &file_altalune_v1_common_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Sorting) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Sorting) ProtoMessage() {}
+
+func (x *Sorting) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_common_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Sorting.ProtoReflect.Descriptor instead.
+func (*Sorting) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_common_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *Sorting) GetField() string {
+	if x != nil {
+		return x.Field
+	}
+	return ""
+}
+
+func (x *Sorting) GetOrder() SortOrder {
+	if x != nil {
+		return x.Order
+	}
+	return SortOrder_SORT_ORDER_UNSPECIFIED
+}
+
+type QueryRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Pagination    *Pagination            `protobuf:"bytes,1,opt,name=pagination,proto3" json:"pagination,omitempty"`
+	Keyword       string                 `protobuf:"bytes,2,opt,name=keyword,proto3" json:"keyword,omitempty"`
+	Filters       map[string]*StringList `protobuf:"bytes,3,rep,name=filters,proto3" json:"filters,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	Sorting       *Sorting               `protobuf:"bytes,4,opt,name=sorting,proto3" json:"sorting,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *QueryRequest) Reset() {
+	*x = QueryRequest{}
+	mi := &file_altalune_v1_common_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *QueryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryRequest) ProtoMessage() {}
+
+func (x *QueryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_common_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QueryRequest.ProtoReflect.Descriptor instead.
+func (*QueryRequest) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_common_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *QueryRequest) GetPagination() *Pagination {
+	if x != nil {
+		return x.Pagination
+	}
+	return nil
+}
+
+func (x *QueryRequest) GetKeyword() string {
+	if x != nil {
+		return x.Keyword
+	}
+	return ""
+}
+
+func (x *QueryRequest) GetFilters() map[string]*StringList {
+	if x != nil {
+		return x.Filters
+	}
+	return nil
+}
+
+func (x *QueryRequest) GetSorting() *Sorting {
+	if x != nil {
+		return x.Sorting
+	}
+	return nil
+}
+
+type FiltersCatalog struct {
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	Filters       map[string]*FilterValues `protobuf:"bytes,1,rep,name=filters,proto3" json:"filters,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FiltersCatalog) Reset() {
+	*x = FiltersCatalog{}
+	mi := &file_altalune_v1_common_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FiltersCatalog) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FiltersCatalog) ProtoMessage() {}
+
+func (x *FiltersCatalog) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_common_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FiltersCatalog.ProtoReflect.Descriptor instead.
+func (*FiltersCatalog) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_common_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *FiltersCatalog) GetFilters() map[string]*FilterValues {
+	if x != nil {
+		return x.Filters
+	}
+	return nil
+}
+
+type FilterValues struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Values        []string               `protobuf:"bytes,1,rep,name=values,proto3" json:"values,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *FilterValues) Reset() {
+	*x = FilterValues{}
+	mi := &file_altalune_v1_common_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *FilterValues) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*FilterValues) ProtoMessage() {}
+
+func (x *FilterValues) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_common_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use FilterValues.ProtoReflect.Descriptor instead.
+func (*FilterValues) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_common_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *FilterValues) GetValues() []string {
+	if x != nil {
+		return x.Values
+	}
+	return nil
+}
+
+type QueryMeta struct {
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	RowCount      int32                    `protobuf:"varint,1,opt,name=row_count,json=rowCount,proto3" json:"row_count,omitempty"`
+	PageCount     int32                    `protobuf:"varint,2,opt,name=page_count,json=pageCount,proto3" json:"page_count,omitempty"`
+	Filters       map[string]*FilterValues `protobuf:"bytes,3,rep,name=filters,proto3" json:"filters,omitempty" protobuf_key:"bytes,1,opt,name=key" protobuf_val:"bytes,2,opt,name=value"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *QueryMeta) Reset() {
+	*x = QueryMeta{}
+	mi := &file_altalune_v1_common_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *QueryMeta) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*QueryMeta) ProtoMessage() {}
+
+func (x *QueryMeta) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_common_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use QueryMeta.ProtoReflect.Descriptor instead.
+func (*QueryMeta) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_common_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *QueryMeta) GetRowCount() int32 {
+	if x != nil {
+		return x.RowCount
+	}
+	return 0
+}
+
+func (x *QueryMeta) GetPageCount() int32 {
+	if x != nil {
+		return x.PageCount
+	}
+	return 0
+}
+
+func (x *QueryMeta) GetFilters() map[string]*FilterValues {
+	if x != nil {
+		return x.Filters
+	}
+	return nil
+}
+
 var File_altalune_v1_common_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_common_proto_rawDesc = "" +
 	"\n" +
-	"\x18altalune/v1/common.proto\x12\valtalune.v1\"\x92\x01\n" +
+	"\x18altalune/v1/common.proto\x12\valtalune.v1\x1a\x1bbuf/validate/validate.proto\"\x92\x01\n" +
 	"\vErrorDetail\x12\x12\n" +
 	"\x04code\x18\x01 \x01(\tR\x04code\x126\n" +
 	"\x04meta\x18\x03 \x03(\v2\".altalune.v1.ErrorDetail.MetaEntryR\x04meta\x1a7\n" +
 	"\tMetaEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12\x14\n" +
-	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01B\xa0\x01\n" +
+	"\x05value\x18\x02 \x01(\tR\x05value:\x028\x01\".\n" +
+	"\n" +
+	"StringList\x12 \n" +
+	"\x06values\x18\x01 \x03(\tB\b\xbaH\x05\x92\x01\x02\b\x01R\x06values\"X\n" +
+	"\n" +
+	"Pagination\x12\x1e\n" +
+	"\x04page\x18\x01 \x01(\x05B\n" +
+	"\xbaH\a\xc8\x01\x01\x1a\x02 \x00R\x04page\x12*\n" +
+	"\tpage_size\x18\x02 \x01(\x05B\r\xbaH\n" +
+	"\xc8\x01\x01\x1a\x05\x18\x90N \x00R\bpageSize\"_\n" +
+	"\aSorting\x12\x1c\n" +
+	"\x05field\x18\x01 \x01(\tB\x06\xbaH\x03\xc8\x01\x01R\x05field\x126\n" +
+	"\x05order\x18\x02 \x01(\x0e2\x16.altalune.v1.SortOrderB\b\xbaH\x05\x82\x01\x02\x10\x01R\x05order\"\xba\x02\n" +
+	"\fQueryRequest\x12?\n" +
+	"\n" +
+	"pagination\x18\x01 \x01(\v2\x17.altalune.v1.PaginationB\x06\xbaH\x03\xc8\x01\x01R\n" +
+	"pagination\x12\"\n" +
+	"\akeyword\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\x80\x02R\akeyword\x12@\n" +
+	"\afilters\x18\x03 \x03(\v2&.altalune.v1.QueryRequest.FiltersEntryR\afilters\x12.\n" +
+	"\asorting\x18\x04 \x01(\v2\x14.altalune.v1.SortingR\asorting\x1aS\n" +
+	"\fFiltersEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12-\n" +
+	"\x05value\x18\x02 \x01(\v2\x17.altalune.v1.StringListR\x05value:\x028\x01\"\xab\x01\n" +
+	"\x0eFiltersCatalog\x12B\n" +
+	"\afilters\x18\x01 \x03(\v2(.altalune.v1.FiltersCatalog.FiltersEntryR\afilters\x1aU\n" +
+	"\fFiltersEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12/\n" +
+	"\x05value\x18\x02 \x01(\v2\x19.altalune.v1.FilterValuesR\x05value:\x028\x01\"&\n" +
+	"\fFilterValues\x12\x16\n" +
+	"\x06values\x18\x01 \x03(\tR\x06values\"\xdd\x01\n" +
+	"\tQueryMeta\x12\x1b\n" +
+	"\trow_count\x18\x01 \x01(\x05R\browCount\x12\x1d\n" +
+	"\n" +
+	"page_count\x18\x02 \x01(\x05R\tpageCount\x12=\n" +
+	"\afilters\x18\x03 \x03(\v2#.altalune.v1.QueryMeta.FiltersEntryR\afilters\x1aU\n" +
+	"\fFiltersEntry\x12\x10\n" +
+	"\x03key\x18\x01 \x01(\tR\x03key\x12/\n" +
+	"\x05value\x18\x02 \x01(\v2\x19.altalune.v1.FilterValuesR\x05value:\x028\x01*P\n" +
+	"\tSortOrder\x12\x1a\n" +
+	"\x16SORT_ORDER_UNSPECIFIED\x10\x00\x12\x12\n" +
+	"\x0eSORT_ORDER_ASC\x10\x01\x12\x13\n" +
+	"\x0fSORT_ORDER_DESC\x10\x02B\xa0\x01\n" +
 	"\x0fcom.altalune.v1B\vCommonProtoP\x01Z3github.com/hrz8/altalune/gen/altalune/v1;altalunev1\xa2\x02\x03AXX\xaa\x02\vAltalune.V1\xca\x02\vAltalune\\V1\xe2\x02\x17Altalune\\V1\\GPBMetadata\xea\x02\fAltalune::V1b\x06proto3"
 
 var (
@@ -98,18 +553,39 @@ func file_altalune_v1_common_proto_rawDescGZIP() []byte {
 	return file_altalune_v1_common_proto_rawDescData
 }
 
-var file_altalune_v1_common_proto_msgTypes = make([]protoimpl.MessageInfo, 2)
+var file_altalune_v1_common_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_altalune_v1_common_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_altalune_v1_common_proto_goTypes = []any{
-	(*ErrorDetail)(nil), // 0: altalune.v1.ErrorDetail
-	nil,                 // 1: altalune.v1.ErrorDetail.MetaEntry
+	(SortOrder)(0),         // 0: altalune.v1.SortOrder
+	(*ErrorDetail)(nil),    // 1: altalune.v1.ErrorDetail
+	(*StringList)(nil),     // 2: altalune.v1.StringList
+	(*Pagination)(nil),     // 3: altalune.v1.Pagination
+	(*Sorting)(nil),        // 4: altalune.v1.Sorting
+	(*QueryRequest)(nil),   // 5: altalune.v1.QueryRequest
+	(*FiltersCatalog)(nil), // 6: altalune.v1.FiltersCatalog
+	(*FilterValues)(nil),   // 7: altalune.v1.FilterValues
+	(*QueryMeta)(nil),      // 8: altalune.v1.QueryMeta
+	nil,                    // 9: altalune.v1.ErrorDetail.MetaEntry
+	nil,                    // 10: altalune.v1.QueryRequest.FiltersEntry
+	nil,                    // 11: altalune.v1.FiltersCatalog.FiltersEntry
+	nil,                    // 12: altalune.v1.QueryMeta.FiltersEntry
 }
 var file_altalune_v1_common_proto_depIdxs = []int32{
-	1, // 0: altalune.v1.ErrorDetail.meta:type_name -> altalune.v1.ErrorDetail.MetaEntry
-	1, // [1:1] is the sub-list for method output_type
-	1, // [1:1] is the sub-list for method input_type
-	1, // [1:1] is the sub-list for extension type_name
-	1, // [1:1] is the sub-list for extension extendee
-	0, // [0:1] is the sub-list for field type_name
+	9,  // 0: altalune.v1.ErrorDetail.meta:type_name -> altalune.v1.ErrorDetail.MetaEntry
+	0,  // 1: altalune.v1.Sorting.order:type_name -> altalune.v1.SortOrder
+	3,  // 2: altalune.v1.QueryRequest.pagination:type_name -> altalune.v1.Pagination
+	10, // 3: altalune.v1.QueryRequest.filters:type_name -> altalune.v1.QueryRequest.FiltersEntry
+	4,  // 4: altalune.v1.QueryRequest.sorting:type_name -> altalune.v1.Sorting
+	11, // 5: altalune.v1.FiltersCatalog.filters:type_name -> altalune.v1.FiltersCatalog.FiltersEntry
+	12, // 6: altalune.v1.QueryMeta.filters:type_name -> altalune.v1.QueryMeta.FiltersEntry
+	2,  // 7: altalune.v1.QueryRequest.FiltersEntry.value:type_name -> altalune.v1.StringList
+	7,  // 8: altalune.v1.FiltersCatalog.FiltersEntry.value:type_name -> altalune.v1.FilterValues
+	7,  // 9: altalune.v1.QueryMeta.FiltersEntry.value:type_name -> altalune.v1.FilterValues
+	10, // [10:10] is the sub-list for method output_type
+	10, // [10:10] is the sub-list for method input_type
+	10, // [10:10] is the sub-list for extension type_name
+	10, // [10:10] is the sub-list for extension extendee
+	0,  // [0:10] is the sub-list for field type_name
 }
 
 func init() { file_altalune_v1_common_proto_init() }
@@ -122,13 +598,14 @@ func file_altalune_v1_common_proto_init() {
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_altalune_v1_common_proto_rawDesc), len(file_altalune_v1_common_proto_rawDesc)),
-			NumEnums:      0,
-			NumMessages:   2,
+			NumEnums:      1,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   0,
 		},
 		GoTypes:           file_altalune_v1_common_proto_goTypes,
 		DependencyIndexes: file_altalune_v1_common_proto_depIdxs,
+		EnumInfos:         file_altalune_v1_common_proto_enumTypes,
 		MessageInfos:      file_altalune_v1_common_proto_msgTypes,
 	}.Build()
 	File_altalune_v1_common_proto = out.File

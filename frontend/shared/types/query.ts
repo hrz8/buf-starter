@@ -12,3 +12,14 @@ export type QueryOptions = {
     order: 'asc' | 'desc';
   };
 };
+
+export type PaginatedResponse<T> = {
+  data: T[];
+  meta: {
+    rowCount: number;
+    pageCount: number;
+    filters?: {
+      [key: string]: string[];
+    };
+  };
+};

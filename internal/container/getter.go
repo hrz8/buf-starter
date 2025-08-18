@@ -2,6 +2,7 @@ package container
 
 import (
 	"github.com/hrz8/altalune"
+	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
 	"github.com/hrz8/altalune/internal/postgres"
 	greeter_domain "github.com/hrz8/altalune/pkg/greeter"
@@ -25,6 +26,14 @@ func (c *Container) GetDB() postgres.DB {
 	return c.db
 }
 
+// GetDB returns the database connection
+func (c *Container) GetDBManager() postgres.Manager {
+	if mgr, ok := c.db.(postgres.Manager); ok {
+		return mgr
+	}
+	return nil
+}
+
 // GetGreeterRepo returns the greeter repository
 func (c *Container) GetGreeterRepo() greeter_domain.Repositor {
 	return c.greeterRepo
@@ -35,12 +44,17 @@ func (c *Container) GetMigrationRepo() migration_domain.AltaluneRepositor {
 	return c.migrationRepo
 }
 
+// GetMigrationService returns the migration service
+func (c *Container) GetMigrationService() *migration_domain.Service {
+	return c.migrationService
+}
+
 // GetGreeterService returns the greeter service
 func (c *Container) GetGreeterService() greeterv1.GreeterServiceServer {
 	return c.greeterService
 }
 
-// GetMigrationService returns the migration service
-func (c *Container) GetMigrationService() *migration_domain.Service {
-	return c.migrationService
+// GetEmployeeService returns the greeter service
+func (c *Container) GetEmployeeService() altalunev1.EmployeeServiceServer {
+	return c.employeeService
 }

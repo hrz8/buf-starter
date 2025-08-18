@@ -6,10 +6,15 @@ import (
 
 	"buf.build/go/protovalidate"
 	"github.com/hrz8/altalune"
+	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
+
 	"github.com/hrz8/altalune/internal/postgres"
 	"github.com/hrz8/altalune/logger"
+	employee_domain "github.com/hrz8/altalune/pkg/employee"
 	greeter_domain "github.com/hrz8/altalune/pkg/greeter"
+	project_domain "github.com/hrz8/altalune/pkg/project"
+
 	migration_domain "github.com/hrz8/altalune/pkg/migration"
 )
 
@@ -20,16 +25,18 @@ type Container struct {
 	logger altalune.Logger
 
 	// Database connection and manager
-	db        postgres.DB
-	dbManager postgres.Manager
+	db postgres.DB
 
 	// Repositories
-	greeterRepo   greeter_domain.Repositor
 	migrationRepo migration_domain.AltaluneRepositor
+	greeterRepo   greeter_domain.Repositor
+	employeeRepo  employee_domain.Repositor
+	projectRepo   project_domain.Repositor
 
 	// Services
-	greeterService   greeterv1.GreeterServiceServer
 	migrationService *migration_domain.Service
+	greeterService   greeterv1.GreeterServiceServer
+	employeeService  altalunev1.EmployeeServiceServer
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling
@@ -64,13 +71,14 @@ func (c *Container) initDatabase(ctx context.Context) error {
 		return fmt.Errorf("database connection test failed: %w", err)
 	}
 	c.db = conn
-	c.dbManager = conn
 	return nil
 }
 
 func (c *Container) initRepositories() error {
-	c.greeterRepo = greeter_domain.NewRepo()
 	c.migrationRepo = migration_domain.NewAltaluneMigrationRepo(c.db)
+	c.greeterRepo = greeter_domain.NewRepo()
+	c.employeeRepo = employee_domain.NewRepo(c.db)
+	c.projectRepo = project_domain.NewRepo(c.db)
 	return nil
 }
 
@@ -79,7 +87,8 @@ func (c *Container) initServices() error {
 	if err != nil {
 		return fmt.Errorf("failed to create validator: %w", err)
 	}
-	c.greeterService = greeter_domain.NewService(validator, c.logger, c.greeterRepo)
 	c.migrationService = migration_domain.NewService(c.logger, c.migrationRepo)
+	c.greeterService = greeter_domain.NewService(validator, c.logger, c.greeterRepo)
+	c.employeeService = employee_domain.NewService(validator, c.logger, c.projectRepo, c.employeeRepo)
 	return nil
 }
