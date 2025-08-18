@@ -64,7 +64,7 @@ message QueryEmployeesRequest {
 
 message QueryEmployeesResponse {
   repeated Employee data = 1;
-  QueryMeta meta = 2;
+  QueryMetaResponse meta = 2;
 }
 
 service EmployeeService {

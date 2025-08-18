@@ -1,6 +1,9 @@
 import type { ColumnFiltersState, SortingState } from '@tanstack/vue-table';
 import type { QueryOptions } from '#shared/types/query';
 
+/**
+ * @deprecated since `useQueryRequest` introduced
+ */
 export function useServerTableQuery(options: {
   page: Ref<number>;
   pageSize: Ref<number>;

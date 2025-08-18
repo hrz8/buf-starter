@@ -219,7 +219,7 @@ func (x *QueryEmployeesRequest) GetQuery() *QueryRequest {
 type QueryEmployeesResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Data          []*Employee            `protobuf:"bytes,1,rep,name=data,proto3" json:"data,omitempty"`
-	Meta          *QueryMeta             `protobuf:"bytes,2,opt,name=meta,proto3" json:"meta,omitempty"`
+	Meta          *QueryMetaResponse     `protobuf:"bytes,2,opt,name=meta,proto3" json:"meta,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -261,7 +261,7 @@ func (x *QueryEmployeesResponse) GetData() []*Employee {
 	return nil
 }
 
-func (x *QueryEmployeesResponse) GetMeta() *QueryMeta {
+func (x *QueryEmployeesResponse) GetMeta() *QueryMetaResponse {
 	if x != nil {
 		return x.Meta
 	}
@@ -288,10 +288,10 @@ const file_altalune_v1_employee_proto_rawDesc = "" +
 	"\x15QueryEmployeesRequest\x12*\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\x12/\n" +
-	"\x05query\x18\x02 \x01(\v2\x19.altalune.v1.QueryRequestR\x05query\"o\n" +
+	"\x05query\x18\x02 \x01(\v2\x19.altalune.v1.QueryRequestR\x05query\"w\n" +
 	"\x16QueryEmployeesResponse\x12)\n" +
-	"\x04data\x18\x01 \x03(\v2\x15.altalune.v1.EmployeeR\x04data\x12*\n" +
-	"\x04meta\x18\x02 \x01(\v2\x16.altalune.v1.QueryMetaR\x04meta*k\n" +
+	"\x04data\x18\x01 \x03(\v2\x15.altalune.v1.EmployeeR\x04data\x122\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1e.altalune.v1.QueryMetaResponseR\x04meta*k\n" +
 	"\x0eEmployeeStatus\x12\x1f\n" +
 	"\x1bEMPLOYEE_STATUS_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16EMPLOYEE_STATUS_ACTIVE\x10\x01\x12\x1c\n" +
@@ -321,14 +321,14 @@ var file_altalune_v1_employee_proto_goTypes = []any{
 	(*QueryEmployeesResponse)(nil), // 3: altalune.v1.QueryEmployeesResponse
 	(*timestamppb.Timestamp)(nil),  // 4: google.protobuf.Timestamp
 	(*QueryRequest)(nil),           // 5: altalune.v1.QueryRequest
-	(*QueryMeta)(nil),              // 6: altalune.v1.QueryMeta
+	(*QueryMetaResponse)(nil),      // 6: altalune.v1.QueryMetaResponse
 }
 var file_altalune_v1_employee_proto_depIdxs = []int32{
 	0, // 0: altalune.v1.Employee.status:type_name -> altalune.v1.EmployeeStatus
 	4, // 1: altalune.v1.Employee.created_at:type_name -> google.protobuf.Timestamp
 	5, // 2: altalune.v1.QueryEmployeesRequest.query:type_name -> altalune.v1.QueryRequest
 	1, // 3: altalune.v1.QueryEmployeesResponse.data:type_name -> altalune.v1.Employee
-	6, // 4: altalune.v1.QueryEmployeesResponse.meta:type_name -> altalune.v1.QueryMeta
+	6, // 4: altalune.v1.QueryEmployeesResponse.meta:type_name -> altalune.v1.QueryMetaResponse
 	2, // 5: altalune.v1.EmployeeService.QueryEmployees:input_type -> altalune.v1.QueryEmployeesRequest
 	3, // 6: altalune.v1.EmployeeService.QueryEmployees:output_type -> altalune.v1.QueryEmployeesResponse
 	6, // [6:7] is the sub-list for method output_type

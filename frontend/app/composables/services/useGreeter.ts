@@ -12,10 +12,10 @@ export function useGreeter() {
   const { $greeterClient } = useNuxtApp();
   const greeter = greeterRepository($greeterClient);
 
+  const { parseError } = useErrorMessage();
+
   const helloValidator = useConnectValidator(SayHelloRequestSchema);
   const nameValidator = useConnectValidator(GetAllowedNamesRequestSchema);
-
-  const { parseError } = useErrorMessage();
 
   const submitState = reactive({
     loading: false,

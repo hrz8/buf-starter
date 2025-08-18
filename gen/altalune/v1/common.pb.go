@@ -427,7 +427,7 @@ func (x *FilterValues) GetValues() []string {
 	return nil
 }
 
-type QueryMeta struct {
+type QueryMetaResponse struct {
 	state         protoimpl.MessageState   `protogen:"open.v1"`
 	RowCount      int32                    `protobuf:"varint,1,opt,name=row_count,json=rowCount,proto3" json:"row_count,omitempty"`
 	PageCount     int32                    `protobuf:"varint,2,opt,name=page_count,json=pageCount,proto3" json:"page_count,omitempty"`
@@ -436,20 +436,20 @@ type QueryMeta struct {
 	sizeCache     protoimpl.SizeCache
 }
 
-func (x *QueryMeta) Reset() {
-	*x = QueryMeta{}
+func (x *QueryMetaResponse) Reset() {
+	*x = QueryMetaResponse{}
 	mi := &file_altalune_v1_common_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
 
-func (x *QueryMeta) String() string {
+func (x *QueryMetaResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*QueryMeta) ProtoMessage() {}
+func (*QueryMetaResponse) ProtoMessage() {}
 
-func (x *QueryMeta) ProtoReflect() protoreflect.Message {
+func (x *QueryMetaResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_altalune_v1_common_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -461,26 +461,26 @@ func (x *QueryMeta) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use QueryMeta.ProtoReflect.Descriptor instead.
-func (*QueryMeta) Descriptor() ([]byte, []int) {
+// Deprecated: Use QueryMetaResponse.ProtoReflect.Descriptor instead.
+func (*QueryMetaResponse) Descriptor() ([]byte, []int) {
 	return file_altalune_v1_common_proto_rawDescGZIP(), []int{7}
 }
 
-func (x *QueryMeta) GetRowCount() int32 {
+func (x *QueryMetaResponse) GetRowCount() int32 {
 	if x != nil {
 		return x.RowCount
 	}
 	return 0
 }
 
-func (x *QueryMeta) GetPageCount() int32 {
+func (x *QueryMetaResponse) GetPageCount() int32 {
 	if x != nil {
 		return x.PageCount
 	}
 	return 0
 }
 
-func (x *QueryMeta) GetFilters() map[string]*FilterValues {
+func (x *QueryMetaResponse) GetFilters() map[string]*FilterValues {
 	if x != nil {
 		return x.Filters
 	}
@@ -526,12 +526,12 @@ const file_altalune_v1_common_proto_rawDesc = "" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12/\n" +
 	"\x05value\x18\x02 \x01(\v2\x19.altalune.v1.FilterValuesR\x05value:\x028\x01\"&\n" +
 	"\fFilterValues\x12\x16\n" +
-	"\x06values\x18\x01 \x03(\tR\x06values\"\xdd\x01\n" +
-	"\tQueryMeta\x12\x1b\n" +
+	"\x06values\x18\x01 \x03(\tR\x06values\"\xed\x01\n" +
+	"\x11QueryMetaResponse\x12\x1b\n" +
 	"\trow_count\x18\x01 \x01(\x05R\browCount\x12\x1d\n" +
 	"\n" +
-	"page_count\x18\x02 \x01(\x05R\tpageCount\x12=\n" +
-	"\afilters\x18\x03 \x03(\v2#.altalune.v1.QueryMeta.FiltersEntryR\afilters\x1aU\n" +
+	"page_count\x18\x02 \x01(\x05R\tpageCount\x12E\n" +
+	"\afilters\x18\x03 \x03(\v2+.altalune.v1.QueryMetaResponse.FiltersEntryR\afilters\x1aU\n" +
 	"\fFiltersEntry\x12\x10\n" +
 	"\x03key\x18\x01 \x01(\tR\x03key\x12/\n" +
 	"\x05value\x18\x02 \x01(\v2\x19.altalune.v1.FilterValuesR\x05value:\x028\x01*P\n" +
@@ -556,19 +556,19 @@ func file_altalune_v1_common_proto_rawDescGZIP() []byte {
 var file_altalune_v1_common_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
 var file_altalune_v1_common_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
 var file_altalune_v1_common_proto_goTypes = []any{
-	(SortOrder)(0),         // 0: altalune.v1.SortOrder
-	(*ErrorDetail)(nil),    // 1: altalune.v1.ErrorDetail
-	(*StringList)(nil),     // 2: altalune.v1.StringList
-	(*Pagination)(nil),     // 3: altalune.v1.Pagination
-	(*Sorting)(nil),        // 4: altalune.v1.Sorting
-	(*QueryRequest)(nil),   // 5: altalune.v1.QueryRequest
-	(*FiltersCatalog)(nil), // 6: altalune.v1.FiltersCatalog
-	(*FilterValues)(nil),   // 7: altalune.v1.FilterValues
-	(*QueryMeta)(nil),      // 8: altalune.v1.QueryMeta
-	nil,                    // 9: altalune.v1.ErrorDetail.MetaEntry
-	nil,                    // 10: altalune.v1.QueryRequest.FiltersEntry
-	nil,                    // 11: altalune.v1.FiltersCatalog.FiltersEntry
-	nil,                    // 12: altalune.v1.QueryMeta.FiltersEntry
+	(SortOrder)(0),            // 0: altalune.v1.SortOrder
+	(*ErrorDetail)(nil),       // 1: altalune.v1.ErrorDetail
+	(*StringList)(nil),        // 2: altalune.v1.StringList
+	(*Pagination)(nil),        // 3: altalune.v1.Pagination
+	(*Sorting)(nil),           // 4: altalune.v1.Sorting
+	(*QueryRequest)(nil),      // 5: altalune.v1.QueryRequest
+	(*FiltersCatalog)(nil),    // 6: altalune.v1.FiltersCatalog
+	(*FilterValues)(nil),      // 7: altalune.v1.FilterValues
+	(*QueryMetaResponse)(nil), // 8: altalune.v1.QueryMetaResponse
+	nil,                       // 9: altalune.v1.ErrorDetail.MetaEntry
+	nil,                       // 10: altalune.v1.QueryRequest.FiltersEntry
+	nil,                       // 11: altalune.v1.FiltersCatalog.FiltersEntry
+	nil,                       // 12: altalune.v1.QueryMetaResponse.FiltersEntry
 }
 var file_altalune_v1_common_proto_depIdxs = []int32{
 	9,  // 0: altalune.v1.ErrorDetail.meta:type_name -> altalune.v1.ErrorDetail.MetaEntry
@@ -577,10 +577,10 @@ var file_altalune_v1_common_proto_depIdxs = []int32{
 	10, // 3: altalune.v1.QueryRequest.filters:type_name -> altalune.v1.QueryRequest.FiltersEntry
 	4,  // 4: altalune.v1.QueryRequest.sorting:type_name -> altalune.v1.Sorting
 	11, // 5: altalune.v1.FiltersCatalog.filters:type_name -> altalune.v1.FiltersCatalog.FiltersEntry
-	12, // 6: altalune.v1.QueryMeta.filters:type_name -> altalune.v1.QueryMeta.FiltersEntry
+	12, // 6: altalune.v1.QueryMetaResponse.filters:type_name -> altalune.v1.QueryMetaResponse.FiltersEntry
 	2,  // 7: altalune.v1.QueryRequest.FiltersEntry.value:type_name -> altalune.v1.StringList
 	7,  // 8: altalune.v1.FiltersCatalog.FiltersEntry.value:type_name -> altalune.v1.FilterValues
-	7,  // 9: altalune.v1.QueryMeta.FiltersEntry.value:type_name -> altalune.v1.FilterValues
+	7,  // 9: altalune.v1.QueryMetaResponse.FiltersEntry.value:type_name -> altalune.v1.FilterValues
 	10, // [10:10] is the sub-list for method output_type
 	10, // [10:10] is the sub-list for method input_type
 	10, // [10:10] is the sub-list for extension type_name

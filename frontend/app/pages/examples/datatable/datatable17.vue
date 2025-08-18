@@ -1,11 +1,11 @@
-<!-- step 16 -->
+<!-- step 17 -->
 <script setup lang="ts">
+import { EmployeeStatus } from '~~/gen/altalune/v1/employee_pb';
 import { createColumnHelper } from '@tanstack/vue-table';
 
-import type { Employee } from '#shared/repository/example';
+import type { Employee } from '~~/gen/altalune/v1/employee_pb';
 
-import { exampleRepository } from '#shared/repository/example';
-import { serializeFilters } from '#shared/helpers/serializer';
+import { serializeProtoFilters } from '#shared/helpers/serializer';
 
 import {
   DataTableFacetedFilter,
@@ -15,10 +15,14 @@ import {
   useDataTableState,
   DataTable,
 } from '~/components/datatable';
-import { useServerTableQuery } from '~/composables/useServerTableQuery';
+import { useEmployee } from '~/composables/services/useEmployee';
+import { useQueryRequest } from '~/composables/useQueryRequest';
 import { Input } from '@/components/ui/input';
 
-const example = exampleRepository();
+// TODO: implement using project context composable
+const projectId = 'lb5pzkgrnbanlw';
+
+const { query } = useEmployee();
 
 const page = ref(1);
 const pageSize = ref(10);
@@ -29,7 +33,7 @@ const table = computed(() => dataTableRef.value?.table);
 
 const { columnFilters, sorting } = useDataTableState(dataTableRef);
 
-const { queryOptions } = useServerTableQuery({
+const { queryRequest } = useQueryRequest({
   page,
   pageSize,
   keyword,
@@ -38,17 +42,14 @@ const { queryOptions } = useServerTableQuery({
 });
 
 const asyncDataKey = computed(() => {
-  const { pagination, keyword, filters, sorting } = queryOptions.value;
-  const {
-    page,
-    pageSize,
-  } = pagination;
+  const { pagination, keyword, filters, sorting } = queryRequest.value;
+  const { page, pageSize } = pagination!;
   const keys = [
     'employee-table',
     page,
     pageSize,
     keyword,
-    filters ? serializeFilters(filters) : null,
+    filters ? serializeProtoFilters(filters) : null,
     sorting ? `${sorting.field}:${sorting.order}` : null,
   ];
   return keys.filter(Boolean).join('-');
@@ -60,17 +61,40 @@ const {
   refresh,
 } = useLazyAsyncData(
   asyncDataKey,
-  () => example.query(queryOptions.value),
+  () => query({
+    projectId,
+    query: queryRequest.value,
+  }),
   {
     server: false,
-    watch: [queryOptions],
+    watch: [queryRequest],
     immediate: true,
   },
 );
 
 const data = computed(() => response.value?.data ?? []);
-const rowCount = computed(() => response.value?.meta.rowCount ?? 0);
-const filters = computed(() => response.value?.meta.filters);
+const rowCount = computed(() => response.value?.meta?.rowCount ?? 0);
+const filters = computed(() => response.value?.meta?.filters);
+
+const getStatusDisplay = (status: EmployeeStatus) => {
+  switch (status) {
+    case EmployeeStatus.ACTIVE:
+      return {
+        text: 'Active',
+        class: 'bg-green-100 text-green-800',
+      };
+    case EmployeeStatus.INACTIVE:
+      return {
+        text: 'Inactive',
+        class: 'bg-red-100 text-red-800',
+      };
+    default:
+      return {
+        text: 'Unknown',
+        class: 'bg-gray-100 text-gray-800',
+      };
+  }
+};
 
 const columnHelper = createColumnHelper<Employee>();
 const columns = [
@@ -79,7 +103,7 @@ const columns = [
       column,
       title: 'ID',
     }),
-    cell: (info) => h('div', { class: 'w-20' }, info.getValue()),
+    cell: (info) => h('div', { class: 'w-40' }, info.getValue()),
     enableSorting: true,
   }),
   columnHelper.accessor('name', {
@@ -120,17 +144,10 @@ const columns = [
       title: 'Status',
     }),
     cell: (info) => {
-      const status = info.getValue();
+      const status = getStatusDisplay(info.getValue() as EmployeeStatus);
       return h('span', {
-        class: [
-          'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium',
-          status === 'active'
-            ? 'bg-green-100 text-green-800'
-            : status === 'inactive'
-              ? 'bg-red-100 text-red-800'
-              : 'bg-gray-100 text-gray-800',
-        ],
-      }, status);
+        class: ['inline-flex items-center rounded-full px-2 py-1 text-xs font-medium', status.class],
+      }, status.text);
     },
     enableSorting: true,
   }),
@@ -140,7 +157,9 @@ const columns = [
       title: 'Created At',
     }),
     cell: (info) => {
-      const date = new Date(info.getValue());
+      const seconds = BigInt(info.getValue()?.seconds ?? 0n);
+      const millis = Number(seconds * 1000n);
+      const date = new Date(millis); ;
       return date.toLocaleDateString();
     },
     enableSorting: true,
@@ -154,7 +173,7 @@ const columns = [
 // role filter
 const roleFilter = useDataTableFilter(table, 'role');
 const roleOptions = computed(() =>
-  filters.value?.['roles']?.map((role: string) => ({
+  filters.value?.['roles']?.values?.map((role: string) => ({
     label: role,
     value: role,
   })) ?? [],
@@ -163,9 +182,18 @@ const roleOptions = computed(() =>
 // department filter
 const departmentFilter = useDataTableFilter(table, 'department');
 const departmentOptions = computed(() =>
-  filters.value?.['departments']?.map((dept: string) => ({
+  filters.value?.['departments']?.values?.map((dept: string) => ({
     label: dept,
     value: dept,
+  })) ?? [],
+);
+
+// status filter
+const statusFilter = useDataTableFilter(table, 'status');
+const statusOptions = computed(() =>
+  filters.value?.['statuses']?.values?.map((status: string) => ({
+    label: status === 'active' ? 'Active' : 'Inactive',
+    value: status,
   })) ?? [],
 );
 
@@ -173,6 +201,7 @@ const departmentOptions = computed(() =>
 function reset() {
   roleFilter.clearFilter();
   departmentFilter.clearFilter();
+  statusFilter.clearFilter();
 }
 </script>
 
@@ -218,6 +247,15 @@ function reset() {
             :options="departmentOptions!"
             @update="departmentFilter.setFilter"
             @clear="departmentFilter.clearFilter"
+          />
+
+          <DataTableFacetedFilter
+            v-if="statusOptions.length > 0"
+            v-model="statusFilter.filterValues.value"
+            title="Status"
+            :options="statusOptions"
+            @update="statusFilter.setFilter"
+            @clear="statusFilter.clearFilter"
           />
         </template>
         <template #loading>

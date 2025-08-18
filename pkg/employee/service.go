@@ -68,7 +68,7 @@ func (s *Service) QueryEmployees(ctx context.Context, req *altalunev1.QueryEmplo
 	if result == nil {
 		return &altalunev1.QueryEmployeesResponse{
 			Data: []*altalunev1.Employee{},
-			Meta: &altalunev1.QueryMeta{
+			Meta: &altalunev1.QueryMetaResponse{
 				RowCount:  0,
 				PageCount: 0,
 				Filters:   make(map[string]*altalunev1.FilterValues),
@@ -77,11 +77,11 @@ func (s *Service) QueryEmployees(ctx context.Context, req *altalunev1.QueryEmplo
 	}
 
 	return &altalunev1.QueryEmployeesResponse{
-		Data: MapEmployeesToProto(result.Data),
-		Meta: &altalunev1.QueryMeta{
+		Data: mapEmployeesToProto(result.Data),
+		Meta: &altalunev1.QueryMetaResponse{
 			RowCount:  result.TotalRows,
 			PageCount: result.TotalPages,
-			Filters:   MapFiltersToProto(result.Filters),
+			Filters:   mapFiltersToProto(result.Filters),
 		},
 	}, nil
 }

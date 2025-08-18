@@ -79,8 +79,8 @@ func mapEmployeeToProto(emp *Employee) *altalunev1.Employee {
 	}
 }
 
-// MapEmployeesToProto converts slice of domain Employees to proto Employees
-func MapEmployeesToProto(employees []*Employee) []*altalunev1.Employee {
+// mapEmployeesToProto converts slice of domain Employees to proto Employees
+func mapEmployeesToProto(employees []*Employee) []*altalunev1.Employee {
 	if employees == nil {
 		return make([]*altalunev1.Employee, 0)
 	}
@@ -92,8 +92,8 @@ func MapEmployeesToProto(employees []*Employee) []*altalunev1.Employee {
 	return result
 }
 
-// MapFiltersToProto converts domain filters to proto FilterValues map
-func MapFiltersToProto(filters map[string][]string) map[string]*altalunev1.FilterValues {
+// mapFiltersToProto converts domain filters to proto FilterValues map
+func mapFiltersToProto(filters map[string][]string) map[string]*altalunev1.FilterValues {
 	if filters == nil {
 		filters = make(map[string][]string)
 	}
@@ -122,27 +122,4 @@ func MapFiltersToProto(filters map[string][]string) map[string]*altalunev1.Filte
 	}
 
 	return result
-}
-
-// MapQueryResultToProto converts domain QueryResult to proto QueryEmployeesResponse
-func MapQueryResultToProto(result *altalune.QueryResult[Employee]) *altalunev1.QueryEmployeesResponse {
-	if result == nil {
-		return &altalunev1.QueryEmployeesResponse{
-			Data: []*altalunev1.Employee{},
-			Meta: &altalunev1.QueryMeta{
-				RowCount:  0,
-				PageCount: 0,
-				Filters:   make(map[string]*altalunev1.FilterValues),
-			},
-		}
-	}
-
-	return &altalunev1.QueryEmployeesResponse{
-		Data: MapEmployeesToProto(result.Data),
-		Meta: &altalunev1.QueryMeta{
-			RowCount:  result.TotalRows,
-			PageCount: result.TotalPages,
-			Filters:   MapFiltersToProto(result.Filters),
-		},
-	}
 }

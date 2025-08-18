@@ -58,7 +58,7 @@ message FilterValues {
   repeated string values = 1;
 }
 
-message QueryMeta {
+message QueryMetaResponse {
   int32 row_count = 1;
   int32 page_count = 2;
   map<string, FilterValues> filters = 3;
