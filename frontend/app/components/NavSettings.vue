@@ -8,7 +8,7 @@ import {
   SidebarGroup,
   SidebarMenu,
 } from '@/components/ui/sidebar';
-import { useSidebarNavigation } from '~/composables/navigation/useSidebarNavigation';
+import { useSidebarNavigation } from '@/composables/navigation/useSidebarNavigation';
 
 interface SettingItem {
   name: string;

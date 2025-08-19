@@ -22,7 +22,7 @@ import {
   DataTablePagination,
   DataTableToolbar,
   DataTableContent,
-} from '~/components/datatable';
+} from '@/components/datatable';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { Input } from '@/components/ui/input';
 
@@ -318,7 +318,7 @@ function resetFilters() {
         <div class="flex flex-col items-center justify-center space-y-6 py-16">
           <div class="relative">
             <Icon
-              name="lucide:users-x"
+              name="lucide:user-x"
               class="w-16 h-16 text-muted-foreground/50"
             />
           </div>

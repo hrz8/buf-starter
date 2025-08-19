@@ -7,6 +7,7 @@ import (
 	"buf.build/go/protovalidate"
 	"github.com/hrz8/altalune"
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
+	"github.com/hrz8/altalune/internal/query"
 	project_domain "github.com/hrz8/altalune/pkg/project"
 )
 
@@ -51,7 +52,7 @@ func (s *Service) QueryEmployees(ctx context.Context, req *altalunev1.QueryEmplo
 	}
 
 	// Convert proto request to domain query params
-	queryParams := mapQueryRequestToQueryParams(req.Query)
+	queryParams := query.DefaultQueryParams(req.Query)
 
 	// Query employees from repository
 	result, err := s.employeeRepo.Query(ctx, projectID, queryParams)

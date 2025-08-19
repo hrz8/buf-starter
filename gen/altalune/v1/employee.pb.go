@@ -81,6 +81,7 @@ type Employee struct {
 	Department    string                 `protobuf:"bytes,5,opt,name=department,proto3" json:"department,omitempty"`
 	Status        EmployeeStatus         `protobuf:"varint,6,opt,name=status,proto3,enum=altalune.v1.EmployeeStatus" json:"status,omitempty"`
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -160,6 +161,13 @@ func (x *Employee) GetStatus() EmployeeStatus {
 func (x *Employee) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *Employee) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
 	}
 	return nil
 }
@@ -272,7 +280,7 @@ var File_altalune_v1_employee_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_employee_proto_rawDesc = "" +
 	"\n" +
-	"\x1aaltalune/v1/employee.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\xb5\x02\n" +
+	"\x1aaltalune/v1/employee.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\xf0\x02\n" +
 	"\bEmployee\x12\x1b\n" +
 	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\x12 \n" +
 	"\x04name\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x182R\x04name\x12 \n" +
@@ -284,7 +292,9 @@ const file_altalune_v1_employee_proto_rawDesc = "" +
 	"department\x12=\n" +
 	"\x06status\x18\x06 \x01(\x0e2\x1b.altalune.v1.EmployeeStatusB\b\xbaH\x05\x82\x01\x02\x10\x01R\x06status\x129\n" +
 	"\n" +
-	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"t\n" +
+	"created_at\x18\a \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18\b \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"t\n" +
 	"\x15QueryEmployeesRequest\x12*\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\x12/\n" +
@@ -326,16 +336,17 @@ var file_altalune_v1_employee_proto_goTypes = []any{
 var file_altalune_v1_employee_proto_depIdxs = []int32{
 	0, // 0: altalune.v1.Employee.status:type_name -> altalune.v1.EmployeeStatus
 	4, // 1: altalune.v1.Employee.created_at:type_name -> google.protobuf.Timestamp
-	5, // 2: altalune.v1.QueryEmployeesRequest.query:type_name -> altalune.v1.QueryRequest
-	1, // 3: altalune.v1.QueryEmployeesResponse.data:type_name -> altalune.v1.Employee
-	6, // 4: altalune.v1.QueryEmployeesResponse.meta:type_name -> altalune.v1.QueryMetaResponse
-	2, // 5: altalune.v1.EmployeeService.QueryEmployees:input_type -> altalune.v1.QueryEmployeesRequest
-	3, // 6: altalune.v1.EmployeeService.QueryEmployees:output_type -> altalune.v1.QueryEmployeesResponse
-	6, // [6:7] is the sub-list for method output_type
-	5, // [5:6] is the sub-list for method input_type
-	5, // [5:5] is the sub-list for extension type_name
-	5, // [5:5] is the sub-list for extension extendee
-	0, // [0:5] is the sub-list for field type_name
+	4, // 2: altalune.v1.Employee.updated_at:type_name -> google.protobuf.Timestamp
+	5, // 3: altalune.v1.QueryEmployeesRequest.query:type_name -> altalune.v1.QueryRequest
+	1, // 4: altalune.v1.QueryEmployeesResponse.data:type_name -> altalune.v1.Employee
+	6, // 5: altalune.v1.QueryEmployeesResponse.meta:type_name -> altalune.v1.QueryMetaResponse
+	2, // 6: altalune.v1.EmployeeService.QueryEmployees:input_type -> altalune.v1.QueryEmployeesRequest
+	3, // 7: altalune.v1.EmployeeService.QueryEmployees:output_type -> altalune.v1.QueryEmployeesResponse
+	7, // [7:8] is the sub-list for method output_type
+	6, // [6:7] is the sub-list for method input_type
+	6, // [6:6] is the sub-list for extension type_name
+	6, // [6:6] is the sub-list for extension extendee
+	0, // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_altalune_v1_employee_proto_init() }

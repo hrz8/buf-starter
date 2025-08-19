@@ -37,19 +37,28 @@ message Employee {
 
   string role = 4 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string = { min_len: 1, max_len: 100 }
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 100
+    }
   ];
 
   string department = 5 [
     (buf.validate.field).required = true,
-    (buf.validate.field).string = { min_len: 1, max_len: 100 }
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 100
+    }
   ];
 
   EmployeeStatus status = 6 [
-    (buf.validate.field).enum = { defined_only: true }
+    (buf.validate.field).enum = {
+      defined_only: true
+    }
   ];
 
   google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
 
 message QueryEmployeesRequest {

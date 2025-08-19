@@ -1,15 +1,12 @@
 <script setup lang="ts">
 import {
-  GalleryVerticalEnd,
-  AudioWaveform,
   Smartphone,
   LucideHome,
-  Command,
   Puzzle,
   Key,
 } from 'lucide-vue-next';
 
-import type { NavItem } from '~/composables/navigation/useNavigation';
+import type { NavItem } from '@/composables/navigation/useNavigation';
 import type { SidebarProps } from '@/components/ui/sidebar';
 
 import {
@@ -19,7 +16,7 @@ import {
   SidebarRail,
   Sidebar,
 } from '@/components/ui/sidebar';
-import TeamSwitcher from '@/components/TeamSwitcher.vue';
+import ProjectSwitcher from '@/components/ProjectSwitcher.vue';
 import NavSettings from '@/components/NavSettings.vue';
 import NavMain from '@/components/NavMain.vue';
 import NavUser from '@/components/NavUser.vue';
@@ -34,23 +31,6 @@ const data = {
     email: 'm@example.com',
     avatar: '/avatars/shadcn.jpg',
   },
-  teams: [
-    {
-      name: 'Acme Inc',
-      logo: GalleryVerticalEnd,
-      plan: 'Enterprise',
-    },
-    {
-      name: 'Acme Corp.',
-      logo: AudioWaveform,
-      plan: 'Startup',
-    },
-    {
-      name: 'Evil Corp.',
-      logo: Command,
-      plan: 'Free',
-    },
-  ],
   settings: [
     {
       name: 'Api Keys',
@@ -104,7 +84,7 @@ const mainNavItems: NavItem[] = [
 <template>
   <Sidebar v-bind="props">
     <SidebarHeader>
-      <TeamSwitcher :teams="data.teams" />
+      <ProjectSwitcher />
     </SidebarHeader>
     <SidebarContent>
       <NavMain :items="mainNavItems" />

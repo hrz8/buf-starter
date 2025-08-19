@@ -14,8 +14,8 @@ import {
   useDataTableFilter,
   useDataTableState,
   DataTable,
-} from '~/components/datatable';
-import { useServerTableQuery } from '~/composables/useServerTableQuery';
+} from '@/components/datatable';
+import { useServerTableQuery } from '@/composables/useServerTableQuery';
 import { Input } from '@/components/ui/input';
 
 const example = exampleRepository();
@@ -242,7 +242,7 @@ function reset() {
           <div class="flex flex-col items-center justify-center space-y-6 py-16">
             <div class="relative">
               <Icon
-                name="lucide:users-x"
+                name="lucide:user-x"
                 class="w-16 h-16 text-muted-foreground/50"
               />
             </div>

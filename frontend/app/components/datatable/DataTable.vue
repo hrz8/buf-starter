@@ -12,7 +12,7 @@ import {
   DataTablePagination,
   DataTableToolbar,
   DataTableContent,
-} from '~/components/datatable';
+} from '@/components/datatable';
 import { valueUpdater } from '@/components/ui/table/utils';
 
 interface Props {

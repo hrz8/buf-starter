@@ -1,60 +1,9 @@
 package employee
 
 import (
-	"github.com/hrz8/altalune"
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
-
-// mapQueryRequestToQueryParams converts proto QueryRequest to QueryParams
-func mapQueryRequestToQueryParams(req *altalunev1.QueryRequest) *altalune.QueryParams {
-	params := &altalune.QueryParams{
-		Keyword: req.Keyword,
-		Filters: make(map[string][]string),
-	}
-
-	// Map pagination
-	if req.Pagination != nil {
-		params.Pagination = altalune.PaginationParams{
-			Page:     req.Pagination.Page,
-			PageSize: req.Pagination.PageSize,
-		}
-	} else {
-		// Default pagination
-		params.Pagination = altalune.PaginationParams{
-			Page:     1,
-			PageSize: 10,
-		}
-	}
-
-	// Map filters
-	if req.Filters != nil {
-		for field, stringList := range req.Filters {
-			if stringList != nil && len(stringList.Values) > 0 {
-				params.Filters[field] = stringList.Values
-			}
-		}
-	}
-
-	// Map sorting
-	if req.Sorting != nil && req.Sorting.Field != "" {
-		var order altalune.SortOrder
-		switch req.Sorting.Order {
-		case altalunev1.SortOrder_SORT_ORDER_DESC:
-			order = altalune.SortOrderDesc
-		case altalunev1.SortOrder_SORT_ORDER_ASC:
-			order = altalune.SortOrderAsc
-		default:
-			order = altalune.SortOrderAsc
-		}
-		params.Sorting = &altalune.SortingParams{
-			Field: req.Sorting.Field,
-			Order: order,
-		}
-	}
-
-	return params
-}
 
 // mapEmployeeToProto converts domain Employee to proto Employee
 func mapEmployeeToProto(emp *Employee) *altalunev1.Employee {
@@ -76,6 +25,7 @@ func mapEmployeeToProto(emp *Employee) *altalunev1.Employee {
 		Department: emp.Department,
 		Status:     status,
 		CreatedAt:  timestamppb.New(emp.CreatedAt),
+		UpdatedAt:  timestamppb.New(emp.UpdatedAt),
 	}
 }
 

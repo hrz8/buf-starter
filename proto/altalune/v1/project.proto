@@ -1,0 +1,62 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "altalune/v1/common.proto";
+
+message Project { 
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 50,
+      pattern: "^[a-zA-Z0-9\\s\\-_]+$"
+    }
+  ];
+  
+  string description = 3 [
+    (buf.validate.field).string.max_len = 100
+  ];
+  
+  string timezone = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 50
+    }
+  ];
+  
+  string environment = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: ["live", "sandbox"]
+    }
+  ];
+  
+  google.protobuf.Timestamp created_at = 6;
+  google.protobuf.Timestamp updated_at = 7;
+}
+
+message QueryProjectsRequest {
+  QueryRequest query = 1;
+}
+
+message QueryProjectsResponse {
+  repeated Project data = 1;
+  QueryMetaResponse meta = 2;
+}
+
+service ProjectService {
+  rpc QueryProjects(QueryProjectsRequest) returns (QueryProjectsResponse) {}
+}

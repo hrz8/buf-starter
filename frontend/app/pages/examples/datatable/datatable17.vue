@@ -14,13 +14,13 @@ import {
   useDataTableFilter,
   useDataTableState,
   DataTable,
-} from '~/components/datatable';
-import { useEmployee } from '~/composables/services/useEmployee';
-import { useQueryRequest } from '~/composables/useQueryRequest';
+} from '@/components/datatable';
+import { useEmployee } from '@/composables/services/useEmployee';
+import { useQueryRequest } from '@/composables/useQueryRequest';
+import { useProjectStore } from '~/stores/project';
 import { Input } from '@/components/ui/input';
 
-// TODO: implement using project context composable
-const projectId = 'lb5pzkgrnbanlw';
+const { activeProjectId } = useProjectStore();
 
 const { query } = useEmployee();
 
@@ -62,13 +62,13 @@ const {
 } = useLazyAsyncData(
   asyncDataKey,
   () => query({
-    projectId,
+    projectId: activeProjectId ?? undefined,
     query: queryRequest.value,
   }),
   {
     server: false,
     watch: [queryRequest],
-    immediate: true,
+    immediate: false,
   },
 );
 
@@ -103,7 +103,7 @@ const columns = [
       column,
       title: 'ID',
     }),
-    cell: (info) => h('div', { class: 'w-40' }, info.getValue()),
+    cell: (info) => h('div', { class: 'font-bold w-40' }, info.getValue()),
     enableSorting: true,
   }),
   columnHelper.accessor('name', {
@@ -160,7 +160,20 @@ const columns = [
       const seconds = BigInt(info.getValue()?.seconds ?? 0n);
       const millis = Number(seconds * 1000n);
       const date = new Date(millis); ;
-      return date.toLocaleDateString();
+      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
+    },
+    enableSorting: true,
+  }),
+  columnHelper.accessor('updatedAt', {
+    header: ({ column }) => h(DataTableColumnHeader, {
+      column,
+      title: 'Updated At',
+    }),
+    cell: (info) => {
+      const seconds = BigInt(info.getValue()?.seconds ?? 0n);
+      const millis = Number(seconds * 1000n);
+      const date = new Date(millis); ;
+      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     enableSorting: true,
   }),
@@ -280,8 +293,9 @@ function reset() {
           <div class="flex flex-col items-center justify-center space-y-6 py-16">
             <div class="relative">
               <Icon
-                name="lucide:users-x"
-                class="w-16 h-16 text-muted-foreground/50"
+                name="lucide:user-x"
+                class="text-muted-foreground/50"
+                size="2em"
               />
             </div>
             <div class="text-center space-y-2">

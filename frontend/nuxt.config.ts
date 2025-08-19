@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     '@nuxtjs/i18n',
     '@vueuse/nuxt',
     'shadcn-nuxt',
+    '@pinia/nuxt',
   ],
   imports: {
     scan: false,

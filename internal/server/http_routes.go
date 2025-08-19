@@ -12,18 +12,22 @@ import (
 	"github.com/hrz8/altalune/gen/greeter/v1/greeterv1connect"
 	employee_domain "github.com/hrz8/altalune/pkg/employee"
 	greeter_domain "github.com/hrz8/altalune/pkg/greeter"
+	project_domain "github.com/hrz8/altalune/pkg/project"
 )
 
 func (s *Server) setupRoutes() *http.ServeMux {
 	connectrpcMux := http.NewServeMux()
 	greeterHandler := greeter_domain.NewHandler(s.c.GetGreeterService())
 	employeeHandler := employee_domain.NewHandler(s.c.GetEmployeeService())
+	projectHandler := project_domain.NewHandler(s.c.GetProjectService())
 
 	greeterPath, greeterConnectHandler := greeterv1connect.NewGreeterServiceHandler(greeterHandler)
 	employeePath, employeeConnectHandler := altalunev1connect.NewEmployeeServiceHandler(employeeHandler)
+	projectPath, projectConnectHandler := altalunev1connect.NewProjectServiceHandler(projectHandler)
 
 	connectrpcMux.Handle(greeterPath, greeterConnectHandler)
 	connectrpcMux.Handle(employeePath, employeeConnectHandler)
+	connectrpcMux.Handle(projectPath, projectConnectHandler)
 
 	// main server mux
 	mux := http.NewServeMux()

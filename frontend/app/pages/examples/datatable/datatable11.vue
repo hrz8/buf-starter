@@ -45,17 +45,17 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import {
+  DataTableFacetedFilter,
+  DataTableColumnHeader,
+  DataTableRowActions,
+} from '@/components/datatable';
+import {
   SelectContent,
   SelectTrigger,
   SelectValue,
   SelectItem,
   Select,
 } from '@/components/ui/select';
-import {
-  DataTableFacetedFilter,
-  DataTableColumnHeader,
-  DataTableRowActions,
-} from '~/components/datatable';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

@@ -29,7 +29,7 @@ import {
   DataTableColumnHeader,
   DataTableRowActions,
   DataTablePagination,
-} from '~/components/datatable';
+} from '@/components/datatable';
 import {
   TableHeader, TableEmpty,
   TableBody,

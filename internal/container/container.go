@@ -37,6 +37,7 @@ type Container struct {
 	migrationService *migration_domain.Service
 	greeterService   greeterv1.GreeterServiceServer
 	employeeService  altalunev1.EmployeeServiceServer
+	projectService   altalunev1.ProjectServiceServer
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling
@@ -90,5 +91,6 @@ func (c *Container) initServices() error {
 	c.migrationService = migration_domain.NewService(c.logger, c.migrationRepo)
 	c.greeterService = greeter_domain.NewService(validator, c.logger, c.greeterRepo)
 	c.employeeService = employee_domain.NewService(validator, c.logger, c.projectRepo, c.employeeRepo)
+	c.projectService = project_domain.NewService(validator, c.logger, c.projectRepo)
 	return nil
 }

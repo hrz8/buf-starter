@@ -18,6 +18,7 @@ type EmployeeQueryResult struct {
 	Department string
 	Status     EmployeeStatus
 	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }
 
 type Employee struct {
@@ -28,4 +29,5 @@ type Employee struct {
 	Department string
 	Status     EmployeeStatus
 	CreatedAt  time.Time
+	UpdatedAt  time.Time
 }

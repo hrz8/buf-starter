@@ -12,7 +12,7 @@ import type { QueryOptions } from '~~/shared/types/query';
 
 import { exampleRepository, type Employee } from '#shared/repository/example';
 
-import { DataTableFacetedFilter, DataTable } from '~/components/datatable-sample-only';
+import { DataTableFacetedFilter, DataTable } from '@/components/datatable-sample-only';
 import { Input } from '@/components/ui/input';
 
 const example = exampleRepository();

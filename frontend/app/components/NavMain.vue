@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ChevronRight } from 'lucide-vue-next';
 
-import type { NavItem } from '~/composables/navigation/useNavigation';
+import type { NavItem } from '@/composables/navigation/useNavigation';
 
 import {
   SidebarMenuSubButton,
@@ -18,7 +18,7 @@ import {
   CollapsibleTrigger,
   Collapsible,
 } from '@/components/ui/collapsible';
-import { useSidebarNavigation } from '~/composables/navigation/useSidebarNavigation';
+import { useSidebarNavigation } from '@/composables/navigation/useSidebarNavigation';
 
 interface Props {
   items: NavItem[];

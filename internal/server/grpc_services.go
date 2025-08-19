@@ -8,5 +8,5 @@ import (
 func (s *Server) setupGRPCServices() {
 	greeterv1.RegisterGreeterServiceServer(s.grpcServer, s.c.GetGreeterService())
 	altalunev1.RegisterEmployeeServiceServer(s.grpcServer, s.c.GetEmployeeService())
-
+	altalunev1.RegisterProjectServiceServer(s.grpcServer, s.c.GetProjectService())
 }

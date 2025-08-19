@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/hrz8/altalune"
 	"github.com/hrz8/altalune/internal/postgres"
+	"github.com/hrz8/altalune/internal/query"
 )
 
 type Repo struct {
@@ -17,7 +17,7 @@ func NewRepo(db postgres.DB) *Repo {
 	return &Repo{db: db}
 }
 
-func (r *Repo) Query(ctx context.Context, projectID int64, params *altalune.QueryParams) (*altalune.QueryResult[Employee], error) {
+func (r *Repo) Query(ctx context.Context, projectID int64, params *query.QueryParams) (*query.QueryResult[Employee], error) {
 	// Build the base query
 	baseQuery := `
 		SELECT 
@@ -28,7 +28,8 @@ func (r *Repo) Query(ctx context.Context, projectID int64, params *altalune.Quer
 			role,
 			department,
 			status,
-			created_at
+			created_at,
+			updated_at
 		FROM altalune_example_employees
 		WHERE project_id = $1
 	`
@@ -135,6 +136,7 @@ func (r *Repo) Query(ctx context.Context, projectID int64, params *altalune.Quer
 			&emp.Department,
 			&status,
 			&emp.CreatedAt,
+			&emp.UpdatedAt,
 		)
 		if err != nil {
 			return nil, fmt.Errorf("scan employee row: %w", err)
@@ -181,10 +183,11 @@ func (r *Repo) Query(ctx context.Context, projectID int64, params *altalune.Quer
 			Department: v.Department,
 			Status:     v.Status,
 			CreatedAt:  v.CreatedAt,
+			UpdatedAt:  v.UpdatedAt,
 		})
 	}
 
-	return &altalune.QueryResult[Employee]{
+	return &query.QueryResult[Employee]{
 		Data:       results,
 		TotalRows:  totalRows,
 		TotalPages: totalPages,
@@ -192,7 +195,7 @@ func (r *Repo) Query(ctx context.Context, projectID int64, params *altalune.Quer
 	}, nil
 }
 
-func (r *Repo) buildOrderClause(sorting *altalune.SortingParams) string {
+func (r *Repo) buildOrderClause(sorting *query.SortingParams) string {
 	if sorting == nil || sorting.Field == "" {
 		return " ORDER BY created_at DESC" // Default sorting
 	}
@@ -212,15 +215,17 @@ func (r *Repo) buildOrderClause(sorting *altalune.SortingParams) string {
 		dbColumn = "status"
 	case "createdAt", "created_at":
 		dbColumn = "created_at"
+	case "updatedAt", "updated_at":
+		dbColumn = "updated_at"
 	case "id":
 		dbColumn = "id"
 	default:
-		dbColumn = "created_at" // Fallback to default
+		dbColumn = "updated_at" // Fallback to default
 	}
 
 	// Determine sort direction
 	direction := "ASC"
-	if sorting.Order == altalune.SortOrderDesc {
+	if sorting.Order == query.SortOrderDesc {
 		direction = "DESC"
 	}
 

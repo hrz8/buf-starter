@@ -54,7 +54,12 @@ func (c *Container) GetGreeterService() greeterv1.GreeterServiceServer {
 	return c.greeterService
 }
 
-// GetEmployeeService returns the greeter service
+// GetEmployeeService returns the employee service
 func (c *Container) GetEmployeeService() altalunev1.EmployeeServiceServer {
 	return c.employeeService
+}
+
+// GetProjectService returns the greeter service
+func (c *Container) GetProjectService() altalunev1.ProjectServiceServer {
+	return c.projectService
 }
