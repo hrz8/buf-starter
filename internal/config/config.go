@@ -20,6 +20,10 @@ func (c *AppConfig) GetServerLogLevel() string {
 	return c.Server.LogLevel
 }
 
+func (c *AppConfig) IsHTTPLoggingEnabled() bool {
+	return c.Server.HTTPLogging
+}
+
 func (c *AppConfig) IsCORSEnabled() bool {
 	return c.Server.EnableCORS
 }

@@ -7,6 +7,7 @@ type Config interface {
 	GetServerHost() string
 	GetServerPort() int
 	GetServerLogLevel() string
+	IsHTTPLoggingEnabled() bool
 	IsCORSEnabled() bool
 	GetServerReadTimeout() time.Duration
 	GetServerWriteTimeout() time.Duration

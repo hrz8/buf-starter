@@ -10,55 +10,48 @@ import (
 	"github.com/hrz8/altalune"
 	"github.com/hrz8/altalune/gen/altalune/v1/altalunev1connect"
 	"github.com/hrz8/altalune/gen/greeter/v1/greeterv1connect"
-	employee_domain "github.com/hrz8/altalune/pkg/employee"
-	greeter_domain "github.com/hrz8/altalune/pkg/greeter"
-	project_domain "github.com/hrz8/altalune/pkg/project"
+	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
+	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
+	project_domain "github.com/hrz8/altalune/internal/domain/project"
 )
 
 func (s *Server) setupRoutes() *http.ServeMux {
 	connectrpcMux := http.NewServeMux()
+
+	// Examples
 	greeterHandler := greeter_domain.NewHandler(s.c.GetGreeterService())
 	employeeHandler := employee_domain.NewHandler(s.c.GetEmployeeService())
-	projectHandler := project_domain.NewHandler(s.c.GetProjectService())
-
 	greeterPath, greeterConnectHandler := greeterv1connect.NewGreeterServiceHandler(greeterHandler)
 	employeePath, employeeConnectHandler := altalunev1connect.NewEmployeeServiceHandler(employeeHandler)
-	projectPath, projectConnectHandler := altalunev1connect.NewProjectServiceHandler(projectHandler)
-
 	connectrpcMux.Handle(greeterPath, greeterConnectHandler)
 	connectrpcMux.Handle(employeePath, employeeConnectHandler)
+
+	// Domains
+	projectHandler := project_domain.NewHandler(s.c.GetProjectService())
+	projectPath, projectConnectHandler := altalunev1connect.NewProjectServiceHandler(projectHandler)
 	connectrpcMux.Handle(projectPath, projectConnectHandler)
 
 	// main server mux
 	mux := http.NewServeMux()
 
 	mux.Handle("/api/", http.StripPrefix("/api", connectrpcMux))
-	mux.HandleFunc("/healthz", s.healthCheckHandler)
+	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		health := map[string]any{
+			"status": "ok",
+		}
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		if err := json.NewEncoder(w).Encode(health); err != nil {
+			http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+			return
+		}
+	})
 
 	// serve frontend
 	websiteFS, _ := fs.Sub(altalune.FrontendEmbeddedFiles, "frontend/.output/public")
-	mux.HandleFunc("/", s.websiteHandler(websiteFS))
-
-	return mux
-}
-
-func (s *Server) healthCheckHandler(w http.ResponseWriter, r *http.Request) {
-	health := map[string]any{
-		"status": "ok",
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-
-	if err := json.NewEncoder(w).Encode(health); err != nil {
-		s.log.Error("failed to encode health check response", "error", err.Error())
-		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
-		return
-	}
-}
-
-func (s *Server) websiteHandler(websiteFS fs.FS) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if strings.HasPrefix(r.URL.Path, "/api/") {
 			http.NotFound(w, r)
 			return
@@ -81,5 +74,7 @@ func (s *Server) websiteHandler(websiteFS fs.FS) http.HandlerFunc {
 		}
 
 		serve404Page(w, r, websiteFS)
-	}
+	})
+
+	return mux
 }

@@ -74,7 +74,7 @@ const mainNavItems: NavItem[] = [
       },
       {
         title: 'Datatable',
-        to: '/examples/datatable/datatable17',
+        to: '/examples/datatable/datatable18',
       },
     ],
   },

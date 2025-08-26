@@ -1,10 +1,11 @@
 {
   "errorCodes": {
-    "6001": "Invalid input",
-    "6101": "Greeting to '{name}' is not recognized",
-    "6901": "Server Error",
-    "6902": "Server Error",
-    "6999": "Unknown Error"
+    "60001": "Invalid input",
+    "60101": "Greeting to '{name}' is not recognized",
+    "60201": "Employee not found",
+    "60202": "Employee already exists",
+    "60301": "Project not found",
+    "69001": "Server Error"
   },
   "errorPage.goHome": "Go back Home",
   "example.allowedNames.errorLoading": "Error loading names",

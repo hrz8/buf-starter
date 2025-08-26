@@ -10,7 +10,9 @@ import (
 func (s *Server) setupMiddleware(handler http.Handler) http.Handler {
 	// apply middleware in reverse order (last applied executes first)
 	handler = RecoveryMiddleware(handler, s.log)
-	handler = LoggingMiddleware(handler, s.log)
+	if s.cfg.IsHTTPLoggingEnabled() {
+		handler = LoggingMiddleware(handler, s.log)
+	}
 	handler = SecurityMiddleware(handler)
 	if s.cfg.IsCORSEnabled() {
 		handler = CORSMiddleware(handler, s.cfg.GetAllowedOrigins())

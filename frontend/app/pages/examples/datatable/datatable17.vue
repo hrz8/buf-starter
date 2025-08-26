@@ -15,14 +15,22 @@ import {
   useDataTableState,
   DataTable,
 } from '@/components/datatable';
-import { useEmployee } from '@/composables/services/useEmployee';
+import {
+  SheetDescription,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  Sheet,
+} from '@/components/ui/sheet';
+import { useEmployeeService } from '~/composables/services/useEmployeeService';
 import { useQueryRequest } from '@/composables/useQueryRequest';
-import { useProjectStore } from '~/stores/project';
+import { useProjectStore } from '@/stores/project';
 import { Input } from '@/components/ui/input';
 
 const { activeProjectId } = useProjectStore();
 
-const { query } = useEmployee();
+const { query } = useEmployeeService();
 
 const page = ref(1);
 const pageSize = ref(10);
@@ -221,9 +229,22 @@ function reset() {
 <template>
   <div class="space-y-5 px-4 py-3 sm:px-6 lg:px-8">
     <div class="container mx-auto flex justify-end">
-      <Button size="sm">
-        Add Employee
-      </Button>
+      <Sheet>
+        <SheetTrigger as-child>
+          <Button size="sm">
+            Add Employee
+          </Button>
+        </SheetTrigger>
+        <SheetContent>
+          <SheetHeader>
+            <SheetTitle>Add new Employee</SheetTitle>
+            <SheetDescription>
+              <!-- Add better description here using better UX and wording -->
+            </SheetDescription>
+          </SheetHeader>
+          <div>Body</div>
+        </SheetContent>
+      </Sheet>
     </div>
     <div class="container mx-auto">
       <DataTable
@@ -308,9 +329,22 @@ function reset() {
               </p>
             </div>
             <div class="flex space-x-2">
-              <Button size="sm">
-                Add Employee
-              </Button>
+              <Sheet>
+                <SheetTrigger as-child>
+                  <Button size="sm">
+                    Add Employee
+                  </Button>
+                </SheetTrigger>
+                <SheetContent>
+                  <SheetHeader>
+                    <SheetTitle>Add new Employee</SheetTitle>
+                    <SheetDescription>
+                      <!-- Add better description here using better UX and wording -->
+                    </SheetDescription>
+                  </SheetHeader>
+                  <div>Body</div>
+                </SheetContent>
+              </Sheet>
             </div>
           </div>
         </template>

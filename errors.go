@@ -15,19 +15,20 @@ import (
 
 // Error code constants for consistent error handling across the application
 const (
-	// Validation Errors
+	// Validation Errors (600XX)
 	CodeInvalidPayload = "60001"
 
 	// Greeting Domain Errors (601XX)
 	CodeGreetingUnrecognized = "60101"
 
-	// Employee/Example Domain Errors (602XX)
-	CodeEmployeeNotFound = "60201"
+	// Example/Employee Domain Errors (602XX)
+	CodeEmployeeNotFound      = "60201"
+	CodeEmployeeAlreadyExists = "60202"
 
 	// Project Domain Errors (603XX)
 	CodeProjectNotFound = "60301"
 
-	// Internal Errors
+	// Internal Errors (609XX)
 	CodeUnexpectedError = "69001"
 )
 
@@ -187,6 +188,24 @@ func NewEmployeeNotFoundError(publicID string) *AppError {
 				Code: code,
 				Meta: map[string]string{
 					"employee_id": publicID,
+				},
+			},
+		},
+	}
+}
+
+// NewAlreadyExistsError creates a new already exists error
+func NewAlreadyExistsError(email string) *AppError {
+	code := CodeEmployeeAlreadyExists
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("employee with email '%s' already exists", email),
+		grpcCode: codes.AlreadyExists,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"email": email,
 				},
 			},
 		},

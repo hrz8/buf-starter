@@ -7,6 +7,7 @@ server:
   host: "localhost"       # Server host (default: localhost)
   port: 3100              # Server port (default: 3100)
   logLevel: "info"        # Log level: debug, info, warn, error (default: info)
+  httpLogging: false      # Enable HTTP request/response logging middleware (default: false)
   enableCORS: true        # Enable CORS headers (default: true)
   readTimeout: 15         # HTTP read timeout in seconds (default: 15)
   writeTimeout: 15        # HTTP write timeout in seconds (default: 15)

@@ -9,13 +9,13 @@ import (
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
 
+	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
+	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
+	project_domain "github.com/hrz8/altalune/internal/domain/project"
 	"github.com/hrz8/altalune/internal/postgres"
 	"github.com/hrz8/altalune/logger"
-	employee_domain "github.com/hrz8/altalune/pkg/employee"
-	greeter_domain "github.com/hrz8/altalune/pkg/greeter"
-	project_domain "github.com/hrz8/altalune/pkg/project"
 
-	migration_domain "github.com/hrz8/altalune/pkg/migration"
+	migration_domain "github.com/hrz8/altalune/internal/domain/migration"
 )
 
 // Container manages dependency injection with private fields
@@ -27,17 +27,23 @@ type Container struct {
 	// Database connection and manager
 	db postgres.DB
 
+	// Migrations
+	migrationRepo    migration_domain.Migrator
+	migrationService *migration_domain.Service
+
+	// Example Repositories
+	greeterRepo  greeter_domain.Repositor
+	employeeRepo employee_domain.Repositor
+
+	// Example Services
+	greeterService  greeterv1.GreeterServiceServer
+	employeeService altalunev1.EmployeeServiceServer
+
 	// Repositories
-	migrationRepo migration_domain.AltaluneRepositor
-	greeterRepo   greeter_domain.Repositor
-	employeeRepo  employee_domain.Repositor
-	projectRepo   project_domain.Repositor
+	projectRepo project_domain.Repositor
 
 	// Services
-	migrationService *migration_domain.Service
-	greeterService   greeterv1.GreeterServiceServer
-	employeeService  altalunev1.EmployeeServiceServer
-	projectService   altalunev1.ProjectServiceServer
+	projectService altalunev1.ProjectServiceServer
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling

@@ -31,7 +31,7 @@ export const useProjectStore = defineStore('project', () => {
     }
   }
 
-  function setActiveProject(pId: string | null) {
+  function setActiveProject(pId: string) {
     activeProjectId.value = pId;
 
     if (pId && route.query.pId !== pId) {

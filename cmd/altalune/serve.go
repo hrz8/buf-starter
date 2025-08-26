@@ -12,9 +12,8 @@ import (
 	"github.com/hrz8/altalune/internal/config"
 	"github.com/hrz8/altalune/internal/container"
 	"github.com/hrz8/altalune/internal/server"
-
-	"github.com/hrz8/altalune/servers/grpcserver"
-	"github.com/hrz8/altalune/servers/httpserver"
+	"github.com/hrz8/altalune/server/grpcserver"
+	"github.com/hrz8/altalune/server/httpserver"
 	"github.com/spf13/cobra"
 )
 
@@ -49,11 +48,11 @@ func serve(rootCmd *cobra.Command) func(cmd *cobra.Command, args []string) error
 			return fmt.Errorf("container is not healthy, cannot run migration")
 		}
 		srv := server.NewServer(c)
-		srv.Bootstrap()
+		httpHandler, grpcServer := srv.Bootstrap()
 
 		// Create HTTP server
 		httpSrv := httpserver.NewHTTPServer(
-			srv,
+			httpserver.WithHandler(httpHandler),
 			httpserver.WithPort(cfg.GetServerPort()),
 			httpserver.WithReadTimeout(cfg.GetServerReadTimeout()),
 			httpserver.WithWriteTimeout(cfg.GetServerWriteTimeout()),
@@ -63,7 +62,7 @@ func serve(rootCmd *cobra.Command) func(cmd *cobra.Command, args []string) error
 
 		// Create gRPC server
 		grpcSrv := grpcserver.NewGRPCServer(
-			srv,
+			grpcserver.WithHandler(grpcServer),
 			grpcserver.WithPort(cfg.GetServerPort()+1),
 			grpcserver.WithCleanupTimeout(cfg.GetServerCleanupTimeout()),
 		)

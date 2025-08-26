@@ -10,6 +10,7 @@ type ServerConfig struct {
 	Host           string `yaml:"host" validate:"required,hostname|ip"`
 	Port           int    `yaml:"port" validate:"required,gte=1,lte=65535"`
 	LogLevel       string `yaml:"logLevel" validate:"oneof=debug info warn error"`
+	HTTPLogging    bool   `yaml:"httpLogging"`
 	EnableCORS     bool   `yaml:"enableCORS"`
 	ReadTimeout    int    `yaml:"readTimeout" validate:"gte=1"`
 	WriteTimeout   int    `yaml:"writeTimeout" validate:"gte=1"`
@@ -27,6 +28,7 @@ func (c *ServerConfig) setDefaults() {
 	if c.LogLevel == "" {
 		c.LogLevel = "info"
 	}
+	c.HTTPLogging = false
 	c.EnableCORS = true
 	if c.ReadTimeout == 0 {
 		c.ReadTimeout = 15

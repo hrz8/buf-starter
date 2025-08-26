@@ -4,9 +4,8 @@ import (
 	"github.com/hrz8/altalune"
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
+	migration_domain "github.com/hrz8/altalune/internal/domain/migration"
 	"github.com/hrz8/altalune/internal/postgres"
-	greeter_domain "github.com/hrz8/altalune/pkg/greeter"
-	migration_domain "github.com/hrz8/altalune/pkg/migration"
 )
 
 // Public getter methods for accessing private components
@@ -34,27 +33,17 @@ func (c *Container) GetDBManager() postgres.Manager {
 	return nil
 }
 
-// GetGreeterRepo returns the greeter repository
-func (c *Container) GetGreeterRepo() greeter_domain.Repositor {
-	return c.greeterRepo
-}
-
-// GetMigrationRepo returns the migration repository
-func (c *Container) GetMigrationRepo() migration_domain.AltaluneRepositor {
-	return c.migrationRepo
-}
-
 // GetMigrationService returns the migration service
 func (c *Container) GetMigrationService() *migration_domain.Service {
 	return c.migrationService
 }
 
-// GetGreeterService returns the greeter service
+// GetGreeterService returns the greeter service (Only Example)
 func (c *Container) GetGreeterService() greeterv1.GreeterServiceServer {
 	return c.greeterService
 }
 
-// GetEmployeeService returns the employee service
+// GetEmployeeService returns the employee service (Only Example)
 func (c *Container) GetEmployeeService() altalunev1.EmployeeServiceServer {
 	return c.employeeService
 }

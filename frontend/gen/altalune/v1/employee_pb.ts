@@ -15,7 +15,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file altalune/v1/employee.proto.
  */
 export const file_altalune_v1_employee: GenFile = /*@__PURE__*/
-  fileDesc("ChphbHRhbHVuZS92MS9lbXBsb3llZS5wcm90bxILYWx0YWx1bmUudjEirwIKCEVtcGxveWVlEhcKAmlkGAEgASgJQgu6SAjIAQFyA5gBDhIaCgRuYW1lGAIgASgJQgy6SAnIAQFyBBABGDISGQoFZW1haWwYAyABKAlCCrpIB8gBAXICYAESGgoEcm9sZRgEIAEoCUIMukgJyAEBcgQQARhkEiAKCmRlcGFydG1lbnQYBSABKAlCDLpICcgBAXIEEAEYZBI1CgZzdGF0dXMYBiABKA4yGy5hbHRhbHVuZS52MS5FbXBsb3llZVN0YXR1c0IIukgFggECEAESLgoKY3JlYXRlZF9hdBgHIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBgIIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiYgoVUXVlcnlFbXBsb3llZXNSZXF1ZXN0Eh8KCnByb2plY3RfaWQYASABKAlCC7pICMgBAXIDmAEOEigKBXF1ZXJ5GAIgASgLMhkuYWx0YWx1bmUudjEuUXVlcnlSZXF1ZXN0ImsKFlF1ZXJ5RW1wbG95ZWVzUmVzcG9uc2USIwoEZGF0YRgBIAMoCzIVLmFsdGFsdW5lLnYxLkVtcGxveWVlEiwKBG1ldGEYAiABKAsyHi5hbHRhbHVuZS52MS5RdWVyeU1ldGFSZXNwb25zZSprCg5FbXBsb3llZVN0YXR1cxIfChtFTVBMT1lFRV9TVEFUVVNfVU5TUEVDSUZJRUQQABIaChZFTVBMT1lFRV9TVEFUVVNfQUNUSVZFEAESHAoYRU1QTE9ZRUVfU1RBVFVTX0lOQUNUSVZFEAIybgoPRW1wbG95ZWVTZXJ2aWNlElsKDlF1ZXJ5RW1wbG95ZWVzEiIuYWx0YWx1bmUudjEuUXVlcnlFbXBsb3llZXNSZXF1ZXN0GiMuYWx0YWx1bmUudjEuUXVlcnlFbXBsb3llZXNSZXNwb25zZSIAQqIBCg9jb20uYWx0YWx1bmUudjFCDUVtcGxveWVlUHJvdG9QAVozZ2l0aHViLmNvbS9ocno4L2FsdGFsdW5lL2dlbi9hbHRhbHVuZS92MTthbHRhbHVuZXYxogIDQVhYqgILQWx0YWx1bmUuVjHKAgtBbHRhbHVuZVxWMeICF0FsdGFsdW5lXFYxXEdQQk1ldGFkYXRh6gIMQWx0YWx1bmU6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
+  fileDesc("ChphbHRhbHVuZS92MS9lbXBsb3llZS5wcm90bxILYWx0YWx1bmUudjEi4gEKCEVtcGxveWVlEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDQoFZW1haWwYAyABKAkSDAoEcm9sZRgEIAEoCRISCgpkZXBhcnRtZW50GAUgASgJEisKBnN0YXR1cxgGIAEoDjIbLmFsdGFsdW5lLnYxLkVtcGxveWVlU3RhdHVzEi4KCmNyZWF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYCCABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIvcBChVDcmVhdGVFbXBsb3llZVJlcXVlc3QSHwoKcHJvamVjdF9pZBgBIAEoCUILukgIyAEBcgOYAQ4SKQoEbmFtZRgCIAEoCUIbukgYyAEBchMQAhgyMg1eW2EtekEtWlxzXSskEhsKBWVtYWlsGAMgASgJQgy6SAnIAQFyBBhkYAESGgoEcm9sZRgEIAEoCUIMukgJyAEBcgQQAhhkEiAKCmRlcGFydG1lbnQYBSABKAlCDLpICcgBAXIEEAIYZBI3CgZzdGF0dXMYBiABKA4yGy5hbHRhbHVuZS52MS5FbXBsb3llZVN0YXR1c0IKukgHggEEEAEgACJSChZDcmVhdGVFbXBsb3llZVJlc3BvbnNlEicKCGVtcGxveWVlGAEgASgLMhUuYWx0YWx1bmUudjEuRW1wbG95ZWUSDwoHbWVzc2FnZRgCIAEoCSJiChVRdWVyeUVtcGxveWVlc1JlcXVlc3QSHwoKcHJvamVjdF9pZBgBIAEoCUILukgIyAEBcgOYAQ4SKAoFcXVlcnkYAiABKAsyGS5hbHRhbHVuZS52MS5RdWVyeVJlcXVlc3QiawoWUXVlcnlFbXBsb3llZXNSZXNwb25zZRIjCgRkYXRhGAEgAygLMhUuYWx0YWx1bmUudjEuRW1wbG95ZWUSLAoEbWV0YRgCIAEoCzIeLmFsdGFsdW5lLnYxLlF1ZXJ5TWV0YVJlc3BvbnNlKmsKDkVtcGxveWVlU3RhdHVzEh8KG0VNUExPWUVFX1NUQVRVU19VTlNQRUNJRklFRBAAEhoKFkVNUExPWUVFX1NUQVRVU19BQ1RJVkUQARIcChhFTVBMT1lFRV9TVEFUVVNfSU5BQ1RJVkUQAjLLAQoPRW1wbG95ZWVTZXJ2aWNlElsKDlF1ZXJ5RW1wbG95ZWVzEiIuYWx0YWx1bmUudjEuUXVlcnlFbXBsb3llZXNSZXF1ZXN0GiMuYWx0YWx1bmUudjEuUXVlcnlFbXBsb3llZXNSZXNwb25zZSIAElsKDkNyZWF0ZUVtcGxveWVlEiIuYWx0YWx1bmUudjEuQ3JlYXRlRW1wbG95ZWVSZXF1ZXN0GiMuYWx0YWx1bmUudjEuQ3JlYXRlRW1wbG95ZWVSZXNwb25zZSIAQqIBCg9jb20uYWx0YWx1bmUudjFCDUVtcGxveWVlUHJvdG9QAVozZ2l0aHViLmNvbS9ocno4L2FsdGFsdW5lL2dlbi9hbHRhbHVuZS92MTthbHRhbHVuZXYxogIDQVhYqgILQWx0YWx1bmUuVjHKAgtBbHRhbHVuZVxWMeICF0FsdGFsdW5lXFYxXEdQQk1ldGFkYXRh6gIMQWx0YWx1bmU6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
 
 /**
  * @generated from message altalune.v1.Employee
@@ -70,6 +70,70 @@ export const EmployeeSchema: GenMessage<Employee> = /*@__PURE__*/
   messageDesc(file_altalune_v1_employee, 0);
 
 /**
+ * @generated from message altalune.v1.CreateEmployeeRequest
+ */
+export type CreateEmployeeRequest = Message<"altalune.v1.CreateEmployeeRequest"> & {
+  /**
+   * @generated from field: string project_id = 1;
+   */
+  projectId: string;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string email = 3;
+   */
+  email: string;
+
+  /**
+   * @generated from field: string role = 4;
+   */
+  role: string;
+
+  /**
+   * @generated from field: string department = 5;
+   */
+  department: string;
+
+  /**
+   * @generated from field: altalune.v1.EmployeeStatus status = 6;
+   */
+  status: EmployeeStatus;
+};
+
+/**
+ * Describes the message altalune.v1.CreateEmployeeRequest.
+ * Use `create(CreateEmployeeRequestSchema)` to create a new message.
+ */
+export const CreateEmployeeRequestSchema: GenMessage<CreateEmployeeRequest> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_employee, 1);
+
+/**
+ * @generated from message altalune.v1.CreateEmployeeResponse
+ */
+export type CreateEmployeeResponse = Message<"altalune.v1.CreateEmployeeResponse"> & {
+  /**
+   * @generated from field: altalune.v1.Employee employee = 1;
+   */
+  employee?: Employee;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message altalune.v1.CreateEmployeeResponse.
+ * Use `create(CreateEmployeeResponseSchema)` to create a new message.
+ */
+export const CreateEmployeeResponseSchema: GenMessage<CreateEmployeeResponse> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_employee, 2);
+
+/**
  * @generated from message altalune.v1.QueryEmployeesRequest
  */
 export type QueryEmployeesRequest = Message<"altalune.v1.QueryEmployeesRequest"> & {
@@ -89,7 +153,7 @@ export type QueryEmployeesRequest = Message<"altalune.v1.QueryEmployeesRequest">
  * Use `create(QueryEmployeesRequestSchema)` to create a new message.
  */
 export const QueryEmployeesRequestSchema: GenMessage<QueryEmployeesRequest> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_employee, 1);
+  messageDesc(file_altalune_v1_employee, 3);
 
 /**
  * @generated from message altalune.v1.QueryEmployeesResponse
@@ -111,7 +175,7 @@ export type QueryEmployeesResponse = Message<"altalune.v1.QueryEmployeesResponse
  * Use `create(QueryEmployeesResponseSchema)` to create a new message.
  */
 export const QueryEmployeesResponseSchema: GenMessage<QueryEmployeesResponse> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_employee, 2);
+  messageDesc(file_altalune_v1_employee, 4);
 
 /**
  * @generated from enum altalune.v1.EmployeeStatus
@@ -150,6 +214,14 @@ export const EmployeeService: GenService<{
     methodKind: "unary";
     input: typeof QueryEmployeesRequestSchema;
     output: typeof QueryEmployeesResponseSchema;
+  },
+  /**
+   * @generated from rpc altalune.v1.EmployeeService.CreateEmployee
+   */
+  createEmployee: {
+    methodKind: "unary";
+    input: typeof CreateEmployeeRequestSchema;
+    output: typeof CreateEmployeeResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_altalune_v1_employee, 0);

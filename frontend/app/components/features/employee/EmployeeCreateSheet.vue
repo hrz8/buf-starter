@@ -1,0 +1,59 @@
+<script setup lang="ts">
+import type { Employee } from '~~/gen/altalune/v1/employee_pb';
+
+import EmployeeCreateForm from './EmployeeCreateForm.vue';
+
+import {
+  SheetDescription,
+  SheetTrigger,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  Sheet,
+} from '@/components/ui/sheet';
+
+const props = defineProps<{
+  projectId: string;
+}>();
+
+const emit = defineEmits<{
+  success: [employee: Employee];
+  cancel: [];
+}>();
+
+const isSheetOpen = ref(false);
+
+function handleEmployeeCreated(employee: Employee) {
+  isSheetOpen.value = false;
+  emit('success', employee);
+}
+
+function handleSheetClose() {
+  isSheetOpen.value = false;
+  emit('cancel');
+}
+</script>
+
+<template>
+  <Sheet v-model:open="isSheetOpen">
+    <SheetTrigger as-child>
+      <slot />
+    </SheetTrigger>
+    <SheetContent class="w-full sm:max-w-[540px] overflow-y-auto">
+      <SheetHeader>
+        <SheetTitle>Add New Employee</SheetTitle>
+        <SheetDescription>
+          Fill in the employee details below. All fields marked with * are required.
+        </SheetDescription>
+      </SheetHeader>
+      <div class="mt-6 px-6">
+        <EmployeeCreateForm
+          :project-id="props.projectId"
+          @success="handleEmployeeCreated"
+          @cancel="handleSheetClose"
+        />
+      </div>
+      <SheetFooter />
+    </SheetContent>
+  </Sheet>
+</template>

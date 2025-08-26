@@ -30,4 +30,4 @@ plugins:
       - import_extension=js
     include_imports: true
 inputs:
-  - directory: proto
+  - directory: api/proto

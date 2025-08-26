@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"log"
 
@@ -73,13 +74,19 @@ func runMigration(rootCmd *cobra.Command, action string) func(cmd *cobra.Command
 
 		log.Printf("Running migration %s on database", action)
 
+		migrationSvc := c.GetMigrationService()
+
+		if migrationSvc == nil {
+			return errors.New("unexpected error: service unregistered")
+		}
+
 		switch action {
 		case "up":
-			return c.GetMigrationService().MigrateUp(ctx)
+			return migrationSvc.MigrateUp(ctx)
 		case "down":
-			return c.GetMigrationService().MigrateDown(ctx)
+			return migrationSvc.MigrateDown(ctx)
 		case "status":
-			return c.GetMigrationService().MigrationStatus(ctx)
+			return migrationSvc.MigrationStatus(ctx)
 		default:
 			return fmt.Errorf("unknown migration action: %s", action)
 		}

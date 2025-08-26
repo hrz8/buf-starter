@@ -5,10 +5,10 @@ import {
   SidebarProvider,
   SidebarInset,
 } from '@/components/ui/sidebar';
-import { useProjectService } from '~/composables/services/useProjectService';
+import { useProjectService } from '@/composables/services/useProjectService';
 import AppSidebar from '@/components/AppSidebar.vue';
 import AppHeader from '@/components/AppHeader.vue';
-import { useProjectStore } from '~/stores/project';
+import { useProjectStore } from '@/stores/project';
 
 const route = useRoute();
 const sidebarOpen = useLocalStorage('sidebar-state', true);

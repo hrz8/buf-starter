@@ -20,6 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	EmployeeService_QueryEmployees_FullMethodName = "/altalune.v1.EmployeeService/QueryEmployees"
+	EmployeeService_CreateEmployee_FullMethodName = "/altalune.v1.EmployeeService/CreateEmployee"
 )
 
 // EmployeeServiceClient is the client API for EmployeeService service.
@@ -27,6 +28,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type EmployeeServiceClient interface {
 	QueryEmployees(ctx context.Context, in *QueryEmployeesRequest, opts ...grpc.CallOption) (*QueryEmployeesResponse, error)
+	CreateEmployee(ctx context.Context, in *CreateEmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error)
 }
 
 type employeeServiceClient struct {
@@ -47,11 +49,22 @@ func (c *employeeServiceClient) QueryEmployees(ctx context.Context, in *QueryEmp
 	return out, nil
 }
 
+func (c *employeeServiceClient) CreateEmployee(ctx context.Context, in *CreateEmployeeRequest, opts ...grpc.CallOption) (*CreateEmployeeResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateEmployeeResponse)
+	err := c.cc.Invoke(ctx, EmployeeService_CreateEmployee_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // EmployeeServiceServer is the server API for EmployeeService service.
 // All implementations must embed UnimplementedEmployeeServiceServer
 // for forward compatibility.
 type EmployeeServiceServer interface {
 	QueryEmployees(context.Context, *QueryEmployeesRequest) (*QueryEmployeesResponse, error)
+	CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error)
 	mustEmbedUnimplementedEmployeeServiceServer()
 }
 
@@ -64,6 +77,9 @@ type UnimplementedEmployeeServiceServer struct{}
 
 func (UnimplementedEmployeeServiceServer) QueryEmployees(context.Context, *QueryEmployeesRequest) (*QueryEmployeesResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method QueryEmployees not implemented")
+}
+func (UnimplementedEmployeeServiceServer) CreateEmployee(context.Context, *CreateEmployeeRequest) (*CreateEmployeeResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateEmployee not implemented")
 }
 func (UnimplementedEmployeeServiceServer) mustEmbedUnimplementedEmployeeServiceServer() {}
 func (UnimplementedEmployeeServiceServer) testEmbeddedByValue()                         {}
@@ -104,6 +120,24 @@ func _EmployeeService_QueryEmployees_Handler(srv interface{}, ctx context.Contex
 	return interceptor(ctx, in, info, handler)
 }
 
+func _EmployeeService_CreateEmployee_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateEmployeeRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EmployeeServiceServer).CreateEmployee(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: EmployeeService_CreateEmployee_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EmployeeServiceServer).CreateEmployee(ctx, req.(*CreateEmployeeRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // EmployeeService_ServiceDesc is the grpc.ServiceDesc for EmployeeService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -114,6 +148,10 @@ var EmployeeService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "QueryEmployees",
 			Handler:    _EmployeeService_QueryEmployees_Handler,
+		},
+		{
+			MethodName: "CreateEmployee",
+			Handler:    _EmployeeService_CreateEmployee_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

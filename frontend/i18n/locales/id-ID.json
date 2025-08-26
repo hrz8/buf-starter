@@ -1,10 +1,11 @@
 {
   "errorCodes": {
-    "6001": "Input tidak valid",
-    "6101": "Sapa kepada '{name}' tidak dikenali",
-    "6901": "Kesalahan Server",
-    "6902": "Kesalahan Server",
-    "6999": "Kesalahan Tidak Dikenal"
+    "60001": "Input tidak valid",
+    "60101": "Sapa kepada '{name}' tidak dikenali",
+    "60201": "Pegawai tidak ditemukan",
+    "60202": "Pegawai sudah ada",
+    "60301": "Projek tidak ditemukan",
+    "69001": "Kesalahan Server"
   },
   "errorPage.goHome": "Kembali ke Beranda",
   "example.allowedNames.errorLoading": "Error memuat nama",

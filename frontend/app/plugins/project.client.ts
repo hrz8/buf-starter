@@ -1,4 +1,4 @@
-import { useProjectStore } from '~/stores/project';
+import { useProjectStore } from '@/stores/project';
 
 export default defineNuxtPlugin(() => {
   const router = useRouter();

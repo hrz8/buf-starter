@@ -36,17 +36,22 @@ const (
 	// EmployeeServiceQueryEmployeesProcedure is the fully-qualified name of the EmployeeService's
 	// QueryEmployees RPC.
 	EmployeeServiceQueryEmployeesProcedure = "/altalune.v1.EmployeeService/QueryEmployees"
+	// EmployeeServiceCreateEmployeeProcedure is the fully-qualified name of the EmployeeService's
+	// CreateEmployee RPC.
+	EmployeeServiceCreateEmployeeProcedure = "/altalune.v1.EmployeeService/CreateEmployee"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
 var (
 	employeeServiceServiceDescriptor              = v1.File_altalune_v1_employee_proto.Services().ByName("EmployeeService")
 	employeeServiceQueryEmployeesMethodDescriptor = employeeServiceServiceDescriptor.Methods().ByName("QueryEmployees")
+	employeeServiceCreateEmployeeMethodDescriptor = employeeServiceServiceDescriptor.Methods().ByName("CreateEmployee")
 )
 
 // EmployeeServiceClient is a client for the altalune.v1.EmployeeService service.
 type EmployeeServiceClient interface {
 	QueryEmployees(context.Context, *connect.Request[v1.QueryEmployeesRequest]) (*connect.Response[v1.QueryEmployeesResponse], error)
+	CreateEmployee(context.Context, *connect.Request[v1.CreateEmployeeRequest]) (*connect.Response[v1.CreateEmployeeResponse], error)
 }
 
 // NewEmployeeServiceClient constructs a client for the altalune.v1.EmployeeService service. By
@@ -65,12 +70,19 @@ func NewEmployeeServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(employeeServiceQueryEmployeesMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		createEmployee: connect.NewClient[v1.CreateEmployeeRequest, v1.CreateEmployeeResponse](
+			httpClient,
+			baseURL+EmployeeServiceCreateEmployeeProcedure,
+			connect.WithSchema(employeeServiceCreateEmployeeMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // employeeServiceClient implements EmployeeServiceClient.
 type employeeServiceClient struct {
 	queryEmployees *connect.Client[v1.QueryEmployeesRequest, v1.QueryEmployeesResponse]
+	createEmployee *connect.Client[v1.CreateEmployeeRequest, v1.CreateEmployeeResponse]
 }
 
 // QueryEmployees calls altalune.v1.EmployeeService.QueryEmployees.
@@ -78,9 +90,15 @@ func (c *employeeServiceClient) QueryEmployees(ctx context.Context, req *connect
 	return c.queryEmployees.CallUnary(ctx, req)
 }
 
+// CreateEmployee calls altalune.v1.EmployeeService.CreateEmployee.
+func (c *employeeServiceClient) CreateEmployee(ctx context.Context, req *connect.Request[v1.CreateEmployeeRequest]) (*connect.Response[v1.CreateEmployeeResponse], error) {
+	return c.createEmployee.CallUnary(ctx, req)
+}
+
 // EmployeeServiceHandler is an implementation of the altalune.v1.EmployeeService service.
 type EmployeeServiceHandler interface {
 	QueryEmployees(context.Context, *connect.Request[v1.QueryEmployeesRequest]) (*connect.Response[v1.QueryEmployeesResponse], error)
+	CreateEmployee(context.Context, *connect.Request[v1.CreateEmployeeRequest]) (*connect.Response[v1.CreateEmployeeResponse], error)
 }
 
 // NewEmployeeServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -95,10 +113,18 @@ func NewEmployeeServiceHandler(svc EmployeeServiceHandler, opts ...connect.Handl
 		connect.WithSchema(employeeServiceQueryEmployeesMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	employeeServiceCreateEmployeeHandler := connect.NewUnaryHandler(
+		EmployeeServiceCreateEmployeeProcedure,
+		svc.CreateEmployee,
+		connect.WithSchema(employeeServiceCreateEmployeeMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/altalune.v1.EmployeeService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case EmployeeServiceQueryEmployeesProcedure:
 			employeeServiceQueryEmployeesHandler.ServeHTTP(w, r)
+		case EmployeeServiceCreateEmployeeProcedure:
+			employeeServiceCreateEmployeeHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -110,4 +136,8 @@ type UnimplementedEmployeeServiceHandler struct{}
 
 func (UnimplementedEmployeeServiceHandler) QueryEmployees(context.Context, *connect.Request[v1.QueryEmployeesRequest]) (*connect.Response[v1.QueryEmployeesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("altalune.v1.EmployeeService.QueryEmployees is not implemented"))
+}
+
+func (UnimplementedEmployeeServiceHandler) CreateEmployee(context.Context, *connect.Request[v1.CreateEmployeeRequest]) (*connect.Response[v1.CreateEmployeeResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("altalune.v1.EmployeeService.CreateEmployee is not implemented"))
 }

@@ -45,32 +45,3 @@ func (c *Container) IsHealthy(ctx context.Context) bool {
 	}
 	return true
 }
-
-// String returns a string representation of the container status
-func (c *Container) String() string {
-	var components []string
-
-	if c.logger != nil {
-		components = append(components, "logger")
-	}
-	if c.config != nil {
-		components = append(components, "config")
-	}
-	if c.db != nil {
-		components = append(components, "database")
-	}
-	if c.greeterRepo != nil {
-		components = append(components, "greeter-repo")
-	}
-	if c.migrationRepo != nil {
-		components = append(components, "migration-repo")
-	}
-	if c.greeterService != nil {
-		components = append(components, "greeter-service")
-	}
-	if c.migrationService != nil {
-		components = append(components, "migration-service")
-	}
-
-	return fmt.Sprintf("Container{components: %v}", components)
-}

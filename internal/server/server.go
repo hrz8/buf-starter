@@ -8,7 +8,6 @@ import (
 	"golang.org/x/net/http2"
 	"golang.org/x/net/http2/h2c"
 	"google.golang.org/grpc"
-	"google.golang.org/grpc/reflection"
 )
 
 type Server struct {
@@ -28,26 +27,12 @@ func NewServer(c *container.Container) *Server {
 	}
 }
 
-func (s *Server) Bootstrap() {
+func (s *Server) Bootstrap() (http.Handler, http.Handler) {
 	mux := s.setupRoutes()
 	handler := s.setupMiddleware(mux)
+
 	s.httpHandler = h2c.NewHandler(handler, &http2.Server{})
+	s.grpcServer = s.setupGRPCServices()
 
-	s.grpcServer = grpc.NewServer()
-	s.setupGRPCServices()
-
-	reflection.Register(s.grpcServer)
-}
-
-func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	if s.httpHandler == nil {
-		http.Error(w, "server not initialized", http.StatusInternalServerError)
-		return
-	}
-
-	s.httpHandler.ServeHTTP(w, r)
-}
-
-func (s *Server) GRPCServer() *grpc.Server {
-	return s.grpcServer
+	return s.httpHandler, s.grpcServer
 }

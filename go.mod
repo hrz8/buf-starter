@@ -8,6 +8,7 @@ require (
 	connectrpc.com/connect v1.18.1
 	github.com/fatih/color v1.18.0
 	github.com/go-playground/validator/v10 v10.27.0
+	github.com/jackc/pgerrcode v0.0.0-20240316143900-6e2875d9b438
 	github.com/jackc/pgx/v5 v5.7.5
 	github.com/pressly/goose/v3 v3.24.3
 	github.com/spf13/cobra v1.9.1
