@@ -319,7 +319,15 @@ function handleSheetClose() {
                 :project-id="activeProjectId!"
                 @success="handleEmployeeCreated"
                 @cancel="handleSheetClose"
-              />
+              >
+                <Button>
+                  <Icon
+                    name="lucide:user-plus"
+                    class="mr-2 h-4 w-4"
+                  />
+                  Add Employee
+                </Button>
+              </EmployeeCreateSheet>
             </div>
           </div>
         </template>

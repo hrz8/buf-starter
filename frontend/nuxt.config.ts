@@ -27,6 +27,13 @@ export default defineNuxtConfig({
   $production: {
     ssr: false,
   },
+  hooks: {
+    // intended to make full spa (genrate only single index.html)
+    // ref: https://nuxt.com/docs/guide/concepts/rendering#deploying-a-static-client-rendered-app
+    'prerender:routes'({ routes }) {
+      routes.clear();
+    },
+  },
   runtimeConfig: {
     public: {
       apiUrl: '',

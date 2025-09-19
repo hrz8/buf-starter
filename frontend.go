@@ -2,5 +2,5 @@ package altalune
 
 import "embed"
 
-//go:embed frontend/.output/public/**
+//go:embed all:frontend/.output/public
 var FrontendEmbeddedFiles embed.FS

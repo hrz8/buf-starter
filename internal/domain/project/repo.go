@@ -212,7 +212,6 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 }
 
 func (r *Repo) buildOrderClause(sorting *query.SortingParams) string {
-	fmt.Println("KADIEE")
 	if sorting == nil || sorting.Field == "" {
 		return " ORDER BY name ASC" // Default sorting
 	}

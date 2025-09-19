@@ -15,8 +15,11 @@ func exists(fsys fs.FS, name string) bool {
 }
 
 func isDir(fsys fs.FS, name string) bool {
-	fi, err := fs.Stat(fsys, name)
-	return err == nil && fi.IsDir()
+	info, err := fs.Stat(fsys, name)
+	if err != nil {
+		return false
+	}
+	return info.IsDir()
 }
 
 func serveFileOr404(w http.ResponseWriter, r *http.Request, fsys fs.FS, name string) {
