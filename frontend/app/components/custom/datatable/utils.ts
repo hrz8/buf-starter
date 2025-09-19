@@ -1,15 +1,5 @@
 import type { Table } from '@tanstack/vue-table';
 
-export type Data = any;
-
-export { default as DataTable } from './DataTable.vue';
-export { default as DataTableColumnHeader } from './DataTableColumnHeader.vue';
-export { default as DataTableContent } from './DataTableContent.vue';
-export { default as DataTableFacetedFilter } from './DataTableFacetedFilter.vue';
-export { default as DataTablePagination } from './DataTablePagination.vue';
-export { default as DataTableRowActions } from './DataTableRowActions.vue';
-export { default as DataTableToolbar } from './DataTableToolbar.vue';
-
 export function useDataTableState<T>(
   tableRef: Ref<{ table: Table<T> } | null>,
 ) {

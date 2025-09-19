@@ -16,10 +16,12 @@ import {
   SidebarRail,
   Sidebar,
 } from '@/components/ui/sidebar';
-import ProjectSwitcher from '@/components/ProjectSwitcher.vue';
-import NavSettings from '@/components/NavSettings.vue';
-import NavMain from '@/components/NavMain.vue';
-import NavUser from '@/components/NavUser.vue';
+import {
+  NavSettings,
+  NavProject,
+  NavMenu,
+  NavUser,
+} from '@/components/custom/nav';
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
@@ -84,10 +86,10 @@ const mainNavItems: NavItem[] = [
 <template>
   <Sidebar v-bind="props">
     <SidebarHeader>
-      <ProjectSwitcher />
+      <NavProject />
     </SidebarHeader>
     <SidebarContent>
-      <NavMain :items="mainNavItems" />
+      <NavMenu :items="mainNavItems" />
       <NavSettings :settings="data.settings" />
     </SidebarContent>
     <SidebarFooter>

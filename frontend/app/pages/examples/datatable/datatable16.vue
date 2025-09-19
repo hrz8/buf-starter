@@ -11,10 +11,12 @@ import {
   DataTableFacetedFilter,
   DataTableColumnHeader,
   DataTableRowActions,
+  DataTable,
+} from '@/components/custom/datatable';
+import {
   useDataTableFilter,
   useDataTableState,
-  DataTable,
-} from '@/components/datatable';
+} from '@/components/custom/datatable/utils';
 import { useServerTableQuery } from '@/composables/useServerTableQuery';
 import { Input } from '@/components/ui/input';
 

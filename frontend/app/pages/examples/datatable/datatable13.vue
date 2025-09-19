@@ -22,7 +22,7 @@ import {
   DataTableRowActions,
   DataTablePagination,
   DataTableToolbar,
-} from '@/components/datatable';
+} from '@/components/custom/datatable';
 import {
   TableHeader, TableEmpty,
   TableBody,

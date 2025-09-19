@@ -22,7 +22,7 @@ import {
   DataTablePagination,
   DataTableToolbar,
   DataTableContent,
-} from '@/components/datatable';
+} from '@/components/custom/datatable';
 import { valueUpdater } from '@/components/ui/table/utils';
 import { Input } from '@/components/ui/input';
 

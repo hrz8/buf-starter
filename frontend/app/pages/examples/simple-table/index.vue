@@ -1,7 +1,9 @@
 <script setup lang="ts">
-import ExampleLanguageSelector from '@/components/features/example/ExampleLanguageSelector.vue';
-import ExampleTableName from '@/components/features/example/ExampleTableName.vue';
-import ExampleSayHello from '@/components/features/example/ExampleSayHello.vue';
+import {
+  ExampleLanguageSelector,
+  ExampleTableName,
+  ExampleSayHello,
+} from '@/components/features/example';
 
 definePageMeta({
   layout: 'default',

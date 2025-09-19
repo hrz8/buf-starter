@@ -15,7 +15,7 @@ import {
   DataTableColumnHeader,
   DataTableRowActions,
   DataTable,
-} from '@/components/datatable';
+} from '@/components/custom/datatable';
 import { Input } from '@/components/ui/input';
 
 const example = exampleRepository();

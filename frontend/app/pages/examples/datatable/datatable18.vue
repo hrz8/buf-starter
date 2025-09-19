@@ -11,16 +11,17 @@ import {
   DataTableFacetedFilter,
   DataTableColumnHeader,
   DataTableRowActions,
+  DataTable,
+} from '@/components/custom/datatable';
+import {
   useDataTableFilter,
   useDataTableState,
-  DataTable,
-} from '@/components/datatable';
-import EmployeeTableLoading from '~/components/features/employee/EmployeeTableLoading.vue';
+} from '@/components/custom/datatable/utils';
+import { EmployeeTableLoading, EmployeeCreateSheet } from '~/components/features/employee';
 import { useEmployeeService } from '@/composables/services/useEmployeeService';
-import { EmployeeCreateSheet } from '~/components/features/employee';
 import { useQueryRequest } from '@/composables/useQueryRequest';
 import { useProjectStore } from '@/stores/project';
-import { Button } from '~/components/ui/button';
+import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 const { activeProjectId } = useProjectStore();

@@ -48,7 +48,7 @@ import {
   DataTableFacetedFilter,
   DataTableColumnHeader,
   DataTableRowActions,
-} from '@/components/datatable';
+} from '@/components/custom/datatable';
 import {
   SelectContent,
   SelectTrigger,

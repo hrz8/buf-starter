@@ -1,8 +1,7 @@
 <script setup lang="ts">
 import type { Table } from '@tanstack/vue-table';
 
-import DataTableViewOptions from './DataTableViewOptions.vue';
-
+import { DataTableViewOptions } from '@/components/custom/datatable';
 import { Button } from '@/components/ui/button';
 
 interface DataTableToolbarProps {

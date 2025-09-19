@@ -2,8 +2,7 @@
 import type { Table } from '@tanstack/vue-table';
 import type { Data } from '.';
 
-import DataTableViewOptions from './DataTableViewOptions.vue';
-
+import { DataTableViewOptions } from '@/components/custom/datatable';
 import { Button } from '@/components/ui/button';
 
 interface Props {

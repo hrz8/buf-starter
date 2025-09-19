@@ -23,7 +23,7 @@ import {
   FormLabel,
   FormItem,
 } from '@/components/ui/form';
-import { useEmployeeService } from '~/composables/services/useEmployeeService';
+import { useEmployeeService } from '@/composables/services/useEmployeeService';
 import { AlertDescription, Alert } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';

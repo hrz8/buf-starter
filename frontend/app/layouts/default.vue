@@ -6,8 +6,7 @@ import {
   SidebarInset,
 } from '@/components/ui/sidebar';
 import { useProjectService } from '@/composables/services/useProjectService';
-import AppSidebar from '@/components/AppSidebar.vue';
-import AppHeader from '@/components/AppHeader.vue';
+import { LayoutSidebar, LayoutHeader } from '@/components/custom/layout';
 import { useProjectStore } from '@/stores/project';
 
 const route = useRoute();
@@ -53,9 +52,9 @@ onMounted(() => {
     :default-open="sidebarOpen"
     @update:open="handleOpenUpdate"
   >
-    <AppSidebar />
+    <LayoutSidebar />
     <SidebarInset>
-      <AppHeader />
+      <LayoutHeader />
       <main
         :key="JSON.stringify(route.query)"
         class="flex-1"

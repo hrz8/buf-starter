@@ -11,10 +11,8 @@ import {
   DataTableFacetedFilter,
   DataTableColumnHeader,
   DataTableRowActions,
-  useDataTableFilter,
-  useDataTableState,
   DataTable,
-} from '@/components/datatable';
+} from '@/components/custom/datatable';
 import {
   SheetDescription,
   SheetTrigger,
@@ -23,7 +21,11 @@ import {
   SheetTitle,
   Sheet,
 } from '@/components/ui/sheet';
-import { useEmployeeService } from '~/composables/services/useEmployeeService';
+import {
+  useDataTableFilter,
+  useDataTableState,
+} from '@/components/custom/datatable/utils';
+import { useEmployeeService } from '@/composables/services/useEmployeeService';
 import { useQueryRequest } from '@/composables/useQueryRequest';
 import { useProjectStore } from '@/stores/project';
 import { Input } from '@/components/ui/input';

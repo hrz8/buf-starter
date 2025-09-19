@@ -52,6 +52,9 @@ export default defineNuxtConfig({
     prefix: '',
     componentDir: './app/components/ui',
   },
+  components: {
+    dirs: [],
+  },
   i18n: {
     strategy: 'no_prefix',
     defaultLocale: 'en-US',
