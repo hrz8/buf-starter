@@ -12,7 +12,7 @@ func mapEmployeesToProto(employees []*Employee) []*altalunev1.Employee {
 
 	result := make([]*altalunev1.Employee, 0, len(employees))
 	for _, emp := range employees {
-		result = append(result, emp.ToEmployeeToProto())
+		result = append(result, emp.ToEmployeeProto())
 	}
 	return result
 }

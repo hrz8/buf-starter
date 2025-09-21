@@ -14,6 +14,30 @@ const (
 	EmployeeStatusInactive EmployeeStatus = "inactive"
 )
 
+var employeeStatusesFromProto = map[altalunev1.EmployeeStatus]EmployeeStatus{
+	altalunev1.EmployeeStatus_EMPLOYEE_STATUS_ACTIVE:   EmployeeStatusActive,
+	altalunev1.EmployeeStatus_EMPLOYEE_STATUS_INACTIVE: EmployeeStatusInactive,
+}
+
+func EmployeeStatusFromProto(s altalunev1.EmployeeStatus) EmployeeStatus {
+	if v, ok := employeeStatusesFromProto[s]; ok {
+		return v
+	}
+	return EmployeeStatusActive
+}
+
+var employeeStatusesToProto = map[EmployeeStatus]altalunev1.EmployeeStatus{
+	EmployeeStatusActive:   altalunev1.EmployeeStatus_EMPLOYEE_STATUS_ACTIVE,
+	EmployeeStatusInactive: altalunev1.EmployeeStatus_EMPLOYEE_STATUS_INACTIVE,
+}
+
+func EmployeeStatusToProto(s EmployeeStatus) altalunev1.EmployeeStatus {
+	if v, ok := employeeStatusesToProto[s]; ok {
+		return v
+	}
+	return altalunev1.EmployeeStatus_EMPLOYEE_STATUS_UNSPECIFIED
+}
+
 type EmployeeQueryResult struct {
 	ID         int64
 	PublicID   string
@@ -50,7 +74,7 @@ type Employee struct {
 	UpdatedAt  time.Time
 }
 
-func (m *Employee) ToEmployeeToProto() *altalunev1.Employee {
+func (m *Employee) ToEmployeeProto() *altalunev1.Employee {
 	var status altalunev1.EmployeeStatus
 	switch m.Status {
 	case EmployeeStatusActive:

@@ -456,8 +456,6 @@ func (r *Repo) createPartitionsForProject(ctx context.Context, projectID int64) 
 			// Log the specific table that failed but continue with others
 			fmt.Printf("Warning: failed to create partition %s: %v\n", partitionName, err)
 			// Don't return error here - we want to try creating all partitions
-		} else {
-			fmt.Printf("Successfully created partition: %s\n", partitionName)
 		}
 	}
 

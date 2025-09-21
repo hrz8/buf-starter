@@ -14,6 +14,30 @@ const (
 	EnvironmentStatusSandbox EnvironmentStatus = "sandbox"
 )
 
+var environmentStatusesFromString = map[string]EnvironmentStatus{
+	"live":    EnvironmentStatusLive,
+	"sandbox": EnvironmentStatusSandbox,
+}
+
+func EnvironmentStatusFromString(s string) EnvironmentStatus {
+	if v, ok := environmentStatusesFromString[s]; ok {
+		return v
+	}
+	return EnvironmentStatusSandbox
+}
+
+var environmentStatusesesToString = map[EnvironmentStatus]string{
+	EnvironmentStatusLive:    "live",
+	EnvironmentStatusSandbox: "sandbox",
+}
+
+func EnvironmentStatusToString(s EnvironmentStatus) string {
+	if v, ok := environmentStatusesesToString[s]; ok {
+		return v
+	}
+	return "sandbox"
+}
+
 type ProjectQueryResult struct {
 	ID          int64
 	PublicID    string

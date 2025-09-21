@@ -101,22 +101,11 @@ func (s *Service) CreateProject(ctx context.Context, req *altalunev1.CreateProje
 		return nil, altalune.NewAlreadyExistsError(req.Name)
 	}
 
-	// Map proto environment to domain environment
-	var domainEnvironment EnvironmentStatus
-	switch req.Environment {
-	case "live":
-		domainEnvironment = EnvironmentStatusLive
-	case "sandbox":
-		domainEnvironment = EnvironmentStatusSandbox
-	default:
-		domainEnvironment = EnvironmentStatusSandbox
-	}
-
 	result, err := s.projectRepo.Create(ctx, &CreateProjectInput{
 		Name:        req.Name,
 		Description: req.Description,
 		Timezone:    req.Timezone,
-		Environment: domainEnvironment,
+		Environment: EnvironmentStatusFromString(req.Environment),
 	})
 	if err != nil {
 		if err == ErrProjectAlreadyExists {
@@ -130,22 +119,13 @@ func (s *Service) CreateProject(ctx context.Context, req *altalunev1.CreateProje
 		return nil, altalune.NewUnexpectedError("failed to create project: %w", err)
 	}
 
-	// Map domain result to proto response
-	protoEnvironment := "sandbox"
-	switch result.Environment {
-	case EnvironmentStatusLive:
-		protoEnvironment = "live"
-	case EnvironmentStatusSandbox:
-		protoEnvironment = "sandbox"
-	}
-
 	return &altalunev1.CreateProjectResponse{
 		Project: &altalunev1.Project{
 			Id:          result.PublicID,
 			Name:        result.Name,
 			Description: result.Description,
 			Timezone:    result.Timezone,
-			Environment: protoEnvironment,
+			Environment: EnvironmentStatusToString(result.Environment),
 			CreatedAt:   timestamppb.New(result.CreatedAt),
 			UpdatedAt:   timestamppb.New(result.UpdatedAt),
 		},

@@ -118,24 +118,13 @@ func (s *Service) CreateEmployee(ctx context.Context, req *altalunev1.CreateEmpl
 		return nil, altalune.NewAlreadyExistsError(req.Email)
 	}
 
-	// Map proto status to domain status
-	var domainStatus EmployeeStatus
-	switch req.Status {
-	case altalunev1.EmployeeStatus_EMPLOYEE_STATUS_ACTIVE:
-		domainStatus = EmployeeStatusActive
-	case altalunev1.EmployeeStatus_EMPLOYEE_STATUS_INACTIVE:
-		domainStatus = EmployeeStatusInactive
-	default:
-		domainStatus = EmployeeStatusActive
-	}
-
 	result, err := s.employeeRepo.Create(ctx, &CreateEmployeeInput{
 		ProjectID:  projectID,
 		Name:       req.Name,
 		Email:      req.Email,
 		Role:       req.Role,
 		Department: req.Department,
-		Status:     domainStatus,
+		Status:     EmployeeStatusFromProto(req.Status),
 	})
 	if err != nil {
 		if err == ErrEmployeeAlreadyExists {
@@ -150,15 +139,6 @@ func (s *Service) CreateEmployee(ctx context.Context, req *altalunev1.CreateEmpl
 		return nil, altalune.NewUnexpectedError("failed to create employee: %w", err)
 	}
 
-	// Map domain result to proto response
-	protoStatus := altalunev1.EmployeeStatus_EMPLOYEE_STATUS_UNSPECIFIED
-	switch result.Status {
-	case EmployeeStatusActive:
-		protoStatus = altalunev1.EmployeeStatus_EMPLOYEE_STATUS_ACTIVE
-	case EmployeeStatusInactive:
-		protoStatus = altalunev1.EmployeeStatus_EMPLOYEE_STATUS_INACTIVE
-	}
-
 	return &altalunev1.CreateEmployeeResponse{
 		Employee: &altalunev1.Employee{
 			Id:         result.PublicID,
@@ -166,7 +146,7 @@ func (s *Service) CreateEmployee(ctx context.Context, req *altalunev1.CreateEmpl
 			Email:      result.Email,
 			Role:       result.Role,
 			Department: result.Department,
-			Status:     protoStatus,
+			Status:     EmployeeStatusToProto(result.Status),
 			CreatedAt:  timestamppb.New(result.CreatedAt),
 			UpdatedAt:  timestamppb.New(result.UpdatedAt),
 		},
