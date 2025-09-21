@@ -15,7 +15,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file altalune/v1/project.proto.
  */
 export const file_altalune_v1_project: GenFile = /*@__PURE__*/
-  fileDesc("ChlhbHRhbHVuZS92MS9wcm9qZWN0LnByb3RvEgthbHRhbHVuZS52MSKfAgoHUHJvamVjdBIXCgJpZBgBIAEoCUILukgIyAEBcgOYAQ4SLwoEbmFtZRgCIAEoCUIhukgeyAEBchkQARgyMhNeW2EtekEtWjAtOVxzXC1fXSskEhwKC2Rlc2NyaXB0aW9uGAMgASgJQge6SARyAhhkEh4KCHRpbWV6b25lGAQgASgJQgy6SAnIAQFyBBABGDISLAoLZW52aXJvbm1lbnQYBSABKAlCF7pIFMgBAXIPUgRsaXZlUgdzYW5kYm94Ei4KCmNyZWF0ZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkAKFFF1ZXJ5UHJvamVjdHNSZXF1ZXN0EigKBXF1ZXJ5GAEgASgLMhkuYWx0YWx1bmUudjEuUXVlcnlSZXF1ZXN0ImkKFVF1ZXJ5UHJvamVjdHNSZXNwb25zZRIiCgRkYXRhGAEgAygLMhQuYWx0YWx1bmUudjEuUHJvamVjdBIsCgRtZXRhGAIgASgLMh4uYWx0YWx1bmUudjEuUXVlcnlNZXRhUmVzcG9uc2UyagoOUHJvamVjdFNlcnZpY2USWAoNUXVlcnlQcm9qZWN0cxIhLmFsdGFsdW5lLnYxLlF1ZXJ5UHJvamVjdHNSZXF1ZXN0GiIuYWx0YWx1bmUudjEuUXVlcnlQcm9qZWN0c1Jlc3BvbnNlIgBCoQEKD2NvbS5hbHRhbHVuZS52MUIMUHJvamVjdFByb3RvUAFaM2dpdGh1Yi5jb20vaHJ6OC9hbHRhbHVuZS9nZW4vYWx0YWx1bmUvdjE7YWx0YWx1bmV2MaICA0FYWKoCC0FsdGFsdW5lLlYxygILQWx0YWx1bmVcVjHiAhdBbHRhbHVuZVxWMVxHUEJNZXRhZGF0YeoCDEFsdGFsdW5lOjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
+  fileDesc("ChlhbHRhbHVuZS92MS9wcm9qZWN0LnByb3RvEgthbHRhbHVuZS52MSKfAgoHUHJvamVjdBIXCgJpZBgBIAEoCUILukgIyAEBcgOYAQ4SLwoEbmFtZRgCIAEoCUIhukgeyAEBchkQARgyMhNeW2EtekEtWjAtOVxzXC1fXSskEhwKC2Rlc2NyaXB0aW9uGAMgASgJQge6SARyAhhkEh4KCHRpbWV6b25lGAQgASgJQgy6SAnIAQFyBBABGDISLAoLZW52aXJvbm1lbnQYBSABKAlCF7pIFMgBAXIPUgRsaXZlUgdzYW5kYm94Ei4KCmNyZWF0ZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkAKFFF1ZXJ5UHJvamVjdHNSZXF1ZXN0EigKBXF1ZXJ5GAEgASgLMhkuYWx0YWx1bmUudjEuUXVlcnlSZXF1ZXN0ImkKFVF1ZXJ5UHJvamVjdHNSZXNwb25zZRIiCgRkYXRhGAEgAygLMhQuYWx0YWx1bmUudjEuUHJvamVjdBIsCgRtZXRhGAIgASgLMh4uYWx0YWx1bmUudjEuUXVlcnlNZXRhUmVzcG9uc2UiswEKFENyZWF0ZVByb2plY3RSZXF1ZXN0Ei8KBG5hbWUYASABKAlCIbpIHsgBAXIZEAEYMjITXlthLXpBLVowLTlcc1wtX10rJBIcCgtkZXNjcmlwdGlvbhgCIAEoCUIHukgEcgIYZBIeCgh0aW1lem9uZRgDIAEoCUIMukgJyAEBcgQQARgyEiwKC2Vudmlyb25tZW50GAQgASgJQhe6SBTIAQFyD1IEbGl2ZVIHc2FuZGJveCJPChVDcmVhdGVQcm9qZWN0UmVzcG9uc2USJQoHcHJvamVjdBgBIAEoCzIULmFsdGFsdW5lLnYxLlByb2plY3QSDwoHbWVzc2FnZRgCIAEoCTLEAQoOUHJvamVjdFNlcnZpY2USWAoNUXVlcnlQcm9qZWN0cxIhLmFsdGFsdW5lLnYxLlF1ZXJ5UHJvamVjdHNSZXF1ZXN0GiIuYWx0YWx1bmUudjEuUXVlcnlQcm9qZWN0c1Jlc3BvbnNlIgASWAoNQ3JlYXRlUHJvamVjdBIhLmFsdGFsdW5lLnYxLkNyZWF0ZVByb2plY3RSZXF1ZXN0GiIuYWx0YWx1bmUudjEuQ3JlYXRlUHJvamVjdFJlc3BvbnNlIgBCoQEKD2NvbS5hbHRhbHVuZS52MUIMUHJvamVjdFByb3RvUAFaM2dpdGh1Yi5jb20vaHJ6OC9hbHRhbHVuZS9nZW4vYWx0YWx1bmUvdjE7YWx0YWx1bmV2MaICA0FYWKoCC0FsdGFsdW5lLlYxygILQWx0YWx1bmVcVjHiAhdBbHRhbHVuZVxWMVxHUEJNZXRhZGF0YeoCDEFsdGFsdW5lOjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
 
 /**
  * @generated from message altalune.v1.Project
@@ -104,6 +104,60 @@ export const QueryProjectsResponseSchema: GenMessage<QueryProjectsResponse> = /*
   messageDesc(file_altalune_v1_project, 2);
 
 /**
+ * @generated from message altalune.v1.CreateProjectRequest
+ */
+export type CreateProjectRequest = Message<"altalune.v1.CreateProjectRequest"> & {
+  /**
+   * @generated from field: string name = 1;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string description = 2;
+   */
+  description: string;
+
+  /**
+   * @generated from field: string timezone = 3;
+   */
+  timezone: string;
+
+  /**
+   * @generated from field: string environment = 4;
+   */
+  environment: string;
+};
+
+/**
+ * Describes the message altalune.v1.CreateProjectRequest.
+ * Use `create(CreateProjectRequestSchema)` to create a new message.
+ */
+export const CreateProjectRequestSchema: GenMessage<CreateProjectRequest> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_project, 3);
+
+/**
+ * @generated from message altalune.v1.CreateProjectResponse
+ */
+export type CreateProjectResponse = Message<"altalune.v1.CreateProjectResponse"> & {
+  /**
+   * @generated from field: altalune.v1.Project project = 1;
+   */
+  project?: Project;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message altalune.v1.CreateProjectResponse.
+ * Use `create(CreateProjectResponseSchema)` to create a new message.
+ */
+export const CreateProjectResponseSchema: GenMessage<CreateProjectResponse> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_project, 4);
+
+/**
  * @generated from service altalune.v1.ProjectService
  */
 export const ProjectService: GenService<{
@@ -114,6 +168,14 @@ export const ProjectService: GenService<{
     methodKind: "unary";
     input: typeof QueryProjectsRequestSchema;
     output: typeof QueryProjectsResponseSchema;
+  },
+  /**
+   * @generated from rpc altalune.v1.ProjectService.CreateProject
+   */
+  createProject: {
+    methodKind: "unary";
+    input: typeof CreateProjectRequestSchema;
+    output: typeof CreateProjectResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_altalune_v1_project, 0);

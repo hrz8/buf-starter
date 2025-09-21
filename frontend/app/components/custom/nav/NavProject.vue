@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import type { Project } from '~~/gen/altalune/v1/project_pb';
+
 import {
   DropdownMenuSeparator,
   DropdownMenuShortcut,
@@ -14,6 +16,7 @@ import {
   SidebarMenu,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { ProjectCreateSheet } from '@/components/features/project';
 import { useProjectStore } from '@/stores/project';
 
 const DEFAULT_PROJECT_ICON = 'lucide:folder';
@@ -41,11 +44,28 @@ const getProjectIcon = (publicId: string) => {
   return RANDOM_ICONS[iconIndex];
 };
 
+const router = useRouter();
 const { isMobile } = useSidebar();
 const projectStore = useProjectStore();
 
 const pending = computed(() => projectStore.pending);
 const error = computed(() => projectStore.error);
+
+const isCreateSheetOpen = ref(false);
+
+function handleProjectCreated(project: Project) {
+  projectStore.addProject(project);
+  router.push({
+    query: {
+      ...router.currentRoute.value.query,
+      pId: project.id,
+    },
+  });
+}
+
+function handleAddProjectClick() {
+  isCreateSheetOpen.value = true;
+}
 </script>
 
 <template>
@@ -171,7 +191,10 @@ const error = computed(() => projectStore.error);
           </div>
 
           <DropdownMenuSeparator />
-          <DropdownMenuItem class="gap-2 p-2">
+          <DropdownMenuItem
+            class="gap-2 p-2"
+            @click="handleAddProjectClick"
+          >
             <div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
               <Icon
                 name="lucide:plus"
@@ -186,4 +209,10 @@ const error = computed(() => projectStore.error);
       </DropdownMenu>
     </SidebarMenuItem>
   </SidebarMenu>
+
+  <!-- Project Create Sheet - Outside dropdown structure -->
+  <ProjectCreateSheet
+    v-model:open="isCreateSheetOpen"
+    @success="handleProjectCreated"
+  />
 </template>

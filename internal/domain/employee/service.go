@@ -129,17 +129,14 @@ func (s *Service) CreateEmployee(ctx context.Context, req *altalunev1.CreateEmpl
 		domainStatus = EmployeeStatusActive
 	}
 
-	// Create the employee
-	input := &CreateEmployeeInput{
+	result, err := s.employeeRepo.Create(ctx, &CreateEmployeeInput{
 		ProjectID:  projectID,
 		Name:       req.Name,
 		Email:      req.Email,
 		Role:       req.Role,
 		Department: req.Department,
 		Status:     domainStatus,
-	}
-
-	result, err := s.employeeRepo.Create(ctx, input)
+	})
 	if err != nil {
 		if err == ErrEmployeeAlreadyExists {
 			return nil, altalune.NewAlreadyExistsError(req.Email)

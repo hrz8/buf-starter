@@ -1,4 +1,8 @@
-import { QueryProjectsRequestSchema, type Project } from '~~/gen/altalune/v1/project_pb';
+import {
+  QueryProjectsRequestSchema,
+  CreateProjectRequestSchema,
+  type Project,
+} from '~~/gen/altalune/v1/project_pb';
 import { type MessageInitShape, create } from '@bufbuild/protobuf';
 
 import type { QueryMetaResponseSchema } from '~~/gen/altalune/v1/common_pb';
@@ -10,10 +14,17 @@ import { useErrorMessage } from '../useErrorMessage';
 export function useProjectService() {
   const { $projectClient } = useNuxtApp();
   const project = projectRepository($projectClient);
-
   const { parseError } = useErrorMessage();
 
   const queryValidator = useConnectValidator(QueryProjectsRequestSchema);
+  const createValidator = useConnectValidator(CreateProjectRequestSchema);
+
+  // Create state for form submission
+  const createState = reactive({
+    loading: false,
+    error: '',
+    success: false,
+  });
 
   async function query(
     req: MessageInitShape<typeof QueryProjectsRequestSchema>,
@@ -24,7 +35,7 @@ export function useProjectService() {
     queryValidator.reset();
 
     if (!queryValidator.validate(req)) {
-      console.warn('Validation failed for QueryEmployeesRequest:', queryValidator.errors.value);
+      console.warn('Validation failed for QueryProjectsRequest:', queryValidator.errors.value);
       return {
         data: [],
         meta: {
@@ -48,11 +59,51 @@ export function useProjectService() {
     }
   }
 
+  async function createProject(
+    req: MessageInitShape<typeof CreateProjectRequestSchema>,
+  ): Promise<Project | null> {
+    createState.loading = true;
+    createState.error = '';
+    createState.success = false;
+
+    createValidator.reset();
+
+    if (!createValidator.validate(req)) {
+      createState.loading = false;
+      return null;
+    }
+
+    try {
+      const message = create(CreateProjectRequestSchema, req);
+      const result = await project.createProject(message);
+      createState.success = true;
+      return result.project || null;
+    } catch (err) {
+      createState.error = parseError(err);
+      throw new Error(createState.error);
+    } finally {
+      createState.loading = false;
+    }
+  }
+
+  function resetCreateState() {
+    createState.loading = false;
+    createState.error = '';
+    createState.success = false;
+    createValidator.reset();
+  }
+
   return {
     // Query
     query,
-
-    // Validation
     queryValidationErrors: queryValidator.errors,
+
+    // Create
+    createProject,
+    createLoading: computed(() => createState.loading),
+    createError: computed(() => createState.error),
+    createSuccess: computed(() => createState.success),
+    createValidationErrors: createValidator.errors,
+    resetCreateState,
   };
 }

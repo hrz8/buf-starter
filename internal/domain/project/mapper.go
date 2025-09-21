@@ -2,21 +2,7 @@ package project
 
 import (
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
-
-// mapProjectToProto converts domain Project to proto Project
-func mapProjectToProto(prj *Project) *altalunev1.Project {
-	return &altalunev1.Project{
-		Id:          prj.ID,
-		Name:        prj.Name,
-		Description: prj.Description,
-		Timezone:    prj.Timezone,
-		Environment: string(prj.Environment),
-		CreatedAt:   timestamppb.New(prj.CreatedAt),
-		UpdatedAt:   timestamppb.New(prj.UpdatedAt),
-	}
-}
 
 // mapProjectsToProto converts slice of domain Projects to proto Projects
 func mapProjectsToProto(projects []*Project) []*altalunev1.Project {
@@ -26,7 +12,7 @@ func mapProjectsToProto(projects []*Project) []*altalunev1.Project {
 
 	result := make([]*altalunev1.Project, 0, len(projects))
 	for _, prj := range projects {
-		result = append(result, mapProjectToProto(prj))
+		result = append(result, prj.ToProjectProto())
 	}
 	return result
 }

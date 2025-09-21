@@ -179,16 +179,7 @@ func (r *Repo) Query(ctx context.Context, projectID int64, params *query.QueryPa
 
 	results := make([]*Employee, 0)
 	for _, v := range queryResults {
-		results = append(results, &Employee{
-			ID:         v.PublicID,
-			Name:       v.Name,
-			Email:      v.Email,
-			Role:       v.Role,
-			Department: v.Department,
-			Status:     v.Status,
-			CreatedAt:  v.CreatedAt,
-			UpdatedAt:  v.UpdatedAt,
-		})
+		results = append(results, v.ToEmployee())
 	}
 
 	return &query.QueryResult[Employee]{

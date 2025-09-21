@@ -9,6 +9,7 @@ import (
 	"github.com/hrz8/altalune"
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	"github.com/hrz8/altalune/internal/shared/query"
+	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
 type Service struct {
@@ -77,5 +78,77 @@ func (s *Service) QueryProjects(ctx context.Context, req *altalunev1.QueryProjec
 			PageCount: result.TotalPages,
 			Filters:   mapFiltersToProto(result.Filters),
 		},
+	}, nil
+}
+
+func (s *Service) CreateProject(ctx context.Context, req *altalunev1.CreateProjectRequest) (*altalunev1.CreateProjectResponse, error) {
+	// Validate request
+	if err := s.validator.Validate(req); err != nil {
+		return nil, altalune.NewInvalidPayloadError(err.Error())
+	}
+
+	// Check if project with same name already exists
+	existingProject, err := s.projectRepo.GetByName(ctx, req.Name)
+	if err != nil && err != ErrProjectNotFound {
+		s.log.Error("failed to check existing project",
+			"error", err,
+			"name", req.Name,
+		)
+		return nil, altalune.NewUnexpectedError("failed to check existing project: %w", err)
+	}
+
+	if existingProject != nil {
+		return nil, altalune.NewAlreadyExistsError(req.Name)
+	}
+
+	// Map proto environment to domain environment
+	var domainEnvironment EnvironmentStatus
+	switch req.Environment {
+	case "live":
+		domainEnvironment = EnvironmentStatusLive
+	case "sandbox":
+		domainEnvironment = EnvironmentStatusSandbox
+	default:
+		domainEnvironment = EnvironmentStatusSandbox
+	}
+
+	result, err := s.projectRepo.Create(ctx, &CreateProjectInput{
+		Name:        req.Name,
+		Description: req.Description,
+		Timezone:    req.Timezone,
+		Environment: domainEnvironment,
+	})
+	if err != nil {
+		if err == ErrProjectAlreadyExists {
+			return nil, altalune.NewAlreadyExistsError(req.Name)
+		}
+		s.log.Error("failed to create project",
+			"error", err,
+			"name", req.Name,
+			"timezone", req.Timezone,
+		)
+		return nil, altalune.NewUnexpectedError("failed to create project: %w", err)
+	}
+
+	// Map domain result to proto response
+	protoEnvironment := "sandbox"
+	switch result.Environment {
+	case EnvironmentStatusLive:
+		protoEnvironment = "live"
+	case EnvironmentStatusSandbox:
+		protoEnvironment = "sandbox"
+	}
+
+	return &altalunev1.CreateProjectResponse{
+		Project: &altalunev1.Project{
+			Id:          result.PublicID,
+			Name:        result.Name,
+			Description: result.Description,
+			Timezone:    result.Timezone,
+			Environment: protoEnvironment,
+			CreatedAt:   timestamppb.New(result.CreatedAt),
+			UpdatedAt:   timestamppb.New(result.UpdatedAt),
+		},
+		Message: "Project created successfully",
 	}, nil
 }

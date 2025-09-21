@@ -26,3 +26,14 @@ func (h *Handler) QueryProjects(
 	}
 	return connect.NewResponse(response), nil
 }
+
+func (h *Handler) CreateProject(
+	ctx context.Context,
+	req *connect.Request[altalunev1.CreateProjectRequest],
+) (*connect.Response[altalunev1.CreateProjectResponse], error) {
+	response, err := h.svc.CreateProject(ctx, req.Msg)
+	if err != nil {
+		return nil, altalune.ToConnectError(err)
+	}
+	return connect.NewResponse(response), nil
+}

@@ -2,32 +2,7 @@ package employee
 
 import (
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
-	"google.golang.org/protobuf/types/known/timestamppb"
 )
-
-// mapEmployeeToProto converts domain Employee to proto Employee
-func mapEmployeeToProto(emp *Employee) *altalunev1.Employee {
-	var status altalunev1.EmployeeStatus
-	switch emp.Status {
-	case EmployeeStatusActive:
-		status = altalunev1.EmployeeStatus_EMPLOYEE_STATUS_ACTIVE
-	case EmployeeStatusInactive:
-		status = altalunev1.EmployeeStatus_EMPLOYEE_STATUS_INACTIVE
-	default:
-		status = altalunev1.EmployeeStatus_EMPLOYEE_STATUS_UNSPECIFIED
-	}
-
-	return &altalunev1.Employee{
-		Id:         emp.ID,
-		Name:       emp.Name,
-		Email:      emp.Email,
-		Role:       emp.Role,
-		Department: emp.Department,
-		Status:     status,
-		CreatedAt:  timestamppb.New(emp.CreatedAt),
-		UpdatedAt:  timestamppb.New(emp.UpdatedAt),
-	}
-}
 
 // mapEmployeesToProto converts slice of domain Employees to proto Employees
 func mapEmployeesToProto(employees []*Employee) []*altalunev1.Employee {
@@ -37,7 +12,7 @@ func mapEmployeesToProto(employees []*Employee) []*altalunev1.Employee {
 
 	result := make([]*altalunev1.Employee, 0, len(employees))
 	for _, emp := range employees {
-		result = append(result, mapEmployeeToProto(emp))
+		result = append(result, emp.ToEmployeeToProto())
 	}
 	return result
 }

@@ -3,10 +3,13 @@ package project
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/hrz8/altalune/internal/postgres"
+	"github.com/hrz8/altalune/internal/shared/nanoid"
 	"github.com/hrz8/altalune/internal/shared/query"
 )
 
@@ -192,15 +195,7 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 	// Convert to domain models
 	results := make([]*Project, 0)
 	for _, v := range queryResults {
-		results = append(results, &Project{
-			ID:          v.PublicID,
-			Name:        v.Name,
-			Description: v.Description,
-			Timezone:    v.Timezone,
-			Environment: v.Environment,
-			CreatedAt:   v.CreatedAt,
-			UpdatedAt:   v.UpdatedAt,
-		})
+		results = append(results, v.ToProject())
 	}
 
 	return &query.QueryResult[Project]{
@@ -287,4 +282,184 @@ func (r *Repo) queryDistinctValues(ctx context.Context, query string) ([]string,
 	}
 
 	return values, nil
+}
+
+// Create creates a new project in the database
+func (r *Repo) Create(ctx context.Context, input *CreateProjectInput) (*CreateProjectResult, error) {
+	// Generate public ID
+	publicID, _ := nanoid.GeneratePublicID()
+
+	// Map domain environment to database string
+	var environmentStr string
+	switch input.Environment {
+	case EnvironmentStatusLive:
+		environmentStr = "live"
+	case EnvironmentStatusSandbox:
+		environmentStr = "sandbox"
+	default:
+		environmentStr = "sandbox"
+	}
+
+	// Insert query
+	insertQuery := `
+		INSERT INTO altalune_projects (
+			public_id,
+			name,
+			description,
+			timezone,
+			environment,
+			created_at,
+			updated_at
+		) VALUES ($1, $2, $3, $4, $5, $6, $7)
+		RETURNING id, public_id, name, description, timezone, environment, created_at, updated_at
+	`
+
+	now := time.Now()
+	var result CreateProjectResult
+	var description sql.NullString
+	var returnedEnvironment string
+
+	err := r.db.QueryRowContext(
+		ctx,
+		insertQuery,
+		publicID,
+		input.Name,
+		input.Description,
+		input.Timezone,
+		environmentStr,
+		now,
+		now,
+	).Scan(
+		&result.ID,
+		&result.PublicID,
+		&result.Name,
+		&description,
+		&result.Timezone,
+		&returnedEnvironment,
+		&result.CreatedAt,
+		&result.UpdatedAt,
+	)
+
+	if err != nil {
+		// Check for unique constraint violation
+		if postgres.IsUniqueViolation(err) {
+			// Check if it's the name constraint
+			if strings.Contains(err.Error(), "ux_altalune_projects_name") {
+				return nil, ErrProjectAlreadyExists
+			}
+		}
+		return nil, fmt.Errorf("create project: %w", err)
+	}
+
+	// Handle nullable description
+	if description.Valid {
+		result.Description = description.String
+	}
+
+	// Map environment back to domain enum
+	switch returnedEnvironment {
+	case "live":
+		result.Environment = EnvironmentStatusLive
+	case "sandbox":
+		result.Environment = EnvironmentStatusSandbox
+	default:
+		result.Environment = EnvironmentStatusSandbox
+	}
+
+	// Create partitions for this new project
+	if err := r.createPartitionsForProject(ctx, result.ID); err != nil {
+		// Log error but don't fail the project creation
+		// Partitions can be created manually if needed
+		fmt.Printf("Warning: failed to create partitions for project %d: %v\n", result.ID, err)
+	}
+
+	return &result, nil
+}
+
+// GetByName retrieves a project by name
+func (r *Repo) GetByName(ctx context.Context, name string) (*Project, error) {
+	query := `
+		SELECT
+			public_id,
+			name,
+			description,
+			timezone,
+			environment,
+			created_at,
+			updated_at
+		FROM altalune_projects
+		WHERE LOWER(name) = LOWER($1)
+		LIMIT 1
+	`
+
+	var prj Project
+	var description sql.NullString
+	var environment string
+
+	err := r.db.QueryRowContext(ctx, query, name).Scan(
+		&prj.ID,
+		&prj.Name,
+		&description,
+		&prj.Timezone,
+		&environment,
+		&prj.CreatedAt,
+		&prj.UpdatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrProjectNotFound
+		}
+		return nil, fmt.Errorf("get project by name: %w", err)
+	}
+
+	// Handle nullable description
+	if description.Valid {
+		prj.Description = description.String
+	}
+
+	// Map environment string to domain enum
+	switch environment {
+	case "live":
+		prj.Environment = EnvironmentStatusLive
+	case "sandbox":
+		prj.Environment = EnvironmentStatusSandbox
+	default:
+		prj.Environment = EnvironmentStatusSandbox
+	}
+
+	return &prj, nil
+}
+
+// partitionedTables defines all tables that need partitions created for new projects
+// Add new tables here when they require partitioning by project_id
+var partitionedTables = []string{
+	"altalune_example_employees",
+	"altalune_project_api_keys",
+	// Add future partitioned tables here:
+	// "altalune_project_logs",
+	// "altalune_project_metrics",
+	// etc.
+}
+
+// createPartitionsForProject creates the necessary database partitions for a new project
+func (r *Repo) createPartitionsForProject(ctx context.Context, projectID int64) error {
+	// Create partitions for all configured tables
+	for _, tableName := range partitionedTables {
+		partitionName := fmt.Sprintf("%s_p%d", tableName, projectID)
+		query := fmt.Sprintf(`
+			CREATE TABLE IF NOT EXISTS %s
+			PARTITION OF %s FOR VALUES IN (%d)
+		`, partitionName, tableName, projectID)
+
+		if _, err := r.db.ExecContext(ctx, query); err != nil {
+			// Log the specific table that failed but continue with others
+			fmt.Printf("Warning: failed to create partition %s: %v\n", partitionName, err)
+			// Don't return error here - we want to try creating all partitions
+		} else {
+			fmt.Printf("Successfully created partition: %s\n", partitionName)
+		}
+	}
+
+	return nil
 }

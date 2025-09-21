@@ -9,41 +9,11 @@ import "buf/validate/validate.proto";
 import "altalune/v1/common.proto";
 
 message Project { 
-  string id = 1 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {
-      len: 14,
-    }
-  ];
-  
-  string name = 2 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {
-      min_len: 1,
-      max_len: 50,
-      pattern: "^[a-zA-Z0-9\\s\\-_]+$"
-    }
-  ];
-  
-  string description = 3 [
-    (buf.validate.field).string.max_len = 100
-  ];
-  
-  string timezone = 4 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {
-      min_len: 1,
-      max_len: 50
-    }
-  ];
-  
-  string environment = 5 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {
-      in: ["live", "sandbox"]
-    }
-  ];
-  
+  string id = 1;
+  string name = 2;
+  string description = 3;
+  string timezone = 4;
+  string environment = 5;
   google.protobuf.Timestamp created_at = 6;
   google.protobuf.Timestamp updated_at = 7;
 }
@@ -57,6 +27,42 @@ message QueryProjectsResponse {
   QueryMetaResponse meta = 2;
 }
 
+message CreateProjectRequest {
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 50,
+      pattern: "^[a-zA-Z0-9\\s\\-_]+$"
+    }
+  ];
+
+  string description = 2 [
+    (buf.validate.field).string.max_len = 100
+  ];
+
+  string timezone = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 50
+    }
+  ];
+
+  string environment = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: ["live", "sandbox"]
+    }
+  ];
+}
+
+message CreateProjectResponse {
+  Project project = 1;
+  string message = 2;
+}
+
 service ProjectService {
   rpc QueryProjects(QueryProjectsRequest) returns (QueryProjectsResponse) {}
+  rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse) {}
 }

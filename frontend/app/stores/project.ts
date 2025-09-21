@@ -44,6 +44,11 @@ export const useProjectStore = defineStore('project', () => {
     }
   }
 
+  function addProject(project: Project) {
+    projects.value = [project, ...projects.value];
+    setActiveProject(project.id);
+  }
+
   function setLoading(isLoading: boolean) {
     pending.value = isLoading;
   }
@@ -60,6 +65,7 @@ export const useProjectStore = defineStore('project', () => {
     currentProject,
     setProjects,
     setActiveProject,
+    addProject,
     setLoading,
     setError,
   };
