@@ -541,6 +541,7 @@ cd frontend && pnpm dev
 **Before Implementation:**
 
 - [ ] Analyzed existing frontend components for reusability
+- [ ] Add new shadcn-vue component if not exist yet using `pnpm dlx shadcn-vue@latest add <component>`
 - [ ] Checked if repository/service already exists for the domain
 - [ ] Reviewed similar domain implementations for patterns
 - [ ] Generated latest protobuf types (`buf generate`)
@@ -562,5 +563,114 @@ cd frontend && pnpm dev
 - [ ] Verified data table refresh after creation
 - [ ] Tested responsive design on mobile/desktop
 - [ ] Verified accessibility (keyboard navigation, screen readers)
+
+## Sheet/Dialog Best Practices
+
+**⚠️ Common Issue: Sheets/Dialogs Inside Dropdown Menus**
+
+When placing Sheet or AlertDialog components inside DropdownMenu items, you may encounter an issue where the sheet/dialog opens but immediately closes. This happens due to event propagation conflicts.
+
+**❌ Problematic Pattern (Causes Immediate Closing):**
+
+```vue
+<DropdownMenu>
+  <DropdownMenuContent>
+    <!-- DON'T DO THIS - Sheet will close immediately -->
+    <MyCustomSheet>
+      <DropdownMenuItem>Edit</DropdownMenuItem>
+    </MyCustomSheet>
+  </DropdownMenuContent>
+</DropdownMenu>
+```
+
+**✅ Correct Pattern (Manual Control):**
+
+```vue
+<template>
+  <DropdownMenu>
+    <DropdownMenuContent>
+      <!-- Use direct click handler -->
+      <DropdownMenuItem @click="openMySheet">Edit</DropdownMenuItem>
+    </DropdownMenuContent>
+  </DropdownMenu>
+
+  <!-- Place Sheet/Dialog outside dropdown -->
+  <MyCustomSheet
+    v-model:open="isSheetOpen"
+    @success="handleSuccess"
+    @cancel="closeMySheet"
+  />
+</template>
+
+<script setup>
+const isSheetOpen = ref(false);
+
+function openMySheet() {
+  // Use nextTick to ensure dropdown closes first
+  nextTick(() => {
+    isSheetOpen.value = true;
+  });
+}
+
+function closeMySheet() {
+  isSheetOpen.value = false;
+}
+
+function handleSuccess() {
+  closeMySheet();
+  // Handle success logic
+}
+</script>
+```
+
+**Key Requirements for Sheet/Dialog Components:**
+
+1. **Support v-model:open**: Components should accept an optional `open` prop and emit `update:open`
+2. **Conditional Trigger**: Only show trigger slot when not controlled externally
+3. **nextTick Usage**: Use `nextTick()` when opening from dropdown items
+
+**Component Implementation Pattern:**
+
+```vue
+<!-- MyCustomSheet.vue -->
+<script setup>
+const props = defineProps<{
+  // Your component props
+  data: SomeType;
+  open?: boolean; // For v-model:open support
+}>();
+
+const emit = defineEmits<{
+  success: [result: SomeType];
+  cancel: [];
+  'update:open': [value: boolean]; // For v-model:open support
+}>();
+
+// Support both internal state and v-model:open
+const isSheetOpen = computed({
+  get: () => props.open ?? false,
+  set: (value: boolean) => emit('update:open', value),
+});
+</script>
+
+<template>
+  <Sheet v-model:open="isSheetOpen">
+    <!-- Only show trigger when not controlled externally -->
+    <SheetTrigger v-if="!props.open && $slots.default" as-child>
+      <slot />
+    </SheetTrigger>
+    <SheetContent>
+      <!-- Your content -->
+    </SheetContent>
+  </Sheet>
+</template>
+```
+
+**Why This Pattern Works:**
+
+1. **Event Isolation**: Sheet/Dialog is outside the dropdown, preventing conflicts
+2. **Proper Timing**: `nextTick()` ensures dropdown closes before sheet opens
+3. **Flexible Usage**: Component works both with triggers and manual control
+4. **Clean Separation**: UI state management is explicit and predictable
 
 This workflow ensures type-safe, consistent, and maintainable frontend development while leveraging the power of protobuf validation and Connect-RPC.

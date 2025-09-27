@@ -217,6 +217,13 @@ var (
 
 ### Step 8: Integration & Registration
 
+** Service Registration Rules:**
+
+- **Extending Existing Service**: If you're adding methods to an existing service (like EmployeeService), **NO registration needed** - new methods are automatically available after server restart
+- **Creating New Service**: If creating a completely new service, you must register it manually
+
+**For New Services Only:**
+
 **1. Update Container (`internal/container/container.go`):**
 
 ```go
@@ -238,6 +245,13 @@ entityPath, entityConnectHandler := protov1connect.NewEntityServiceHandler(entit
 connectrpcMux.Handle(entityPath, entityConnectHandler)
 ```
 
+**For Existing Services (Most Common):**
+
+- Add new RPC methods to existing .proto file
+- Implement methods in existing service/handler
+- Run `buf generate`
+- **Restart server** - new methods are automatically available
+
 ### Step 9: Code Generation & Testing
 
 ```bash
@@ -246,6 +260,12 @@ buf generate
 
 # Build and test
 go build -o ./tmp/test-app cmd/altalune/*.go
+
+# IMPORTANT: Restart the server after protobuf generation
+# New RPC methods won't be available until server restart
+kill <server_process> && ./bin/app serve -c config.yaml
+# OR if using Air for development:
+# Air will automatically restart the server
 
 # Test via HTTP/Connect-RPC
 curl -X POST http://localhost:8080/api/domain.v1.EntityService/CreateEntity \
