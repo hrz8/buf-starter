@@ -31,7 +31,7 @@ import { Input } from '@/components/ui/input';
 
 const { activeProjectId } = useProjectStore();
 
-const { query, resetCreateState } = useEmployeeService();
+const { query, resetCreateState, getEmployee, getLoading } = useEmployeeService();
 
 const page = ref(1);
 const pageSize = ref(10);
@@ -246,6 +246,10 @@ const selectedEmployee = ref<Employee | null>(null);
 const isEditSheetOpen = ref(false);
 const isDeleteDialogOpen = ref(false);
 
+// Duplicate sheet state
+const duplicateEmployee = ref<Employee | null>(null);
+const isDuplicateSheetOpen = ref(false);
+
 // Handle DataTableBasicRowActions events
 function handleEdit(row: any) {
   selectedEmployee.value = row.original as Employee;
@@ -261,9 +265,29 @@ function handleDelete(row: any) {
   });
 }
 
-function handleDuplicate(row: any) {
-  // TODO: Implement duplicate functionality
-  console.info('Duplicate:', row.original);
+async function handleDuplicate(row: any) {
+  const employeeId = row.original.id;
+
+  // Open sheet immediately to show loading state
+  duplicateEmployee.value = null;
+  isDuplicateSheetOpen.value = true;
+
+  try {
+    // Fetch full employee details using getEmployee service
+    const fullEmployee = await getEmployee({
+      projectId: activeProjectId ?? '',
+      employeeId: employeeId,
+    });
+
+    if (fullEmployee) {
+      duplicateEmployee.value = fullEmployee;
+    }
+  } catch (error) {
+    console.error('Failed to fetch employee for duplication:', error);
+    // Close sheet if fetch fails
+    isDuplicateSheetOpen.value = false;
+    // You could add a toast error here if needed
+  }
 }
 
 function handleFavorite(row: any) {
@@ -292,6 +316,18 @@ function closeEditSheet() {
 function closeDeleteDialog() {
   isDeleteDialogOpen.value = false;
   selectedEmployee.value = null;
+}
+
+// Duplicate Sheet handlers
+function handleEmployeeDuplicated() {
+  isDuplicateSheetOpen.value = false;
+  duplicateEmployee.value = null;
+  refresh();
+}
+
+function closeDuplicateSheet() {
+  isDuplicateSheetOpen.value = false;
+  duplicateEmployee.value = null;
 }
 </script>
 
@@ -419,6 +455,17 @@ function closeDeleteDialog() {
       :employee="selectedEmployee"
       @success="handleEmployeeDeleted"
       @cancel="closeDeleteDialog"
+    />
+
+    <!-- Employee Duplicate Sheet - Outside DataTable to avoid dropdown conflicts -->
+    <EmployeeCreateSheet
+      v-if="isDuplicateSheetOpen"
+      v-model:open="isDuplicateSheetOpen"
+      :project-id="activeProjectId!"
+      :initial-data="duplicateEmployee"
+      :loading="getLoading"
+      @success="handleEmployeeDuplicated"
+      @cancel="closeDuplicateSheet"
     />
   </div>
 </template>

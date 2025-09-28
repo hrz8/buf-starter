@@ -27,11 +27,20 @@ import {
 } from '@/components/ui/form';
 import { useEmployeeService } from '@/composables/services/useEmployeeService';
 import { AlertDescription, Alert } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 const props = defineProps<{
   projectId: string;
+  initialData?: Employee | null;
+  loading?: boolean;
+  // Configuration for duplication behavior
+  duplicateConfig?: {
+    suffixField?: string; // Field to append " Copy" to (default: 'name')
+    clearFields?: string[]; // Fields to clear instead of copy (default: none)
+    suffix?: string; // Custom suffix (default: ' Copy')
+  };
 }>();
 
 const emit = defineEmits<{
@@ -57,17 +66,57 @@ const formSchema = toTypedSchema(z.object({
   status: z.number().int().min(0),
 }));
 
+// Compute initial values based on whether we're duplicating or creating new
+const initialFormValues = computed(() => {
+  if (props.initialData) {
+    // Default configuration for duplication
+    const config = props.duplicateConfig || {};
+    const suffixField = config.suffixField || 'name';
+    const clearFields = config.clearFields || [];
+    const suffix = config.suffix || ' Copy';
+
+    // Helper function to get field value
+    const getFieldValue = (fieldName: string, originalValue: any) => {
+      // If field should be cleared, return empty string
+      if (clearFields.includes(fieldName)) {
+        return '';
+      }
+
+      // If this is the suffix field, append the suffix
+      if (fieldName === suffixField && originalValue) {
+        return `${originalValue}${suffix}`;
+      }
+
+      // Otherwise, copy the original value
+      return originalValue || '';
+    };
+
+    // Duplicating: pre-populate with existing data using configuration
+    return {
+      projectId: props.projectId,
+      name: getFieldValue('name', props.initialData.name),
+      email: getFieldValue('email', props.initialData.email),
+      role: getFieldValue('role', props.initialData.role),
+      department: getFieldValue('department', props.initialData.department),
+      status: getFieldValue('status', props.initialData.status) || EmployeeStatus.ACTIVE,
+    };
+  } else {
+    // Creating new: use empty defaults
+    return {
+      projectId: props.projectId,
+      name: '',
+      email: '',
+      role: '',
+      department: '',
+      status: EmployeeStatus.ACTIVE,
+    };
+  }
+});
+
 // Initialize form with vee-validate
 const form = useForm({
   validationSchema: formSchema,
-  initialValues: {
-    projectId: props.projectId,
-    name: '',
-    email: '',
-    role: '',
-    department: '',
-    status: EmployeeStatus.ACTIVE,
-  },
+  initialValues: initialFormValues.value,
 });
 
 const statusOptions = [
@@ -141,14 +190,7 @@ function handleCancel() {
 
 function resetForm() {
   form.resetForm({
-    values: {
-      projectId: props.projectId,
-      name: '',
-      email: '',
-      role: '',
-      department: '',
-      status: EmployeeStatus.ACTIVE,
-    },
+    values: initialFormValues.value,
   });
   resetCreateState();
 }
@@ -160,13 +202,59 @@ watch(() => props.projectId, (newProjectId) => {
   }
 });
 
+// Watch for initial data changes (for duplication)
+watch(() => props.initialData, () => {
+  // Reset form with new initial values when initial data changes
+  form.resetForm({
+    values: initialFormValues.value,
+  });
+  resetCreateState();
+}, { immediate: true });
+
 onUnmounted(() => {
   resetCreateState();
 });
 </script>
 
 <template>
+  <!-- Loading skeleton while fetching employee data for duplication -->
+  <div
+    v-if="props.loading"
+    class="space-y-6"
+  >
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-20" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-64" />
+    </div>
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-24" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-48" />
+    </div>
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-16" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-56" />
+    </div>
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-20" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-60" />
+    </div>
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-16" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-44" />
+    </div>
+    <div class="flex justify-end space-x-2 pt-4">
+      <Skeleton class="h-10 w-16" />
+      <Skeleton class="h-10 w-32" />
+    </div>
+  </div>
+
   <form
+    v-else
     class="space-y-6"
     @submit="onSubmit"
   >
@@ -392,7 +480,11 @@ onUnmounted(() => {
           name="lucide:loader-2"
           class="mr-2 h-4 w-4 animate-spin"
         />
-        {{ createLoading ? 'Creating...' : 'Create Employee' }}
+        {{
+          createLoading
+            ? 'Creating...'
+            : (props.initialData ? 'Duplicate Employee' : 'Create Employee')
+        }}
       </Button>
     </div>
   </form>

@@ -14,6 +14,14 @@ import {
 
 const props = defineProps<{
   projectId: string;
+  initialData?: Employee | null;
+  loading?: boolean;
+  // Configuration for duplication behavior
+  duplicateConfig?: {
+    suffixField?: string; // Field to append " Copy" to (default: 'name')
+    clearFields?: string[]; // Fields to clear instead of copy (default: none)
+    suffix?: string; // Custom suffix (default: ' Copy')
+  };
 }>();
 
 const emit = defineEmits<{
@@ -41,14 +49,21 @@ function handleSheetClose() {
     </SheetTrigger>
     <SheetContent class="w-full sm:max-w-[540px] overflow-y-auto">
       <SheetHeader>
-        <SheetTitle>Add New Employee</SheetTitle>
+        <SheetTitle>{{ props.initialData ? 'Duplicate Employee' : 'Add New Employee' }}</SheetTitle>
         <SheetDescription>
-          Fill in the employee details below. All fields marked with * are required.
+          {{
+            props.initialData
+              ? 'Review and modify the employee details below. All fields marked with * are required.'
+              : 'Fill in the employee details below. All fields marked with * are required.'
+          }}
         </SheetDescription>
       </SheetHeader>
       <div class="mt-6 px-6">
         <EmployeeCreateForm
           :project-id="props.projectId"
+          :initial-data="props.initialData"
+          :loading="props.loading"
+          :duplicate-config="props.duplicateConfig"
           @success="handleEmployeeCreated"
           @cancel="handleSheetClose"
         />
