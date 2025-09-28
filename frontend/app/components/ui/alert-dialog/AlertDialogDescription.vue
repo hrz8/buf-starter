@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { AlertDialogDescription } from 'reka-ui';
-import { reactiveOmit } from '@vueuse/core';
-
 import type { AlertDialogDescriptionProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
+
+import { reactiveOmit } from '@vueuse/core';
+import { AlertDialogDescription } from 'reka-ui';
 
 import { cn } from '@/lib/utils';
 

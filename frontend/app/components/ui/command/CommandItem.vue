@@ -1,18 +1,23 @@
 <script setup lang="ts">
-import {
-  useForwardPropsEmits, ListboxItem, useId,
-} from 'reka-ui';
-import {
-  onUnmounted, onMounted, computed, ref,
-} from 'vue';
-import { useCurrentElement, reactiveOmit } from '@vueuse/core';
-
 import type { ListboxItemEmits, ListboxItemProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
+import { reactiveOmit, useCurrentElement } from '@vueuse/core';
 
-import { useCommandGroup, useCommand } from '.';
+import {
+  ListboxItem,
+  useForwardPropsEmits,
+  useId,
+} from 'reka-ui';
+import {
+  computed,
+  onMounted,
+  onUnmounted,
+  ref,
+} from 'vue';
 
 import { cn } from '@/lib/utils';
+
+import { useCommand, useCommandGroup } from '.';
 
 const props = defineProps<ListboxItemProps & { class?: HTMLAttributes['class'] }>();
 const emits = defineEmits<ListboxItemEmits>();
@@ -28,7 +33,8 @@ const groupContext = useCommandGroup();
 const isRender = computed(() => {
   if (!filterState.search) {
     return true;
-  } else {
+  }
+  else {
     const filteredCurrentItem = filterState.filtered.items.get(id);
     // If the filtered items is undefined means not in the all times map yet
     // Do the first render to add into the map
@@ -54,7 +60,8 @@ onMounted(() => {
   if (groupId) {
     if (!allGroups.value.has(groupId)) {
       allGroups.value.set(groupId, new Set([id]));
-    } else {
+    }
+    else {
       allGroups.value.get(groupId)?.add(id);
     }
   }

@@ -1,5 +1,5 @@
-import type { ColumnFiltersState, SortingState } from '@tanstack/vue-table';
 import type { QueryOptions } from '#shared/types/query';
+import type { ColumnFiltersState, SortingState } from '@tanstack/vue-table';
 
 /**
  * @deprecated since `useQueryRequest` introduced

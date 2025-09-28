@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { useForwardProps, ListboxContent } from 'reka-ui';
-import { reactiveOmit } from '@vueuse/core';
-
 import type { ListboxContentProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
+
+import { reactiveOmit } from '@vueuse/core';
+import { ListboxContent, useForwardProps } from 'reka-ui';
 
 import { cn } from '@/lib/utils';
 

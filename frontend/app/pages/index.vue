@@ -1,7 +1,3 @@
-<template>
-  <div>Redirecting to dashboard...</div>
-</template>
-
 <script setup lang="ts">
 definePageMeta({
   middleware: () => {
@@ -9,3 +5,7 @@ definePageMeta({
   },
 });
 </script>
+
+<template>
+  <div>Redirecting to dashboard...</div>
+</template>

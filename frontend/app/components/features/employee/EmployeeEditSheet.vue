@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import type { Employee } from '~~/gen/altalune/v1/employee_pb';
 
-import EmployeeEditForm from './EmployeeEditForm.vue';
-
 import {
-  SheetDescription,
-  SheetTrigger,
+  Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
-  Sheet,
+  SheetTrigger,
 } from '@/components/ui/sheet';
+
+import EmployeeEditForm from './EmployeeEditForm.vue';
 
 const props = defineProps<{
   projectId: string;
@@ -19,8 +19,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  success: [employee: Employee];
-  cancel: [];
+  'success': [employee: Employee];
+  'cancel': [];
   'update:open': [value: boolean];
 }>();
 const isSheetOpen = computed({
@@ -37,7 +37,6 @@ function handleSheetClose() {
   isSheetOpen.value = false;
   emit('cancel');
 }
-
 </script>
 
 <template>

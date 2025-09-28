@@ -1,20 +1,21 @@
 <!-- step 15 -->
 <script setup lang="ts">
-import {
-  createColumnHelper,
-  type Table,
-} from '@tanstack/vue-table';
-
 import type { Employee } from '#shared/repository/example';
+
 import type { QueryOptions } from '#shared/types/query';
+import type { Table } from '@tanstack/vue-table';
 
 import { exampleRepository } from '#shared/repository/example';
+import {
+  createColumnHelper,
+
+} from '@tanstack/vue-table';
 
 import {
-  DataTableBasicRowActions,
-  DataTableFacetedFilter,
-  DataTableColumnHeader,
   DataTable,
+  DataTableBasicRowActions,
+  DataTableColumnHeader,
+  DataTableFacetedFilter,
 } from '@/components/custom/datatable';
 import { Input } from '@/components/ui/input';
 
@@ -60,7 +61,7 @@ const queryOptions = computed<QueryOptions>(() => {
 function serializeFilters(filters: NonNullable<QueryOptions['filters']>): string {
   return Object.keys(filters)
     .sort()
-    .map((key) => `${key}:${filters[key]}`)
+    .map(key => `${key}:${filters[key]}`)
     .join('|');
 }
 
@@ -105,7 +106,7 @@ const columns = [
       column,
       title: 'ID',
     }),
-    cell: (info) => h('div', { class: 'w-20' }, info.getValue()),
+    cell: info => h('div', { class: 'w-20' }, info.getValue()),
     enableSorting: true,
   }),
   columnHelper.accessor('name', {
@@ -113,7 +114,7 @@ const columns = [
       column,
       title: 'Name',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('email', {
@@ -121,7 +122,7 @@ const columns = [
       column,
       title: 'Email',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('role', {
@@ -129,7 +130,7 @@ const columns = [
       column,
       title: 'Role',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('department', {
@@ -137,7 +138,7 @@ const columns = [
       column,
       title: 'Department',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('status', {
@@ -179,7 +180,7 @@ const columns = [
 
 // role filters
 const roleFilterValues = ref<string[]>([]);
-const roleOptions = computed(() => response.value?.meta.filters?.['roles']?.map((role) => ({
+const roleOptions = computed(() => response.value?.meta.filters?.roles?.map(role => ({
   label: role,
   value: role,
 })) ?? []);
@@ -197,7 +198,7 @@ function onRoleFilterClear(table?: Table<Employee>) {
 
 // department filters
 const departmentFilterValues = ref<string[]>([]);
-const departmentOptions = computed(() => response.value?.meta.filters?.['departments']?.map((dept) => ({
+const departmentOptions = computed(() => response.value?.meta.filters?.departments?.map(dept => ({
   label: dept,
   value: dept,
 })) ?? []);

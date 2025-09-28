@@ -1,18 +1,18 @@
 <!-- step 99 -->
 <script setup lang="ts">
-import {
-  type ColumnFiltersState,
-  type PaginationState,
-  createColumnHelper,
-  type SortingState,
-  type Table,
-} from '@tanstack/vue-table';
+import type { Employee } from '#shared/repository/example';
+
+import type { ColumnFiltersState, PaginationState, SortingState, Table } from '@tanstack/vue-table';
 
 import type { QueryOptions } from '~~/shared/types/query';
+import { exampleRepository } from '#shared/repository/example';
+import {
 
-import { exampleRepository, type Employee } from '#shared/repository/example';
+  createColumnHelper,
 
-import { DataTableFacetedFilter, DataTable } from '@/components/datatable-sample-only';
+} from '@tanstack/vue-table';
+
+import { DataTable, DataTableFacetedFilter } from '@/components/datatable-sample-only';
 import { Input } from '@/components/ui/input';
 
 const example = exampleRepository();
@@ -56,7 +56,7 @@ const queryOptions = computed<QueryOptions>(() => {
 function serializeFilters(filters: NonNullable<QueryOptions['filters']>): string {
   return Object.keys(filters)
     .sort()
-    .map((key) => `${key}:${filters[key]}`)
+    .map(key => `${key}:${filters[key]}`)
     .join('|');
 }
 
@@ -91,27 +91,27 @@ const columnHelper = createColumnHelper<Employee>();
 const columns = [
   columnHelper.accessor('id', {
     header: 'ID',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('name', {
     header: 'Name',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('email', {
     header: 'Email',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('role', {
     header: 'Role',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('department', {
     header: 'Department',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('status', {
@@ -186,7 +186,7 @@ function onClearStatusFilter(table?: Table<any>) {
           title="Status"
           :options="[
             { label: 'Active', value: 'active' },
-            { label: 'Inactive', value: 'inactive' }
+            { label: 'Inactive', value: 'inactive' },
           ]"
           @update="(selected) => onStatusFilter(table, selected)"
           @clear="() => onClearStatusFilter(table)"

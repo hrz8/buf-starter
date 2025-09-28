@@ -1,13 +1,20 @@
 <script setup lang="ts">
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
-  CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList, Command,
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
 } from '@/components/ui/command';
 import {
-  PopoverContent, PopoverTrigger, Popover,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
-import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
 
 interface Option {
   label: string;
@@ -28,8 +35,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const emit = defineEmits<{
   'update:modelValue': [value: string[]];
-  update: [value: string[]];
-  clear: [];
+  'update': [value: string[]];
+  'clear': [];
 }>();
 
 const selectedValues = ref<string[]>(props.modelValue ?? []);
@@ -42,11 +49,13 @@ watch(() => props.modelValue, (newValue) => {
 function toggleValue(value: string) {
   if (props.multiple) {
     if (selectedValues.value.includes(value)) {
-      selectedValues.value = selectedValues.value.filter((v) => v !== value);
-    } else {
+      selectedValues.value = selectedValues.value.filter(v => v !== value);
+    }
+    else {
       selectedValues.value = [...selectedValues.value, value];
     }
-  } else {
+  }
+  else {
     selectedValues.value = selectedValues.value[0] === value ? [] : [value];
   }
 
@@ -64,7 +73,7 @@ function clearAll() {
 
 const selectedLabels = computed(() => {
   return selectedValues.value
-    .map((value) => props.options.find((option) => option.value === value)?.label)
+    .map(value => props.options.find(option => option.value === value)?.label)
     .filter(Boolean);
 });
 </script>

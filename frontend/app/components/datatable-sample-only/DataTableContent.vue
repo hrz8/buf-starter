@@ -1,15 +1,16 @@
 <script setup lang="ts">
+import type { ColumnDef, Table as TanstackTable } from '@tanstack/vue-table';
 import {
-  type Table as TanstackTable, type ColumnDef, FlexRender,
+  FlexRender,
 } from '@tanstack/vue-table';
 
 import {
-  TableHeader,
+  Table,
   TableBody,
   TableCell,
   TableHead,
+  TableHeader,
   TableRow,
-  Table,
 } from '@/components/ui/table';
 
 interface DataTableContentProps {

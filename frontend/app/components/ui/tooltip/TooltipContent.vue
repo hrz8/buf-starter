@@ -1,11 +1,14 @@
 <script setup lang="ts">
-import {
-  useForwardPropsEmits, TooltipContent, TooltipPortal, TooltipArrow,
-} from 'reka-ui';
-import { reactiveOmit } from '@vueuse/core';
-
 import type { TooltipContentEmits, TooltipContentProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
+
+import { reactiveOmit } from '@vueuse/core';
+import {
+  TooltipArrow,
+  TooltipContent,
+  TooltipPortal,
+  useForwardPropsEmits,
+} from 'reka-ui';
 
 import { cn } from '@/lib/utils';
 
@@ -36,7 +39,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
         'data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2',
         'data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
         'z-50 w-fit rounded-md px-3 py-1.5 text-xs text-balance',
-        props.class
+        props.class,
       )"
     >
       <slot />

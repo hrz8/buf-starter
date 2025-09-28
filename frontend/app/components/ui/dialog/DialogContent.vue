@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import {
-  useForwardPropsEmits,
-  DialogContent,
-  DialogPortal,
-  DialogClose,
-} from 'reka-ui';
-import { reactiveOmit } from '@vueuse/core';
-import { X } from 'lucide-vue-next';
-
 import type { DialogContentEmits, DialogContentProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
+import { reactiveOmit } from '@vueuse/core';
 
-import DialogOverlay from './DialogOverlay.vue';
+import { X } from 'lucide-vue-next';
+import {
+  DialogClose,
+  DialogContent,
+  DialogPortal,
+  useForwardPropsEmits,
+} from 'reka-ui';
 
 import { cn } from '@/lib/utils';
+
+import DialogOverlay from './DialogOverlay.vue';
 
 const props = defineProps<DialogContentProps & { class?: HTMLAttributes['class'] }>();
 const emits = defineEmits<DialogContentEmits>();

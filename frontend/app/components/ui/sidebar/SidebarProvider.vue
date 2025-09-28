@@ -1,22 +1,24 @@
 <script setup lang="ts">
+import type { HTMLAttributes, Ref } from 'vue';
 import {
-  useEventListener, useMediaQuery, useVModel,
+  useEventListener,
+  useMediaQuery,
+  useVModel,
 } from '@vueuse/core';
 import { TooltipProvider } from 'reka-ui';
+
 import { computed, ref } from 'vue';
 
-import type { HTMLAttributes, Ref } from 'vue';
+import { cn } from '@/lib/utils';
 
 import {
-  SIDEBAR_KEYBOARD_SHORTCUT,
-  SIDEBAR_COOKIE_MAX_AGE,
   provideSidebarContext,
+  SIDEBAR_COOKIE_MAX_AGE,
   SIDEBAR_COOKIE_NAME,
-  SIDEBAR_WIDTH_ICON,
+  SIDEBAR_KEYBOARD_SHORTCUT,
   SIDEBAR_WIDTH,
+  SIDEBAR_WIDTH_ICON,
 } from './utils';
-
-import { cn } from '@/lib/utils';
 
 const props = withDefaults(defineProps<{
   defaultOpen?: boolean;
@@ -88,7 +90,7 @@ provideSidebarContext({
       }"
       :class="cn(
         'group/sidebar-wrapper has-data-[variant=inset]:bg-sidebar flex min-h-svh w-full',
-        props.class
+        props.class,
       )"
       v-bind="$attrs"
     >

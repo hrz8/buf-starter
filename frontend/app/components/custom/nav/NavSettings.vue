@@ -2,11 +2,11 @@
 import type { LucideIcon } from 'lucide-vue-next';
 
 import {
+  SidebarGroup,
   SidebarGroupLabel,
+  SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarGroup,
-  SidebarMenu,
 } from '@/components/ui/sidebar';
 import { useSidebarNavigation } from '@/composables/navigation/useSidebarNavigation';
 

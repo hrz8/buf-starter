@@ -13,7 +13,7 @@ export const useProjectStore = defineStore('project', () => {
     if (!projects.value.length || !activeProjectId.value) {
       return null;
     }
-    return projects.value.find((p) => p.id === activeProjectId.value) || null;
+    return projects.value.find(p => p.id === activeProjectId.value) || null;
   });
 
   function setProjects(newProjects: Project[]) {
@@ -22,7 +22,7 @@ export const useProjectStore = defineStore('project', () => {
     if (newProjects.length && !currentProject.value) {
       const urlProjectId = route.query.pId as string;
       const targetProject = urlProjectId
-        ? newProjects.find((p) => p.id === urlProjectId)
+        ? newProjects.find(p => p.id === urlProjectId)
         : newProjects[0];
 
       if (targetProject) {

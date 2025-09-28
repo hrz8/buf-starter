@@ -1,12 +1,17 @@
 <!-- step 5 -->
 <script setup lang="ts">
-import {
-  type ColumnFiltersState, createColumnHelper, getCoreRowModel, useVueTable, FlexRender,
-} from '@tanstack/vue-table';
+import type { Employee } from '#shared/repository/example';
 
 import type { QueryOptions } from '#shared/types/query';
 
-import { exampleRepository, type Employee } from '#shared/repository/example';
+import type { ColumnFiltersState } from '@tanstack/vue-table';
+import { exampleRepository } from '#shared/repository/example';
+import {
+  createColumnHelper,
+  FlexRender,
+  getCoreRowModel,
+  useVueTable,
+} from '@tanstack/vue-table';
 
 const example = exampleRepository();
 
@@ -40,7 +45,7 @@ const queryOptions = computed<QueryOptions>(() => {
 function serializeFilters(filters: NonNullable<QueryOptions['filters']>): string {
   return Object.keys(filters)
     .sort()
-    .map((key) => `${key}:${filters[key]}`)
+    .map(key => `${key}:${filters[key]}`)
     .join('|');
 }
 
@@ -86,41 +91,41 @@ const {
   pageSize,
 });
 
-const goToPage = (newPage: number) => {
+function goToPage(newPage: number) {
   if (newPage >= 1 && newPage <= pageCount.value) {
     page.value = newPage;
   }
-};
+}
 
 const columnHelper = createColumnHelper<Employee>();
 const columns = [
   columnHelper.accessor('id', {
     header: 'ID',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('name', {
     header: 'Name',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('email', {
     header: 'Email',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('role', {
     header: 'Role',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('department', {
     header: 'Department',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('status', {
     header: 'Status',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('createdAt', {
     header: 'Created At',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
 ];
 

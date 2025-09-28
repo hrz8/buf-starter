@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import type { Project } from '~~/gen/altalune/v1/project_pb';
 
-import ProjectCreateForm from './ProjectCreateForm.vue';
-
 import {
-  SheetDescription,
+  Sheet,
   SheetContent,
+  SheetDescription,
   SheetFooter,
   SheetHeader,
   SheetTitle,
-  Sheet,
 } from '@/components/ui/sheet';
+
+import ProjectCreateForm from './ProjectCreateForm.vue';
 
 interface Props {
   open?: boolean;
@@ -21,8 +21,8 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<{
-  success: [project: Project];
-  cancel: [];
+  'success': [project: Project];
+  'cancel': [];
   'update:open': [open: boolean];
 }>();
 

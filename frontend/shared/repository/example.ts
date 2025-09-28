@@ -1,6 +1,6 @@
 import type { PaginatedResponse, QueryOptions } from '../types/query';
 
-export type Employee = {
+export interface Employee {
   id: number;
   name: string;
   email: string;
@@ -8,7 +8,7 @@ export type Employee = {
   department: string;
   status: 'active' | 'inactive';
   createdAt: string;
-};
+}
 
 const mockEmployees: Employee[] = [
   {
@@ -1093,15 +1093,15 @@ const mockEmployees: Employee[] = [
   },
 ];
 
-const getDistinctValues = (employees: Employee[]) => {
-  const uniqueRoles = [...new Set(employees.map((emp) => emp.role))];
-  const uniqueDepartments = [...new Set(employees.map((emp) => emp.department))];
+function getDistinctValues(employees: Employee[]) {
+  const uniqueRoles = [...new Set(employees.map(emp => emp.role))];
+  const uniqueDepartments = [...new Set(employees.map(emp => emp.department))];
 
   return {
     roles: uniqueRoles,
     departments: uniqueDepartments,
   };
-};
+}
 
 function filterEmployees(employees: Employee[], params: QueryOptions): PaginatedResponse<Employee> {
   const { pagination, keyword, sorting, filters } = params;
@@ -1132,15 +1132,17 @@ function filterEmployees(employees: Employee[], params: QueryOptions): Paginated
   if (filters) {
     for (const key of Object.keys(filters)) {
       const filterVal = filters[key];
-      if (filterVal == null) continue;
+      if (filterVal == null)
+        continue;
       const columnName = key as keyof Employee;
-      if (!(columnName in (employees[0] ?? {}))) continue;
+      if (!(columnName in (employees[0] ?? {})))
+        continue;
 
       filteredEmployees = filteredEmployees.filter((employee) => {
         const cellValue = String(employee[columnName]).toLowerCase();
 
         if (Array.isArray(filterVal)) {
-          const normalizedFilters = filterVal.map((val) =>
+          const normalizedFilters = filterVal.map(val =>
             typeof val === 'string'
               ? val.toLowerCase()
               : String(val).toLowerCase(),
@@ -1170,8 +1172,10 @@ function filterEmployees(employees: Employee[], params: QueryOptions): Paginated
       const aStr = String(aVal).toLowerCase();
       const bStr = String(bVal).toLowerCase();
 
-      if (aStr < bStr) return sortOrder === 'asc' ? -1 : 1;
-      if (aStr > bStr) return sortOrder === 'asc' ? 1 : -1;
+      if (aStr < bStr)
+        return sortOrder === 'asc' ? -1 : 1;
+      if (aStr > bStr)
+        return sortOrder === 'asc' ? 1 : -1;
       return 0;
     });
   }
@@ -1197,9 +1201,11 @@ function filterEmployees(employees: Employee[], params: QueryOptions): Paginated
   };
 }
 
-export const exampleRepository = () => ({
-  async query(params: QueryOptions): Promise<PaginatedResponse<Employee>> {
-    await new Promise((resolve) => setTimeout(resolve, 600));
-    return filterEmployees(mockEmployees, params);
-  },
-});
+export function exampleRepository() {
+  return {
+    async query(params: QueryOptions): Promise<PaginatedResponse<Employee>> {
+      await new Promise(resolve => setTimeout(resolve, 600));
+      return filterEmployees(mockEmployees, params);
+    },
+  };
+}

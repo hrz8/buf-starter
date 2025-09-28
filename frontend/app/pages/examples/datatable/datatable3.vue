@@ -62,11 +62,11 @@ const {
   pageSize,
 });
 
-const goToPage = (newPage: number) => {
+function goToPage(newPage: number) {
   if (newPage >= 1 && newPage <= pageCount.value) {
     page.value = newPage;
   }
-};
+}
 </script>
 
 <template>

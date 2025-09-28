@@ -1,5 +1,9 @@
 import {
-  useIsFieldTouched, FieldContextKey, useIsFieldDirty, useIsFieldValid, useFieldError,
+  FieldContextKey,
+  useFieldError,
+  useIsFieldDirty,
+  useIsFieldTouched,
+  useIsFieldValid,
 } from 'vee-validate';
 import { inject } from 'vue';
 

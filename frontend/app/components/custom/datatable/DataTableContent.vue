@@ -1,16 +1,16 @@
 <script setup lang="ts">
-import { FlexRender } from '@tanstack/vue-table';
-
 import type { Table as TanstackTable } from '@tanstack/vue-table';
 
+import { FlexRender } from '@tanstack/vue-table';
+
 import {
-  TableHeader,
-  TableEmpty,
+  Table,
   TableBody,
   TableCell,
+  TableEmpty,
   TableHead,
+  TableHeader,
   TableRow,
-  Table,
 } from '@/components/ui/table';
 
 interface Props {
@@ -24,15 +24,15 @@ const props = withDefaults(defineProps<Props>(), {
   showBorder: true,
 });
 
-const headerGroups = computed(() => props.table.getHeaderGroups());
-const rows = computed(() => props.table.getRowModel().rows);
-const visibleColumns = computed(() => props.table.getVisibleFlatColumns());
-const hasData = computed(() => rows.value.length > 0);
-
 defineSlots<{
   loading?: () => any;
   empty?: () => any;
 }>();
+
+const headerGroups = computed(() => props.table.getHeaderGroups());
+const rows = computed(() => props.table.getRowModel().rows);
+const visibleColumns = computed(() => props.table.getVisibleFlatColumns());
+const hasData = computed(() => rows.value.length > 0);
 </script>
 
 <template>

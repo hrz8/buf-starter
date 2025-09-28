@@ -1,37 +1,39 @@
 <script setup lang="ts">
-import { EmployeeStatus } from '~~/gen/altalune/v1/employee_pb';
+import type { Employee } from '~~/gen/altalune/v1/employee_pb';
 import { toTypedSchema } from '@vee-validate/zod';
 import { AlertCircle } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
 import * as z from 'zod';
 
-import type { Employee } from '~~/gen/altalune/v1/employee_pb';
+import { EmployeeStatus } from '~~/gen/altalune/v1/employee_pb';
 
 import {
-  SelectContent,
-  SelectTrigger,
-  SelectGroup,
-  SelectLabel,
-  SelectValue,
-  SelectItem,
-  Select,
-} from '@/components/ui/select';
-import {
-  FormDescription,
-  FormControl,
-  FormMessage,
-  FormField,
-  FormLabel,
-  FormItem,
-} from '@/components/ui/form';
-import {
-  AlertDescription, AlertTitle, Alert,
+  Alert,
+  AlertDescription,
+  AlertTitle,
 } from '@/components/ui/alert';
-import { useEmployeeService } from '@/composables/services/useEmployeeService';
-import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Skeleton } from '@/components/ui/skeleton';
+import { useEmployeeService } from '@/composables/services/useEmployeeService';
 
 const props = defineProps<{
   projectId: string;
@@ -106,7 +108,8 @@ async function fetchEmployee() {
         status: fetchedEmployee.status,
       });
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Failed to fetch employee:', error);
     toast.error('Failed to load employee data', {
       description: getError.value || 'An unexpected error occurred.',
@@ -162,14 +165,14 @@ const departmentOptions = [
 ];
 
 // Helper functions for ConnectRPC validation errors (fallback)
-const getConnectRPCError = (fieldName: string): string => {
+function getConnectRPCError(fieldName: string): string {
   const errors = updateValidationErrors.value[fieldName] || updateValidationErrors.value[`value.${fieldName}`];
   return errors?.[0] || '';
-};
+}
 
-const hasConnectRPCError = (fieldName: string): boolean => {
+function hasConnectRPCError(fieldName: string): boolean {
   return !!(updateValidationErrors.value[fieldName] || updateValidationErrors.value[`value.${fieldName}`]);
-};
+}
 
 // Handle form submission with vee-validate
 const onSubmit = form.handleSubmit(async (values) => {
@@ -183,7 +186,8 @@ const onSubmit = form.handleSubmit(async (values) => {
 
       emit('success', employee);
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Failed to update employee:', error);
     toast.error('Failed to update employee', {
       description: updateError.value || 'An unexpected error occurred. Please try again.',
@@ -433,11 +437,10 @@ onUnmounted(() => {
               >
                 <span class="flex items-center gap-2">
                   <span
-                    :class="[
-                      'inline-block w-2 h-2 rounded-full',
+                    class="inline-block w-2 h-2 rounded-full" :class="[
                       option.value === EmployeeStatus.ACTIVE
                         ? 'bg-green-500'
-                        : 'bg-red-500'
+                        : 'bg-red-500',
                     ]"
                   />
                   {{ option.label }}

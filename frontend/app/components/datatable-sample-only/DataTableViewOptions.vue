@@ -1,15 +1,15 @@
 <script setup lang="ts">
 import type { Table } from '@tanstack/vue-table';
 
-import {
-  DropdownMenuCheckboxItem,
-  DropdownMenuSeparator,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenu,
-} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface DataTableViewOptionsProps {
   table: Table<any>;
@@ -19,7 +19,7 @@ const props = defineProps<DataTableViewOptionsProps>();
 
 const columns = computed(() => props.table.getAllColumns()
   .filter(
-    (column) =>
+    column =>
       typeof column.accessorFn !== 'undefined' && column.getCanHide(),
   ));
 </script>

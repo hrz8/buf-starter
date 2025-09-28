@@ -1,12 +1,12 @@
 <script setup lang="ts">
+import type { DropdownMenuSubContentEmits, DropdownMenuSubContentProps } from 'reka-ui';
+import type { HTMLAttributes } from 'vue';
+
+import { reactiveOmit } from '@vueuse/core';
 import {
   DropdownMenuSubContent,
   useForwardPropsEmits,
 } from 'reka-ui';
-import { reactiveOmit } from '@vueuse/core';
-
-import type { DropdownMenuSubContentEmits, DropdownMenuSubContentProps } from 'reka-ui';
-import type { HTMLAttributes } from 'vue';
 
 import { cn } from '@/lib/utils';
 
@@ -31,7 +31,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
       'data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2',
       'z-50 min-w-[8rem] origin-(--reka-dropdown-menu-content-transform-origin)',
       'overflow-hidden rounded-md border p-1 shadow-lg',
-      props.class
+      props.class,
     )"
   >
     <slot />

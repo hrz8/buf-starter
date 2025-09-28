@@ -1,10 +1,11 @@
-import { GetAllowedNamesRequestSchema } from '~~/gen/greeter/v1/name_pb';
-import { type MessageInitShape, create } from '@bufbuild/protobuf';
+import type { MessageInitShape } from '@bufbuild/protobuf';
+import type { PaginationMetaSchema } from '~~/gen/greeter/v1/common_pb';
+import { greeterRepository } from '#shared/repository/greeter';
+import { create } from '@bufbuild/protobuf';
+
 import { SayHelloRequestSchema } from '~~/gen/greeter/v1/hello_pb';
 
-import type { PaginationMetaSchema } from '~~/gen/greeter/v1/common_pb';
-
-import { greeterRepository } from '#shared/repository/greeter';
+import { GetAllowedNamesRequestSchema } from '~~/gen/greeter/v1/name_pb';
 import { useConnectValidator } from '../useConnectValidator';
 import { useErrorMessage } from '../useErrorMessage';
 
@@ -53,7 +54,8 @@ export function useGreeter() {
         names: result.names,
         meta: result.meta,
       };
-    } catch (err) {
+    }
+    catch (err) {
       const errorMessage = parseError(err);
       throw new Error(errorMessage);
     }
@@ -73,9 +75,11 @@ export function useGreeter() {
       const message = create(SayHelloRequestSchema, req);
       const result = await greeter.sayHello(message);
       submitState.response = result.message;
-    } catch (err) {
+    }
+    catch (err) {
       submitState.error = parseError(err);
-    } finally {
+    }
+    finally {
       submitState.loading = false;
     }
   }

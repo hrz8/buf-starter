@@ -1,7 +1,7 @@
-import { create as createSchema } from '@bufbuild/protobuf';
+import type { DescMessage, MessageInitShape } from '@bufbuild/protobuf';
 
-import type { MessageInitShape, DescMessage } from '@bufbuild/protobuf';
 import type { ValidationResult } from '@bufbuild/protovalidate';
+import { create as createSchema } from '@bufbuild/protobuf';
 
 export function useConnectValidator<T extends DescMessage>(schema: T) {
   const { $validator } = useNuxtApp();

@@ -1,12 +1,12 @@
 <script setup lang="ts">
-import { PanelLeft } from 'lucide-vue-next';
-
 import type { HTMLAttributes } from 'vue';
 
-import { useSidebar } from './utils';
+import { PanelLeft } from 'lucide-vue-next';
 
 import { Button } from '@/components/ui/button';
+
 import { cn } from '@/lib/utils';
+import { useSidebar } from './utils';
 
 const props = defineProps<{
   class?: HTMLAttributes['class'];

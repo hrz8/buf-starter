@@ -2,21 +2,21 @@
 import { breakpointsTailwind, useBreakpoints } from '@vueuse/core';
 
 import {
-  PaginationEllipsis,
-  PaginationPrevious,
+  Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationFirst,
   PaginationItem,
   PaginationLast,
   PaginationNext,
-  Pagination,
+  PaginationPrevious,
 } from '@/components/ui/pagination';
 import {
+  Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectItem,
-  Select,
 } from '@/components/ui/select';
 
 interface Props {
@@ -78,8 +78,10 @@ const {
 
 // Dynamic sibling count based on screen size
 const siblingCount = computed(() => {
-  if (isMobile.value) return 0;
-  if (isTablet.value) return 1;
+  if (isMobile.value)
+    return 0;
+  if (isTablet.value)
+    return 1;
   return 2;
 });
 
@@ -89,12 +91,16 @@ const visiblePages = computed(() => {
   const totalPages = pageCount.value;
   const delta = siblingCount.value;
 
-  if (props.rowCount === 0) return [];
-  if (totalPages <= 1) return [1];
+  if (props.rowCount === 0)
+    return [];
+  if (totalPages <= 1)
+    return [1];
 
   if (isMobile.value && totalPages > 5) {
-    if (current <= 2) return [1, 2, '...', totalPages];
-    if (current >= totalPages - 1) return [1, '...', totalPages - 1, totalPages];
+    if (current <= 2)
+      return [1, 2, '...', totalPages];
+    if (current >= totalPages - 1)
+      return [1, '...', totalPages - 1, totalPages];
     return [1, '...', current, '...', totalPages];
   }
 
@@ -107,7 +113,8 @@ const visiblePages = computed(() => {
 
   if (current - delta > 2) {
     rangeWithDots.push(1, '...');
-  } else {
+  }
+  else {
     rangeWithDots.push(1);
   }
 
@@ -115,7 +122,8 @@ const visiblePages = computed(() => {
 
   if (current + delta < totalPages - 1) {
     rangeWithDots.push('...', totalPages);
-  } else if (totalPages > 1) {
+  }
+  else if (totalPages > 1) {
     rangeWithDots.push(totalPages);
   }
 
@@ -124,14 +132,15 @@ const visiblePages = computed(() => {
   );
 });
 
-const goToPage = (newPage: number) => {
+function goToPage(newPage: number) {
   if (newPage >= 1 && newPage <= pageCount.value && newPage !== props.page) {
     page.value = newPage;
   }
-};
+}
 
 const resultsText = computed(() => {
-  if (props.rowCount === 0) return 'No results';
+  if (props.rowCount === 0)
+    return 'No results';
 
   const start = ((props.page - 1) * props.pageSize) + 1;
   const end = Math.min(props.page * props.pageSize, props.rowCount);
@@ -140,7 +149,6 @@ const resultsText = computed(() => {
     ? `${start}-${end} of ${props.rowCount}`
     : `Showing ${start} to ${end} of ${props.rowCount} results`;
 });
-
 </script>
 
 <template>

@@ -1,35 +1,37 @@
 <script setup lang="ts">
+import type { Project } from '~~/gen/altalune/v1/project_pb';
 import { toTypedSchema } from '@vee-validate/zod';
 import { AlertCircle } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
+
 import * as z from 'zod';
 
-import type { Project } from '~~/gen/altalune/v1/project_pb';
-
 import {
-  SelectContent,
-  SelectTrigger,
-  SelectGroup,
-  SelectLabel,
-  SelectValue,
-  SelectItem,
-  Select,
-} from '@/components/ui/select';
-import {
-  FormDescription,
-  FormControl,
-  FormMessage,
-  FormField,
-  FormLabel,
-  FormItem,
-} from '@/components/ui/form';
-import {
-  AlertDescription, AlertTitle, Alert,
+  Alert,
+  AlertDescription,
+  AlertTitle,
 } from '@/components/ui/alert';
-import { useProjectService } from '@/composables/services/useProjectService';
 import { Button } from '@/components/ui/button';
+import {
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useProjectService } from '@/composables/services/useProjectService';
 
 const emit = defineEmits<{
   success: [project: Project];
@@ -94,14 +96,14 @@ const timezoneOptions = [
 ];
 
 // ConnectRPC validation helpers (fallback layer)
-const getConnectRPCError = (fieldName: string): string => {
+function getConnectRPCError(fieldName: string): string {
   const errors = createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`];
   return errors?.[0] || '';
-};
+}
 
-const hasConnectRPCError = (fieldName: string): boolean => {
+function hasConnectRPCError(fieldName: string): boolean {
   return !!(createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`]);
-};
+}
 
 // Handle form submission with vee-validate
 const onSubmit = form.handleSubmit(async (values) => {
@@ -116,7 +118,8 @@ const onSubmit = form.handleSubmit(async (values) => {
       emit('success', project);
       resetForm();
     }
-  } catch {
+  }
+  catch {
     toast.error('Failed to create project', {
       description: createError.value || 'An unexpected error occurred. Please try again.',
     });

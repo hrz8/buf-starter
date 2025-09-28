@@ -1,19 +1,19 @@
 <script setup lang="ts">
-import {
-  useForwardPropsEmits,
-  DialogContent,
-  DialogPortal,
-  DialogClose,
-} from 'reka-ui';
-import { reactiveOmit } from '@vueuse/core';
-import { X } from 'lucide-vue-next';
-
 import type { DialogContentEmits, DialogContentProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
+import { reactiveOmit } from '@vueuse/core';
 
-import SheetOverlay from './SheetOverlay.vue';
+import { X } from 'lucide-vue-next';
+import {
+  DialogClose,
+  DialogContent,
+  DialogPortal,
+  useForwardPropsEmits,
+} from 'reka-ui';
 
 import { cn } from '@/lib/utils';
+
+import SheetOverlay from './SheetOverlay.vue';
 
 interface SheetContentProps extends DialogContentProps {
   class?: HTMLAttributes['class'];
@@ -53,7 +53,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
             'h-full',
             'w-3/4',
             'border-l',
-            'sm:max-w-sm'
+            'sm:max-w-sm',
           ].join(' '),
         side === 'left'
           && [
@@ -64,7 +64,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
             'h-full',
             'w-3/4',
             'border-r',
-            'sm:max-w-sm'
+            'sm:max-w-sm',
           ].join(' '),
         side === 'top'
           && [
@@ -73,7 +73,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
             'inset-x-0',
             'top-0',
             'h-auto',
-            'border-b'
+            'border-b',
           ].join(' '),
         side === 'bottom'
           && [
@@ -82,9 +82,9 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
             'inset-x-0',
             'bottom-0',
             'h-auto',
-            'border-t'
+            'border-t',
           ].join(' '),
-        props.class
+        props.class,
       )"
       v-bind="{ ...forwarded, ...$attrs }"
     >

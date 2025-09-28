@@ -1,13 +1,15 @@
-import {
-  QueryProjectsRequestSchema,
-  CreateProjectRequestSchema,
-  type Project,
-} from '~~/gen/altalune/v1/project_pb';
-import { type MessageInitShape, create } from '@bufbuild/protobuf';
-
+import type { MessageInitShape } from '@bufbuild/protobuf';
 import type { QueryMetaResponseSchema } from '~~/gen/altalune/v1/common_pb';
 
+import type { Project } from '~~/gen/altalune/v1/project_pb';
 import { projectRepository } from '#shared/repository/project';
+
+import { create } from '@bufbuild/protobuf';
+import {
+  CreateProjectRequestSchema,
+
+  QueryProjectsRequestSchema,
+} from '~~/gen/altalune/v1/project_pb';
 import { useConnectValidator } from '../useConnectValidator';
 import { useErrorMessage } from '../useErrorMessage';
 
@@ -53,7 +55,8 @@ export function useProjectService() {
         data: result.data,
         meta: result.meta,
       };
-    } catch (err) {
+    }
+    catch (err) {
       const errorMessage = parseError(err);
       throw new Error(errorMessage);
     }
@@ -78,10 +81,12 @@ export function useProjectService() {
       const result = await project.createProject(message);
       createState.success = true;
       return result.project || null;
-    } catch (err) {
+    }
+    catch (err) {
       createState.error = parseError(err);
       throw new Error(createState.error);
-    } finally {
+    }
+    finally {
       createState.loading = false;
     }
   }

@@ -3,7 +3,6 @@ const error = useError();
 
 const { t } = useI18n();
 const isDevelopment = import.meta.dev;
-
 </script>
 
 <template>

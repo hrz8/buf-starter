@@ -1,23 +1,23 @@
 <script setup lang="ts">
-import { ChevronRight } from 'lucide-vue-next';
-
 import type { NavItem } from '@/composables/navigation/useNavigation';
 
+import { ChevronRight } from 'lucide-vue-next';
+
 import {
-  SidebarMenuSubButton,
-  SidebarMenuSubItem,
+  Collapsible,
+  CollapsibleContent,
+  CollapsibleTrigger,
+} from '@/components/ui/collapsible';
+import {
+  SidebarGroup,
   SidebarGroupLabel,
+  SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarMenuSub,
-  SidebarGroup,
-  SidebarMenu,
+  SidebarMenuSubButton,
+  SidebarMenuSubItem,
 } from '@/components/ui/sidebar';
-import {
-  CollapsibleContent,
-  CollapsibleTrigger,
-  Collapsible,
-} from '@/components/ui/collapsible';
 import { useSidebarNavigation } from '@/composables/navigation/useSidebarNavigation';
 
 interface Props {
@@ -46,9 +46,11 @@ onMounted(() => {
 
       if (shouldBeOpen && !hasManualState) {
         openStates[item.title] = true;
-      } else if (hasManualState) {
+      }
+      else if (hasManualState) {
         openStates[item.title] = true;
-      } else {
+      }
+      else {
         openStates[item.title] = false;
       }
     }

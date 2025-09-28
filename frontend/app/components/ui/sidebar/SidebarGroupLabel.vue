@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { Primitive } from 'reka-ui';
-
 import type { PrimitiveProps } from 'reka-ui';
+
 import type { HTMLAttributes } from 'vue';
+import { Primitive } from 'reka-ui';
 
 import { cn } from '@/lib/utils';
 
@@ -25,7 +25,7 @@ const props = defineProps<PrimitiveProps & {
       'transition-[margin,opacity] duration-200 ease-linear',
       'focus-visible:ring-2 [&>svg]:size-4 [&>svg]:shrink-0',
       'group-data-[collapsible=icon]:-mt-8 group-data-[collapsible=icon]:opacity-0',
-      props.class
+      props.class,
     )"
   >
     <slot />

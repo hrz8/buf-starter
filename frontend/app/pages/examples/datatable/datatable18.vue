@@ -1,33 +1,33 @@
 <!-- step 18 -->
 <script setup lang="ts">
-import { EmployeeStatus } from '~~/gen/altalune/v1/employee_pb';
-import { createColumnHelper } from '@tanstack/vue-table';
-
 import type { Employee } from '~~/gen/altalune/v1/employee_pb';
-
 import { serializeProtoFilters } from '#shared/helpers/serializer';
 
+import { createColumnHelper } from '@tanstack/vue-table';
+
+import { EmployeeStatus } from '~~/gen/altalune/v1/employee_pb';
+
 import {
-  EmployeeTableLoading,
-  EmployeeDeleteDialog,
-  EmployeeCreateSheet,
-  EmployeeEditSheet,
-} from '~/components/features/employee';
-import {
-  DataTableBasicRowActions,
-  DataTableFacetedFilter,
-  DataTableColumnHeader,
   DataTable,
+  DataTableBasicRowActions,
+  DataTableColumnHeader,
+  DataTableFacetedFilter,
 } from '@/components/custom/datatable';
 import {
   useDataTableFilter,
   useDataTableState,
 } from '@/components/custom/datatable/utils';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { useEmployeeService } from '@/composables/services/useEmployeeService';
 import { useQueryRequest } from '@/composables/useQueryRequest';
 import { useProjectStore } from '@/stores/project';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
+import {
+  EmployeeCreateSheet,
+  EmployeeDeleteDialog,
+  EmployeeEditSheet,
+  EmployeeTableLoading,
+} from '~/components/features/employee';
 
 const { activeProjectId } = useProjectStore();
 
@@ -85,7 +85,7 @@ const data = computed(() => response.value?.data ?? []);
 const rowCount = computed(() => response.value?.meta?.rowCount ?? 0);
 const filters = computed(() => response.value?.meta?.filters);
 
-const getStatusDisplay = (status: EmployeeStatus) => {
+function getStatusDisplay(status: EmployeeStatus) {
   switch (status) {
     case EmployeeStatus.ACTIVE:
       return {
@@ -103,7 +103,7 @@ const getStatusDisplay = (status: EmployeeStatus) => {
         class: 'bg-gray-100 text-gray-800',
       };
   }
-};
+}
 
 const columnHelper = createColumnHelper<Employee>();
 const columns = [
@@ -112,7 +112,7 @@ const columns = [
       column,
       title: 'ID',
     }),
-    cell: (info) => h('div', { class: 'font-bold w-40' }, info.getValue()),
+    cell: info => h('div', { class: 'font-bold w-40' }, info.getValue()),
     enableSorting: true,
   }),
   columnHelper.accessor('name', {
@@ -120,7 +120,7 @@ const columns = [
       column,
       title: 'Name',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('email', {
@@ -128,7 +128,7 @@ const columns = [
       column,
       title: 'Email',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('role', {
@@ -136,7 +136,7 @@ const columns = [
       column,
       title: 'Role',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('department', {
@@ -144,7 +144,7 @@ const columns = [
       column,
       title: 'Department',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('status', {
@@ -201,7 +201,7 @@ const columns = [
 // role filter
 const roleFilter = useDataTableFilter(table, 'role');
 const roleOptions = computed(() =>
-  filters.value?.['roles']?.values?.map((role: string) => ({
+  filters.value?.roles?.values?.map((role: string) => ({
     label: role,
     value: role,
   })) ?? [],
@@ -210,7 +210,7 @@ const roleOptions = computed(() =>
 // department filter
 const departmentFilter = useDataTableFilter(table, 'department');
 const departmentOptions = computed(() =>
-  filters.value?.['departments']?.values?.map((dept: string) => ({
+  filters.value?.departments?.values?.map((dept: string) => ({
     label: dept,
     value: dept,
   })) ?? [],
@@ -219,7 +219,7 @@ const departmentOptions = computed(() =>
 // status filter
 const statusFilter = useDataTableFilter(table, 'status');
 const statusOptions = computed(() =>
-  filters.value?.['statuses']?.values?.map((status: string) => ({
+  filters.value?.statuses?.values?.map((status: string) => ({
     label: status === 'active' ? 'Active' : 'Inactive',
     value: status,
   })) ?? [],
@@ -276,13 +276,14 @@ async function handleDuplicate(row: any) {
     // Fetch full employee details using getEmployee service
     const fullEmployee = await getEmployee({
       projectId: activeProjectId ?? '',
-      employeeId: employeeId,
+      employeeId,
     });
 
     if (fullEmployee) {
       duplicateEmployee.value = fullEmployee;
     }
-  } catch (error) {
+  }
+  catch (error) {
     console.error('Failed to fetch employee for duplication:', error);
     // Close sheet if fetch fails
     isDuplicateSheetOpen.value = false;
@@ -290,9 +291,8 @@ async function handleDuplicate(row: any) {
   }
 }
 
-function handleFavorite(row: any) {
+function handleFavorite(_: any) {
   // TODO: Implement favorite functionality
-  console.info('Favorite:', row.original);
 }
 
 // Sheet/Dialog handlers

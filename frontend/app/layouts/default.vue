@@ -1,12 +1,12 @@
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core';
 
+import { LayoutHeader, LayoutSidebar } from '@/components/custom/layout';
 import {
-  SidebarProvider,
   SidebarInset,
+  SidebarProvider,
 } from '@/components/ui/sidebar';
 import { useProjectService } from '@/composables/services/useProjectService';
-import { LayoutSidebar, LayoutHeader } from '@/components/custom/layout';
 import { useProjectStore } from '@/stores/project';
 
 const route = useRoute();
@@ -33,9 +33,11 @@ async function fetchProjects() {
       },
     });
     projectStore.setProjects(response?.data ?? []);
-  } catch (err) {
+  }
+  catch (err) {
     projectStore.setError(err as Error);
-  } finally {
+  }
+  finally {
     projectStore.setLoading(false);
   }
 }

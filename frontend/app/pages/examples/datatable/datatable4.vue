@@ -1,12 +1,16 @@
 <!-- step 4 -->
 <script setup lang="ts">
-import {
-  createColumnHelper, getCoreRowModel, useVueTable, FlexRender,
-} from '@tanstack/vue-table';
+import type { Employee } from '#shared/repository/example';
 
 import type { QueryOptions } from '#shared/types/query';
+import { exampleRepository } from '#shared/repository/example';
 
-import { exampleRepository, type Employee } from '#shared/repository/example';
+import {
+  createColumnHelper,
+  FlexRender,
+  getCoreRowModel,
+  useVueTable,
+} from '@tanstack/vue-table';
 
 const example = exampleRepository();
 
@@ -66,41 +70,41 @@ const {
   pageSize,
 });
 
-const goToPage = (newPage: number) => {
+function goToPage(newPage: number) {
   if (newPage >= 1 && newPage <= pageCount.value) {
     page.value = newPage;
   }
-};
+}
 
 const columnHelper = createColumnHelper<Employee>();
 const columns = [
   columnHelper.accessor('id', {
     header: 'ID',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('name', {
     header: 'Name',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('email', {
     header: 'Email',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('role', {
     header: 'Role',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('department', {
     header: 'Department',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('status', {
     header: 'Status',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('createdAt', {
     header: 'Created At',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
 ];
 

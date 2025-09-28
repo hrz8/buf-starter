@@ -19,14 +19,14 @@ const emit = defineEmits<Emits>();
 
 const isFiltered = computed(() => props.table.getState().columnFilters.length > 0);
 
-const onRefresh = () => {
+function onRefresh() {
   emit('refresh');
-};
+}
 
-const onReset = () => {
+function onReset() {
   props.table.resetColumnFilters();
   emit('reset');
-};
+}
 </script>
 
 <template>

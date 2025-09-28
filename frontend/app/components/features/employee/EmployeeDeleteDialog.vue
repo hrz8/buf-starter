@@ -1,18 +1,18 @@
 <script setup lang="ts">
-import { toast } from 'vue-sonner';
-
 import type { Employee } from '~~/gen/altalune/v1/employee_pb';
 
+import { toast } from 'vue-sonner';
+
 import {
-  AlertDialogDescription,
-  AlertDialogContent,
-  AlertDialogTrigger,
-  AlertDialogHeader,
-  AlertDialogFooter,
-  AlertDialogCancel,
-  AlertDialogAction,
-  AlertDialogTitle,
   AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useEmployeeService } from '@/composables/services/useEmployeeService';
 
@@ -23,8 +23,8 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  success: [];
-  cancel: [];
+  'success': [];
+  'cancel': [];
   'update:open': [value: boolean];
 }>();
 
@@ -49,7 +49,8 @@ async function handleDelete() {
       isDialogOpen.value = false;
       emit('success');
     }
-  } catch {
+  }
+  catch {
     toast.error('Failed to delete employee', {
       description: deleteError.value || 'An unexpected error occurred. Please try again.',
     });

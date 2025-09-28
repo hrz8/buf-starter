@@ -1,9 +1,9 @@
+import { createValidator } from '@bufbuild/protovalidate';
+import { createClient } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { EmployeeService } from '~~/gen/altalune/v1/employee_pb';
 import { ProjectService } from '~~/gen/altalune/v1/project_pb';
 import { GreeterService } from '~~/gen/greeter/v1/greeter_pb';
-import { createValidator } from '@bufbuild/protovalidate';
-import { createClient } from '@connectrpc/connect';
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();

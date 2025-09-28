@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import { reactiveOmit } from '@vueuse/core';
-import { PaginationList } from 'reka-ui';
-
 import type { PaginationListProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
+
+import { reactiveOmit } from '@vueuse/core';
+import { PaginationList } from 'reka-ui';
 
 import { cn } from '@/lib/utils';
 

@@ -1,7 +1,7 @@
 <script setup lang="ts">
-import { useVModel } from '@vueuse/core';
-
 import type { HTMLAttributes } from 'vue';
+
+import { useVModel } from '@vueuse/core';
 
 import { cn } from '@/lib/utils';
 

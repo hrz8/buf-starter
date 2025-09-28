@@ -1,18 +1,19 @@
 <!-- step 7 -->
 <script setup lang="ts">
-import {
-  type ColumnFiltersState,
-  type VisibilityState,
-  createColumnHelper,
-  type SortingState,
-  getCoreRowModel,
-  useVueTable,
-  FlexRender,
-} from '@tanstack/vue-table';
+import type { Employee } from '#shared/repository/example';
 
 import type { QueryOptions } from '#shared/types/query';
 
-import { exampleRepository, type Employee } from '#shared/repository/example';
+import type { ColumnFiltersState, SortingState, VisibilityState } from '@tanstack/vue-table';
+import { exampleRepository } from '#shared/repository/example';
+import {
+
+  createColumnHelper,
+
+  FlexRender,
+  getCoreRowModel,
+  useVueTable,
+} from '@tanstack/vue-table';
 
 import { valueUpdater } from '@/components/ui/table/utils';
 
@@ -58,7 +59,7 @@ const queryOptions = computed<QueryOptions>(() => {
 function serializeFilters(filters: NonNullable<QueryOptions['filters']>): string {
   return Object.keys(filters)
     .sort()
-    .map((key) => `${key}:${filters[key]}`)
+    .map(key => `${key}:${filters[key]}`)
     .join('|');
 }
 
@@ -104,41 +105,41 @@ const {
   pageSize,
 });
 
-const goToPage = (newPage: number) => {
+function goToPage(newPage: number) {
   if (newPage >= 1 && newPage <= pageCount.value) {
     page.value = newPage;
   }
-};
+}
 
 const columnHelper = createColumnHelper<Employee>();
 const columns = [
   columnHelper.accessor('id', {
     header: 'ID',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('name', {
     header: 'Name',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('email', {
     header: 'Email',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('role', {
     header: 'Role',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('department', {
     header: 'Department',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('status', {
     header: 'Status',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
   columnHelper.accessor('createdAt', {
     header: 'Created At',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
   }),
 ];
 
@@ -161,9 +162,9 @@ const table = useVueTable({
     get sorting() { return sorting.value; },
     get columnVisibility() { return columnVisibility.value; },
   },
-  onColumnFiltersChange: (updater) => valueUpdater(updater, columnFilters),
-  onSortingChange: (updater) => valueUpdater(updater, sorting),
-  onColumnVisibilityChange: (updater) => valueUpdater(updater, columnVisibility),
+  onColumnFiltersChange: updater => valueUpdater(updater, columnFilters),
+  onSortingChange: updater => valueUpdater(updater, sorting),
+  onColumnVisibilityChange: updater => valueUpdater(updater, columnVisibility),
 });
 
 const departmentFilter = ref((table.getColumn('department')?.getFilterValue() ?? '') as string);
@@ -181,7 +182,7 @@ function updateRoleFilter(value: string) {
 const showSelector = ref(false);
 const availableColumns = computed(() => table.getAllColumns()
   .filter(
-    (column) =>
+    column =>
       typeof column.accessorFn !== 'undefined' && column.getCanHide(),
   ));
 

@@ -1,14 +1,14 @@
 <script setup lang="ts">
 import {
-  BreadcrumbSeparator,
+  Breadcrumb,
   BreadcrumbItem,
   BreadcrumbLink,
   BreadcrumbList,
   BreadcrumbPage,
-  Breadcrumb,
+  BreadcrumbSeparator,
 } from '@/components/ui/breadcrumb';
-import { SidebarTrigger } from '@/components/ui/sidebar';
 import { Separator } from '@/components/ui/separator';
+import { SidebarTrigger } from '@/components/ui/sidebar';
 
 const { locales, setLocale, locale } = useI18n();
 const colorMode = useColorMode();
@@ -19,7 +19,7 @@ const flags = {
 };
 
 const currentLocale = computed(() => {
-  const found = locales.value.find((l) => l.code === locale.value);
+  const found = locales.value.find(l => l.code === locale.value);
   return found ? found.name : locale.value;
 });
 </script>

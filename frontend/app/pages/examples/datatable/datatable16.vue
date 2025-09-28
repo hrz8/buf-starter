@@ -1,24 +1,24 @@
 <!-- step 16 -->
 <script setup lang="ts">
-import { createColumnHelper } from '@tanstack/vue-table';
-
 import type { Employee } from '#shared/repository/example';
 
-import { exampleRepository } from '#shared/repository/example';
 import { serializeFilters } from '#shared/helpers/serializer';
 
+import { exampleRepository } from '#shared/repository/example';
+import { createColumnHelper } from '@tanstack/vue-table';
+
 import {
-  DataTableBasicRowActions,
-  DataTableFacetedFilter,
-  DataTableColumnHeader,
   DataTable,
+  DataTableBasicRowActions,
+  DataTableColumnHeader,
+  DataTableFacetedFilter,
 } from '@/components/custom/datatable';
 import {
   useDataTableFilter,
   useDataTableState,
 } from '@/components/custom/datatable/utils';
-import { useServerTableQuery } from '@/composables/useServerTableQuery';
 import { Input } from '@/components/ui/input';
+import { useServerTableQuery } from '@/composables/useServerTableQuery';
 
 const example = exampleRepository();
 
@@ -81,7 +81,7 @@ const columns = [
       column,
       title: 'ID',
     }),
-    cell: (info) => h('div', { class: 'w-20' }, info.getValue()),
+    cell: info => h('div', { class: 'w-20' }, info.getValue()),
     enableSorting: true,
   }),
   columnHelper.accessor('name', {
@@ -89,7 +89,7 @@ const columns = [
       column,
       title: 'Name',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('email', {
@@ -97,7 +97,7 @@ const columns = [
       column,
       title: 'Email',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('role', {
@@ -105,7 +105,7 @@ const columns = [
       column,
       title: 'Role',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('department', {
@@ -113,7 +113,7 @@ const columns = [
       column,
       title: 'Department',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('status', {
@@ -156,7 +156,7 @@ const columns = [
 // role filter
 const roleFilter = useDataTableFilter(table, 'role');
 const roleOptions = computed(() =>
-  filters.value?.['roles']?.map((role: string) => ({
+  filters.value?.roles?.map((role: string) => ({
     label: role,
     value: role,
   })) ?? [],
@@ -165,7 +165,7 @@ const roleOptions = computed(() =>
 // department filter
 const departmentFilter = useDataTableFilter(table, 'department');
 const departmentOptions = computed(() =>
-  filters.value?.['departments']?.map((dept: string) => ({
+  filters.value?.departments?.map((dept: string) => ({
     label: dept,
     value: dept,
   })) ?? [],

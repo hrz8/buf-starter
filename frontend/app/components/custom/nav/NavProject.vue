@@ -1,22 +1,22 @@
 <script setup lang="ts">
 import type { Project } from '~~/gen/altalune/v1/project_pb';
 
+import { ProjectCreateSheet } from '@/components/features/project';
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuShortcut,
-  DropdownMenuContent,
   DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenuItem,
-  DropdownMenu,
 } from '@/components/ui/dropdown-menu';
 import {
+  SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-  SidebarMenu,
   useSidebar,
 } from '@/components/ui/sidebar';
-import { ProjectCreateSheet } from '@/components/features/project';
 import { useProjectStore } from '@/stores/project';
 
 const DEFAULT_PROJECT_ICON = 'lucide:folder';
@@ -39,10 +39,10 @@ const RANDOM_ICONS = [
   'lucide:sailboat',
 ];
 
-const getProjectIcon = (publicId: string) => {
+function getProjectIcon(publicId: string) {
   const iconIndex = publicId.charCodeAt(0) % RANDOM_ICONS.length;
   return RANDOM_ICONS[iconIndex];
-};
+}
 
 const router = useRouter();
 const { isMobile } = useSidebar();

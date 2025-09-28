@@ -1,5 +1,5 @@
-import type { RouteLocationNormalizedLoaded } from 'vue-router';
 import type { LucideIcon } from 'lucide-vue-next';
+import type { RouteLocationNormalizedLoaded } from 'vue-router';
 
 export interface NavSubItem {
   title: string;
@@ -52,7 +52,7 @@ export function useNavigation() {
    * Check if any sub-item is active
    */
   function hasActiveSubItem(item: NavItem): boolean {
-    return item.items?.some((subItem) => isItemActive(subItem)) || false;
+    return item.items?.some(subItem => isItemActive(subItem)) || false;
   }
 
   /**

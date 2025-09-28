@@ -2,15 +2,15 @@
 import type { Table } from '@tanstack/vue-table';
 import type { Data } from '.';
 
-import {
-  DropdownMenuCheckboxItem,
-  DropdownMenuSeparator,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenu,
-} from '@/components/ui/dropdown-menu';
 import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
 
 interface Props {
   table: Table<Data>;
@@ -24,7 +24,7 @@ const props = withDefaults(defineProps<Props>(), {
 const availableColumns = computed(() => props.table
   .getAllColumns()
   .filter(
-    (column) =>
+    column =>
       typeof column.accessorFn !== 'undefined' && column.getCanHide(),
   ),
 );

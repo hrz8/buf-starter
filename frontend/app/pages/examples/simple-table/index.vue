@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import {
   ExampleLanguageSelector,
-  ExampleTableName,
   ExampleSayHello,
+  ExampleTableName,
 } from '@/components/features/example';
 
 definePageMeta({

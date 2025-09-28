@@ -1,16 +1,16 @@
 <script setup lang="ts">
 import type { Employee } from '~~/gen/altalune/v1/employee_pb';
 
-import EmployeeCreateForm from './EmployeeCreateForm.vue';
-
 import {
-  SheetDescription,
-  SheetTrigger,
+  Sheet,
   SheetContent,
+  SheetDescription,
   SheetHeader,
   SheetTitle,
-  Sheet,
+  SheetTrigger,
 } from '@/components/ui/sheet';
+
+import EmployeeCreateForm from './EmployeeCreateForm.vue';
 
 const props = defineProps<{
   projectId: string;
@@ -53,7 +53,8 @@ function handleSheetClose() {
         <SheetDescription>
           {{
             props.initialData
-              ? 'Review and modify the employee details below. All fields marked with * are required.'
+              ? `Review and modify the employee details below. All fields marked with *
+                are required.`
               : 'Fill in the employee details below. All fields marked with * are required.'
           }}
         </SheetDescription>

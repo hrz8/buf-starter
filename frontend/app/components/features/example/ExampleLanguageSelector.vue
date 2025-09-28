@@ -7,15 +7,15 @@ const flags = {
 };
 
 const currentLocale = computed(() => {
-  const found = locales.value.find((l) => l.code === locale.value);
+  const found = locales.value.find(l => l.code === locale.value);
   return found ? found.name : locale.value;
 });
 
 const isOpen = ref(false);
 
-const toggleDropdown = () => {
+function toggleDropdown() {
   isOpen.value = !isOpen.value;
-};
+}
 
 const dropdownRef = ref(null);
 

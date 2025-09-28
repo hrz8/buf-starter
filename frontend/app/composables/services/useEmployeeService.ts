@@ -1,16 +1,18 @@
-import {
-  QueryEmployeesRequestSchema,
-  CreateEmployeeRequestSchema,
-  UpdateEmployeeRequestSchema,
-  DeleteEmployeeRequestSchema,
-  GetEmployeeRequestSchema,
-  type Employee,
-} from '~~/gen/altalune/v1/employee_pb';
-import { type MessageInitShape, create } from '@bufbuild/protobuf';
-
+import type { MessageInitShape } from '@bufbuild/protobuf';
 import type { QueryMetaResponseSchema } from '~~/gen/altalune/v1/common_pb';
 
+import type { Employee } from '~~/gen/altalune/v1/employee_pb';
 import { employeeRepository } from '#shared/repository/employee';
+
+import { create } from '@bufbuild/protobuf';
+import {
+  CreateEmployeeRequestSchema,
+  DeleteEmployeeRequestSchema,
+
+  GetEmployeeRequestSchema,
+  QueryEmployeesRequestSchema,
+  UpdateEmployeeRequestSchema,
+} from '~~/gen/altalune/v1/employee_pb';
 import { useConnectValidator } from '../useConnectValidator';
 import { useErrorMessage } from '../useErrorMessage';
 
@@ -79,7 +81,8 @@ export function useEmployeeService() {
         data: result.data,
         meta: result.meta,
       };
-    } catch (err) {
+    }
+    catch (err) {
       const errorMessage = parseError(err);
       throw new Error(errorMessage);
     }
@@ -104,10 +107,12 @@ export function useEmployeeService() {
       const result = await employee.createEmployee(message);
       createState.success = true;
       return result.employee || null;
-    } catch (err) {
+    }
+    catch (err) {
       createState.error = parseError(err);
       throw new Error(createState.error);
-    } finally {
+    }
+    finally {
       createState.loading = false;
     }
   }
@@ -138,10 +143,12 @@ export function useEmployeeService() {
       const result = await employee.getEmployee(message);
       getState.success = true;
       return result.employee || null;
-    } catch (err) {
+    }
+    catch (err) {
       getState.error = parseError(err);
       throw new Error(getState.error);
-    } finally {
+    }
+    finally {
       getState.loading = false;
     }
   }
@@ -165,10 +172,12 @@ export function useEmployeeService() {
       const result = await employee.updateEmployee(message);
       updateState.success = true;
       return result.employee || null;
-    } catch (err) {
+    }
+    catch (err) {
       updateState.error = parseError(err);
       throw new Error(updateState.error);
-    } finally {
+    }
+    finally {
       updateState.loading = false;
     }
   }
@@ -192,10 +201,12 @@ export function useEmployeeService() {
       await employee.deleteEmployee(message);
       deleteState.success = true;
       return true;
-    } catch (err) {
+    }
+    catch (err) {
       deleteState.error = parseError(err);
       throw new Error(deleteState.error);
-    } finally {
+    }
+    finally {
       deleteState.loading = false;
     }
   }

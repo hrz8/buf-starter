@@ -1,22 +1,22 @@
 <script setup lang="ts">
+import type {
+  ColumnDef,
+  ColumnFiltersState,
+  PaginationState,
+  SortingState,
+  VisibilityState,
+} from '@tanstack/vue-table';
+
 import {
   getCoreRowModel,
   useVueTable,
 } from '@tanstack/vue-table';
 
-import type {
-  ColumnFiltersState,
-  PaginationState,
-  VisibilityState,
-  SortingState,
-  ColumnDef,
-} from '@tanstack/vue-table';
-
-import DataTablePagination from './DataTablePagination.vue';
-import DataTableContent from './DataTableContent.vue';
-import DataTableToolbar from './DataTableToolbar.vue';
-
 import { valueUpdater } from '@/components/ui/table/utils';
+import DataTableContent from './DataTableContent.vue';
+import DataTablePagination from './DataTablePagination.vue';
+
+import DataTableToolbar from './DataTableToolbar.vue';
 
 interface DataTableProps {
   columns: ColumnDef<any, any>[];
@@ -65,7 +65,7 @@ const table = useVueTable({
     emit('update', pagination.value, sorting.value, columnFilters.value);
     return res;
   },
-  onColumnVisibilityChange: (updaterOrValue) => valueUpdater(updaterOrValue, columnVisibility),
+  onColumnVisibilityChange: updaterOrValue => valueUpdater(updaterOrValue, columnVisibility),
   onPaginationChange: (updaterOrValue) => {
     const res = valueUpdater(updaterOrValue, pagination);
     emit('update', pagination.value, sorting.value, columnFilters.value);
@@ -90,7 +90,6 @@ watch(() => props.rowCount, () => {
     }
   });
 }, { immediate: true });
-
 </script>
 
 <template>

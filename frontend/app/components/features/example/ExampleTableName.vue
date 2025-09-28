@@ -140,7 +140,7 @@ const {
           {{ t('example.allowedNames.paginationInfo', {
             from: ((currentPage - 1) * pageSize) + 1,
             to: Math.min(currentPage * pageSize, meta.total ?? 0),
-            total: meta.total
+            total: meta.total,
           }) }}
         </span>
         <span v-else>

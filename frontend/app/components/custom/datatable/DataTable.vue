@@ -1,17 +1,14 @@
 <script setup lang="ts">
+import type { ColumnDef, ColumnFiltersState, SortingState, VisibilityState } from '@tanstack/vue-table';
 import {
-  type ColumnFiltersState,
-  type VisibilityState,
-  type SortingState,
   getCoreRowModel,
-  type ColumnDef,
   useVueTable,
 } from '@tanstack/vue-table';
 
 import {
+  DataTableContent,
   DataTablePagination,
   DataTableToolbar,
-  DataTableContent,
 } from '@/components/custom/datatable';
 import { valueUpdater } from '@/components/ui/table/utils';
 
@@ -27,8 +24,8 @@ interface Props {
 interface Emits {
   'update:page': [value: number];
   'update:pageSize': [value: number];
-  refresh: [];
-  reset: [];
+  'refresh': [];
+  'reset': [];
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -39,6 +36,12 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const emit = defineEmits<Emits>();
+
+defineSlots<{
+  filters?: (props: { table?: typeof table }) => any;
+  loading?: () => any;
+  empty?: () => any;
+}>();
 
 // Table state
 const columnFilters = ref<ColumnFiltersState>([]);
@@ -68,9 +71,9 @@ const table = useVueTable({
   },
 
   // Change handlers
-  onColumnFiltersChange: (updater) => valueUpdater(updater, columnFilters),
-  onSortingChange: (updater) => valueUpdater(updater, sorting),
-  onColumnVisibilityChange: (updater) => valueUpdater(updater, columnVisibility),
+  onColumnFiltersChange: updater => valueUpdater(updater, columnFilters),
+  onSortingChange: updater => valueUpdater(updater, sorting),
+  onColumnVisibilityChange: updater => valueUpdater(updater, columnVisibility),
 });
 
 // Pagination state
@@ -83,12 +86,6 @@ const currentPageSize = computed({
   get: () => props.pageSize,
   set: (value: number) => emit('update:pageSize', value),
 });
-
-defineSlots<{
-  filters?: (props: { table?: typeof table }) => any;
-  loading?: () => any;
-  empty?: () => any;
-}>();
 
 defineExpose({
   table,

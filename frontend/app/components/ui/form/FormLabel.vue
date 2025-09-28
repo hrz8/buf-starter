@@ -2,10 +2,10 @@
 import type { LabelProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
 
-import { useFormField } from './useFormField';
-
 import { Label } from '@/components/ui/label';
+
 import { cn } from '@/lib/utils';
+import { useFormField } from './useFormField';
 
 const props = defineProps<LabelProps & { class?: HTMLAttributes['class'] }>();
 

@@ -1,27 +1,27 @@
 <script setup lang="ts">
-import {
-  Smartphone,
-  LucideHome,
-  Puzzle,
-  Key,
-} from 'lucide-vue-next';
-
-import type { NavItem } from '@/composables/navigation/useNavigation';
 import type { SidebarProps } from '@/components/ui/sidebar';
 
+import type { NavItem } from '@/composables/navigation/useNavigation';
 import {
+  Key,
+  LucideHome,
+  Puzzle,
+  Smartphone,
+} from 'lucide-vue-next';
+
+import {
+  NavMenu,
+  NavProject,
+  NavSettings,
+  NavUser,
+} from '@/components/custom/nav';
+import {
+  Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-  Sidebar,
 } from '@/components/ui/sidebar';
-import {
-  NavSettings,
-  NavProject,
-  NavMenu,
-  NavUser,
-} from '@/components/custom/nav';
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',

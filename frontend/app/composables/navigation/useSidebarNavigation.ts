@@ -1,6 +1,7 @@
-import { useStorage } from '@vueuse/core';
+import type { NavItem } from './useNavigation';
 
-import { useNavigation, type NavItem } from './useNavigation';
+import { useStorage } from '@vueuse/core';
+import { useNavigation } from './useNavigation';
 
 interface SidebarState {
   expandedItems: string[];
@@ -22,7 +23,8 @@ export function useSidebarNavigation() {
     const index = sidebarState.value.expandedItems.indexOf(itemTitle);
     if (index > -1) {
       sidebarState.value.expandedItems.splice(index, 1);
-    } else {
+    }
+    else {
       sidebarState.value.expandedItems.push(itemTitle);
     }
   }

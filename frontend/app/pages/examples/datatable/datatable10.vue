@@ -1,56 +1,57 @@
 <!-- step 10 -->
 <script setup lang="ts">
-import {
-  type ColumnFiltersState,
-  type VisibilityState,
-  createColumnHelper,
-  type SortingState,
-  getCoreRowModel,
-  useVueTable,
-  FlexRender,
-} from '@tanstack/vue-table';
+import type { Employee } from '#shared/repository/example';
 
 import type { QueryOptions } from '#shared/types/query';
 
-import { exampleRepository, type Employee } from '#shared/repository/example';
-
+import type { ColumnFiltersState, SortingState, VisibilityState } from '@tanstack/vue-table';
+import { exampleRepository } from '#shared/repository/example';
 import {
-  PaginationEllipsis,
-  PaginationPrevious,
+
+  createColumnHelper,
+
+  FlexRender,
+  getCoreRowModel,
+  useVueTable,
+} from '@tanstack/vue-table';
+
+import { Button } from '@/components/ui/button';
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu';
+import { Input } from '@/components/ui/input';
+import {
+  Pagination,
   PaginationContent,
+  PaginationEllipsis,
   PaginationFirst,
   PaginationItem,
   PaginationLast,
   PaginationNext,
-  Pagination,
+  PaginationPrevious,
 } from '@/components/ui/pagination';
 import {
-  DropdownMenuCheckboxItem,
-  DropdownMenuSeparator,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-  DropdownMenuLabel,
-  DropdownMenu,
-} from '@/components/ui/dropdown-menu';
-import {
-  TableHeader,
-  TableEmpty,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Table,
-} from '@/components/ui/table';
-import {
+  Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue,
-  SelectItem,
-  Select,
 } from '@/components/ui/select';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableEmpty,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { valueUpdater } from '@/components/ui/table/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 
 const example = exampleRepository();
 
@@ -94,7 +95,7 @@ const queryOptions = computed<QueryOptions>(() => {
 function serializeFilters(filters: NonNullable<QueryOptions['filters']>): string {
   return Object.keys(filters)
     .sort()
-    .map((key) => `${key}:${filters[key]}`)
+    .map(key => `${key}:${filters[key]}`)
     .join('|');
 }
 
@@ -141,37 +142,37 @@ const {
   pageSize,
 });
 
-const goToPage = (newPage: number) => {
+function goToPage(newPage: number) {
   if (newPage >= 1 && newPage <= pageCount.value) {
     page.value = newPage;
   }
-};
+}
 
 const columnHelper = createColumnHelper<Employee>();
 const columns = [
   columnHelper.accessor('id', {
     header: 'ID',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('name', {
     header: 'Name',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('email', {
     header: 'Email',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('role', {
     header: 'Role',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('department', {
     header: 'Department',
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('status', {
@@ -220,9 +221,9 @@ const table = useVueTable({
     get sorting() { return sorting.value; },
     get columnVisibility() { return columnVisibility.value; },
   },
-  onColumnFiltersChange: (updater) => valueUpdater(updater, columnFilters),
-  onSortingChange: (updater) => valueUpdater(updater, sorting),
-  onColumnVisibilityChange: (updater) => valueUpdater(updater, columnVisibility),
+  onColumnFiltersChange: updater => valueUpdater(updater, columnFilters),
+  onSortingChange: updater => valueUpdater(updater, sorting),
+  onColumnVisibilityChange: updater => valueUpdater(updater, columnVisibility),
 });
 
 const departmentFilter = ref((table.getColumn('department')?.getFilterValue() ?? '') as string);
@@ -239,24 +240,26 @@ function updateRoleFilter(value: string) {
 
 const availableColumns = computed(() => table.getAllColumns()
   .filter(
-    (column) =>
+    column =>
       typeof column.accessorFn !== 'undefined' && column.getCanHide(),
   ));
 
-const getSortIcon = (column: any) => {
+function getSortIcon(column: any) {
   const sortDirection = column.getIsSorted();
-  if (sortDirection === 'asc') return 'lucide:arrow-up';
-  if (sortDirection === 'desc') return 'lucide:arrow-down';
+  if (sortDirection === 'asc')
+    return 'lucide:arrow-up';
+  if (sortDirection === 'desc')
+    return 'lucide:arrow-down';
   return 'lucide:arrow-up-down';
-};
+}
 
-const getSortIconClass = (column: any) => {
+function getSortIconClass(column: any) {
   const sortDirection = column.getIsSorted();
   return [
     'w-4 h-4 ml-2 transition-colors',
     sortDirection ? 'text-foreground' : 'text-muted-foreground',
   ];
-};
+}
 
 // Helper to generate visible page numbers
 const visiblePages = computed(() => {
@@ -273,7 +276,8 @@ const visiblePages = computed(() => {
 
   if (current - delta > 2) {
     rangeWithDots.push(1, '...');
-  } else {
+  }
+  else {
     rangeWithDots.push(1);
   }
 
@@ -281,7 +285,8 @@ const visiblePages = computed(() => {
 
   if (current + delta < total - 1) {
     rangeWithDots.push('...', total);
-  } else {
+  }
+  else {
     rangeWithDots.push(total);
   }
 

@@ -1,4 +1,4 @@
-export type QueryOptions = {
+export interface QueryOptions {
   pagination: {
     page: number;
     pageSize: number;
@@ -11,9 +11,9 @@ export type QueryOptions = {
     field: string;
     order: 'asc' | 'desc';
   };
-};
+}
 
-export type PaginatedResponse<T> = {
+export interface PaginatedResponse<T> {
   data: T[];
   meta: {
     rowCount: number;
@@ -22,4 +22,4 @@ export type PaginatedResponse<T> = {
       [key: string]: string[];
     };
   };
-};
+}

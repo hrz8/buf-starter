@@ -1,11 +1,13 @@
-import { SortOrder } from '~~/gen/altalune/v1/common_pb';
-
-import type {
-  QueryRequestSchema, PaginationSchema, StringListSchema,
-  SortingSchema,
-} from '~~/gen/altalune/v1/common_pb';
-import type { ColumnFiltersState, SortingState } from '@tanstack/vue-table';
 import type { MessageInitShape } from '@bufbuild/protobuf';
+
+import type { ColumnFiltersState, SortingState } from '@tanstack/vue-table';
+import type {
+  PaginationSchema,
+  QueryRequestSchema,
+  SortingSchema,
+  StringListSchema,
+} from '~~/gen/altalune/v1/common_pb';
+import { SortOrder } from '~~/gen/altalune/v1/common_pb';
 
 export function useQueryRequest(options: {
   page: Ref<number>;
@@ -41,10 +43,11 @@ export function useQueryRequest(options: {
         if (Array.isArray(value)) {
           if (value.length > 0) {
             protoFilters[filter.id] = {
-              values: value.map((v) => String(v)),
+              values: value.map(v => String(v)),
             };
           }
-        } else {
+        }
+        else {
           protoFilters[filter.id] = {
             values: [String(value)],
           };

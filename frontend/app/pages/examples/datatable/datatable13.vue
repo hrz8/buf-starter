@@ -1,37 +1,38 @@
 <!-- step 13 -->
 <script setup lang="ts">
-import {
-  type ColumnFiltersState,
-  type VisibilityState,
-  createColumnHelper,
-  type SortingState,
-  getCoreRowModel,
-  useVueTable,
-  FlexRender,
-  type Table,
-} from '@tanstack/vue-table';
-
 import type { Employee } from '#shared/repository/example';
+
 import type { QueryOptions } from '#shared/types/query';
+import type { ColumnFiltersState, SortingState, Table, VisibilityState } from '@tanstack/vue-table';
 
 import { exampleRepository } from '#shared/repository/example';
+import {
+
+  createColumnHelper,
+
+  FlexRender,
+  getCoreRowModel,
+  useVueTable,
+
+} from '@tanstack/vue-table';
 
 import {
   DataTableBasicRowActions,
-  DataTableFacetedFilter,
   DataTableColumnHeader,
+  DataTableFacetedFilter,
   DataTablePagination,
   DataTableToolbar,
 } from '@/components/custom/datatable';
+import { Input } from '@/components/ui/input';
 import {
-  TableHeader, TableEmpty,
   TableBody,
   TableCell,
+  TableEmpty,
   TableHead,
+  TableHeader,
   TableRow,
 } from '@/components/ui/table';
 import { valueUpdater } from '@/components/ui/table/utils';
-import { Input } from '@/components/ui/input';
 
 const example = exampleRepository();
 
@@ -75,7 +76,7 @@ const queryOptions = computed<QueryOptions>(() => {
 function serializeFilters(filters: NonNullable<QueryOptions['filters']>): string {
   return Object.keys(filters)
     .sort()
-    .map((key) => `${key}:${filters[key]}`)
+    .map(key => `${key}:${filters[key]}`)
     .join('|');
 }
 
@@ -120,7 +121,7 @@ const columns = [
       column,
       title: 'ID',
     }),
-    cell: (info) => h('div', { class: 'w-20' }, info.getValue()),
+    cell: info => h('div', { class: 'w-20' }, info.getValue()),
     enableSorting: true,
   }),
   columnHelper.accessor('name', {
@@ -128,7 +129,7 @@ const columns = [
       column,
       title: 'Name',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('email', {
@@ -136,7 +137,7 @@ const columns = [
       column,
       title: 'Email',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('role', {
@@ -144,7 +145,7 @@ const columns = [
       column,
       title: 'Role',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('department', {
@@ -152,7 +153,7 @@ const columns = [
       column,
       title: 'Department',
     }),
-    cell: (info) => info.getValue(),
+    cell: info => info.getValue(),
     enableSorting: true,
   }),
   columnHelper.accessor('status', {
@@ -211,14 +212,14 @@ const table = useVueTable({
     get sorting() { return sorting.value; },
     get columnVisibility() { return columnVisibility.value; },
   },
-  onColumnFiltersChange: (updater) => valueUpdater(updater, columnFilters),
-  onSortingChange: (updater) => valueUpdater(updater, sorting),
-  onColumnVisibilityChange: (updater) => valueUpdater(updater, columnVisibility),
+  onColumnFiltersChange: updater => valueUpdater(updater, columnFilters),
+  onSortingChange: updater => valueUpdater(updater, sorting),
+  onColumnVisibilityChange: updater => valueUpdater(updater, columnVisibility),
 });
 
 // role filters
 const roleFilterValues = ref<string[]>([]);
-const roleOptions = computed(() => response.value?.meta.filters?.['roles']?.map((role) => ({
+const roleOptions = computed(() => response.value?.meta.filters?.roles?.map(role => ({
   label: role,
   value: role,
 })) ?? []);
@@ -236,7 +237,7 @@ function onRoleFilterClear(table?: Table<any>) {
 
 // department filters
 const departmentFilterValues = ref<string[]>([]);
-const departmentOptions = computed(() => response.value?.meta.filters?.['departments']?.map((dept) => ({
+const departmentOptions = computed(() => response.value?.meta.filters?.departments?.map(dept => ({
   label: dept,
   value: dept,
 })) ?? []);

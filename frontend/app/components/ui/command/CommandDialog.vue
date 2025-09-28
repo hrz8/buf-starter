@@ -1,13 +1,17 @@
 <script setup lang="ts">
-import { useForwardPropsEmits } from 'reka-ui';
-
 import type { DialogRootEmits, DialogRootProps } from 'reka-ui';
 
-import Command from './Command.vue';
+import { useForwardPropsEmits } from 'reka-ui';
 
 import {
-  DialogDescription, DialogContent, DialogHeader, DialogTitle, Dialog,
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
 } from '@/components/ui/dialog';
+
+import Command from './Command.vue';
 
 const props = withDefaults(defineProps<DialogRootProps & {
   title?: string;
