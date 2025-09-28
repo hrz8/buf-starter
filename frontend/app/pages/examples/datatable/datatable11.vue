@@ -37,6 +37,11 @@ import {
   DropdownMenu,
 } from '@/components/ui/dropdown-menu';
 import {
+  DataTableBasicRowActions,
+  DataTableFacetedFilter,
+  DataTableColumnHeader,
+} from '@/components/custom/datatable';
+import {
   TableHeader,
   TableEmpty,
   TableBody,
@@ -44,11 +49,6 @@ import {
   TableHead,
   TableRow,
 } from '@/components/ui/table';
-import {
-  DataTableFacetedFilter,
-  DataTableColumnHeader,
-  DataTableRowActions,
-} from '@/components/custom/datatable';
 import {
   SelectContent,
   SelectTrigger,
@@ -230,7 +230,7 @@ const columns = [
   }),
   columnHelper.display({
     id: 'actions',
-    cell: ({ row }) => h(DataTableRowActions, { row }),
+    cell: ({ row }) => h(DataTableBasicRowActions, { row }),
   }),
 ]; ;
 

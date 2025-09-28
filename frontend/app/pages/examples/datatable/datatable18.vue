@@ -8,16 +8,21 @@ import type { Employee } from '~~/gen/altalune/v1/employee_pb';
 import { serializeProtoFilters } from '#shared/helpers/serializer';
 
 import {
+  EmployeeTableLoading,
+  EmployeeDeleteDialog,
+  EmployeeCreateSheet,
+  EmployeeEditSheet,
+} from '~/components/features/employee';
+import {
+  DataTableBasicRowActions,
   DataTableFacetedFilter,
   DataTableColumnHeader,
-  DataTableRowActions,
   DataTable,
 } from '@/components/custom/datatable';
 import {
   useDataTableFilter,
   useDataTableState,
 } from '@/components/custom/datatable/utils';
-import { EmployeeTableLoading, EmployeeCreateSheet } from '~/components/features/employee';
 import { useEmployeeService } from '@/composables/services/useEmployeeService';
 import { useQueryRequest } from '@/composables/useQueryRequest';
 import { useProjectStore } from '@/stores/project';
@@ -183,7 +188,13 @@ const columns = [
   }),
   columnHelper.display({
     id: 'actions',
-    cell: ({ row }) => h(DataTableRowActions, { row }),
+    cell: ({ row }) => h(DataTableBasicRowActions, {
+      row,
+      onEdit: handleEdit,
+      onDelete: handleDelete,
+      onDuplicate: handleDuplicate,
+      onFavorite: handleFavorite,
+    }),
   }),
 ]; ;
 
@@ -229,110 +240,185 @@ function handleEmployeeCreated() {
 function handleSheetClose() {
   resetCreateState();
 }
+
+// Edit and Delete sheet/dialog state
+const selectedEmployee = ref<Employee | null>(null);
+const isEditSheetOpen = ref(false);
+const isDeleteDialogOpen = ref(false);
+
+// Handle DataTableBasicRowActions events
+function handleEdit(row: any) {
+  selectedEmployee.value = row.original as Employee;
+  nextTick(() => {
+    isEditSheetOpen.value = true;
+  });
+}
+
+function handleDelete(row: any) {
+  selectedEmployee.value = row.original as Employee;
+  nextTick(() => {
+    isDeleteDialogOpen.value = true;
+  });
+}
+
+function handleDuplicate(row: any) {
+  // TODO: Implement duplicate functionality
+  console.info('Duplicate:', row.original);
+}
+
+function handleFavorite(row: any) {
+  // TODO: Implement favorite functionality
+  console.info('Favorite:', row.original);
+}
+
+// Sheet/Dialog handlers
+function handleEmployeeUpdated() {
+  isEditSheetOpen.value = false;
+  selectedEmployee.value = null;
+  refresh();
+}
+
+function handleEmployeeDeleted() {
+  isDeleteDialogOpen.value = false;
+  selectedEmployee.value = null;
+  refresh();
+}
+
+function closeEditSheet() {
+  isEditSheetOpen.value = false;
+  selectedEmployee.value = null;
+}
+
+function closeDeleteDialog() {
+  isDeleteDialogOpen.value = false;
+  selectedEmployee.value = null;
+}
 </script>
 
 <template>
-  <div class="space-y-5 px-4 py-3 sm:px-6 lg:px-8">
-    <div class="container mx-auto flex justify-end">
-      <EmployeeCreateSheet
-        :project-id="activeProjectId!"
-        @success="handleEmployeeCreated"
-        @cancel="handleSheetClose"
-      >
-        <Button size="sm">
-          <Icon
-            name="lucide:user-plus"
-            class="mr-2 h-4 w-4"
-          />
-          Add Employee
-        </Button>
-      </EmployeeCreateSheet>
+  <div>
+    <div class="space-y-5 px-4 py-3 sm:px-6 lg:px-8">
+      <div class="container mx-auto flex justify-end">
+        <EmployeeCreateSheet
+          :project-id="activeProjectId!"
+          @success="handleEmployeeCreated"
+          @cancel="handleSheetClose"
+        >
+          <Button size="sm">
+            <Icon
+              name="lucide:user-plus"
+              class="mr-2 h-4 w-4"
+            />
+            Add Employee
+          </Button>
+        </EmployeeCreateSheet>
+      </div>
+      <div class="container mx-auto">
+        <DataTable
+          ref="dataTableRef"
+          v-model:page="page"
+          v-model:page-size="pageSize"
+          :columns="columns"
+          :data="data"
+          :pending="pending"
+          :row-count="rowCount"
+          @refresh="refresh()"
+          @reset="reset()"
+        >
+          <template #filters>
+            <Input
+              v-model="keyword"
+              placeholder="Search employees..."
+              class="h-8 w-[150px] lg:w-[250px]"
+            />
+
+            <DataTableFacetedFilter
+              v-if="roleOptions.length > 0"
+              v-model="roleFilter.filterValues.value"
+              title="Role"
+              :options="roleOptions"
+              @update="roleFilter.setFilter"
+              @clear="roleFilter.clearFilter"
+            />
+
+            <DataTableFacetedFilter
+              v-if="departmentOptions.length > 0"
+              v-model="departmentFilter.filterValues.value"
+              title="Department"
+              :options="departmentOptions!"
+              @update="departmentFilter.setFilter"
+              @clear="departmentFilter.clearFilter"
+            />
+
+            <DataTableFacetedFilter
+              v-if="statusOptions.length > 0"
+              v-model="statusFilter.filterValues.value"
+              title="Status"
+              :options="statusOptions"
+              @update="statusFilter.setFilter"
+              @clear="statusFilter.clearFilter"
+            />
+          </template>
+          <template #loading>
+            <EmployeeTableLoading />
+          </template>
+          <template #empty>
+            <div class="flex flex-col items-center justify-center space-y-6 py-16">
+              <div class="relative">
+                <Icon
+                  name="lucide:user-x"
+                  class="text-muted-foreground/50"
+                  size="2em"
+                />
+              </div>
+              <div class="text-center space-y-2">
+                <h3 class="text-lg font-semibold">
+                  No employees found
+                </h3>
+                <p class="text-muted-foreground max-w-md">
+                  We couldn't find any employees matching your criteria.
+                  Try adjusting your filters or search terms.
+                </p>
+              </div>
+              <div class="flex space-x-2">
+                <EmployeeCreateSheet
+                  :project-id="activeProjectId!"
+                  @success="handleEmployeeCreated"
+                  @cancel="handleSheetClose"
+                >
+                  <Button>
+                    <Icon
+                      name="lucide:user-plus"
+                      class="mr-2 h-4 w-4"
+                    />
+                    Add Employee
+                  </Button>
+                </EmployeeCreateSheet>
+              </div>
+            </div>
+          </template>
+        </DataTable>
+      </div>
     </div>
-    <div class="container mx-auto">
-      <DataTable
-        ref="dataTableRef"
-        v-model:page="page"
-        v-model:page-size="pageSize"
-        :columns="columns"
-        :data="data"
-        :pending="pending"
-        :row-count="rowCount"
-        @refresh="refresh()"
-        @reset="reset()"
-      >
-        <template #filters>
-          <Input
-            v-model="keyword"
-            placeholder="Search employees..."
-            class="h-8 w-[150px] lg:w-[250px]"
-          />
 
-          <DataTableFacetedFilter
-            v-if="roleOptions.length > 0"
-            v-model="roleFilter.filterValues.value"
-            title="Role"
-            :options="roleOptions"
-            @update="roleFilter.setFilter"
-            @clear="roleFilter.clearFilter"
-          />
+    <!-- Employee Edit Sheet - Outside DataTable to avoid dropdown conflicts -->
+    <EmployeeEditSheet
+      v-if="selectedEmployee"
+      v-model:open="isEditSheetOpen"
+      :project-id="activeProjectId!"
+      :employee="selectedEmployee"
+      @success="handleEmployeeUpdated"
+      @cancel="closeEditSheet"
+    />
 
-          <DataTableFacetedFilter
-            v-if="departmentOptions.length > 0"
-            v-model="departmentFilter.filterValues.value"
-            title="Department"
-            :options="departmentOptions!"
-            @update="departmentFilter.setFilter"
-            @clear="departmentFilter.clearFilter"
-          />
-
-          <DataTableFacetedFilter
-            v-if="statusOptions.length > 0"
-            v-model="statusFilter.filterValues.value"
-            title="Status"
-            :options="statusOptions"
-            @update="statusFilter.setFilter"
-            @clear="statusFilter.clearFilter"
-          />
-        </template>
-        <template #loading>
-          <EmployeeTableLoading />
-        </template>
-        <template #empty>
-          <div class="flex flex-col items-center justify-center space-y-6 py-16">
-            <div class="relative">
-              <Icon
-                name="lucide:user-x"
-                class="text-muted-foreground/50"
-                size="2em"
-              />
-            </div>
-            <div class="text-center space-y-2">
-              <h3 class="text-lg font-semibold">
-                No employees found
-              </h3>
-              <p class="text-muted-foreground max-w-md">
-                We couldn't find any employees matching your criteria.
-                Try adjusting your filters or search terms.
-              </p>
-            </div>
-            <div class="flex space-x-2">
-              <EmployeeCreateSheet
-                :project-id="activeProjectId!"
-                @success="handleEmployeeCreated"
-                @cancel="handleSheetClose"
-              >
-                <Button>
-                  <Icon
-                    name="lucide:user-plus"
-                    class="mr-2 h-4 w-4"
-                  />
-                  Add Employee
-                </Button>
-              </EmployeeCreateSheet>
-            </div>
-          </div>
-        </template>
-      </DataTable>
-    </div>
+    <!-- Employee Delete Dialog - Outside DataTable to avoid dropdown conflicts -->
+    <EmployeeDeleteDialog
+      v-if="selectedEmployee"
+      v-model:open="isDeleteDialogOpen"
+      :project-id="activeProjectId!"
+      :employee="selectedEmployee"
+      @success="handleEmployeeDeleted"
+      @cancel="closeDeleteDialog"
+    />
   </div>
 </template>

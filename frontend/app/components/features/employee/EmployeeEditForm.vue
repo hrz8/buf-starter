@@ -25,13 +25,17 @@ import {
   FormLabel,
   FormItem,
 } from '@/components/ui/form';
+import {
+  AlertDescription, AlertTitle, Alert,
+} from '@/components/ui/alert';
 import { useEmployeeService } from '@/composables/services/useEmployeeService';
-import { AlertDescription, Alert } from '@/components/ui/alert';
+import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 
 const props = defineProps<{
   projectId: string;
+  employeeId: string;
 }>();
 
 const emit = defineEmits<{
@@ -40,16 +44,21 @@ const emit = defineEmits<{
 }>();
 
 const {
-  createEmployee,
-  createLoading,
-  createError,
-  createValidationErrors,
-  resetCreateState,
+  getEmployee,
+  getLoading,
+  getError,
+  resetGetState,
+  updateEmployee,
+  updateLoading,
+  updateError,
+  updateValidationErrors,
+  resetUpdateState,
 } = useEmployeeService();
 
 // Create form schema matching protobuf structure
 const formSchema = toTypedSchema(z.object({
   projectId: z.string().length(14),
+  employeeId: z.string().min(1),
   name: z.string().min(2).max(50),
   email: z.string().email('Must be a valid email address'),
   role: z.string().min(1),
@@ -62,12 +71,61 @@ const form = useForm({
   validationSchema: formSchema,
   initialValues: {
     projectId: props.projectId,
+    employeeId: props.employeeId,
     name: '',
     email: '',
     role: '',
     department: '',
     status: EmployeeStatus.ACTIVE,
   },
+});
+
+// Employee data state
+const employee = ref<Employee | null>(null);
+const isLoading = computed(() => getLoading.value);
+
+// Fetch employee data
+async function fetchEmployee() {
+  try {
+    resetGetState();
+    const fetchedEmployee = await getEmployee({
+      projectId: props.projectId,
+      employeeId: props.employeeId,
+    });
+
+    if (fetchedEmployee) {
+      employee.value = fetchedEmployee;
+      // Update form values using vee-validate setValues
+      form.setValues({
+        projectId: props.projectId,
+        employeeId: fetchedEmployee.id,
+        name: fetchedEmployee.name,
+        email: fetchedEmployee.email,
+        role: fetchedEmployee.role,
+        department: fetchedEmployee.department,
+        status: fetchedEmployee.status,
+      });
+    }
+  } catch (error) {
+    console.error('Failed to fetch employee:', error);
+    toast.error('Failed to load employee data', {
+      description: getError.value || 'An unexpected error occurred.',
+    });
+  }
+}
+
+// Watch for employeeId changes and refetch
+watch(() => props.employeeId, () => {
+  if (props.employeeId) {
+    fetchEmployee();
+  }
+}, { immediate: true });
+
+// Watch for project ID changes
+watch(() => props.projectId, (newProjectId) => {
+  if (newProjectId) {
+    form.setFieldValue('projectId', newProjectId);
+  }
 });
 
 const statusOptions = [
@@ -105,78 +163,105 @@ const departmentOptions = [
 
 // Helper functions for ConnectRPC validation errors (fallback)
 const getConnectRPCError = (fieldName: string): string => {
-  const errors = createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`];
+  const errors = updateValidationErrors.value[fieldName] || updateValidationErrors.value[`value.${fieldName}`];
   return errors?.[0] || '';
 };
 
 const hasConnectRPCError = (fieldName: string): boolean => {
-  return !!(createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`]);
+  return !!(updateValidationErrors.value[fieldName] || updateValidationErrors.value[`value.${fieldName}`]);
 };
 
 // Handle form submission with vee-validate
 const onSubmit = form.handleSubmit(async (values) => {
   try {
-    const employee = await createEmployee(values);
+    const employee = await updateEmployee(values);
 
     if (employee) {
-      toast.success('Employee created successfully', {
-        description: `${values.name} has been added to the team.`,
+      toast.success('Employee updated successfully', {
+        description: `${values.name} has been updated.`,
       });
 
       emit('success', employee);
-      resetForm();
     }
   } catch (error) {
-    console.error('Failed to create employee:', error);
-    toast.error('Failed to create employee', {
-      description: createError.value || 'An unexpected error occurred. Please try again.',
+    console.error('Failed to update employee:', error);
+    toast.error('Failed to update employee', {
+      description: updateError.value || 'An unexpected error occurred. Please try again.',
     });
   }
 });
 
 function handleCancel() {
-  resetForm();
+  resetUpdateState();
   emit('cancel');
 }
 
-function resetForm() {
-  form.resetForm({
-    values: {
-      projectId: props.projectId,
-      name: '',
-      email: '',
-      role: '',
-      department: '',
-      status: EmployeeStatus.ACTIVE,
-    },
-  });
-  resetCreateState();
-}
-
-// Watch for project ID changes
-watch(() => props.projectId, (newProjectId) => {
-  if (newProjectId) {
-    form.setFieldValue('projectId', newProjectId);
-  }
-});
-
 onUnmounted(() => {
-  resetCreateState();
+  resetUpdateState();
+  resetGetState();
 });
 </script>
 
 <template>
+  <!-- Loading skeleton while fetching employee data -->
+  <div
+    v-if="isLoading"
+    class="space-y-6"
+  >
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-20" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-64" />
+    </div>
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-24" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-48" />
+    </div>
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-16" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-56" />
+    </div>
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-20" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-60" />
+    </div>
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-16" />
+      <Skeleton class="h-10 w-full" />
+      <Skeleton class="h-4 w-44" />
+    </div>
+    <div class="flex justify-end space-x-2 pt-4">
+      <Skeleton class="h-10 w-16" />
+      <Skeleton class="h-10 w-32" />
+    </div>
+  </div>
+
+  <!-- Error state while fetching employee data -->
+  <Alert
+    v-else-if="getError"
+    variant="destructive"
+  >
+    <AlertCircle class="w-4 h-4" />
+    <AlertTitle>Error Loading Employee</AlertTitle>
+    <AlertDescription>{{ getError }}</AlertDescription>
+  </Alert>
+
+  <!-- Form when employee data is loaded -->
   <form
+    v-else-if="employee"
     class="space-y-6"
     @submit="onSubmit"
   >
     <Alert
-      v-if="createError"
+      v-if="updateError"
       variant="destructive"
     >
       <AlertCircle class="w-4 h-4" />
       <AlertTitle>Error</AlertTitle>
-      <AlertDescription>{{ createError }}</AlertDescription>
+      <AlertDescription>{{ updateError }}</AlertDescription>
     </Alert>
 
     <FormField
@@ -190,7 +275,7 @@ onUnmounted(() => {
             v-bind="componentField"
             placeholder="John Doe"
             :class="{ 'border-destructive': hasConnectRPCError('name') }"
-            :disabled="createLoading"
+            :disabled="updateLoading"
           />
         </FormControl>
         <FormDescription>
@@ -218,7 +303,7 @@ onUnmounted(() => {
             type="email"
             placeholder="john.doe@company.com"
             :class="{ 'border-destructive': hasConnectRPCError('email') }"
-            :disabled="createLoading"
+            :disabled="updateLoading"
           />
         </FormControl>
         <FormDescription>
@@ -244,7 +329,7 @@ onUnmounted(() => {
           <div class="space-y-2">
             <Select
               v-bind="componentField"
-              :disabled="createLoading"
+              :disabled="updateLoading"
             >
               <SelectTrigger
                 :class="{ 'border-destructive': hasConnectRPCError('role') }"
@@ -289,7 +374,7 @@ onUnmounted(() => {
           <div class="space-y-2">
             <Select
               v-bind="componentField"
-              :disabled="createLoading"
+              :disabled="updateLoading"
             >
               <SelectTrigger
                 :class="{ 'border-destructive': hasConnectRPCError('department') }"
@@ -333,7 +418,7 @@ onUnmounted(() => {
         <FormControl>
           <Select
             v-bind="componentField"
-            :disabled="createLoading"
+            :disabled="updateLoading"
           >
             <SelectTrigger
               :class="{ 'border-destructive': hasConnectRPCError('status') }"
@@ -378,21 +463,21 @@ onUnmounted(() => {
       <Button
         type="button"
         variant="outline"
-        :disabled="createLoading"
+        :disabled="updateLoading"
         @click="handleCancel"
       >
         Cancel
       </Button>
       <Button
         type="submit"
-        :disabled="createLoading"
+        :disabled="updateLoading"
       >
         <Icon
-          v-if="createLoading"
+          v-if="updateLoading"
           name="lucide:loader-2"
           class="mr-2 h-4 w-4 animate-spin"
         />
-        {{ createLoading ? 'Creating...' : 'Create Employee' }}
+        {{ updateLoading ? 'Updating...' : 'Update Employee' }}
       </Button>
     </div>
   </form>

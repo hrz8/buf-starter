@@ -25,9 +25,9 @@ import {
   DropdownMenu,
 } from '@/components/ui/dropdown-menu';
 import {
+  DataTableBasicRowActions,
   DataTableFacetedFilter,
   DataTableColumnHeader,
-  DataTableRowActions,
   DataTablePagination,
 } from '@/components/custom/datatable';
 import {
@@ -196,7 +196,7 @@ const columns = [
   }),
   columnHelper.display({
     id: 'actions',
-    cell: ({ row }) => h(DataTableRowActions, { row }),
+    cell: ({ row }) => h(DataTableBasicRowActions, { row }),
   }),
 ]; ;
 

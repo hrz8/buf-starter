@@ -192,7 +192,7 @@ export function useEntityService() {
 **Key Requirements:**
 
 - Use reactive state management for form states
-- Implement proper validation with `useConnectValidator`
+- Implement dual-layer validation: vee-validate (primary) + ConnectRPC (fallback)
 - Handle errors with `useErrorMessage` and i18n
 - Return computed properties for reactive UI binding
 - Follow exact pattern from existing services
@@ -267,16 +267,44 @@ function handleSheetClose() {
 </template>
 ```
 
-**Form Component Pattern:**
+**Form Component Pattern (vee-validate + ConnectRPC Dual Validation):**
+
+**Important: Form Validation Strategy**
+
+The project uses a dual-layer validation approach:
+
+1. **Primary**: vee-validate with Zod schemas for immediate client-side feedback
+2. **Fallback**: ConnectRPC validation for development/edge cases
+
+This ensures robust validation while maintaining good UX with immediate feedback.
+
+**Critical: Avoid Dual Field Binding**
+
+Never bind multiple inputs to the same vee-validate field. Each field name should have only ONE input controlling it:
+
+```vue
+<!-- WRONG - Two inputs bound to same field -->
+<FormField v-slot="{ componentField }" name="role">
+  <Select v-bind="componentField">...</Select>      <!-- Field binding #1 -->
+  <Input v-bind="componentField">...</Input>        <!-- Field binding #2 - CONFLICT! -->
+</FormField>
+
+<!-- CORRECT - Single input with enhanced UX -->
+<FormField v-slot="{ componentField }" name="role">
+  <Select v-bind="componentField">...</Select>      <!-- Only field binding -->
+  <div class="text-xs text-muted-foreground">
+    You can also type directly in the field above for custom values
+  </div>
+</FormField>
+```
 
 ```vue
 <script setup lang="ts">
+import { toTypedSchema } from "@vee-validate/zod";
+import { useForm } from "vee-validate";
+import * as z from "zod";
 import { toast } from "vue-sonner";
-import type {
-  CreateEntityRequestSchema,
-  Entity,
-} from "~~/gen/domain/v1/entity_pb";
-import type { MessageInitShape } from "@bufbuild/protobuf";
+import type { Entity } from "~~/gen/domain/v1/entity_pb";
 
 import { useEntityService } from "@/composables/services/useEntityService";
 import {
@@ -307,34 +335,50 @@ const {
   resetCreateState,
 } = useEntityService();
 
-const formData = reactive<MessageInitShape<typeof CreateEntityRequestSchema>>({
-  // Initialize form fields based on schema
-  name: "",
-  description: "",
-  // ... other fields
+// Create Zod schema matching protobuf validation rules
+const formSchema = toTypedSchema(
+  z.object({
+    projectId: z.string().length(14), // Nanoid project ID
+    name: z.string().min(2).max(50),
+    email: z.string().email("Must be a valid email address"),
+    // ... other fields with appropriate validation
+  })
+);
+
+// Initialize vee-validate form
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    projectId: props.projectId || "",
+    name: "",
+    email: "",
+    // ... other fields
+  },
 });
 
-const getFieldError = (fieldName: string): string => {
+// ConnectRPC validation helpers (fallback layer)
+const getConnectRPCError = (fieldName: string): string => {
   const errors =
     createValidationErrors.value[fieldName] ||
     createValidationErrors.value[`value.${fieldName}`];
   return errors?.[0] || "";
 };
 
-const hasFieldError = (fieldName: string): boolean => {
+const hasConnectRPCError = (fieldName: string): boolean => {
   return !!(
     createValidationErrors.value[fieldName] ||
     createValidationErrors.value[`value.${fieldName}`]
   );
 };
 
-async function handleSubmit() {
+// Handle form submission with vee-validate
+const onSubmit = form.handleSubmit(async (values) => {
   try {
-    const entity = await createEntity(formData);
+    const entity = await createEntity(values);
 
     if (entity) {
       toast.success("Entity created successfully", {
-        description: `${formData.name} has been created.`,
+        description: `${values.name} has been created.`,
       });
 
       emit("success", entity);
@@ -347,7 +391,7 @@ async function handleSubmit() {
         createError.value || "An unexpected error occurred. Please try again.",
     });
   }
-}
+});
 
 function handleCancel() {
   resetForm();
@@ -355,13 +399,26 @@ function handleCancel() {
 }
 
 function resetForm() {
-  Object.assign(formData, {
-    name: "",
-    description: "",
-    // Reset all fields
+  form.resetForm({
+    values: {
+      projectId: props.projectId || "",
+      name: "",
+      email: "",
+      // Reset all fields to initial values
+    },
   });
   resetCreateState();
 }
+
+// Watch for prop changes
+watch(
+  () => props.projectId,
+  (newProjectId) => {
+    if (newProjectId) {
+      form.setFieldValue("projectId", newProjectId);
+    }
+  }
+);
 
 onUnmounted(() => {
   resetCreateState();
@@ -369,7 +426,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <form class="space-y-6" @submit.prevent="handleSubmit">
+  <form class="space-y-6" @submit="onSubmit">
     <!-- Error Alert -->
     <Alert v-if="createError" variant="destructive">
       <AlertCircle class="w-4 h-4" />
@@ -377,23 +434,25 @@ onUnmounted(() => {
       <AlertDescription>{{ createError }}</AlertDescription>
     </Alert>
 
-    <!-- Form Fields -->
+    <!-- Form Fields with vee-validate + ConnectRPC fallback -->
     <FormField v-slot="{ componentField }" name="name">
       <FormItem>
         <FormLabel>Name *</FormLabel>
         <FormControl>
           <Input
-            v-model="formData.name"
             v-bind="componentField"
             placeholder="Entity name"
-            :class="{ 'border-destructive': hasFieldError('name') }"
+            :class="{ 'border-destructive': hasConnectRPCError('name') }"
             :disabled="createLoading"
           />
         </FormControl>
         <FormDescription> Entity name (required) </FormDescription>
-        <FormMessage v-if="hasFieldError('name')" class="text-destructive">
-          {{ getFieldError("name") }}
-        </FormMessage>
+        <!-- Primary validation message from vee-validate -->
+        <FormMessage />
+        <!-- Fallback validation message from ConnectRPC -->
+        <div v-if="hasConnectRPCError('name')" class="text-sm text-destructive">
+          {{ getConnectRPCError("name") }}
+        </div>
       </FormItem>
     </FormField>
 
@@ -421,6 +480,41 @@ onUnmounted(() => {
 ```
 
 ### Step 5: Data Table Integration
+
+**Row Actions Architecture:**
+
+The project provides two approaches for data table row actions:
+
+1. **DataTableBasicRowActions** - Generic component for basic CRUD operations:
+
+   ```vue
+   import { DataTableBasicRowActions } from '@/components/custom/datatable'; //
+   Usage in column definition columnHelper.display({ id: 'actions', cell: ({ row
+   }) => h(DataTableBasicRowActions, { row, actions: { edit: true, delete: true,
+   duplicate: false, favorite: false }, onEdit: handleEdit, onDelete:
+   handleDelete, onDuplicate: handleDuplicate, onFavorite: handleFavorite, }),
+   })
+   ```
+
+2. **Domain-Specific Row Actions** - For complex domain logic:
+
+   ```vue
+   // Create in: components/features/{domain}/{Domain}RowActions.vue // Example:
+   components/features/employee/EmployeeRowActions.vue
+
+   <script setup lang="ts">
+   // Domain-specific logic, validation, permissions, etc.
+   </script>
+   ```
+
+**When to use which approach:**
+
+- **Use DataTableBasicRowActions** for simple CRUD operations with standard edit/delete patterns
+- **Create Domain Row Actions** when you need:
+  - Complex business logic or validation
+  - Domain-specific permissions/role checks
+  - Custom actions beyond basic CRUD
+  - Multi-step workflows or confirmations
 
 **Query Implementation with Data Tables:**
 
@@ -550,10 +644,11 @@ cd frontend && pnpm dev
 
 - [ ] Used established repository pattern with Connect error handling
 - [ ] Followed service composable pattern with reactive state
-- [ ] Implemented proper form validation with `useConnectValidator`
+- [ ] Implemented dual-layer validation: vee-validate (primary) + ConnectRPC (fallback)
 - [ ] Used shadcn-vue components for consistent UI
 - [ ] Added comprehensive error handling with toast notifications
 - [ ] Followed established naming conventions and file structure
+- [ ] Chose appropriate row actions approach (DataTableBasicRowActions vs domain-specific)
 
 **After Implementation:**
 
@@ -566,11 +661,11 @@ cd frontend && pnpm dev
 
 ## Sheet/Dialog Best Practices
 
-**⚠️ Common Issue: Sheets/Dialogs Inside Dropdown Menus**
+**Common Issue: Sheets/Dialogs Inside Dropdown Menus**
 
 When placing Sheet or AlertDialog components inside DropdownMenu items, you may encounter an issue where the sheet/dialog opens but immediately closes. This happens due to event propagation conflicts.
 
-**❌ Problematic Pattern (Causes Immediate Closing):**
+**Problematic Pattern (Causes Immediate Closing):**
 
 ```vue
 <DropdownMenu>
@@ -583,7 +678,7 @@ When placing Sheet or AlertDialog components inside DropdownMenu items, you may 
 </DropdownMenu>
 ```
 
-**✅ Correct Pattern (Manual Control):**
+**Correct Pattern (Manual Control):**
 
 ```vue
 <template>

@@ -89,7 +89,106 @@ message QueryEmployeesResponse {
   QueryMetaResponse meta = 2;
 }
 
+message GetEmployeeRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  string employee_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 14
+    }
+  ];
+}
+
+message GetEmployeeResponse {
+  Employee employee = 1;
+}
+
+message UpdateEmployeeRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  string employee_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 14
+    }
+  ];
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 2,
+      max_len: 50,
+      pattern: "^[a-zA-Z\\s]+$"
+    }
+  ];
+  string email = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      email: true,
+      max_len: 100
+    }
+  ];
+  string role = 5 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 2,
+      max_len: 100
+    }
+  ];
+  string department = 6 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 2,
+      max_len: 100
+    }
+  ];
+  EmployeeStatus status = 7 [
+    (buf.validate.field).enum = {
+      defined_only: true,
+      not_in: [0]
+    }
+  ];
+}
+
+message UpdateEmployeeResponse {
+  Employee employee = 1;
+  string message = 2;
+}
+
+message DeleteEmployeeRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  string employee_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 14
+    }
+  ];
+}
+
+message DeleteEmployeeResponse {
+  string message = 1;
+}
+
 service EmployeeService {
   rpc QueryEmployees(QueryEmployeesRequest) returns (QueryEmployeesResponse) {}
   rpc CreateEmployee(CreateEmployeeRequest) returns (CreateEmployeeResponse) {}
+  rpc GetEmployee(GetEmployeeRequest) returns (GetEmployeeResponse) {}
+  rpc UpdateEmployee(UpdateEmployeeRequest) returns (UpdateEmployeeResponse) {}
+  rpc DeleteEmployee(DeleteEmployeeRequest) returns (DeleteEmployeeResponse) {}
 }

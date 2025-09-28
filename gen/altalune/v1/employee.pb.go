@@ -412,6 +412,342 @@ func (x *QueryEmployeesResponse) GetMeta() *QueryMetaResponse {
 	return nil
 }
 
+type GetEmployeeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProjectId     string                 `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	EmployeeId    string                 `protobuf:"bytes,2,opt,name=employee_id,json=employeeId,proto3" json:"employee_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetEmployeeRequest) Reset() {
+	*x = GetEmployeeRequest{}
+	mi := &file_altalune_v1_employee_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetEmployeeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetEmployeeRequest) ProtoMessage() {}
+
+func (x *GetEmployeeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_employee_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetEmployeeRequest.ProtoReflect.Descriptor instead.
+func (*GetEmployeeRequest) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_employee_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetEmployeeRequest) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
+	}
+	return ""
+}
+
+func (x *GetEmployeeRequest) GetEmployeeId() string {
+	if x != nil {
+		return x.EmployeeId
+	}
+	return ""
+}
+
+type GetEmployeeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Employee      *Employee              `protobuf:"bytes,1,opt,name=employee,proto3" json:"employee,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetEmployeeResponse) Reset() {
+	*x = GetEmployeeResponse{}
+	mi := &file_altalune_v1_employee_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetEmployeeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetEmployeeResponse) ProtoMessage() {}
+
+func (x *GetEmployeeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_employee_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetEmployeeResponse.ProtoReflect.Descriptor instead.
+func (*GetEmployeeResponse) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_employee_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetEmployeeResponse) GetEmployee() *Employee {
+	if x != nil {
+		return x.Employee
+	}
+	return nil
+}
+
+type UpdateEmployeeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProjectId     string                 `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	EmployeeId    string                 `protobuf:"bytes,2,opt,name=employee_id,json=employeeId,proto3" json:"employee_id,omitempty"`
+	Name          string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
+	Email         string                 `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`
+	Role          string                 `protobuf:"bytes,5,opt,name=role,proto3" json:"role,omitempty"`
+	Department    string                 `protobuf:"bytes,6,opt,name=department,proto3" json:"department,omitempty"`
+	Status        EmployeeStatus         `protobuf:"varint,7,opt,name=status,proto3,enum=altalune.v1.EmployeeStatus" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateEmployeeRequest) Reset() {
+	*x = UpdateEmployeeRequest{}
+	mi := &file_altalune_v1_employee_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateEmployeeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateEmployeeRequest) ProtoMessage() {}
+
+func (x *UpdateEmployeeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_employee_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateEmployeeRequest.ProtoReflect.Descriptor instead.
+func (*UpdateEmployeeRequest) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_employee_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UpdateEmployeeRequest) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
+	}
+	return ""
+}
+
+func (x *UpdateEmployeeRequest) GetEmployeeId() string {
+	if x != nil {
+		return x.EmployeeId
+	}
+	return ""
+}
+
+func (x *UpdateEmployeeRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *UpdateEmployeeRequest) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *UpdateEmployeeRequest) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
+func (x *UpdateEmployeeRequest) GetDepartment() string {
+	if x != nil {
+		return x.Department
+	}
+	return ""
+}
+
+func (x *UpdateEmployeeRequest) GetStatus() EmployeeStatus {
+	if x != nil {
+		return x.Status
+	}
+	return EmployeeStatus_EMPLOYEE_STATUS_UNSPECIFIED
+}
+
+type UpdateEmployeeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Employee      *Employee              `protobuf:"bytes,1,opt,name=employee,proto3" json:"employee,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateEmployeeResponse) Reset() {
+	*x = UpdateEmployeeResponse{}
+	mi := &file_altalune_v1_employee_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateEmployeeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateEmployeeResponse) ProtoMessage() {}
+
+func (x *UpdateEmployeeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_employee_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateEmployeeResponse.ProtoReflect.Descriptor instead.
+func (*UpdateEmployeeResponse) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_employee_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UpdateEmployeeResponse) GetEmployee() *Employee {
+	if x != nil {
+		return x.Employee
+	}
+	return nil
+}
+
+func (x *UpdateEmployeeResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type DeleteEmployeeRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProjectId     string                 `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	EmployeeId    string                 `protobuf:"bytes,2,opt,name=employee_id,json=employeeId,proto3" json:"employee_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteEmployeeRequest) Reset() {
+	*x = DeleteEmployeeRequest{}
+	mi := &file_altalune_v1_employee_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteEmployeeRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteEmployeeRequest) ProtoMessage() {}
+
+func (x *DeleteEmployeeRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_employee_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteEmployeeRequest.ProtoReflect.Descriptor instead.
+func (*DeleteEmployeeRequest) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_employee_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *DeleteEmployeeRequest) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
+	}
+	return ""
+}
+
+func (x *DeleteEmployeeRequest) GetEmployeeId() string {
+	if x != nil {
+		return x.EmployeeId
+	}
+	return ""
+}
+
+type DeleteEmployeeResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteEmployeeResponse) Reset() {
+	*x = DeleteEmployeeResponse{}
+	mi := &file_altalune_v1_employee_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteEmployeeResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteEmployeeResponse) ProtoMessage() {}
+
+func (x *DeleteEmployeeResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_employee_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteEmployeeResponse.ProtoReflect.Descriptor instead.
+func (*DeleteEmployeeResponse) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_employee_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *DeleteEmployeeResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_altalune_v1_employee_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_employee_proto_rawDesc = "" +
@@ -450,14 +786,47 @@ const file_altalune_v1_employee_proto_rawDesc = "" +
 	"\x05query\x18\x02 \x01(\v2\x19.altalune.v1.QueryRequestR\x05query\"w\n" +
 	"\x16QueryEmployeesResponse\x12)\n" +
 	"\x04data\x18\x01 \x03(\v2\x15.altalune.v1.EmployeeR\x04data\x122\n" +
-	"\x04meta\x18\x02 \x01(\v2\x1e.altalune.v1.QueryMetaResponseR\x04meta*k\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1e.altalune.v1.QueryMetaResponseR\x04meta\"o\n" +
+	"\x12GetEmployeeRequest\x12*\n" +
+	"\n" +
+	"project_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\x12-\n" +
+	"\vemployee_id\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x0eR\n" +
+	"employeeId\"H\n" +
+	"\x13GetEmployeeResponse\x121\n" +
+	"\bemployee\x18\x01 \x01(\v2\x15.altalune.v1.EmployeeR\bemployee\"\xd8\x02\n" +
+	"\x15UpdateEmployeeRequest\x12*\n" +
+	"\n" +
+	"project_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\x12-\n" +
+	"\vemployee_id\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x0eR\n" +
+	"employeeId\x12/\n" +
+	"\x04name\x18\x03 \x01(\tB\x1b\xbaH\x18\xc8\x01\x01r\x13\x10\x02\x1822\r^[a-zA-Z\\s]+$R\x04name\x12\"\n" +
+	"\x05email\x18\x04 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x18d`\x01R\x05email\x12 \n" +
+	"\x04role\x18\x05 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x02\x18dR\x04role\x12,\n" +
+	"\n" +
+	"department\x18\x06 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x02\x18dR\n" +
+	"department\x12?\n" +
+	"\x06status\x18\a \x01(\x0e2\x1b.altalune.v1.EmployeeStatusB\n" +
+	"\xbaH\a\x82\x01\x04\x10\x01 \x00R\x06status\"e\n" +
+	"\x16UpdateEmployeeResponse\x121\n" +
+	"\bemployee\x18\x01 \x01(\v2\x15.altalune.v1.EmployeeR\bemployee\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"r\n" +
+	"\x15DeleteEmployeeRequest\x12*\n" +
+	"\n" +
+	"project_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\x12-\n" +
+	"\vemployee_id\x18\x02 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x0eR\n" +
+	"employeeId\"2\n" +
+	"\x16DeleteEmployeeResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage*k\n" +
 	"\x0eEmployeeStatus\x12\x1f\n" +
 	"\x1bEMPLOYEE_STATUS_UNSPECIFIED\x10\x00\x12\x1a\n" +
 	"\x16EMPLOYEE_STATUS_ACTIVE\x10\x01\x12\x1c\n" +
-	"\x18EMPLOYEE_STATUS_INACTIVE\x10\x022\xcb\x01\n" +
+	"\x18EMPLOYEE_STATUS_INACTIVE\x10\x022\xd9\x03\n" +
 	"\x0fEmployeeService\x12[\n" +
 	"\x0eQueryEmployees\x12\".altalune.v1.QueryEmployeesRequest\x1a#.altalune.v1.QueryEmployeesResponse\"\x00\x12[\n" +
-	"\x0eCreateEmployee\x12\".altalune.v1.CreateEmployeeRequest\x1a#.altalune.v1.CreateEmployeeResponse\"\x00B\xa2\x01\n" +
+	"\x0eCreateEmployee\x12\".altalune.v1.CreateEmployeeRequest\x1a#.altalune.v1.CreateEmployeeResponse\"\x00\x12R\n" +
+	"\vGetEmployee\x12\x1f.altalune.v1.GetEmployeeRequest\x1a .altalune.v1.GetEmployeeResponse\"\x00\x12[\n" +
+	"\x0eUpdateEmployee\x12\".altalune.v1.UpdateEmployeeRequest\x1a#.altalune.v1.UpdateEmployeeResponse\"\x00\x12[\n" +
+	"\x0eDeleteEmployee\x12\".altalune.v1.DeleteEmployeeRequest\x1a#.altalune.v1.DeleteEmployeeResponse\"\x00B\xa2\x01\n" +
 	"\x0fcom.altalune.v1B\rEmployeeProtoP\x01Z3github.com/hrz8/altalune/gen/altalune/v1;altalunev1\xa2\x02\x03AXX\xaa\x02\vAltalune.V1\xca\x02\vAltalune\\V1\xe2\x02\x17Altalune\\V1\\GPBMetadata\xea\x02\fAltalune::V1b\x06proto3"
 
 var (
@@ -473,7 +842,7 @@ func file_altalune_v1_employee_proto_rawDescGZIP() []byte {
 }
 
 var file_altalune_v1_employee_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_altalune_v1_employee_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_altalune_v1_employee_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_altalune_v1_employee_proto_goTypes = []any{
 	(EmployeeStatus)(0),            // 0: altalune.v1.EmployeeStatus
 	(*Employee)(nil),               // 1: altalune.v1.Employee
@@ -481,28 +850,43 @@ var file_altalune_v1_employee_proto_goTypes = []any{
 	(*CreateEmployeeResponse)(nil), // 3: altalune.v1.CreateEmployeeResponse
 	(*QueryEmployeesRequest)(nil),  // 4: altalune.v1.QueryEmployeesRequest
 	(*QueryEmployeesResponse)(nil), // 5: altalune.v1.QueryEmployeesResponse
-	(*timestamppb.Timestamp)(nil),  // 6: google.protobuf.Timestamp
-	(*QueryRequest)(nil),           // 7: altalune.v1.QueryRequest
-	(*QueryMetaResponse)(nil),      // 8: altalune.v1.QueryMetaResponse
+	(*GetEmployeeRequest)(nil),     // 6: altalune.v1.GetEmployeeRequest
+	(*GetEmployeeResponse)(nil),    // 7: altalune.v1.GetEmployeeResponse
+	(*UpdateEmployeeRequest)(nil),  // 8: altalune.v1.UpdateEmployeeRequest
+	(*UpdateEmployeeResponse)(nil), // 9: altalune.v1.UpdateEmployeeResponse
+	(*DeleteEmployeeRequest)(nil),  // 10: altalune.v1.DeleteEmployeeRequest
+	(*DeleteEmployeeResponse)(nil), // 11: altalune.v1.DeleteEmployeeResponse
+	(*timestamppb.Timestamp)(nil),  // 12: google.protobuf.Timestamp
+	(*QueryRequest)(nil),           // 13: altalune.v1.QueryRequest
+	(*QueryMetaResponse)(nil),      // 14: altalune.v1.QueryMetaResponse
 }
 var file_altalune_v1_employee_proto_depIdxs = []int32{
 	0,  // 0: altalune.v1.Employee.status:type_name -> altalune.v1.EmployeeStatus
-	6,  // 1: altalune.v1.Employee.created_at:type_name -> google.protobuf.Timestamp
-	6,  // 2: altalune.v1.Employee.updated_at:type_name -> google.protobuf.Timestamp
+	12, // 1: altalune.v1.Employee.created_at:type_name -> google.protobuf.Timestamp
+	12, // 2: altalune.v1.Employee.updated_at:type_name -> google.protobuf.Timestamp
 	0,  // 3: altalune.v1.CreateEmployeeRequest.status:type_name -> altalune.v1.EmployeeStatus
 	1,  // 4: altalune.v1.CreateEmployeeResponse.employee:type_name -> altalune.v1.Employee
-	7,  // 5: altalune.v1.QueryEmployeesRequest.query:type_name -> altalune.v1.QueryRequest
+	13, // 5: altalune.v1.QueryEmployeesRequest.query:type_name -> altalune.v1.QueryRequest
 	1,  // 6: altalune.v1.QueryEmployeesResponse.data:type_name -> altalune.v1.Employee
-	8,  // 7: altalune.v1.QueryEmployeesResponse.meta:type_name -> altalune.v1.QueryMetaResponse
-	4,  // 8: altalune.v1.EmployeeService.QueryEmployees:input_type -> altalune.v1.QueryEmployeesRequest
-	2,  // 9: altalune.v1.EmployeeService.CreateEmployee:input_type -> altalune.v1.CreateEmployeeRequest
-	5,  // 10: altalune.v1.EmployeeService.QueryEmployees:output_type -> altalune.v1.QueryEmployeesResponse
-	3,  // 11: altalune.v1.EmployeeService.CreateEmployee:output_type -> altalune.v1.CreateEmployeeResponse
-	10, // [10:12] is the sub-list for method output_type
-	8,  // [8:10] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	14, // 7: altalune.v1.QueryEmployeesResponse.meta:type_name -> altalune.v1.QueryMetaResponse
+	1,  // 8: altalune.v1.GetEmployeeResponse.employee:type_name -> altalune.v1.Employee
+	0,  // 9: altalune.v1.UpdateEmployeeRequest.status:type_name -> altalune.v1.EmployeeStatus
+	1,  // 10: altalune.v1.UpdateEmployeeResponse.employee:type_name -> altalune.v1.Employee
+	4,  // 11: altalune.v1.EmployeeService.QueryEmployees:input_type -> altalune.v1.QueryEmployeesRequest
+	2,  // 12: altalune.v1.EmployeeService.CreateEmployee:input_type -> altalune.v1.CreateEmployeeRequest
+	6,  // 13: altalune.v1.EmployeeService.GetEmployee:input_type -> altalune.v1.GetEmployeeRequest
+	8,  // 14: altalune.v1.EmployeeService.UpdateEmployee:input_type -> altalune.v1.UpdateEmployeeRequest
+	10, // 15: altalune.v1.EmployeeService.DeleteEmployee:input_type -> altalune.v1.DeleteEmployeeRequest
+	5,  // 16: altalune.v1.EmployeeService.QueryEmployees:output_type -> altalune.v1.QueryEmployeesResponse
+	3,  // 17: altalune.v1.EmployeeService.CreateEmployee:output_type -> altalune.v1.CreateEmployeeResponse
+	7,  // 18: altalune.v1.EmployeeService.GetEmployee:output_type -> altalune.v1.GetEmployeeResponse
+	9,  // 19: altalune.v1.EmployeeService.UpdateEmployee:output_type -> altalune.v1.UpdateEmployeeResponse
+	11, // 20: altalune.v1.EmployeeService.DeleteEmployee:output_type -> altalune.v1.DeleteEmployeeResponse
+	16, // [16:21] is the sub-list for method output_type
+	11, // [11:16] is the sub-list for method input_type
+	11, // [11:11] is the sub-list for extension type_name
+	11, // [11:11] is the sub-list for extension extendee
+	0,  // [0:11] is the sub-list for field type_name
 }
 
 func init() { file_altalune_v1_employee_proto_init() }
@@ -517,7 +901,7 @@ func file_altalune_v1_employee_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_altalune_v1_employee_proto_rawDesc), len(file_altalune_v1_employee_proto_rawDesc)),
 			NumEnums:      1,
-			NumMessages:   5,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

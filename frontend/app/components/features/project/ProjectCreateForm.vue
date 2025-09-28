@@ -1,9 +1,11 @@
 <script setup lang="ts">
+import { toTypedSchema } from '@vee-validate/zod';
 import { AlertCircle } from 'lucide-vue-next';
+import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
+import * as z from 'zod';
 
-import type { CreateProjectRequestSchema, Project } from '~~/gen/altalune/v1/project_pb';
-import type { MessageInitShape } from '@bufbuild/protobuf';
+import type { Project } from '~~/gen/altalune/v1/project_pb';
 
 import {
   SelectContent,
@@ -15,11 +17,18 @@ import {
   Select,
 } from '@/components/ui/select';
 import {
+  FormDescription,
+  FormControl,
+  FormMessage,
+  FormField,
+  FormLabel,
+  FormItem,
+} from '@/components/ui/form';
+import {
   AlertDescription, AlertTitle, Alert,
 } from '@/components/ui/alert';
 import { useProjectService } from '@/composables/services/useProjectService';
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 
 const emit = defineEmits<{
@@ -35,11 +44,23 @@ const {
   resetCreateState,
 } = useProjectService();
 
-const formData = reactive<MessageInitShape<typeof CreateProjectRequestSchema>>({
-  name: '',
-  description: '',
-  timezone: '',
-  environment: '',
+// Create Zod schema matching protobuf validation rules
+const formSchema = toTypedSchema(z.object({
+  name: z.string().min(1).max(50),
+  description: z.string().max(100).optional(),
+  timezone: z.string().min(1),
+  environment: z.string().min(1),
+}));
+
+// Initialize vee-validate form
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    name: '',
+    description: '',
+    timezone: '',
+    environment: '',
+  },
 });
 
 const environmentOptions = [
@@ -72,34 +93,35 @@ const timezoneOptions = [
   'Pacific/Auckland',
 ];
 
-const getFieldError = (fieldName: string): string => {
+// ConnectRPC validation helpers (fallback layer)
+const getConnectRPCError = (fieldName: string): string => {
   const errors = createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`];
   return errors?.[0] || '';
 };
 
-const hasFieldError = (fieldName: string): boolean => {
+const hasConnectRPCError = (fieldName: string): boolean => {
   return !!(createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`]);
 };
 
-async function handleSubmit() {
+// Handle form submission with vee-validate
+const onSubmit = form.handleSubmit(async (values) => {
   try {
-    const project = await createProject(formData);
+    const project = await createProject(values);
 
     if (project) {
       toast.success('Project created successfully', {
-        description: `${formData.name} has been created and is ready to use.`,
+        description: `${values.name} has been created and is ready to use.`,
       });
 
       emit('success', project);
       resetForm();
     }
-  } catch (error) {
-    console.error('Failed to create project:', error);
+  } catch {
     toast.error('Failed to create project', {
       description: createError.value || 'An unexpected error occurred. Please try again.',
     });
   }
-}
+});
 
 function handleCancel() {
   resetForm();
@@ -107,10 +129,14 @@ function handleCancel() {
 }
 
 function resetForm() {
-  formData.name = '';
-  formData.description = '';
-  formData.timezone = '';
-  formData.environment = '';
+  form.resetForm({
+    values: {
+      name: '',
+      description: '',
+      timezone: '',
+      environment: '',
+    },
+  });
   resetCreateState();
 }
 
@@ -122,7 +148,7 @@ onUnmounted(() => {
 <template>
   <form
     class="space-y-6"
-    @submit.prevent="handleSubmit"
+    @submit="onSubmit"
   >
     <Alert
       v-if="createError"
@@ -133,125 +159,150 @@ onUnmounted(() => {
       <AlertDescription>{{ createError }}</AlertDescription>
     </Alert>
 
-    <div class="space-y-2">
-      <Label for="project-name">Project Name *</Label>
-      <Input
-        id="project-name"
-        v-model="formData.name"
-        placeholder="My Awesome Project"
-        :class="{ 'border-destructive': hasFieldError('name') }"
-        :disabled="createLoading"
-      />
-      <p class="text-sm text-muted-foreground">
-        Project name (1-50 characters, letters, numbers, spaces, dashes, and underscores only)
-      </p>
-      <p
-        v-if="hasFieldError('name')"
-        class="text-sm text-destructive"
-      >
-        {{ getFieldError('name') }}
-      </p>
-    </div>
-
-    <div class="space-y-2">
-      <Label for="project-description">Description</Label>
-      <Input
-        id="project-description"
-        v-model="formData.description"
-        placeholder="Brief description of the project (optional)"
-        :class="{ 'border-destructive': hasFieldError('description') }"
-        :disabled="createLoading"
-      />
-      <p class="text-sm text-muted-foreground">
-        Optional project description (maximum 100 characters)
-      </p>
-      <p
-        v-if="hasFieldError('description')"
-        class="text-sm text-destructive"
-      >
-        {{ getFieldError('description') }}
-      </p>
-    </div>
-
-    <div class="space-y-2">
-      <Label for="project-timezone">Timezone *</Label>
-      <Select
-        v-model="formData.timezone"
-        :disabled="createLoading"
-      >
-        <SelectTrigger
-          id="project-timezone"
-          :class="{ 'border-destructive': hasFieldError('timezone') }"
+    <FormField
+      v-slot="{ componentField }"
+      name="name"
+    >
+      <FormItem>
+        <FormLabel>Project Name *</FormLabel>
+        <FormControl>
+          <Input
+            v-bind="componentField"
+            placeholder="My Awesome Project"
+            :class="{ 'border-destructive': hasConnectRPCError('name') }"
+            :disabled="createLoading"
+          />
+        </FormControl>
+        <FormDescription>
+          Project name (1-50 characters, letters, numbers, spaces, dashes, and underscores only)
+        </FormDescription>
+        <FormMessage />
+        <div
+          v-if="hasConnectRPCError('name')"
+          class="text-sm text-destructive"
         >
-          <SelectValue placeholder="Select a timezone" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectGroup>
-            <SelectLabel>Common Timezones</SelectLabel>
-            <SelectItem
-              v-for="tz in timezoneOptions"
-              :key="tz"
-              :value="tz"
+          {{ getConnectRPCError('name') }}
+        </div>
+      </FormItem>
+    </FormField>
+
+    <FormField
+      v-slot="{ componentField }"
+      name="description"
+    >
+      <FormItem>
+        <FormLabel>Description</FormLabel>
+        <FormControl>
+          <Input
+            v-bind="componentField"
+            placeholder="Brief description of the project (optional)"
+            :class="{ 'border-destructive': hasConnectRPCError('description') }"
+            :disabled="createLoading"
+          />
+        </FormControl>
+        <FormDescription>
+          Optional project description (maximum 100 characters)
+        </FormDescription>
+        <FormMessage />
+        <div
+          v-if="hasConnectRPCError('description')"
+          class="text-sm text-destructive"
+        >
+          {{ getConnectRPCError('description') }}
+        </div>
+      </FormItem>
+    </FormField>
+
+    <FormField
+      v-slot="{ componentField }"
+      name="timezone"
+    >
+      <FormItem>
+        <FormLabel>Timezone *</FormLabel>
+        <FormControl>
+          <div class="space-y-2">
+            <Select
+              v-bind="componentField"
+              :disabled="createLoading"
             >
-              {{ tz }}
-            </SelectItem>
-          </SelectGroup>
-        </SelectContent>
-      </Select>
-      <p class="text-sm text-muted-foreground">
-        Project timezone for scheduling and data processing
-      </p>
-      <div class="mt-2">
-        <Input
-          v-model="formData.timezone"
-          placeholder="Or enter custom timezone (e.g., America/New_York)"
-          :class="{ 'border-destructive': hasFieldError('timezone') }"
-          :disabled="createLoading"
-        />
-      </div>
-      <p
-        v-if="hasFieldError('timezone')"
-        class="text-sm text-destructive"
-      >
-        {{ getFieldError('timezone') }}
-      </p>
-    </div>
-
-    <div class="space-y-2">
-      <Label for="project-environment">Environment *</Label>
-      <Select
-        v-model="formData.environment"
-        :disabled="createLoading"
-      >
-        <SelectTrigger
-          id="project-environment"
-          :class="{ 'border-destructive': hasFieldError('environment') }"
-        >
-          <SelectValue placeholder="Select environment" />
-        </SelectTrigger>
-        <SelectContent>
-          <SelectItem
-            v-for="option in environmentOptions"
-            :key="option.value"
-            :value="option.value"
-          >
-            <div class="flex flex-col items-start">
-              <span class="font-medium">{{ option.label }}</span>
-              <span class="text-sm text-muted-foreground">{{ option.description }}</span>
+              <SelectTrigger
+                :class="{ 'border-destructive': hasConnectRPCError('timezone') }"
+              >
+                <SelectValue placeholder="Select a timezone" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Common Timezones</SelectLabel>
+                  <SelectItem
+                    v-for="tz in timezoneOptions"
+                    :key="tz"
+                    :value="tz"
+                  >
+                    {{ tz }}
+                  </SelectItem>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <div class="text-xs text-muted-foreground">
+              You can also type directly in the field above for custom timezones
             </div>
-          </SelectItem>
-        </SelectContent>
-      </Select>
-      <p class="text-sm text-muted-foreground">
-        Choose the environment type for this project
-      </p>
-      <p
-        v-if="hasFieldError('environment')"
-        class="text-sm text-destructive"
-      >
-        {{ getFieldError('environment') }}
-      </p>
-    </div>
+          </div>
+        </FormControl>
+        <FormDescription>
+          Project timezone for scheduling and data processing
+        </FormDescription>
+        <FormMessage />
+        <div
+          v-if="hasConnectRPCError('timezone')"
+          class="text-sm text-destructive"
+        >
+          {{ getConnectRPCError('timezone') }}
+        </div>
+      </FormItem>
+    </FormField>
+
+    <FormField
+      v-slot="{ componentField }"
+      name="environment"
+    >
+      <FormItem>
+        <FormLabel>Environment *</FormLabel>
+        <FormControl>
+          <Select
+            v-bind="componentField"
+            :disabled="createLoading"
+          >
+            <SelectTrigger
+              :class="{ 'border-destructive': hasConnectRPCError('environment') }"
+            >
+              <SelectValue placeholder="Select environment" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem
+                v-for="option in environmentOptions"
+                :key="option.value"
+                :value="option.value"
+              >
+                <div class="flex flex-col items-start">
+                  <span class="font-medium">{{ option.label }}</span>
+                  <span class="text-sm text-muted-foreground">{{ option.description }}</span>
+                </div>
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </FormControl>
+        <FormDescription>
+          Choose the environment type for this project
+        </FormDescription>
+        <FormMessage />
+        <div
+          v-if="hasConnectRPCError('environment')"
+          class="text-sm text-destructive"
+        >
+          {{ getConnectRPCError('environment') }}
+        </div>
+      </FormItem>
+    </FormField>
 
     <div class="flex justify-end space-x-2 pt-4">
       <Button

@@ -10,4 +10,7 @@ type Repositor interface {
 	Query(ctx context.Context, projectID int64, params *query.QueryParams) (*query.QueryResult[Employee], error)
 	Create(ctx context.Context, input *CreateEmployeeInput) (*CreateEmployeeResult, error)
 	GetByEmail(ctx context.Context, projectID int64, email string) (*Employee, error)
+	GetByID(ctx context.Context, projectID int64, publicID string) (*Employee, error)
+	Update(ctx context.Context, input *UpdateEmployeeInput) (*UpdateEmployeeResult, error)
+	Delete(ctx context.Context, input *DeleteEmployeeInput) error
 }

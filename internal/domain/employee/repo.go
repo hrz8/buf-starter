@@ -420,3 +420,144 @@ func (r *Repo) GetByEmail(ctx context.Context, projectID int64, email string) (*
 
 	return &emp, nil
 }
+
+// GetByID retrieves an employee by public ID within a project
+func (r *Repo) GetByID(ctx context.Context, projectID int64, publicID string) (*Employee, error) {
+	query := `
+		SELECT
+			public_id,
+			name,
+			email,
+			role,
+			department,
+			status,
+			created_at,
+			updated_at
+		FROM altalune_example_employees
+		WHERE project_id = $1 AND public_id = $2
+		LIMIT 1
+	`
+
+	var emp Employee
+	var status string
+
+	err := r.db.QueryRowContext(ctx, query, projectID, publicID).Scan(
+		&emp.ID,
+		&emp.Name,
+		&emp.Email,
+		&emp.Role,
+		&emp.Department,
+		&status,
+		&emp.CreatedAt,
+		&emp.UpdatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrEmployeeNotFound
+		}
+		return nil, fmt.Errorf("get employee by ID: %w", err)
+	}
+
+	// Map status string to domain enum
+	switch status {
+	case "active":
+		emp.Status = EmployeeStatusActive
+	case "inactive":
+		emp.Status = EmployeeStatusInactive
+	default:
+		emp.Status = EmployeeStatusActive
+	}
+
+	return &emp, nil
+}
+
+// Update updates an employee's information
+func (r *Repo) Update(ctx context.Context, input *UpdateEmployeeInput) (*UpdateEmployeeResult, error) {
+	// Map domain status to database string
+	var statusStr string
+	switch input.Status {
+	case EmployeeStatusActive:
+		statusStr = "active"
+	case EmployeeStatusInactive:
+		statusStr = "inactive"
+	default:
+		statusStr = "active"
+	}
+
+	updateQuery := `
+		UPDATE altalune_example_employees
+		SET name = $3, email = $4, role = $5, department = $6, status = $7, updated_at = $8
+		WHERE project_id = $1 AND public_id = $2
+		RETURNING id, public_id, name, email, role, department, status, created_at, updated_at
+	`
+
+	now := time.Now()
+	var result UpdateEmployeeResult
+	var returnedStatus string
+
+	err := r.db.QueryRowContext(ctx, updateQuery,
+		input.ProjectID, input.PublicID, input.Name, input.Email,
+		input.Role, input.Department, statusStr, now,
+	).Scan(
+		&result.ID,
+		&result.PublicID,
+		&result.Name,
+		&result.Email,
+		&result.Role,
+		&result.Department,
+		&returnedStatus,
+		&result.CreatedAt,
+		&result.UpdatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrEmployeeNotFound
+		}
+		// Check for unique constraint violation
+		if postgres.IsUniqueViolation(err) {
+			// Check if it's the email constraint
+			if strings.Contains(err.Error(), "ux_altalune_example_employees_email") {
+				return nil, ErrEmployeeAlreadyExists
+			}
+		}
+		return nil, fmt.Errorf("update employee: %w", err)
+	}
+
+	// Map status back to domain enum
+	switch returnedStatus {
+	case "active":
+		result.Status = EmployeeStatusActive
+	case "inactive":
+		result.Status = EmployeeStatusInactive
+	default:
+		result.Status = EmployeeStatusActive
+	}
+
+	return &result, nil
+}
+
+// Delete removes an employee from the database
+func (r *Repo) Delete(ctx context.Context, input *DeleteEmployeeInput) error {
+	deleteQuery := `
+		DELETE FROM altalune_example_employees
+		WHERE project_id = $1 AND public_id = $2
+	`
+
+	result, err := r.db.ExecContext(ctx, deleteQuery, input.ProjectID, input.PublicID)
+	if err != nil {
+		return fmt.Errorf("delete employee: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("check rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return ErrEmployeeNotFound
+	}
+
+	return nil
+}

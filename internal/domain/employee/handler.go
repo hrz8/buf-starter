@@ -37,3 +37,36 @@ func (h *Handler) CreateEmployee(
 	}
 	return connect.NewResponse(response), nil
 }
+
+func (h *Handler) GetEmployee(
+	ctx context.Context,
+	req *connect.Request[altalunev1.GetEmployeeRequest],
+) (*connect.Response[altalunev1.GetEmployeeResponse], error) {
+	response, err := h.svc.GetEmployee(ctx, req.Msg)
+	if err != nil {
+		return nil, altalune.ToConnectError(err)
+	}
+	return connect.NewResponse(response), nil
+}
+
+func (h *Handler) UpdateEmployee(
+	ctx context.Context,
+	req *connect.Request[altalunev1.UpdateEmployeeRequest],
+) (*connect.Response[altalunev1.UpdateEmployeeResponse], error) {
+	response, err := h.svc.UpdateEmployee(ctx, req.Msg)
+	if err != nil {
+		return nil, altalune.ToConnectError(err)
+	}
+	return connect.NewResponse(response), nil
+}
+
+func (h *Handler) DeleteEmployee(
+	ctx context.Context,
+	req *connect.Request[altalunev1.DeleteEmployeeRequest],
+) (*connect.Response[altalunev1.DeleteEmployeeResponse], error) {
+	response, err := h.svc.DeleteEmployee(ctx, req.Msg)
+	if err != nil {
+		return nil, altalune.ToConnectError(err)
+	}
+	return connect.NewResponse(response), nil
+}

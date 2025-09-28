@@ -11,9 +11,9 @@ import type { QueryOptions } from '#shared/types/query';
 import { exampleRepository } from '#shared/repository/example';
 
 import {
+  DataTableBasicRowActions,
   DataTableFacetedFilter,
   DataTableColumnHeader,
-  DataTableRowActions,
   DataTable,
 } from '@/components/custom/datatable';
 import { Input } from '@/components/ui/input';
@@ -173,7 +173,7 @@ const columns = [
   }),
   columnHelper.display({
     id: 'actions',
-    cell: ({ row }) => h(DataTableRowActions, { row }),
+    cell: ({ row }) => h(DataTableBasicRowActions, { row }),
   }),
 ]; ;
 

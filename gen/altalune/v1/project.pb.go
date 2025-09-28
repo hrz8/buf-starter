@@ -335,13 +335,13 @@ var File_altalune_v1_project_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_project_proto_rawDesc = "" +
 	"\n" +
-	"\x19altalune/v1/project.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\xe3\x02\n" +
-	"\aProject\x12\x1b\n" +
-	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\x125\n" +
-	"\x04name\x18\x02 \x01(\tB!\xbaH\x1e\xc8\x01\x01r\x19\x10\x01\x1822\x13^[a-zA-Z0-9\\s\\-_]+$R\x04name\x12)\n" +
-	"\vdescription\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x18dR\vdescription\x12(\n" +
-	"\btimezone\x18\x04 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x182R\btimezone\x129\n" +
-	"\venvironment\x18\x05 \x01(\tB\x17\xbaH\x14\xc8\x01\x01r\x0fR\x04liveR\asandboxR\venvironment\x129\n" +
+	"\x19altalune/v1/project.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\x83\x02\n" +
+	"\aProject\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1a\n" +
+	"\btimezone\x18\x04 \x01(\tR\btimezone\x12 \n" +
+	"\venvironment\x18\x05 \x01(\tR\venvironment\x129\n" +
 	"\n" +
 	"created_at\x18\x06 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +

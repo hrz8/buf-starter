@@ -8,9 +8,9 @@ import { exampleRepository } from '#shared/repository/example';
 import { serializeFilters } from '#shared/helpers/serializer';
 
 import {
+  DataTableBasicRowActions,
   DataTableFacetedFilter,
   DataTableColumnHeader,
-  DataTableRowActions,
   DataTable,
 } from '@/components/custom/datatable';
 import {
@@ -149,7 +149,7 @@ const columns = [
   }),
   columnHelper.display({
     id: 'actions',
-    cell: ({ row }) => h(DataTableRowActions, { row }),
+    cell: ({ row }) => h(DataTableBasicRowActions, { row }),
   }),
 ]; ;
 

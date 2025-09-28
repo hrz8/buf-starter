@@ -117,3 +117,30 @@ type CreateEmployeeResult struct {
 	CreatedAt  time.Time
 	UpdatedAt  time.Time
 }
+
+type UpdateEmployeeInput struct {
+	ProjectID  int64
+	PublicID   string  // Employee's public ID
+	Name       string
+	Email      string
+	Role       string
+	Department string
+	Status     EmployeeStatus
+}
+
+type UpdateEmployeeResult struct {
+	ID         int64
+	PublicID   string
+	Name       string
+	Email      string
+	Role       string
+	Department string
+	Status     EmployeeStatus
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+}
+
+type DeleteEmployeeInput struct {
+	ProjectID int64
+	PublicID  string  // Employee's public ID
+}
