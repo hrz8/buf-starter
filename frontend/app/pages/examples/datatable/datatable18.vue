@@ -193,7 +193,6 @@ const columns = [
       onEdit: handleEdit,
       onDelete: handleDelete,
       onDuplicate: handleDuplicate,
-      onFavorite: handleFavorite,
     }),
   }),
 ]; ;
@@ -289,10 +288,6 @@ async function handleDuplicate(row: any) {
     isDuplicateSheetOpen.value = false;
     // You could add a toast error here if needed
   }
-}
-
-function handleFavorite(_: any) {
-  // TODO: Implement favorite functionality
 }
 
 // Sheet/Dialog handlers

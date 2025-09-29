@@ -31,3 +31,4 @@ go.work.sum
 
 # Error logs output
 air.log
+*.log

@@ -3,7 +3,6 @@ import type { DialogContentEmits, DialogContentProps } from 'reka-ui';
 import type { HTMLAttributes } from 'vue';
 import { reactiveOmit } from '@vueuse/core';
 
-import { X } from 'lucide-vue-next';
 import {
   DialogClose,
   DialogContent,
@@ -108,7 +107,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
           disabled:pointer-events-none
         "
       >
-        <X class="size-4" />
+        <Icon name="lucide:x" class="size-4" />
         <span class="sr-only">Close</span>
       </DialogClose>
     </DialogContent>

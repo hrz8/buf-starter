@@ -24,6 +24,7 @@ Implement the complete API Key domain following the established 7-file domain pa
 ## Technical Requirements
 
 ### Domain Structure (7-file pattern)
+
 ```
 internal/domain/api_key/
 ├── model.go      # Domain models and conversion methods
@@ -36,12 +37,14 @@ internal/domain/api_key/
 ```
 
 ### Key Generation Requirements
+
 - Use cryptographically secure random generator
 - Format: `sk-` prefix + random string (following OpenAI pattern)
 - Must be unique across all projects
 - Should use `crypto/rand` for generation
 
 ### Repository Operations Required
+
 ```go
 type Repositor interface {
     Query(ctx context.Context, projectID int64, params *query.QueryParams) (*query.QueryResult[ApiKey], error)
@@ -54,6 +57,7 @@ type Repositor interface {
 ```
 
 ### Service Layer Features
+
 - Project validation using existing project domain
 - Unique name validation within project scope
 - Expiration date validation (future date, max 2 years)
@@ -62,6 +66,7 @@ type Repositor interface {
 - Comprehensive logging for audit purposes
 
 ### Security Considerations
+
 - API key value should never be returned after creation
 - Store key securely (consider hashing for future)
 - Implement proper access control (project-scoped)
@@ -70,12 +75,14 @@ type Repositor interface {
 ## Implementation Details
 
 ### Database Queries
+
 - Use existing partitioned table `altalune_project_api_keys`
 - Leverage partition key (project_id) in all queries
 - Support filtering by name, expiration status
 - Include proper indexing usage
 
 ### Error Handling
+
 ```go
 var (
     ErrApiKeyNotFound      = errors.New("api key not found")
@@ -85,6 +92,7 @@ var (
 ```
 
 ### Model Definitions
+
 ```go
 type ApiKey struct {
     ID         string    // Public nanoid

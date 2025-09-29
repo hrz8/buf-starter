@@ -28,6 +28,10 @@ const (
 	// Project Domain Errors (603XX)
 	CodeProjectNotFound = "60301"
 
+	// API Key Domain Errors (604XX)
+	CodeApiKeyNotFound      = "60401"
+	CodeApiKeyAlreadyExists = "60402"
+
 	// Internal Errors (609XX)
 	CodeUnexpectedError = "69001"
 )
@@ -206,6 +210,42 @@ func NewAlreadyExistsError(email string) *AppError {
 				Code: code,
 				Meta: map[string]string{
 					"email": email,
+				},
+			},
+		},
+	}
+}
+
+// NewApiKeyNotFoundError creates an error for when an API key is not found
+func NewApiKeyNotFoundError(publicID string) *AppError {
+	code := CodeApiKeyNotFound
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("API key with ID '%s' not found", publicID),
+		grpcCode: codes.NotFound,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"api_key_id": publicID,
+				},
+			},
+		},
+	}
+}
+
+// NewApiKeyAlreadyExistsError creates a new API key already exists error
+func NewApiKeyAlreadyExistsError(name string) *AppError {
+	code := CodeApiKeyAlreadyExists
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("API key with name '%s' already exists", name),
+		grpcCode: codes.AlreadyExists,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"name": name,
 				},
 			},
 		},

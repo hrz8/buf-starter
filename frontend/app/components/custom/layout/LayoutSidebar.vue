@@ -71,10 +71,6 @@ const mainNavItems: NavItem[] = [
     icon: Puzzle,
     items: [
       {
-        title: 'Simple Table',
-        to: '/examples/simple-table',
-      },
-      {
         title: 'Datatable',
         to: '/examples/datatable/datatable18',
       },

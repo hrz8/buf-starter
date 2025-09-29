@@ -26,5 +26,9 @@
   "example.inputPlaceholder": "Enter your name",
   "example.response": "Response",
   "example.submitBtn": "Say Hello",
-  "example.submitBtnProgress": "Sending..."
+  "example.submitBtnProgress": "Sending...",
+  "features": {
+    "example_employee": {},
+    "api_keys": {}
+  }
 }

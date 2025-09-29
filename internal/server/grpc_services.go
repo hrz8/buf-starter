@@ -16,6 +16,7 @@ func (s *Server) setupGRPCServices() *grpc.Server {
 
 	// Domains
 	altalunev1.RegisterProjectServiceServer(grpcServer, s.c.GetProjectService())
+	altalunev1.RegisterApiKeyServiceServer(grpcServer, s.c.GetApiKeyService())
 
 	reflection.Register(grpcServer)
 

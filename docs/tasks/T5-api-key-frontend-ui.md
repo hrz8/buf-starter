@@ -25,6 +25,7 @@ Implement comprehensive UI components for API Key management including data tabl
 ## Technical Requirements
 
 ### Component Structure
+
 ```
 frontend/app/components/features/api_key/
 ├── ApiKeyTable.vue           # Main data table
@@ -39,6 +40,7 @@ frontend/app/components/features/api_key/
 ```
 
 ### Data Table Features
+
 - Query/filter by name
 - Sort by name, expiration date, created date
 - Pagination support
@@ -48,6 +50,7 @@ frontend/app/components/features/api_key/
 - Status indicators for expired keys
 
 ### Form Validation
+
 - Dual-layer validation (vee-validate + ConnectRPC)
 - Real-time validation feedback
 - Proper error message display
@@ -56,6 +59,7 @@ frontend/app/components/features/api_key/
 - Date validation for expiration
 
 ### Key Security Display
+
 - Show generated key only once during creation
 - Copy-to-clipboard functionality
 - Security warning messages
@@ -65,9 +69,11 @@ frontend/app/components/features/api_key/
 ## Implementation Details
 
 ### Main Table Component
+
 File: `ApiKeyTable.vue`
 
 Features:
+
 - Integration with `useApiKeyService`
 - Data table with `useQueryRequest` pattern
 - Custom row actions for domain-specific operations
@@ -75,9 +81,11 @@ Features:
 - Search and filter capabilities
 
 ### Create Workflow
+
 Files: `ApiKeyCreateSheet.vue` + `ApiKeyCreateForm.vue`
 
 Features:
+
 - Sheet/modal wrapper following established pattern
 - Form with name and expiration date inputs
 - Date picker with future date validation
@@ -85,36 +93,44 @@ Features:
 - Error handling with toast notifications
 
 ### Update Workflow
+
 Files: `ApiKeyUpdateSheet.vue` + `ApiKeyUpdateForm.vue`
 
 Features:
+
 - Pre-populated form with existing values
 - Same validation as create form
 - Proper state management
 - Success/error feedback
 
 ### Delete Workflow
+
 File: `ApiKeyDeleteDialog.vue`
 
 Features:
+
 - Confirmation dialog with key details
 - Warning about permanent deletion
 - Proper error handling
 - Success feedback
 
 ### Key Display Component
+
 File: `ApiKeyDisplay.vue`
 
 Features:
+
 - One-time display of generated key
 - Copy-to-clipboard with feedback
 - Security warnings
 - Auto-clear from state after display
 
 ### Row Actions Component
+
 File: `ApiKeyRowActions.vue`
 
 Features:
+
 - View/details action
 - Edit action (opens update sheet)
 - Delete action (opens confirmation)
@@ -123,20 +139,24 @@ Features:
 ## Page Integration
 
 ### Update Settings Page
+
 File: `frontend/app/pages/settings/api-keys/index.vue`
 
 Transform from placeholder to full management interface:
+
 - Replace placeholder content with `ApiKeyTable`
 - Add create button that opens `ApiKeyCreateSheet`
 - Handle success/error callbacks
 - Integrate with page layout and navigation
 
 ### Component Registration
+
 Ensure proper component imports and exports in `index.ts`
 
 ## Form Implementation Patterns
 
 ### Create Form Example
+
 ```vue
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
@@ -146,7 +166,11 @@ import * as z from "zod";
 const formSchema = toTypedSchema(
   z.object({
     projectId: z.string().length(14),
-    name: z.string().min(2).max(50).regex(/^[a-zA-Z0-9\s\-_]+$/),
+    name: z
+      .string()
+      .min(2)
+      .max(50)
+      .regex(/^[a-zA-Z0-9\s\-_]+$/),
     expiration: z.date().min(new Date()).max(/* 2 years from now */),
   })
 );
@@ -156,6 +180,7 @@ const formSchema = toTypedSchema(
 ```
 
 ### Data Table Integration
+
 ```vue
 <script setup lang="ts">
 const { query } = useApiKeyService();
@@ -167,23 +192,28 @@ const { queryRequest } = useQueryRequest({
   sorting,
 });
 
-const { data: response, pending, refresh } = useLazyAsyncData(
-  asyncDataKey,
-  () => query(queryRequest.value),
-  { server: false, watch: [queryRequest] }
-);
+const {
+  data: response,
+  pending,
+  refresh,
+} = useLazyAsyncData(asyncDataKey, () => query(queryRequest.value), {
+  server: false,
+  watch: [queryRequest],
+});
 </script>
 ```
 
 ## Security Considerations
 
 ### Key Display Security
+
 - Clear key from component state after display
 - No key value in browser dev tools
 - Warn user about secure storage
 - Implement copy timeout for clipboard
 
 ### Form Security
+
 - No client-side key generation
 - Secure form submission
 - Proper error handling without leaking info
@@ -208,12 +238,14 @@ const { data: response, pending, refresh } = useLazyAsyncData(
 ## Design Requirements
 
 ### Responsive Design
+
 - Mobile-first approach
 - Collapsible table columns on small screens
 - Touch-friendly buttons and interactions
 - Proper spacing and typography
 
 ### Accessibility
+
 - Proper ARIA labels
 - Keyboard navigation support
 - Screen reader compatibility
@@ -221,6 +253,7 @@ const { data: response, pending, refresh } = useLazyAsyncData(
 - Focus management in modals
 
 ### User Experience
+
 - Loading states for all operations
 - Clear success/error feedback
 - Intuitive navigation flows

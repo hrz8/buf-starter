@@ -27,6 +27,7 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ### End-to-End CRUD Workflows
 
 #### Create API Key Workflow
+
 - [ ] Navigate to API Keys settings page
 - [ ] Click "Create API Key" button
 - [ ] Fill form with valid data
@@ -37,6 +38,7 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 - [ ] Test duplicate name handling
 
 #### Query/List API Keys Workflow
+
 - [ ] Verify table loads with existing keys
 - [ ] Test pagination with large datasets
 - [ ] Test search functionality by name
@@ -46,6 +48,7 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 - [ ] Test empty state when no keys exist
 
 #### Update API Key Workflow
+
 - [ ] Click edit action on existing key
 - [ ] Verify form pre-populates with current values
 - [ ] Update name and expiration date
@@ -55,6 +58,7 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 - [ ] Test unique name constraints
 
 #### Delete API Key Workflow
+
 - [ ] Click delete action on existing key
 - [ ] Verify confirmation dialog appears
 - [ ] Confirm deletion and verify success
@@ -65,18 +69,21 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ### Security Testing
 
 #### Key Generation Security
+
 - [ ] Verify keys are cryptographically secure
 - [ ] Confirm key uniqueness across projects
-- [ ] Test key format consistency (ak_ prefix)
+- [ ] Test key format consistency (ak\_ prefix)
 - [ ] Verify sufficient entropy in generated keys
 
 #### Key Display Security
+
 - [ ] Confirm key is only shown once during creation
 - [ ] Verify key value never appears in subsequent API calls
 - [ ] Test that key is cleared from browser state
 - [ ] Confirm copy-to-clipboard functionality works securely
 
 #### Project Isolation
+
 - [ ] Verify keys are scoped to specific projects
 - [ ] Test that users cannot access keys from other projects
 - [ ] Confirm API endpoints enforce project-level access control
@@ -85,18 +92,21 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ### Error Handling Testing
 
 #### Validation Errors
+
 - [ ] Test all form validation rules
 - [ ] Verify error messages are user-friendly
 - [ ] Test both client-side and server-side validation
 - [ ] Confirm proper error display in UI
 
 #### Network and Server Errors
+
 - [ ] Test behavior with network timeouts
 - [ ] Test server error responses (500, 503)
 - [ ] Verify proper error messages and recovery
 - [ ] Test concurrent user scenarios
 
 #### Edge Cases
+
 - [ ] Test with expired API keys
 - [ ] Test with very long names
 - [ ] Test with special characters in names
@@ -105,12 +115,14 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ### Performance Testing
 
 #### Load Testing
+
 - [ ] Test with large numbers of API keys (100+)
 - [ ] Verify pagination performance
 - [ ] Test search and filter performance
 - [ ] Confirm reasonable response times
 
 #### Memory and Resource Usage
+
 - [ ] Monitor client-side memory usage
 - [ ] Verify proper cleanup of component state
 - [ ] Test for memory leaks in forms and tables
@@ -119,18 +131,21 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ### Accessibility Testing
 
 #### Keyboard Navigation
+
 - [ ] Test tab navigation through all forms
 - [ ] Verify all actions are keyboard accessible
 - [ ] Test escape key handling in modals
 - [ ] Confirm proper focus management
 
 #### Screen Reader Support
+
 - [ ] Test with screen reader software
 - [ ] Verify proper ARIA labels and descriptions
 - [ ] Test table navigation for screen readers
 - [ ] Confirm form error announcements
 
 #### Visual Accessibility
+
 - [ ] Test with high contrast modes
 - [ ] Verify color contrast ratios
 - [ ] Test with different font sizes
@@ -139,12 +154,14 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ### Responsive Design Testing
 
 #### Mobile Devices
+
 - [ ] Test on various mobile screen sizes
 - [ ] Verify touch interactions work properly
 - [ ] Test table responsiveness and scrolling
 - [ ] Confirm form usability on mobile
 
 #### Desktop and Tablet
+
 - [ ] Test on different desktop resolutions
 - [ ] Verify tablet-specific interactions
 - [ ] Test window resizing behavior
@@ -153,18 +170,21 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ## Integration Testing
 
 ### Backend Integration
+
 - [ ] Test database partitioning works correctly
 - [ ] Verify all SQL queries are optimized
 - [ ] Test transaction handling and rollbacks
 - [ ] Confirm proper logging and audit trails
 
 ### Frontend Integration
+
 - [ ] Test client registration and service discovery
 - [ ] Verify Connect-RPC client configuration
 - [ ] Test integration with existing UI components
 - [ ] Confirm proper state management
 
 ### Full Stack Integration
+
 - [ ] Test complete user workflows end-to-end
 - [ ] Verify proper error propagation through all layers
 - [ ] Test with real database and server setup
@@ -173,6 +193,7 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ## Test Data Setup
 
 ### Database Test Data
+
 ```sql
 -- Create test projects
 -- Create test API keys with various states
@@ -181,6 +202,7 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ```
 
 ### Frontend Test Scenarios
+
 - Projects with no API keys
 - Projects with many API keys
 - Keys with various expiration states
@@ -189,12 +211,14 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ## Manual Testing Checklist
 
 ### Browser Compatibility
+
 - [ ] Chrome (latest)
 - [ ] Firefox (latest)
 - [ ] Safari (latest)
 - [ ] Edge (latest)
 
 ### Device Testing
+
 - [ ] iPhone (various sizes)
 - [ ] Android devices
 - [ ] iPad/tablet devices
@@ -203,12 +227,14 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ## Automated Testing
 
 ### Unit Tests
+
 - [ ] Run all backend unit tests
 - [ ] Run all frontend component tests
 - [ ] Verify test coverage meets requirements
 - [ ] Confirm all tests pass
 
 ### Integration Tests
+
 - [ ] Run API integration tests
 - [ ] Test database integration
 - [ ] Verify service layer tests
@@ -217,12 +243,14 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ## Performance Benchmarks
 
 ### Response Time Targets
+
 - Query API keys: < 500ms
 - Create API key: < 1000ms
 - Update API key: < 500ms
 - Delete API key: < 300ms
 
 ### UI Performance Targets
+
 - Page load time: < 2 seconds
 - Form submission feedback: < 100ms
 - Table rendering: < 500ms
@@ -231,12 +259,14 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ## Documentation Requirements
 
 ### User Documentation
+
 - [ ] Update API documentation
 - [ ] Document any limitations
 - [ ] Create troubleshooting guide
 - [ ] Document security considerations
 
 ### Developer Documentation
+
 - [ ] Update API reference
 - [ ] Document component usage
 - [ ] Update development guidelines
@@ -245,12 +275,14 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ## Deployment Readiness
 
 ### Code Quality
+
 - [ ] Run linting and formatting checks
 - [ ] Verify TypeScript compilation
 - [ ] Confirm Go build succeeds
 - [ ] Review code for security issues
 
 ### Configuration
+
 - [ ] Verify environment configurations
 - [ ] Test database migrations
 - [ ] Confirm service configurations
@@ -272,12 +304,14 @@ Perform comprehensive integration testing, end-to-end validation, and finalize t
 ## Risk Mitigation
 
 ### Identified Risks
+
 - Key generation security vulnerabilities
 - Project isolation bypass
 - Performance degradation with large datasets
 - Mobile usability issues
 
 ### Mitigation Strategies
+
 - Comprehensive security testing
 - Load testing with realistic data
 - Multiple device testing

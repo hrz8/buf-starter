@@ -1,7 +1,7 @@
 {
   "name": "speckit-starter",
-  "private": true,
   "type": "module",
+  "private": true,
   "packageManager": "pnpm@9.15.0",
   "scripts": {
     "lint": "eslint .",

@@ -1,0 +1,186 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "altalune/v1/common.proto";
+
+message ApiKey {
+  string id = 1;
+  string name = 2;
+  google.protobuf.Timestamp expiration = 3;
+  bool active = 4; // Whether the API key is active or deactivated
+  google.protobuf.Timestamp created_at = 98;
+  google.protobuf.Timestamp updated_at = 99;
+}
+
+message CreateApiKeyRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 2,
+      max_len: 50,
+      pattern: "^[a-zA-Z0-9\\s\\-_]+$"
+    }
+  ];
+  google.protobuf.Timestamp expiration = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).timestamp = {
+      gt_now: true,
+      within: {seconds: 63072000} // 2 years
+    }
+  ];
+}
+
+message CreateApiKeyResponse {
+  ApiKey api_key = 1;
+  string key_value = 2; // The actual API key value (shown only once)
+  string message = 3;
+}
+
+message QueryApiKeysRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  QueryRequest query = 2;
+}
+
+message QueryApiKeysResponse {
+  repeated ApiKey data = 1;
+  QueryMetaResponse meta = 2;
+}
+
+message GetApiKeyRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  string api_key_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14
+    }
+  ];
+}
+
+message GetApiKeyResponse {
+  ApiKey api_key = 1;
+}
+
+message UpdateApiKeyRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  string api_key_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14
+    }
+  ];
+  string name = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 2,
+      max_len: 50,
+      pattern: "^[a-zA-Z0-9\\s\\-_]+$"
+    }
+  ];
+  google.protobuf.Timestamp expiration = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).timestamp = {
+      gt_now: true,
+      within: {seconds: 63072000} // 2 years
+    }
+  ];
+}
+
+message UpdateApiKeyResponse {
+  ApiKey api_key = 1;
+  string message = 2;
+}
+
+message DeleteApiKeyRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  string api_key_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14
+    }
+  ];
+}
+
+message DeleteApiKeyResponse {
+  string message = 1;
+}
+
+message ActivateApiKeyRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  string api_key_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14
+    }
+  ];
+}
+
+message ActivateApiKeyResponse {
+  ApiKey api_key = 1;
+  string message = 2;
+}
+
+message DeactivateApiKeyRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14,
+    }
+  ];
+  string api_key_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      len: 14
+    }
+  ];
+}
+
+message DeactivateApiKeyResponse {
+  ApiKey api_key = 1;
+  string message = 2;
+}
+
+service ApiKeyService {
+  rpc QueryApiKeys(QueryApiKeysRequest) returns (QueryApiKeysResponse) {}
+  rpc CreateApiKey(CreateApiKeyRequest) returns (CreateApiKeyResponse) {}
+  rpc GetApiKey(GetApiKeyRequest) returns (GetApiKeyResponse) {}
+  rpc UpdateApiKey(UpdateApiKeyRequest) returns (UpdateApiKeyResponse) {}
+  rpc DeleteApiKey(DeleteApiKeyRequest) returns (DeleteApiKeyResponse) {}
+  rpc ActivateApiKey(ActivateApiKeyRequest) returns (ActivateApiKeyResponse) {}
+  rpc DeactivateApiKey(DeactivateApiKeyRequest) returns (DeactivateApiKeyResponse) {}
+}

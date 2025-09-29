@@ -26,5 +26,9 @@
   "example.inputPlaceholder": "Masukkan nama Anda",
   "example.response": "Respon",
   "example.submitBtn": "Katakan Halo",
-  "example.submitBtnProgress": "Mengirim..."
+  "example.submitBtnProgress": "Mengirim...",
+  "features": {
+    "example_employee": {},
+    "api_keys": {}
+  }
 }

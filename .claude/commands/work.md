@@ -19,11 +19,13 @@
 ## Quality Gates
 
 ### Backend
+
 - Clean architecture + DI container
 - Structured AppError handling
 - Comprehensive test coverage
 
 ### Frontend
+
 - Vue 3 Composition API (`<script setup lang="ts">`)
 - shadcn-vue components
 - Repository pattern from CLAUDE.md
@@ -32,11 +34,13 @@
 - Run `pnpm lint:fix` after changes
 
 ### Integration
+
 - Type safety across layers
 - Proper error propagation
 - Cross-system validation
 
 ## Commands
+
 - `buf generate` (for protobuf changes)
 - `make build && ./bin/app serve -c config.yaml` (backend testing)
 - `cd frontend && pnpm dev` (frontend development)

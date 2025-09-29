@@ -24,6 +24,7 @@ Create the protobuf schema definition for API Key management following establish
 ## Technical Requirements
 
 ### ApiKey Message Structure
+
 ```protobuf
 message ApiKey {
   string id = 1;                                    // Public nanoid
@@ -35,12 +36,14 @@ message ApiKey {
 ```
 
 ### Validation Rules Required
+
 - **project_id**: Required, exactly 14 characters (nanoid length)
 - **name**: Required, 2-50 characters, alphanumeric + spaces/hyphens/underscores
 - **expiration**: Required, future date, max 2 years from now
 - **api_key_id**: Required for get/update/delete, 14 characters
 
 ### Service Operations Required
+
 ```protobuf
 service ApiKeyService {
   rpc QueryApiKeys(QueryApiKeysRequest) returns (QueryApiKeysResponse) {}

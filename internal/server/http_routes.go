@@ -10,6 +10,7 @@ import (
 	"github.com/hrz8/altalune"
 	"github.com/hrz8/altalune/gen/altalune/v1/altalunev1connect"
 	"github.com/hrz8/altalune/gen/greeter/v1/greeterv1connect"
+	api_key_domain "github.com/hrz8/altalune/internal/domain/api_key"
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
 	project_domain "github.com/hrz8/altalune/internal/domain/project"
@@ -30,6 +31,10 @@ func (s *Server) setupRoutes() *http.ServeMux {
 	projectHandler := project_domain.NewHandler(s.c.GetProjectService())
 	projectPath, projectConnectHandler := altalunev1connect.NewProjectServiceHandler(projectHandler)
 	connectrpcMux.Handle(projectPath, projectConnectHandler)
+
+	apiKeyHandler := api_key_domain.NewHandler(s.c.GetApiKeyService())
+	apiKeyPath, apiKeyConnectHandler := altalunev1connect.NewApiKeyServiceHandler(apiKeyHandler)
+	connectrpcMux.Handle(apiKeyPath, apiKeyConnectHandler)
 
 	// main server mux
 	mux := http.NewServeMux()

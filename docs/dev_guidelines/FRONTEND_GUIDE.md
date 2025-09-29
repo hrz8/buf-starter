@@ -429,7 +429,7 @@ onUnmounted(() => {
   <form class="space-y-6" @submit="onSubmit">
     <!-- Error Alert -->
     <Alert v-if="createError" variant="destructive">
-      <AlertCircle class="w-4 h-4" />
+      <Icon name="lucide:alert-circle" size="1em" mode="svg" />
       <AlertTitle>Error</AlertTitle>
       <AlertDescription>{{ createError }}</AlertDescription>
     </Alert>
@@ -470,7 +470,9 @@ onUnmounted(() => {
         <Icon
           v-if="createLoading"
           name="lucide:loader-2"
-          class="mr-2 h-4 w-4 animate-spin"
+          class="mr-2 animate-spin"
+          size="1em"
+          mode="svg"
         />
         {{ createLoading ? "Creating..." : "Create Entity" }}
       </Button>
@@ -767,5 +769,177 @@ const isSheetOpen = computed({
 2. **Proper Timing**: `nextTick()` ensures dropdown closes before sheet opens
 3. **Flexible Usage**: Component works both with triggers and manual control
 4. **Clean Separation**: UI state management is explicit and predictable
+
+## Icon Usage Guidelines
+
+### Overview
+
+This project uses **Nuxt Icon component** as the standard way to display icons throughout the application. All icon usage should follow this pattern to ensure consistency and maintainability.
+
+### Correct Icon Usage Pattern
+
+**Always use the Nuxt Icon component:**
+
+- `name` (required): icon name or global component name
+- `size`: icon size (default: `1em`)
+- `mode`: icon rendering mode (`svg` or `css`, default: `css`)
+
+```vue
+<!-- CORRECT: Use Nuxt Icon component -->
+<Icon name="lucide:user-plus" class="mr-2" size="1em" mode="svg" />
+<Icon name="lucide:edit" class="mr-2" size="1em" mode="svg" />
+<Icon name="lucide:trash-2" class="mr-2" size="1em" mode="svg" />
+<Icon name="lucide:loader-2" class="mr-2 animate-spin" size="1em" mode="svg" />
+```
+
+### Incorrect Patterns to Avoid
+
+**Never import icons directly from lucide packages:**
+
+```vue
+<!-- WRONG: Direct lucide imports -->
+<script setup lang="ts">
+import { UserPlus, Edit, Trash2 } from "lucide-vue-next";
+</script>
+
+<template>
+  <UserPlus class="mr-2 h-4 w-4" />
+  <Edit class="mr-2 h-4 w-4" />
+  <Trash2 class="mr-2 h-4 w-4" />
+</template>
+```
+
+### Icon Naming Convention
+
+When using Nuxt Icon component, follow the `lucide:` prefix with kebab-case naming:
+
+```vue
+<!-- Lucide icon names in kebab-case -->
+<Icon name="lucide:user-plus" />
+<!-- UserPlus becomes user-plus -->
+<Icon name="lucide:more-horizontal" />
+<!-- MoreHorizontal becomes more-horizontal -->
+<Icon name="lucide:chevron-down" />
+<!-- ChevronDown becomes chevron-down -->
+<Icon name="lucide:alert-circle" />
+<!-- AlertCircle becomes alert-circle -->
+<Icon name="lucide:shield-alert" />
+<!-- ShieldAlert becomes shield-alert -->
+<Icon name="lucide:eye-off" />
+<!-- EyeOff becomes eye-off -->
+```
+
+### Shadcn Components Icon Migration
+
+**Important:** When using shadcn-vue components that have direct lucide imports, you must modify them to use the Nuxt Icon component instead.
+
+**Before (shadcn default):**
+
+```vue
+<script setup lang="ts">
+import { ChevronDown } from "lucide-vue-next";
+</script>
+
+<template>
+  <SelectTrigger>
+    <slot />
+    <SelectIcon as-child>
+      <ChevronDown class="size-4 opacity-50" />
+    </SelectIcon>
+  </SelectTrigger>
+</template>
+```
+
+**After (Nuxt Icon component):**
+
+```vue
+<script setup lang="ts">
+// Remove direct lucide import
+</script>
+
+<template>
+  <SelectTrigger>
+    <slot />
+    <SelectIcon as-child>
+      <Icon name="lucide:chevron-down" class="size-4 opacity-50" />
+    </SelectIcon>
+  </SelectTrigger>
+</template>
+```
+
+### Common Icon Migration Examples
+
+| Direct Import                                   | Nuxt Icon Component                                                    |
+| ----------------------------------------------- | ---------------------------------------------------------------------- |
+| `<AlertCircle class="w-4 h-4" />`               | `<Icon name="lucide:alert-circle" />`                                  |
+| `<UserPlus class="mr-2 h-4 w-4" />`             | `<Icon name="lucide:user-plus" />`                                     |
+| `<MoreHorizontal class="h-4 w-4" />`            | `<Icon name="lucide:more-horizontal" />`                               |
+| `<X class="size-4" />`                          | `<Icon name="lucide:x" size="2em" />`                                  |
+| `<Search class="size-4 shrink-0 opacity-50" />` | `<Icon name="lucide:search" size="1em" class="shrink-0 opacity-50" />` |
+
+### Icon Usage in Components
+
+**Data Table Row Actions:**
+
+```vue
+<DropdownMenuItem @click="handleEdit">
+  <Icon name="lucide:edit" size="1em" class="mr-2" />
+  Edit
+</DropdownMenuItem>
+
+<DropdownMenuItem @click="handleDelete">
+  <Icon name="lucide:trash-2" size="1em" class="mr-2" />
+  Delete
+</DropdownMenuItem>
+```
+
+**Loading States:**
+
+```vue
+<Button :disabled="loading">
+  <Icon v-if="loading" name="lucide:loader-2" size="1em" class="mr-2 animate-spin" />
+  {{ loading ? 'Saving...' : 'Save' }}
+</Button>
+```
+
+**Form Validation:**
+
+```vue
+<Alert variant="destructive">
+  <Icon name="lucide:alert-circle" size="1em" />
+  <AlertTitle>Error</AlertTitle>
+  <AlertDescription>{{ error }}</AlertDescription>
+</Alert>
+```
+
+### Benefits of This Approach
+
+1. **Consistency**: Single pattern across the entire application
+2. **Bundle Optimization**: Nuxt Icon handles icon loading and optimization
+3. **Maintainability**: Easy to update or replace icon libraries
+4. **Developer Experience**: No need to manage individual icon imports
+5. **Type Safety**: TypeScript support for icon names
+
+### Migration Checklist
+
+When migrating components from direct lucide imports:
+
+- [ ] Remove `import { IconName } from 'lucide-vue-next'` statements
+- [ ] Replace `<IconName />` with `<Icon name="lucide:icon-name" />`
+- [ ] Convert PascalCase icon names to kebab-case
+- [ ] Preserve all existing classes and attributes
+- [ ] Test the component to ensure icons display correctly
+
+### Finding Direct Icon Imports
+
+To find components that still use direct lucide imports:
+
+```bash
+# Search for direct lucide imports
+grep -r "from ['\"]lucide" frontend/app/components/
+
+# Search for specific icon usage patterns
+grep -r "import.*lucide-vue" frontend/app/
+```
 
 This workflow ensures type-safe, consistent, and maintainable frontend development while leveraging the power of protobuf validation and Connect-RPC.

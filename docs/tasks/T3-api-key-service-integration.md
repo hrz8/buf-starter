@@ -24,18 +24,24 @@ Register the new ApiKeyService in the application container, gRPC server, and Co
 ## Technical Requirements
 
 ### Container Registration
+
 Add to `internal/container/container.go`:
+
 - Repository initialization in `initRepositories()`
 - Service initialization in `initServices()`
 - Proper dependency injection for project repository
 
 ### gRPC Service Registration
+
 Add to `internal/server/grpc_services.go`:
+
 - Register `ApiKeyServiceServer` with gRPC server
 - Ensure proper service discovery
 
 ### Connect-RPC Handler Registration
+
 Add to `internal/server/http_routes.go`:
+
 - Create handler instance with service dependency
 - Register Connect-RPC handler with HTTP mux
 - Ensure proper path registration
@@ -43,6 +49,7 @@ Add to `internal/server/http_routes.go`:
 ## Implementation Details
 
 ### Container Updates
+
 ```go
 // In initRepositories()
 func (c *Container) initRepositories() {
@@ -63,12 +70,14 @@ func (c *Container) initServices() {
 ```
 
 ### gRPC Registration
+
 ```go
 // In registerGRPCServices()
 altalunev1.RegisterApiKeyServiceServer(grpcServer, s.c.GetApiKeyService())
 ```
 
 ### HTTP Handler Registration
+
 ```go
 // In registerHTTPRoutes()
 apiKeyHandler := api_key_domain.NewHandler(s.c.GetApiKeyService())
@@ -77,7 +86,9 @@ connectrpcMux.Handle(apiKeyPath, apiKeyConnectHandler)
 ```
 
 ### Service Discovery
+
 Endpoints should be available at:
+
 - gRPC: `altalune.v1.ApiKeyService/*`
 - HTTP: `/altalune.v1.ApiKeyService/*`
 
@@ -90,6 +101,7 @@ Endpoints should be available at:
 ## Testing Requirements
 
 ### Manual Testing Commands
+
 ```bash
 # Test via Connect-RPC HTTP
 curl -X POST http://localhost:8080/altalune.v1.ApiKeyService/QueryApiKeys \
@@ -102,6 +114,7 @@ grpcurl -plaintext -d '{"project_id": "test_project_id", "query": {"pagination":
 ```
 
 ### Integration Tests
+
 - Verify service starts without errors
 - Test all CRUD endpoints return proper responses
 - Validate error handling for invalid requests

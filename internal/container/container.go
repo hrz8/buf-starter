@@ -9,6 +9,7 @@ import (
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
 
+	api_key_domain "github.com/hrz8/altalune/internal/domain/api_key"
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
 	project_domain "github.com/hrz8/altalune/internal/domain/project"
@@ -35,6 +36,9 @@ type Container struct {
 	greeterRepo  greeter_domain.Repositor
 	employeeRepo employee_domain.Repositor
 
+	// API Key Repository
+	apiKeyRepo api_key_domain.Repositor
+
 	// Example Services
 	greeterService  greeterv1.GreeterServiceServer
 	employeeService altalunev1.EmployeeServiceServer
@@ -44,6 +48,7 @@ type Container struct {
 
 	// Services
 	projectService altalunev1.ProjectServiceServer
+	apiKeyService  altalunev1.ApiKeyServiceServer
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling
@@ -86,6 +91,7 @@ func (c *Container) initRepositories() error {
 	c.greeterRepo = greeter_domain.NewRepo()
 	c.employeeRepo = employee_domain.NewRepo(c.db)
 	c.projectRepo = project_domain.NewRepo(c.db)
+	c.apiKeyRepo = api_key_domain.NewRepo(c.db)
 	return nil
 }
 
@@ -98,5 +104,6 @@ func (c *Container) initServices() error {
 	c.greeterService = greeter_domain.NewService(validator, c.logger, c.greeterRepo)
 	c.employeeService = employee_domain.NewService(validator, c.logger, c.projectRepo, c.employeeRepo)
 	c.projectService = project_domain.NewService(validator, c.logger, c.projectRepo)
+	c.apiKeyService = api_key_domain.NewService(validator, c.logger, c.projectRepo, c.apiKeyRepo)
 	return nil
 }

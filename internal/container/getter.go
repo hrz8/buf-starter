@@ -52,3 +52,8 @@ func (c *Container) GetEmployeeService() altalunev1.EmployeeServiceServer {
 func (c *Container) GetProjectService() altalunev1.ProjectServiceServer {
 	return c.projectService
 }
+
+// GetApiKeyService returns the API key service
+func (c *Container) GetApiKeyService() altalunev1.ApiKeyServiceServer {
+	return c.apiKeyService
+}

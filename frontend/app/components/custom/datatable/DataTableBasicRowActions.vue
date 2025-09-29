@@ -15,7 +15,6 @@ interface DataTableBasicRowActionsProps {
   actions?: {
     edit?: boolean;
     duplicate?: boolean;
-    favorite?: boolean;
     delete?: boolean;
   };
 }
@@ -24,7 +23,6 @@ const props = withDefaults(defineProps<DataTableBasicRowActionsProps>(), {
   actions: () => ({
     edit: true,
     duplicate: true,
-    favorite: true,
     delete: true,
   }),
 });
@@ -32,7 +30,6 @@ const props = withDefaults(defineProps<DataTableBasicRowActionsProps>(), {
 const emit = defineEmits<{
   edit: [row: Row<any>];
   duplicate: [row: Row<any>];
-  favorite: [row: Row<any>];
   delete: [row: Row<any>];
 }>();
 
@@ -42,10 +39,6 @@ function handleEdit() {
 
 function handleDuplicate() {
   emit('duplicate', props.row);
-}
-
-function handleFavorite() {
-  emit('favorite', props.row);
 }
 
 function handleDelete() {
@@ -75,6 +68,7 @@ function handleDelete() {
         v-if="props.actions.edit"
         @click="handleEdit"
       >
+        <Icon name="lucide:edit" class="mr-2 h-4 w-4" />
         Edit
       </DropdownMenuItem>
 
@@ -82,14 +76,8 @@ function handleDelete() {
         v-if="props.actions.duplicate"
         @click="handleDuplicate"
       >
+        <Icon name="lucide:copy" class="mr-2 h-4 w-4" />
         Make a copy
-      </DropdownMenuItem>
-
-      <DropdownMenuItem
-        v-if="props.actions.favorite"
-        @click="handleFavorite"
-      >
-        Favorite
       </DropdownMenuItem>
 
       <DropdownMenuSeparator v-if="props.actions.delete" />
@@ -99,6 +87,7 @@ function handleDelete() {
         class="text-destructive focus:text-destructive-foreground"
         @click="handleDelete"
       >
+        <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" />
         Delete
       </DropdownMenuItem>
     </DropdownMenuContent>

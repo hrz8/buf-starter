@@ -24,6 +24,7 @@ Implement the frontend repository layer and service composable for API Key manag
 ## Technical Requirements
 
 ### Repository Layer
+
 File: `frontend/shared/repository/api_key.ts`
 
 ```typescript
@@ -39,9 +40,11 @@ export function apiKeyRepository(client: Client<typeof ApiKeyService>) {
 ```
 
 ### Service Composable
+
 File: `frontend/app/composables/services/useApiKeyService.ts`
 
 Features Required:
+
 - Query functionality with reactive parameters
 - Create functionality with form state management
 - Update functionality with form state management
@@ -51,23 +54,25 @@ Features Required:
 - Validation using generated protobuf schemas
 
 ### State Management
+
 ```typescript
 // Query state
-const queryValidator = useConnectValidator(QueryApiKeysRequestSchema)
+const queryValidator = useConnectValidator(QueryApiKeysRequestSchema);
 
 // Create state
-const createValidator = useConnectValidator(CreateApiKeyRequestSchema)
+const createValidator = useConnectValidator(CreateApiKeyRequestSchema);
 const createState = reactive({
   loading: false,
   error: "",
   success: false,
-})
+});
 
 // Update state (similar pattern)
 // Delete state (similar pattern)
 ```
 
 ### Error Handling
+
 - Use `useErrorMessage` for Connect error parsing
 - Support i18n error messages
 - Provide fallback error messages
@@ -76,12 +81,14 @@ const createState = reactive({
 ## Implementation Details
 
 ### Repository Pattern
+
 - Follow exact pattern from `employeeRepository`
 - Handle ConnectError with proper logging
 - Use generated protobuf types from `~~/gen/altalune/v1/api_key_pb`
 - Return promises with proper typing
 
 ### Service Composable Pattern
+
 - Reactive state management for all operations
 - Computed properties for UI binding
 - Proper cleanup on unmount
@@ -89,6 +96,7 @@ const createState = reactive({
 - Error state management
 
 ### Type Safety
+
 - Use generated protobuf schemas for validation
 - Proper TypeScript interfaces for all methods
 - MessageInitShape types for form inputs
@@ -106,24 +114,27 @@ const createState = reactive({
 ## Implementation Pattern
 
 ### Repository Implementation
+
 ```typescript
-import type { Client } from '@connectrpc/connect';
+import type { Client } from "@connectrpc/connect";
 import type {
   CreateApiKeyRequest,
   CreateApiKeyResponse,
   // ... other imports
-} from '~~/gen/altalune/v1/api_key_pb';
-import { ConnectError } from '@connectrpc/connect';
+} from "~~/gen/altalune/v1/api_key_pb";
+import { ConnectError } from "@connectrpc/connect";
 
 export function apiKeyRepository(client: Client<typeof ApiKeyService>) {
   return {
-    async queryApiKeys(req: QueryApiKeysRequest): Promise<QueryApiKeysResponse> {
+    async queryApiKeys(
+      req: QueryApiKeysRequest
+    ): Promise<QueryApiKeysResponse> {
       try {
         const response = await client.queryApiKeys(req);
         return response;
       } catch (err) {
         if (err instanceof ConnectError) {
-          console.error('ConnectError:', err);
+          console.error("ConnectError:", err);
         }
         throw err;
       }
@@ -134,6 +145,7 @@ export function apiKeyRepository(client: Client<typeof ApiKeyService>) {
 ```
 
 ### Service Composable Implementation
+
 ```typescript
 export function useApiKeyService() {
   const { $apiKeyClient } = useNuxtApp();
@@ -143,12 +155,16 @@ export function useApiKeyService() {
   // Query functionality
   const queryValidator = useConnectValidator(QueryApiKeysRequestSchema);
 
-  async function query(req: MessageInitShape<typeof QueryApiKeysRequestSchema>) {
+  async function query(
+    req: MessageInitShape<typeof QueryApiKeysRequestSchema>
+  ) {
     // Implementation following employee pattern
   }
 
   // Create functionality
-  async function createApiKey(req: MessageInitShape<typeof CreateApiKeyRequestSchema>) {
+  async function createApiKey(
+    req: MessageInitShape<typeof CreateApiKeyRequestSchema>
+  ) {
     // Implementation with state management
   }
 
@@ -183,12 +199,13 @@ export function useApiKeyService() {
 ## Client Registration
 
 ### Nuxt Plugin (if needed)
+
 File: `frontend/app/plugins/api-key-client.client.ts`
 
 ```typescript
-import { createClient } from '@connectrpc/connect';
-import { createConnectTransport } from '@connectrpc/connect-web';
-import { ApiKeyService } from '~~/gen/altalune/v1/api_key_pb';
+import { createClient } from "@connectrpc/connect";
+import { createConnectTransport } from "@connectrpc/connect-web";
+import { ApiKeyService } from "~~/gen/altalune/v1/api_key_pb";
 
 export default defineNuxtPlugin(() => {
   const config = useRuntimeConfig();
