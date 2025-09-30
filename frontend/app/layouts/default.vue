@@ -1,13 +1,16 @@
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core';
-
 import { LayoutHeader, LayoutSidebar } from '@/components/custom/layout';
+
 import {
   SidebarInset,
   SidebarProvider,
 } from '@/components/ui/sidebar';
+import { Toaster } from '@/components/ui/sonner';
 import { useProjectService } from '@/composables/services/useProjectService';
 import { useProjectStore } from '@/stores/project';
+
+import 'vue-sonner/style.css';
 
 const route = useRoute();
 const sidebarOpen = useLocalStorage('sidebar-state', true);
@@ -54,6 +57,7 @@ onMounted(() => {
     :default-open="sidebarOpen"
     @update:open="handleOpenUpdate"
   >
+    <Toaster />
     <LayoutSidebar />
     <SidebarInset>
       <LayoutHeader />
