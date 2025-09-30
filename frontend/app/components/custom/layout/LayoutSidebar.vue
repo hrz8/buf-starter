@@ -1,14 +1,6 @@
 <script setup lang="ts">
 import type { SidebarProps } from '@/components/ui/sidebar';
 
-import type { NavItem } from '@/composables/navigation/useNavigation';
-import {
-  Key,
-  LucideHome,
-  Puzzle,
-  Smartphone,
-} from 'lucide-vue-next';
-
 import {
   NavMenu,
   NavProject,
@@ -22,6 +14,7 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
+import { mainNavItems, settingsNavItems } from '@/config/navigation';
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
@@ -33,50 +26,8 @@ const data = {
     email: 'm@example.com',
     avatar: '/avatars/shadcn.jpg',
   },
-  settings: [
-    {
-      name: 'Api Keys',
-      url: '/settings/api-keys',
-      icon: Key,
-    },
-  ],
+  settings: settingsNavItems,
 };
-
-const mainNavItems: NavItem[] = [
-  {
-    title: 'Dashboard',
-    to: '/dashboard',
-    icon: LucideHome,
-  },
-  {
-    title: 'Devices',
-    to: '/devices',
-    match: '/devices',
-    icon: Smartphone,
-    items: [
-      {
-        title: 'Scan',
-        to: '/devices/scan',
-      },
-      {
-        title: 'Chat',
-        to: '/devices/chat',
-      },
-    ],
-  },
-  {
-    title: 'Examples',
-    to: '/examples',
-    match: '/examples',
-    icon: Puzzle,
-    items: [
-      {
-        title: 'Datatable',
-        to: '/examples/datatable/datatable18',
-      },
-    ],
-  },
-];
 </script>
 
 <template>

@@ -28,7 +28,17 @@
   "example.submitBtn": "Say Hello",
   "example.submitBtnProgress": "Sending...",
   "features": {
-    "example_employee": {},
-    "api_keys": {}
-  }
+    "api_keys": {},
+    "example_employee": {}
+  },
+  "nav.dashboard": "Dashboard",
+  "nav.devices.chat": "Chat",
+  "nav.devices.scan": "Scan",
+  "nav.devices.title": "Devices",
+  "nav.examples.datatable": "Datatable",
+  "nav.examples.datatableVariant": "Datatable {variant}",
+  "nav.examples.title": "Examples",
+  "nav.home": "Home",
+  "nav.settings.apiKeys": "API Keys",
+  "nav.settings.title": "Settings"
 }

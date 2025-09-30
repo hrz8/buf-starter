@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
+import { useBreadcrumbs } from '~/composables/navigation/useBreadcrumbs';
 
 const { locales, setLocale, locale } = useI18n();
 const colorMode = useColorMode();
@@ -22,6 +23,9 @@ const currentLocale = computed(() => {
   const found = locales.value.find(l => l.code === locale.value);
   return found ? found.name : locale.value;
 });
+
+// Breadcrumb navigation
+const { breadcrumbs, hasBreadcrumbs } = useBreadcrumbs();
 </script>
 
 <template>
@@ -37,17 +41,30 @@ const currentLocale = computed(() => {
         orientation="vertical"
         class="mr-2 data-[orientation=vertical]:h-4"
       />
-      <Breadcrumb>
+      <Breadcrumb v-if="hasBreadcrumbs">
         <BreadcrumbList>
-          <BreadcrumbItem class="hidden md:block">
-            <BreadcrumbLink href="#">
-              Building Your Application
-            </BreadcrumbLink>
-          </BreadcrumbItem>
-          <BreadcrumbSeparator class="hidden md:block" />
-          <BreadcrumbItem>
-            <BreadcrumbPage>Data Fetching</BreadcrumbPage>
-          </BreadcrumbItem>
+          <template
+            v-for="(crumb, index) in breadcrumbs"
+            :key="crumb.path"
+          >
+            <BreadcrumbItem
+              :class="{ 'hidden md:block': index === 0 }"
+            >
+              <BreadcrumbLink
+                v-if="!crumb.isCurrent"
+                :href="crumb.path"
+              >
+                {{ crumb.label }}
+              </BreadcrumbLink>
+              <BreadcrumbPage v-else>
+                {{ crumb.label }}
+              </BreadcrumbPage>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator
+              v-if="index < breadcrumbs.length - 1"
+              :class="{ 'hidden md:block': index === 0 }"
+            />
+          </template>
         </BreadcrumbList>
       </Breadcrumb>
     </div>

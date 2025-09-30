@@ -28,7 +28,17 @@
   "example.submitBtn": "Katakan Halo",
   "example.submitBtnProgress": "Mengirim...",
   "features": {
-    "example_employee": {},
-    "api_keys": {}
-  }
+    "api_keys": {},
+    "example_employee": {}
+  },
+  "nav.dashboard": "Dasbor",
+  "nav.devices.chat": "Obrolan",
+  "nav.devices.scan": "Pindai",
+  "nav.devices.title": "Perangkat",
+  "nav.examples.datatable": "Tabel Data",
+  "nav.examples.datatableVariant": "Tabel Data {variant}",
+  "nav.examples.title": "Contoh",
+  "nav.home": "Beranda",
+  "nav.settings.apiKeys": "Kunci API",
+  "nav.settings.title": "Pengaturan"
 }
