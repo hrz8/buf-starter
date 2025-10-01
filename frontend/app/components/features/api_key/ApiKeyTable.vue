@@ -28,6 +28,8 @@ const props = defineProps<{
   projectId: string;
 }>();
 
+const { t } = useI18n();
+
 // Services
 const {
   query,
@@ -98,7 +100,7 @@ const columnHelper = createColumnHelper<ApiKey>();
 // Format date utility
 function formatDate(timestamp: any): string {
   if (!timestamp?.seconds)
-    return 'Unknown';
+    return t('features.api_keys.status.unknown');
   const seconds = BigInt(timestamp.seconds);
   const millis = Number(seconds * 1000n);
   const date = new Date(millis);
@@ -153,34 +155,34 @@ function getCombinedStatusDisplay(status: string) {
   switch (status) {
     case 'expired':
       return {
-        text: 'Expired',
+        text: t('features.api_keys.status.expired'),
         class: 'bg-red-100 text-red-800',
       };
     case 'expiring_soon':
       return {
-        text: 'Expiring Soon',
+        text: t('features.api_keys.status.expiringSoon'),
         class: 'bg-yellow-100 text-yellow-800',
       };
     case 'inactive':
       return {
-        text: 'Inactive',
+        text: t('features.api_keys.status.inactive'),
         class: 'bg-gray-100 text-gray-800',
       };
     case 'active':
     default:
       return {
-        text: 'Active',
+        text: t('features.api_keys.status.active'),
         class: 'bg-green-100 text-green-800',
       };
   }
 }
 
-// Table columns
-const columns = [
+// Table columns (computed for reactivity with i18n)
+const columns = computed(() => [
   columnHelper.accessor('id', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'ID',
+      title: t('features.api_keys.columns.id'),
     }),
     cell: info => h('div', { class: 'font-bold w-40' }, info.getValue()),
     enableSorting: true,
@@ -188,7 +190,7 @@ const columns = [
   columnHelper.accessor('name', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Name',
+      title: t('features.api_keys.columns.name'),
     }),
     cell: info => h('div', { class: 'font-medium' }, info.getValue()),
     enableSorting: true,
@@ -196,7 +198,7 @@ const columns = [
   columnHelper.accessor('expiration', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Expiration',
+      title: t('features.api_keys.columns.expiration'),
     }),
     cell: (info) => {
       const timestamp = info.getValue();
@@ -207,7 +209,7 @@ const columns = [
   columnHelper.accessor('createdAt', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Created At',
+      title: t('features.api_keys.columns.createdAt'),
     }),
     cell: (info) => {
       const timestamp = info.getValue();
@@ -219,7 +221,7 @@ const columns = [
     id: 'status',
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Status',
+      title: t('features.api_keys.columns.status'),
     }),
     cell: ({ row }) => {
       const apiKey = row.original;
@@ -242,20 +244,20 @@ const columns = [
       });
     },
   }),
-];
+]);
 
 // Combined status filter - matches 'status' column ID
 const statusFilter = useDataTableFilter(table, 'status');
 const statusOptions = computed(() =>
   filters.value?.statuses?.values?.map((status: string) => ({
     label: status === 'active'
-      ? 'Active'
+      ? t('features.api_keys.status.active')
       : status === 'inactive'
-        ? 'Inactive'
+        ? t('features.api_keys.status.inactive')
         : status === 'expired'
-          ? 'Expired'
+          ? t('features.api_keys.status.expired')
           : status === 'expiring_soon'
-            ? 'Expiring Soon'
+            ? t('features.api_keys.status.expiringSoon')
             : status,
     value: status,
   })) ?? [],
@@ -309,20 +311,20 @@ async function handleToggleStatus(row: any) {
         projectId: props.projectId,
         apiKeyId: apiKey.id,
       });
-      toast.success('API key deactivated successfully');
+      toast.success(t('features.api_keys.messages.deactivateSuccess'));
     }
     else {
       await activateApiKey({
         projectId: props.projectId,
         apiKeyId: apiKey.id,
       });
-      toast.success('API key activated successfully');
+      toast.success(t('features.api_keys.messages.activateSuccess'));
     }
     refresh();
   }
   catch (error) {
     console.error('Failed to toggle API key status:', error);
-    toast.error('Failed to toggle API key status');
+    toast.error(t('features.api_keys.messages.toggleError'));
   }
 }
 
@@ -372,7 +374,7 @@ function reset() {
         >
           <Button size="sm">
             <Icon name="lucide:plus" class="mr-2 h-4 w-4" />
-            Create API Key
+            {{ t('features.api_keys.actions.create') }}
           </Button>
         </ApiKeyCreateSheet>
       </div>
@@ -385,20 +387,21 @@ function reset() {
           :data="data"
           :pending="pending"
           :row-count="rowCount"
+          column-prefix="features.api_keys.columns"
           @refresh="refresh()"
           @reset="reset()"
         >
           <template #filters>
             <Input
               v-model="keyword"
-              placeholder="Search API keys..."
+              :placeholder="t('features.api_keys.actions.search')"
               class="h-8 w-[150px] lg:w-[250px]"
             />
 
             <DataTableFacetedFilter
               v-if="statusOptions.length > 0"
               v-model="statusFilter.filterValues.value"
-              title="Status"
+              :title="t('features.api_keys.filter.status')"
               :options="statusOptions"
               @update="statusFilter.setFilter"
               @clear="statusFilter.clearFilter"
@@ -408,7 +411,9 @@ function reset() {
             <div class="flex items-center justify-center py-8">
               <div class="flex items-center space-x-2">
                 <Icon name="lucide:loader-2" class="h-4 w-4 animate-spin" />
-                <span class="text-sm text-muted-foreground">Loading API keys...</span>
+                <span class="text-sm text-muted-foreground">
+                  {{ t('features.api_keys.loading') }}
+                </span>
               </div>
             </div>
           </template>
@@ -423,11 +428,10 @@ function reset() {
               </div>
               <div class="text-center space-y-2">
                 <h3 class="text-lg font-semibold">
-                  No API keys found
+                  {{ t('features.api_keys.empty.title') }}
                 </h3>
                 <p class="text-muted-foreground max-w-md">
-                  We couldn't find any API keys matching your criteria.
-                  Try adjusting your filters or search terms.
+                  {{ t('features.api_keys.empty.description') }}
                 </p>
               </div>
               <div class="flex space-x-2">
@@ -438,7 +442,7 @@ function reset() {
                 >
                   <Button>
                     <Icon name="lucide:plus" class="mr-2 h-4 w-4" />
-                    Create API Key
+                    {{ t('features.api_keys.actions.create') }}
                   </Button>
                 </ApiKeyCreateSheet>
               </div>

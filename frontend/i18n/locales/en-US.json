@@ -1,44 +1,340 @@
 {
+  "common": {
+    "btn": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "delete": "Delete",
+      "edit": "Edit",
+      "update": "Update"
+    },
+    "label": {
+      "active": "Active",
+      "error": "Error",
+      "inactive": "Inactive"
+    },
+    "status": {
+      "creating": "Creating...",
+      "deleting": "Deleting...",
+      "error": "Error",
+      "loading": "Loading...",
+      "success": "Success",
+      "updating": "Updating..."
+    }
+  },
+  "datatable": {
+    "clearFilters": "Clear filters",
+    "makeCopy": "Make a copy",
+    "noDataFound": "No data found",
+    "noResults": "No results",
+    "noResultsFound": "No results found.",
+    "openMenu": "Open menu",
+    "reset": "Reset",
+    "rows": "Rows",
+    "searchPlaceholder": "Search {filter}...",
+    "selected": "{count} selected",
+    "showing": "Showing {start} to {end} of {total} results",
+    "showingShort": "{start}-{end} of {total}",
+    "toggleColumns": "Toggle columns",
+    "tryAdjusting": "Try adjusting your search or filters",
+    "view": "View"
+  },
   "errorCodes": {
     "60001": "Invalid input",
     "60101": "Greeting to '{name}' is not recognized",
     "60201": "Employee not found",
     "60202": "Employee already exists",
     "60301": "Project not found",
+    "60401": "API key not found",
+    "60402": "API key already exists",
     "69001": "Server Error"
   },
-  "errorPage.goHome": "Go back Home",
-  "example.allowedNames.errorLoading": "Error loading names",
-  "example.allowedNames.header": "Allowed Names",
-  "example.allowedNames.loading": "Loading names...",
-  "example.allowedNames.nextBtn": "Next",
-  "example.allowedNames.noNames": "No names found",
-  "example.allowedNames.pageInfo": "Page {current} of {total}",
-  "example.allowedNames.paginationInfo": "Showing {from} to {to} of {total} names",
-  "example.allowedNames.previousBtn": "Previous",
-  "example.allowedNames.refreshBtn": "Refresh",
-  "example.allowedNames.refreshBtnProgress": "Refreshing...",
-  "example.allowedNames.showingCount": "Showing {count} names",
-  "example.allowedNames.tableName": "Name",
-  "example.allowedNames.tableNumber": "#",
-  "example.error": "Error",
-  "example.header": "Check Greeting",
-  "example.inputPlaceholder": "Enter your name",
-  "example.response": "Response",
-  "example.submitBtn": "Say Hello",
-  "example.submitBtnProgress": "Sending...",
-  "features": {
-    "api_keys": {},
-    "example_employee": {}
+  "errorPage": {
+    "goHome": "Go back Home"
   },
-  "nav.dashboard": "Dashboard",
-  "nav.devices.chat": "Chat",
-  "nav.devices.scan": "Scan",
-  "nav.devices.title": "Devices",
-  "nav.examples.datatable": "Datatable",
-  "nav.examples.datatableVariant": "Datatable {variant}",
-  "nav.examples.title": "Examples",
-  "nav.home": "Home",
-  "nav.settings.apiKeys": "API Keys",
-  "nav.settings.title": "Settings"
+  "example": {
+    "allowedNames": {
+      "errorLoading": "Error loading names",
+      "header": "Allowed Names",
+      "loading": "Loading names...",
+      "nextBtn": "Next",
+      "noNames": "No names found",
+      "pageInfo": "Page {current} of {total}",
+      "paginationInfo": "Showing {from} to {to} of {total} names",
+      "previousBtn": "Previous",
+      "refreshBtn": "Refresh",
+      "refreshBtnProgress": "Refreshing...",
+      "showingCount": "Showing {count} names",
+      "tableName": "Name",
+      "tableNumber": "#"
+    },
+    "error": "Error",
+    "header": "Check Greeting",
+    "inputPlaceholder": "Enter your name",
+    "response": "Response",
+    "submitBtn": "Say Hello",
+    "submitBtnProgress": "Sending..."
+  },
+  "features": {
+    "api_keys": {
+      "actions": {
+        "activate": "Activate API Key",
+        "create": "Create API Key",
+        "deactivate": "Deactivate API Key",
+        "delete": "Delete API Key",
+        "edit": "Edit API Key",
+        "hideKey": "Hide API key",
+        "refresh": "Refresh",
+        "search": "Search API keys...",
+        "showKey": "Show API key"
+      },
+      "btn": {
+        "copied": "Copied!",
+        "copyKey": "Copy Key",
+        "copyToClipboard": "Copy to clipboard",
+        "done": "Done"
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "expiration": "Expiration",
+        "id": "ID",
+        "name": "Name",
+        "status": "Status"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently revoke this API key. Any applications using this key will lose access immediately.",
+        "title": "Delete API Key"
+      },
+      "display": {
+        "bestPracticesTitle": "Security Best Practices",
+        "keyNameLabel": "API Key Name",
+        "keyValueLabel": "API Key Value",
+        "modalSubtitle": "Save this key securely - you won't see it again",
+        "modalTitle": "API Key Created Successfully",
+        "securityTip1": "Store this key in a secure location (password manager, secure vault)",
+        "securityTip2": "Never share it publicly or commit it to version control",
+        "securityTip3": "Use environment variables or secure configuration management",
+        "securityTip4": "Rotate this key regularly for enhanced security",
+        "warningMessage": "This is the only time you'll see this API key. Copy it now and store it securely. You won't be able to see it again.",
+        "warningTitle": "Important:"
+      },
+      "empty": {
+        "description": "We couldn't find any API keys matching your criteria. Try adjusting your filters or search terms.",
+        "title": "No API keys found"
+      },
+      "filter": {
+        "status": "Status"
+      },
+      "form": {
+        "expirationDescription": "When this API key will expire and become invalid. Must be a future date.",
+        "expirationLabel": "Expiration Date *",
+        "nameDescription": "A descriptive name for this API key (2-50 characters, alphanumeric with spaces, hyphens, and underscores)",
+        "nameLabel": "API Key Name *",
+        "namePlaceholder": "Production API Key"
+      },
+      "loading": "Loading API keys...",
+      "messages": {
+        "activateSuccess": "API key activated successfully",
+        "closeWithoutCopying": "Close Without Copying",
+        "createError": "Failed to create API key",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "API key created successfully",
+        "createSuccessDesc": "{name} has been created. Please save the key value securely.",
+        "deactivateSuccess": "API key deactivated successfully",
+        "deleteError": "Failed to delete API key",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "API key deleted successfully",
+        "deleteSuccessDesc": "{name} has been removed.",
+        "failedToCopy": "Failed to copy to clipboard",
+        "failedToCopyDesc": "Please manually copy the API key.",
+        "keyCopied": "API key copied to clipboard",
+        "keyCopiedDesc": "The API key has been copied to your clipboard. Store it securely.",
+        "loadError": "Failed to load API key data",
+        "loadErrorDesc": "An unexpected error occurred.",
+        "toggleError": "Failed to toggle API key status",
+        "updateError": "Failed to update API key",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "updateSuccess": "API key updated successfully",
+        "updateSuccessDesc": "{name} has been updated."
+      },
+      "page": {
+        "selectProjectMessage": "Please select a project to manage API keys."
+      },
+      "sheet": {
+        "createDescription": "Create a new API key for your project. The generated key will only be shown once, so make sure to save it securely.",
+        "createTitle": "Create New API Key",
+        "editDescription": "Update API key details below. All fields marked with * are required.",
+        "editTitle": "Edit API Key"
+      },
+      "status": {
+        "active": "Active",
+        "expired": "Expired",
+        "expiringSoon": "Expiring Soon",
+        "inactive": "Inactive",
+        "unknown": "Unknown"
+      }
+    },
+    "employees": {
+      "actions": {
+        "create": "Create Employee",
+        "delete": "Delete Employee",
+        "duplicate": "Duplicate Employee",
+        "edit": "Edit Employee",
+        "search": "Search employees..."
+      },
+      "btn": {
+        "create": "Create Employee",
+        "duplicate": "Duplicate Employee"
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "department": "Department",
+        "email": "Email",
+        "id": "ID",
+        "name": "Name",
+        "role": "Role",
+        "status": "Status"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently remove this employee from the system.",
+        "title": "Delete Employee"
+      },
+      "empty": {
+        "description": "We couldn't find any employees matching your criteria. Try adjusting your filters or search terms.",
+        "title": "No employees found"
+      },
+      "filter": {
+        "department": "Department",
+        "role": "Role",
+        "status": "Status"
+      },
+      "loading": "Loading employee data...",
+      "form": {
+        "departmentDescription": "Select from common departments",
+        "departmentLabel": "Department *",
+        "departmentPlaceholder": "Select a department",
+        "departmentSelectLabel": "Departments",
+        "emailDescription": "Must be a valid email address",
+        "emailLabel": "Email Address *",
+        "emailPlaceholder": "john.doe{'@'}company.com",
+        "nameDescription": "Employee's full name (2-50 characters, letters only)",
+        "nameLabel": "Full Name *",
+        "namePlaceholder": "John Doe",
+        "roleDescription": "Select from common roles",
+        "roleLabel": "Role *",
+        "rolePlaceholder": "Select a role",
+        "roleSelectLabel": "Common Roles",
+        "statusDescription": "Employee's current status",
+        "statusLabel": "Status *",
+        "statusPlaceholder": "Select status"
+      },
+      "messages": {
+        "createError": "Failed to create employee",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "Employee created successfully",
+        "createSuccessDesc": "{name} has been added to the team.",
+        "deleteError": "Failed to delete employee",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "Employee deleted successfully",
+        "deleteSuccessDesc": "{name} has been removed.",
+        "loadError": "Failed to load employee data",
+        "loadErrorDesc": "An unexpected error occurred.",
+        "updateError": "Failed to update employee",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "updateSuccess": "Employee updated successfully",
+        "updateSuccessDesc": "{name} has been updated."
+      },
+      "sheet": {
+        "createDescription": "Fill in the employee details below. All fields marked with * are required.",
+        "createTitle": "Add New Employee",
+        "duplicateDescription": "Review and modify the employee details below. All fields marked with * are required.",
+        "duplicateTitle": "Duplicate Employee",
+        "editDescription": "Update employee details below. All fields marked with * are required.",
+        "editTitle": "Edit Employee"
+      },
+      "status": {
+        "errorLoadingTitle": "Error Loading Employee",
+        "unknown": "Unknown"
+      }
+    },
+    "projects": {
+      "actions": {
+        "add": "Add project",
+        "create": "Create Project"
+      },
+      "btn": {
+        "create": "Create Project"
+      },
+      "error": "Oops, something went wrong",
+      "label": "Projects",
+      "noProjectSelected": "No project selected",
+      "noProjectsFound": "No projects found",
+      "form": {
+        "commonTimezones": "Common Timezones",
+        "descriptionDescription": "Optional project description (maximum 100 characters)",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Brief description of the project (optional)",
+        "environment": {
+          "live": "Live",
+          "liveDesc": "Production environment for live data",
+          "sandbox": "Sandbox",
+          "sandboxDesc": "Testing environment for development"
+        },
+        "environmentDescription": "Choose the environment type for this project",
+        "environmentLabel": "Environment *",
+        "environmentPlaceholder": "Select environment",
+        "nameDescription": "Project name (1-50 characters, letters, numbers, spaces, dashes, and underscores only)",
+        "nameLabel": "Project Name *",
+        "namePlaceholder": "My Awesome Project",
+        "timezoneDescription": "Project timezone for scheduling and data processing",
+        "timezoneHint": "You can also type directly in the field above for custom timezones",
+        "timezoneLabel": "Timezone *",
+        "timezonePlaceholder": "Select a timezone"
+      },
+      "messages": {
+        "createError": "Failed to create project",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "Project created successfully",
+        "createSuccessDesc": "{name} has been created and is ready to use."
+      },
+      "sheet": {
+        "createDescription": "Fill in the project details below. All fields marked with * are required.",
+        "createTitle": "Add New Project"
+      }
+    }
+  },
+  "layout": {
+    "header": {
+      "theme": {
+        "dark": "Dark",
+        "light": "Light",
+        "system": "System"
+      },
+      "toggleTheme": "Toggle theme"
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "devices": {
+      "chat": "Chat",
+      "scan": "Scan",
+      "title": "Devices"
+    },
+    "examples": {
+      "datatable": "Datatable",
+      "datatableVariant": "Datatable {variant}",
+      "title": "Examples"
+    },
+    "home": "Home",
+    "settings": {
+      "apiKeys": "API Keys",
+      "title": "Settings"
+    },
+    "user": {
+      "account": "Account",
+      "billing": "Billing",
+      "logOut": "Log out",
+      "notifications": "Notifications",
+      "upgradeToPro": "Upgrade to Pro"
+    }
+  }
 }

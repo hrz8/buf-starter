@@ -48,6 +48,8 @@ const emit = defineEmits<{
   cancel: [];
 }>();
 
+const { t } = useI18n();
+
 const {
   createEmployee,
   createLoading,
@@ -120,16 +122,16 @@ const form = useForm({
   initialValues: initialFormValues.value,
 });
 
-const statusOptions = [
+const statusOptions = computed(() => [
   {
-    label: 'Active',
+    label: t('common.label.active'),
     value: EmployeeStatus.ACTIVE,
   },
   {
-    label: 'Inactive',
+    label: t('common.label.inactive'),
     value: EmployeeStatus.INACTIVE,
   },
-];
+]);
 
 const roleOptions = [
   'Software Engineer',
@@ -169,8 +171,8 @@ const onSubmit = form.handleSubmit(async (values) => {
     const employee = await createEmployee(values);
 
     if (employee) {
-      toast.success('Employee created successfully', {
-        description: `${values.name} has been added to the team.`,
+      toast.success(t('features.employees.messages.createSuccess'), {
+        description: t('features.employees.messages.createSuccessDesc', { name: values.name }),
       });
 
       emit('success', employee);
@@ -179,8 +181,8 @@ const onSubmit = form.handleSubmit(async (values) => {
   }
   catch (error) {
     console.error('Failed to create employee:', error);
-    toast.error('Failed to create employee', {
-      description: createError.value || 'An unexpected error occurred. Please try again.',
+    toast.error(t('features.employees.messages.createError'), {
+      description: createError.value || t('features.employees.messages.createErrorDesc'),
     });
   }
 });
@@ -265,7 +267,7 @@ onUnmounted(() => {
       variant="destructive"
     >
       <AlertCircle class="w-4 h-4" />
-      <AlertTitle>Error</AlertTitle>
+      <AlertTitle>{{ t('common.label.error') }}</AlertTitle>
       <AlertDescription>{{ createError }}</AlertDescription>
     </Alert>
 
@@ -274,17 +276,17 @@ onUnmounted(() => {
       name="name"
     >
       <FormItem>
-        <FormLabel>Full Name *</FormLabel>
+        <FormLabel>{{ t('features.employees.form.nameLabel') }}</FormLabel>
         <FormControl>
           <Input
             v-bind="componentField"
-            placeholder="John Doe"
+            :placeholder="t('features.employees.form.namePlaceholder')"
             :class="{ 'border-destructive': hasConnectRPCError('name') }"
             :disabled="createLoading"
           />
         </FormControl>
         <FormDescription>
-          Employee's full name (2-50 characters, letters only)
+          {{ t('features.employees.form.nameDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -301,18 +303,18 @@ onUnmounted(() => {
       name="email"
     >
       <FormItem>
-        <FormLabel>Email Address *</FormLabel>
+        <FormLabel>{{ t('features.employees.form.emailLabel') }}</FormLabel>
         <FormControl>
           <Input
             v-bind="componentField"
             type="email"
-            placeholder="john.doe@company.com"
+            :placeholder="t('features.employees.form.emailPlaceholder')"
             :class="{ 'border-destructive': hasConnectRPCError('email') }"
             :disabled="createLoading"
           />
         </FormControl>
         <FormDescription>
-          Must be a valid email address
+          {{ t('features.employees.form.emailDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -329,7 +331,7 @@ onUnmounted(() => {
       name="role"
     >
       <FormItem>
-        <FormLabel>Role *</FormLabel>
+        <FormLabel>{{ t('features.employees.form.roleLabel') }}</FormLabel>
         <FormControl>
           <div class="space-y-2">
             <Select
@@ -339,11 +341,11 @@ onUnmounted(() => {
               <SelectTrigger
                 :class="{ 'border-destructive': hasConnectRPCError('role') }"
               >
-                <SelectValue placeholder="Select a role" />
+                <SelectValue :placeholder="t('features.employees.form.rolePlaceholder')" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Common Roles</SelectLabel>
+                  <SelectLabel>{{ t('features.employees.form.roleSelectLabel') }}</SelectLabel>
                   <SelectItem
                     v-for="role in roleOptions"
                     :key="role"
@@ -354,9 +356,9 @@ onUnmounted(() => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <div class="text-xs text-muted-foreground">
-              You can also type directly in the field above for custom roles
-            </div>
+            <FormDescription>
+              {{ t('features.employees.form.roleDescription') }}
+            </FormDescription>
           </div>
         </FormControl>
         <FormMessage />
@@ -374,7 +376,7 @@ onUnmounted(() => {
       name="department"
     >
       <FormItem>
-        <FormLabel>Department *</FormLabel>
+        <FormLabel>{{ t('features.employees.form.departmentLabel') }}</FormLabel>
         <FormControl>
           <div class="space-y-2">
             <Select
@@ -384,11 +386,13 @@ onUnmounted(() => {
               <SelectTrigger
                 :class="{ 'border-destructive': hasConnectRPCError('department') }"
               >
-                <SelectValue placeholder="Select a department" />
+                <SelectValue :placeholder="t('features.employees.form.departmentPlaceholder')" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Departments</SelectLabel>
+                  <SelectLabel>
+                    {{ t('features.employees.form.departmentSelectLabel') }}
+                  </SelectLabel>
                   <SelectItem
                     v-for="dept in departmentOptions"
                     :key="dept"
@@ -399,9 +403,9 @@ onUnmounted(() => {
                 </SelectGroup>
               </SelectContent>
             </Select>
-            <div class="text-xs text-muted-foreground">
-              You can also type directly in the field above for custom departments
-            </div>
+            <FormDescription>
+              {{ t('features.employees.form.departmentDescription') }}
+            </FormDescription>
           </div>
         </FormControl>
         <FormMessage />
@@ -419,7 +423,7 @@ onUnmounted(() => {
       name="status"
     >
       <FormItem>
-        <FormLabel>Status *</FormLabel>
+        <FormLabel>{{ t('features.employees.form.statusLabel') }}</FormLabel>
         <FormControl>
           <Select
             v-bind="componentField"
@@ -428,7 +432,7 @@ onUnmounted(() => {
             <SelectTrigger
               :class="{ 'border-destructive': hasConnectRPCError('status') }"
             >
-              <SelectValue placeholder="Select status" />
+              <SelectValue :placeholder="t('features.employees.form.statusPlaceholder')" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem
@@ -451,7 +455,7 @@ onUnmounted(() => {
           </Select>
         </FormControl>
         <FormDescription>
-          Employee's current status
+          {{ t('features.employees.form.statusDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -470,7 +474,7 @@ onUnmounted(() => {
         :disabled="createLoading"
         @click="handleCancel"
       >
-        Cancel
+        {{ t('common.btn.cancel') }}
       </Button>
       <Button
         type="submit"
@@ -483,8 +487,10 @@ onUnmounted(() => {
         />
         {{
           createLoading
-            ? 'Creating...'
-            : (props.initialData ? 'Duplicate Employee' : 'Create Employee')
+            ? t('common.status.creating')
+            : (props.initialData
+              ? t('features.employees.btn.duplicate')
+              : t('features.employees.btn.create'))
         }}
       </Button>
     </div>

@@ -33,6 +33,8 @@ const emit = defineEmits<{
   cancel: [];
 }>();
 
+const { t } = useI18n();
+
 const {
   getApiKey,
   getLoading,
@@ -99,8 +101,8 @@ async function fetchApiKey() {
   }
   catch (error) {
     console.error('Failed to fetch API key:', error);
-    toast.error('Failed to load API key data', {
-      description: getError.value || 'An unexpected error occurred.',
+    toast.error(t('features.api_keys.messages.loadError'), {
+      description: getError.value || t('features.api_keys.messages.loadErrorDesc'),
     });
   }
 }
@@ -145,8 +147,8 @@ const onSubmit = form.handleSubmit(async (values) => {
     const updatedApiKey = await updateApiKey(requestPayload);
 
     if (updatedApiKey) {
-      toast.success('API key updated successfully', {
-        description: `${values.name} has been updated.`,
+      toast.success(t('features.api_keys.messages.updateSuccess'), {
+        description: t('features.api_keys.messages.updateSuccessDesc', { name: values.name }),
       });
 
       emit('success', updatedApiKey);
@@ -154,8 +156,8 @@ const onSubmit = form.handleSubmit(async (values) => {
   }
   catch (error) {
     console.error('Failed to update API key:', error);
-    toast.error('Failed to update API key', {
-      description: updateError.value || 'An unexpected error occurred. Please try again.',
+    toast.error(t('features.api_keys.messages.updateError'), {
+      description: updateError.value || t('features.api_keys.messages.updateErrorDesc'),
     });
   }
 });
@@ -199,7 +201,7 @@ onUnmounted(() => {
     variant="destructive"
   >
     <Icon name="lucide:alert-circle" class="w-4 h-4" />
-    <AlertTitle>Error Loading API Key</AlertTitle>
+    <AlertTitle>{{ t('features.api_keys.messages.loadError') }}</AlertTitle>
     <AlertDescription>{{ getError }}</AlertDescription>
   </Alert>
 
@@ -214,7 +216,7 @@ onUnmounted(() => {
       variant="destructive"
     >
       <Icon name="lucide:alert-circle" class="w-4 h-4" />
-      <AlertTitle>Error</AlertTitle>
+      <AlertTitle>{{ t('common.status.error') }}</AlertTitle>
       <AlertDescription>{{ updateError }}</AlertDescription>
     </Alert>
 
@@ -223,18 +225,17 @@ onUnmounted(() => {
       name="name"
     >
       <FormItem>
-        <FormLabel>API Key Name *</FormLabel>
+        <FormLabel>{{ t('features.api_keys.form.nameLabel') }}</FormLabel>
         <FormControl>
           <Input
             v-bind="componentField"
-            placeholder="Production API Key"
+            :placeholder="t('features.api_keys.form.namePlaceholder')"
             :class="{ 'border-destructive': hasConnectRPCError('name') }"
             :disabled="updateLoading"
           />
         </FormControl>
         <FormDescription>
-          A descriptive name for this API key (2-50 characters, alphanumeric with spaces, hyphens,
-          and underscores)
+          {{ t('features.api_keys.form.nameDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -251,7 +252,7 @@ onUnmounted(() => {
       name="expiration"
     >
       <FormItem>
-        <FormLabel>Expiration Date *</FormLabel>
+        <FormLabel>{{ t('features.api_keys.form.expirationLabel') }}</FormLabel>
         <FormControl>
           <Input
             v-bind="componentField"
@@ -262,7 +263,7 @@ onUnmounted(() => {
           />
         </FormControl>
         <FormDescription>
-          When this API key will expire and become invalid. Must be a future date.
+          {{ t('features.api_keys.form.expirationDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -281,7 +282,7 @@ onUnmounted(() => {
         :disabled="updateLoading"
         @click="handleCancel"
       >
-        Cancel
+        {{ t('common.btn.cancel') }}
       </Button>
       <Button
         type="submit"
@@ -292,7 +293,7 @@ onUnmounted(() => {
           name="lucide:loader-2"
           class="mr-2 h-4 w-4 animate-spin"
         />
-        {{ updateLoading ? 'Updating...' : 'Update API Key' }}
+        {{ updateLoading ? t('common.status.updating') : t('common.btn.update') }}
       </Button>
     </div>
   </form>

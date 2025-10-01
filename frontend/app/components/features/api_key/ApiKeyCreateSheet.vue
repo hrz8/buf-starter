@@ -22,6 +22,7 @@ const emit = defineEmits<{
   cancel: [];
 }>();
 
+const { t } = useI18n();
 const isSheetOpen = ref(false);
 
 function handleApiKeyCreated(result: { apiKey: ApiKey | null; keyValue: string }) {
@@ -42,10 +43,9 @@ function handleSheetClose() {
     </SheetTrigger>
     <SheetContent class="w-full sm:max-w-[540px] overflow-y-auto">
       <SheetHeader>
-        <SheetTitle>Create New API Key</SheetTitle>
+        <SheetTitle>{{ t('features.api_keys.sheet.createTitle') }}</SheetTitle>
         <SheetDescription>
-          Create a new API key for your project. The generated key will only be shown once, so make
-          sure to save it securely.
+          {{ t('features.api_keys.sheet.createDescription') }}
         </SheetDescription>
       </SheetHeader>
       <div class="mt-6 px-6">

@@ -19,6 +19,8 @@ import {
 } from '@/components/ui/sidebar';
 import { useProjectStore } from '@/stores/project';
 
+const { t } = useI18n();
+
 const DEFAULT_PROJECT_ICON = 'lucide:folder';
 const RANDOM_ICONS = [
   'lucide:aperture',
@@ -113,7 +115,7 @@ function handleAddProjectClick() {
               </template>
               <template v-else>
                 <span class="truncate font-medium text-muted-foreground">
-                  No project selected
+                  {{ t('features.projects.noProjectSelected') }}
                 </span>
               </template>
             </div>
@@ -130,7 +132,7 @@ function handleAddProjectClick() {
           :side-offset="4"
         >
           <DropdownMenuLabel class="text-xs text-muted-foreground">
-            Projects
+            {{ t('features.projects.label') }}
           </DropdownMenuLabel>
 
           <div
@@ -154,7 +156,7 @@ function handleAddProjectClick() {
             v-else-if="error"
             class="p-2 text-sm text-destructive"
           >
-            {{ error.message || 'Oops, something went wrong' }}
+            {{ error.message || t('features.projects.error') }}
           </div>
 
           <template v-else-if="projectStore.projects.length > 0">
@@ -187,7 +189,7 @@ function handleAddProjectClick() {
             v-else
             class="p-2 text-sm text-muted-foreground"
           >
-            No projects found
+            {{ t('features.projects.noProjectsFound') }}
           </div>
 
           <DropdownMenuSeparator />
@@ -202,7 +204,7 @@ function handleAddProjectClick() {
               />
             </div>
             <div class="font-medium text-muted-foreground">
-              Add project
+              {{ t('features.projects.actions.add') }}
             </div>
           </DropdownMenuItem>
         </DropdownMenuContent>

@@ -1,44 +1,340 @@
 {
+  "common": {
+    "btn": {
+      "cancel": "Batal",
+      "create": "Buat",
+      "delete": "Hapus",
+      "edit": "Ubah",
+      "update": "Perbarui"
+    },
+    "label": {
+      "active": "Aktif",
+      "error": "Error",
+      "inactive": "Tidak Aktif"
+    },
+    "status": {
+      "creating": "Membuat...",
+      "deleting": "Menghapus...",
+      "error": "Error",
+      "loading": "Memuat...",
+      "success": "Berhasil",
+      "updating": "Memperbarui..."
+    }
+  },
+  "datatable": {
+    "clearFilters": "Hapus filter",
+    "makeCopy": "Buat salinan",
+    "noDataFound": "Data tidak ditemukan",
+    "noResults": "Tidak ada hasil",
+    "noResultsFound": "Hasil tidak ditemukan.",
+    "openMenu": "Buka menu",
+    "reset": "Atur Ulang",
+    "rows": "Baris",
+    "searchPlaceholder": "Cari {filter}...",
+    "selected": "{count} dipilih",
+    "showing": "Menampilkan {start} sampai {end} dari {total} hasil",
+    "showingShort": "{start}-{end} dari {total}",
+    "toggleColumns": "Alihkan kolom",
+    "tryAdjusting": "Coba sesuaikan pencarian atau filter Anda",
+    "view": "Tampilan"
+  },
   "errorCodes": {
     "60001": "Input tidak valid",
     "60101": "Sapa kepada '{name}' tidak dikenali",
     "60201": "Pegawai tidak ditemukan",
     "60202": "Pegawai sudah ada",
     "60301": "Projek tidak ditemukan",
+    "60401": "Kunci API tidak ditemukan",
+    "60402": "Kunci API sudah ada",
     "69001": "Kesalahan Server"
   },
-  "errorPage.goHome": "Kembali ke Beranda",
-  "example.allowedNames.errorLoading": "Error memuat nama",
-  "example.allowedNames.header": "Nama yang Diizinkan",
-  "example.allowedNames.loading": "Memuat nama...",
-  "example.allowedNames.nextBtn": "Selanjutnya",
-  "example.allowedNames.noNames": "Nama tidak ditemukan",
-  "example.allowedNames.pageInfo": "Halaman {current} dari {total}",
-  "example.allowedNames.paginationInfo": "Menampilkan {from} sampai {to} dari {total} nama",
-  "example.allowedNames.previousBtn": "Sebelumnya",
-  "example.allowedNames.refreshBtn": "Muat Ulang",
-  "example.allowedNames.refreshBtnProgress": "Memuat ulang...",
-  "example.allowedNames.showingCount": "Menampilkan {count} nama",
-  "example.allowedNames.tableName": "Nama",
-  "example.allowedNames.tableNumber": "#",
-  "example.error": "Error",
-  "example.header": "Cek Sapa",
-  "example.inputPlaceholder": "Masukkan nama Anda",
-  "example.response": "Respon",
-  "example.submitBtn": "Katakan Halo",
-  "example.submitBtnProgress": "Mengirim...",
-  "features": {
-    "api_keys": {},
-    "example_employee": {}
+  "errorPage": {
+    "goHome": "Kembali ke Beranda"
   },
-  "nav.dashboard": "Dasbor",
-  "nav.devices.chat": "Obrolan",
-  "nav.devices.scan": "Pindai",
-  "nav.devices.title": "Perangkat",
-  "nav.examples.datatable": "Tabel Data",
-  "nav.examples.datatableVariant": "Tabel Data {variant}",
-  "nav.examples.title": "Contoh",
-  "nav.home": "Beranda",
-  "nav.settings.apiKeys": "Kunci API",
-  "nav.settings.title": "Pengaturan"
+  "example": {
+    "allowedNames": {
+      "errorLoading": "Error memuat nama",
+      "header": "Nama yang Diizinkan",
+      "loading": "Memuat nama...",
+      "nextBtn": "Selanjutnya",
+      "noNames": "Nama tidak ditemukan",
+      "pageInfo": "Halaman {current} dari {total}",
+      "paginationInfo": "Menampilkan {from} sampai {to} dari {total} nama",
+      "previousBtn": "Sebelumnya",
+      "refreshBtn": "Muat Ulang",
+      "refreshBtnProgress": "Memuat ulang...",
+      "showingCount": "Menampilkan {count} nama",
+      "tableName": "Nama",
+      "tableNumber": "#"
+    },
+    "error": "Error",
+    "header": "Cek Sapa",
+    "inputPlaceholder": "Masukkan nama Anda",
+    "response": "Respon",
+    "submitBtn": "Katakan Halo",
+    "submitBtnProgress": "Mengirim..."
+  },
+  "features": {
+    "api_keys": {
+      "actions": {
+        "activate": "Aktifkan Kunci API",
+        "create": "Buat Kunci API",
+        "deactivate": "Nonaktifkan Kunci API",
+        "delete": "Hapus Kunci API",
+        "edit": "Ubah Kunci API",
+        "hideKey": "Sembunyikan kunci API",
+        "refresh": "Muat Ulang",
+        "search": "Cari kunci API...",
+        "showKey": "Tampilkan kunci API"
+      },
+      "btn": {
+        "copied": "Tersalin!",
+        "copyKey": "Salin Kunci",
+        "copyToClipboard": "Salin ke clipboard",
+        "done": "Selesai"
+      },
+      "columns": {
+        "createdAt": "Dibuat Pada",
+        "expiration": "Kadaluarsa",
+        "id": "ID",
+        "name": "Nama",
+        "status": "Status"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Apakah Anda yakin ingin menghapus **{name}**? Tindakan ini tidak dapat dibatalkan dan akan secara permanen mencabut kunci API ini. Aplikasi apa pun yang menggunakan kunci ini akan kehilangan akses segera.",
+        "title": "Hapus Kunci API"
+      },
+      "display": {
+        "bestPracticesTitle": "Praktik Keamanan Terbaik",
+        "keyNameLabel": "Nama Kunci API",
+        "keyValueLabel": "Nilai Kunci API",
+        "modalSubtitle": "Simpan kunci ini dengan aman - Anda tidak akan melihatnya lagi",
+        "modalTitle": "Kunci API Berhasil Dibuat",
+        "securityTip1": "Simpan kunci ini di lokasi yang aman (pengelola kata sandi, vault aman)",
+        "securityTip2": "Jangan pernah membagikannya secara publik atau commit ke version control",
+        "securityTip3": "Gunakan variabel lingkungan atau manajemen konfigurasi yang aman",
+        "securityTip4": "Putar kunci ini secara berkala untuk keamanan yang lebih baik",
+        "warningMessage": "Ini satu-satunya waktu Anda akan melihat kunci API ini. Salin sekarang dan simpan dengan aman. Anda tidak akan dapat melihatnya lagi.",
+        "warningTitle": "Penting:"
+      },
+      "empty": {
+        "description": "Kami tidak dapat menemukan kunci API yang sesuai dengan kriteria Anda. Coba sesuaikan filter atau istilah pencarian Anda.",
+        "title": "Tidak ada kunci API ditemukan"
+      },
+      "filter": {
+        "status": "Status"
+      },
+      "form": {
+        "expirationDescription": "Kapan kunci API ini akan kedaluwarsa dan menjadi tidak valid. Harus tanggal masa depan.",
+        "expirationLabel": "Tanggal Kadaluarsa *",
+        "nameDescription": "Nama deskriptif untuk kunci API ini (2-50 karakter, alfanumerik dengan spasi, tanda hubung, dan garis bawah)",
+        "nameLabel": "Nama Kunci API *",
+        "namePlaceholder": "Kunci API Produksi"
+      },
+      "loading": "Memuat kunci API...",
+      "messages": {
+        "activateSuccess": "Kunci API berhasil diaktifkan",
+        "closeWithoutCopying": "Tutup Tanpa Menyalin",
+        "createError": "Gagal membuat kunci API",
+        "createErrorDesc": "Terjadi kesalahan tak terduga. Silakan coba lagi.",
+        "createSuccess": "Kunci API berhasil dibuat",
+        "createSuccessDesc": "{name} telah dibuat. Harap simpan nilai kunci dengan aman.",
+        "deactivateSuccess": "Kunci API berhasil dinonaktifkan",
+        "deleteError": "Gagal menghapus kunci API",
+        "deleteErrorDesc": "Terjadi kesalahan tak terduga. Silakan coba lagi.",
+        "deleteSuccess": "Kunci API berhasil dihapus",
+        "deleteSuccessDesc": "{name} telah dihapus.",
+        "failedToCopy": "Gagal menyalin ke clipboard",
+        "failedToCopyDesc": "Silakan salin kunci API secara manual.",
+        "keyCopied": "Kunci API disalin ke clipboard",
+        "keyCopiedDesc": "Kunci API telah disalin ke clipboard Anda. Simpan dengan aman.",
+        "loadError": "Gagal memuat data kunci API",
+        "loadErrorDesc": "Terjadi kesalahan tak terduga.",
+        "toggleError": "Gagal mengalihkan status kunci API",
+        "updateError": "Gagal memperbarui kunci API",
+        "updateErrorDesc": "Terjadi kesalahan tak terduga. Silakan coba lagi.",
+        "updateSuccess": "Kunci API berhasil diperbarui",
+        "updateSuccessDesc": "{name} telah diperbarui."
+      },
+      "page": {
+        "selectProjectMessage": "Silakan pilih proyek untuk mengelola kunci API."
+      },
+      "sheet": {
+        "createDescription": "Buat kunci API baru untuk proyek Anda. Kunci yang dihasilkan hanya akan ditampilkan sekali, jadi pastikan untuk menyimpannya dengan aman.",
+        "createTitle": "Buat Kunci API Baru",
+        "editDescription": "Perbarui detail kunci API di bawah ini. Semua bidang yang ditandai dengan * wajib diisi.",
+        "editTitle": "Ubah Kunci API"
+      },
+      "status": {
+        "active": "Aktif",
+        "expired": "Kadaluarsa",
+        "expiringSoon": "Segera Kadaluarsa",
+        "inactive": "Tidak Aktif",
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "employees": {
+      "actions": {
+        "create": "Buat Pegawai",
+        "delete": "Hapus Pegawai",
+        "duplicate": "Duplikasi Pegawai",
+        "edit": "Ubah Pegawai",
+        "search": "Cari pegawai..."
+      },
+      "btn": {
+        "create": "Buat Pegawai",
+        "duplicate": "Duplikasi Pegawai"
+      },
+      "columns": {
+        "createdAt": "Dibuat Pada",
+        "department": "Departemen",
+        "email": "Email",
+        "id": "ID",
+        "name": "Nama",
+        "role": "Peran",
+        "status": "Status"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Apakah Anda yakin ingin menghapus **{name}**? Tindakan ini tidak dapat dibatalkan dan akan menghapus pegawai ini secara permanen dari sistem.",
+        "title": "Hapus Pegawai"
+      },
+      "empty": {
+        "description": "Kami tidak dapat menemukan pegawai yang sesuai dengan kriteria Anda. Coba sesuaikan filter atau istilah pencarian Anda.",
+        "title": "Tidak ada pegawai ditemukan"
+      },
+      "filter": {
+        "department": "Departemen",
+        "role": "Peran",
+        "status": "Status"
+      },
+      "loading": "Memuat data pegawai...",
+      "form": {
+        "departmentDescription": "Pilih dari departemen umum",
+        "departmentLabel": "Departemen *",
+        "departmentPlaceholder": "Pilih departemen",
+        "departmentSelectLabel": "Departemen",
+        "emailDescription": "Harus alamat email yang valid",
+        "emailLabel": "Alamat Email *",
+        "emailPlaceholder": "john.doe{'@'}company.com",
+        "nameDescription": "Nama lengkap pegawai (2-50 karakter, hanya huruf)",
+        "nameLabel": "Nama Lengkap *",
+        "namePlaceholder": "John Doe",
+        "roleDescription": "Pilih dari peran umum",
+        "roleLabel": "Peran *",
+        "rolePlaceholder": "Pilih peran",
+        "roleSelectLabel": "Peran Umum",
+        "statusDescription": "Status pegawai saat ini",
+        "statusLabel": "Status *",
+        "statusPlaceholder": "Pilih status"
+      },
+      "messages": {
+        "createError": "Gagal membuat pegawai",
+        "createErrorDesc": "Terjadi kesalahan tak terduga. Silakan coba lagi.",
+        "createSuccess": "Pegawai berhasil dibuat",
+        "createSuccessDesc": "{name} telah ditambahkan ke tim.",
+        "deleteError": "Gagal menghapus pegawai",
+        "deleteErrorDesc": "Terjadi kesalahan tak terduga. Silakan coba lagi.",
+        "deleteSuccess": "Pegawai berhasil dihapus",
+        "deleteSuccessDesc": "{name} telah dihapus.",
+        "loadError": "Gagal memuat data pegawai",
+        "loadErrorDesc": "Terjadi kesalahan tak terduga.",
+        "updateError": "Gagal memperbarui pegawai",
+        "updateErrorDesc": "Terjadi kesalahan tak terduga. Silakan coba lagi.",
+        "updateSuccess": "Pegawai berhasil diperbarui",
+        "updateSuccessDesc": "{name} telah diperbarui."
+      },
+      "sheet": {
+        "createDescription": "Isi detail pegawai di bawah ini. Semua bidang yang ditandai dengan * wajib diisi.",
+        "createTitle": "Tambah Pegawai Baru",
+        "duplicateDescription": "Tinjau dan modifikasi detail pegawai di bawah ini. Semua bidang yang ditandai dengan * wajib diisi.",
+        "duplicateTitle": "Duplikasi Pegawai",
+        "editDescription": "Perbarui detail pegawai di bawah ini. Semua bidang yang ditandai dengan * wajib diisi.",
+        "editTitle": "Ubah Pegawai"
+      },
+      "status": {
+        "errorLoadingTitle": "Error Memuat Pegawai",
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "projects": {
+      "actions": {
+        "add": "Tambah proyek",
+        "create": "Buat Proyek"
+      },
+      "btn": {
+        "create": "Buat Proyek"
+      },
+      "error": "Ups, terjadi kesalahan",
+      "label": "Proyek",
+      "noProjectSelected": "Tidak ada proyek dipilih",
+      "noProjectsFound": "Tidak ada proyek ditemukan",
+      "form": {
+        "commonTimezones": "Zona Waktu Umum",
+        "descriptionDescription": "Deskripsi proyek opsional (maksimal 100 karakter)",
+        "descriptionLabel": "Deskripsi",
+        "descriptionPlaceholder": "Deskripsi singkat proyek (opsional)",
+        "environment": {
+          "live": "Live",
+          "liveDesc": "Lingkungan produksi untuk data live",
+          "sandbox": "Sandbox",
+          "sandboxDesc": "Lingkungan pengujian untuk pengembangan"
+        },
+        "environmentDescription": "Pilih jenis lingkungan untuk proyek ini",
+        "environmentLabel": "Lingkungan *",
+        "environmentPlaceholder": "Pilih lingkungan",
+        "nameDescription": "Nama proyek (1-50 karakter, huruf, angka, spasi, tanda hubung, dan garis bawah saja)",
+        "nameLabel": "Nama Proyek *",
+        "namePlaceholder": "Proyek Keren Saya",
+        "timezoneDescription": "Zona waktu proyek untuk penjadwalan dan pemrosesan data",
+        "timezoneHint": "Anda juga dapat mengetik langsung di bidang di atas untuk zona waktu kustom",
+        "timezoneLabel": "Zona Waktu *",
+        "timezonePlaceholder": "Pilih zona waktu"
+      },
+      "messages": {
+        "createError": "Gagal membuat proyek",
+        "createErrorDesc": "Terjadi kesalahan tak terduga. Silakan coba lagi.",
+        "createSuccess": "Proyek berhasil dibuat",
+        "createSuccessDesc": "{name} telah dibuat dan siap digunakan."
+      },
+      "sheet": {
+        "createDescription": "Isi detail proyek di bawah ini. Semua bidang yang ditandai dengan * wajib diisi.",
+        "createTitle": "Tambah Proyek Baru"
+      }
+    }
+  },
+  "layout": {
+    "header": {
+      "theme": {
+        "dark": "Gelap",
+        "light": "Terang",
+        "system": "Sistem"
+      },
+      "toggleTheme": "Alihkan tema"
+    }
+  },
+  "nav": {
+    "dashboard": "Dasbor",
+    "devices": {
+      "chat": "Obrolan",
+      "scan": "Pindai",
+      "title": "Perangkat"
+    },
+    "examples": {
+      "datatable": "Tabel Data",
+      "datatableVariant": "Tabel Data {variant}",
+      "title": "Contoh"
+    },
+    "home": "Beranda",
+    "settings": {
+      "apiKeys": "Kunci API",
+      "title": "Pengaturan"
+    },
+    "user": {
+      "account": "Akun",
+      "billing": "Tagihan",
+      "logOut": "Keluar",
+      "notifications": "Notifikasi",
+      "upgradeToPro": "Upgrade ke Pro"
+    }
+  }
 }

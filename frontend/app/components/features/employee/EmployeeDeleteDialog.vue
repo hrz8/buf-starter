@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useEmployeeService } from '@/composables/services/useEmployeeService';
+import { useI18nSafe } from '~/composables/useI18nSafe';
 
 const props = defineProps<{
   projectId: string;
@@ -27,6 +28,8 @@ const emit = defineEmits<{
   'cancel': [];
   'update:open': [value: boolean];
 }>();
+
+const { t, tFormatted } = useI18nSafe();
 
 const { deleteEmployee, deleteLoading, deleteError, resetDeleteState } = useEmployeeService();
 const isDialogOpen = computed({
@@ -42,8 +45,8 @@ async function handleDelete() {
     });
 
     if (success) {
-      toast.success('Employee deleted successfully', {
-        description: `${props.employee.name} has been removed.`,
+      toast.success(t('features.employees.messages.deleteSuccess'), {
+        description: t('features.employees.messages.deleteSuccessDesc', { name: props.employee.name }),
       });
 
       isDialogOpen.value = false;
@@ -51,8 +54,8 @@ async function handleDelete() {
     }
   }
   catch {
-    toast.error('Failed to delete employee', {
-      description: deleteError.value || 'An unexpected error occurred. Please try again.',
+    toast.error(t('features.employees.messages.deleteError'), {
+      description: deleteError.value || t('features.employees.messages.deleteErrorDesc'),
     });
   }
 }
@@ -79,10 +82,13 @@ onUnmounted(() => {
     </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Delete Employee</AlertDialogTitle>
+        <AlertDialogTitle>{{ t('features.employees.deleteDialog.title') }}</AlertDialogTitle>
         <AlertDialogDescription>
-          Are you sure you want to delete <strong>{{ employee.name }}</strong>?
-          This action cannot be undone and will permanently remove this employee from the system.
+          <component
+            :is="tFormatted('features.employees.deleteDialog.confirmMessage', {
+              name: employee.name,
+            })"
+          />
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
@@ -90,7 +96,7 @@ onUnmounted(() => {
           :disabled="deleteLoading"
           @click="handleCancel"
         >
-          Cancel
+          {{ t('common.btn.cancel') }}
         </AlertDialogCancel>
         <AlertDialogAction
           :disabled="deleteLoading"
@@ -102,7 +108,7 @@ onUnmounted(() => {
             name="lucide:loader-2"
             class="mr-2 h-4 w-4 animate-spin"
           />
-          {{ deleteLoading ? 'Deleting...' : 'Delete Employee' }}
+          {{ deleteLoading ? t('common.status.deleting') : t('features.employees.actions.delete') }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

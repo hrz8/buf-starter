@@ -37,6 +37,8 @@ const props = defineProps<{
   };
 }>();
 
+const { t } = useI18n();
+
 const { isMobile } = useSidebar();
 </script>
 
@@ -95,28 +97,28 @@ const { isMobile } = useSidebar();
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <Sparkles />
-              Upgrade to Pro
+              {{ t('nav.user.upgradeToPro') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuGroup>
             <DropdownMenuItem>
               <BadgeCheck />
-              Account
+              {{ t('nav.user.account') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <CreditCard />
-              Billing
+              {{ t('nav.user.billing') }}
             </DropdownMenuItem>
             <DropdownMenuItem>
               <Bell />
-              Notifications
+              {{ t('nav.user.notifications') }}
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <LogOut />
-            Log out
+            {{ t('nav.user.logOut') }}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

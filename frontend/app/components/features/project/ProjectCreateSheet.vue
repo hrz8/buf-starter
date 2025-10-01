@@ -12,10 +12,6 @@ import {
 
 import ProjectCreateForm from './ProjectCreateForm.vue';
 
-interface Props {
-  open?: boolean;
-}
-
 const props = withDefaults(defineProps<Props>(), {
   open: false,
 });
@@ -25,6 +21,12 @@ const emit = defineEmits<{
   'cancel': [];
   'update:open': [open: boolean];
 }>();
+
+const { t } = useI18n();
+
+interface Props {
+  open?: boolean;
+}
 
 const isSheetOpen = computed({
   get: () => props.open,
@@ -46,9 +48,9 @@ function handleSheetClose() {
   <Sheet v-model:open="isSheetOpen">
     <SheetContent class="w-full sm:max-w-[540px] overflow-y-auto">
       <SheetHeader>
-        <SheetTitle>Add New Project</SheetTitle>
+        <SheetTitle>{{ t('features.projects.sheet.createTitle') }}</SheetTitle>
         <SheetDescription>
-          Fill in the project details below. All fields marked with * are required.
+          {{ t('features.projects.sheet.createDescription') }}
         </SheetDescription>
       </SheetHeader>
       <div class="mt-6 px-6">

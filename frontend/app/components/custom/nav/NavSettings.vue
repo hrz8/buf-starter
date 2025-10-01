@@ -10,15 +10,17 @@ import {
 } from '@/components/ui/sidebar';
 import { useSidebarNavigation } from '@/composables/navigation/useSidebarNavigation';
 
+defineProps<{
+  settings: SettingItem[];
+}>();
+
+const { t } = useI18n();
+
 interface SettingItem {
   name: string;
   url: string;
   icon: LucideIcon;
 }
-
-defineProps<{
-  settings: SettingItem[];
-}>();
 
 const { isItemActive } = useSidebarNavigation();
 
@@ -33,7 +35,7 @@ function toNavItem(item: SettingItem) {
 
 <template>
   <SidebarGroup class="group-data-[collapsible=icon]:hidden">
-    <SidebarGroupLabel>Settings</SidebarGroupLabel>
+    <SidebarGroupLabel>{{ t('nav.settings.title') }}</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem
         v-for="item in settings"

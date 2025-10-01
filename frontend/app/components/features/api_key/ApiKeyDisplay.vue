@@ -18,6 +18,8 @@ const emit = defineEmits<{
   'update:open': [value: boolean];
 }>();
 
+const { t } = useI18n();
+
 // Local state for managing key visibility and copy status
 const isKeyVisible = ref(false);
 const isCopied = ref(false);
@@ -36,8 +38,8 @@ async function copyToClipboard() {
     isCopied.value = true;
     hasBeenCopied.value = true;
 
-    toast.success('API key copied to clipboard', {
-      description: 'The API key has been copied to your clipboard. Store it securely.',
+    toast.success(t('features.api_keys.messages.keyCopied'), {
+      description: t('features.api_keys.messages.keyCopiedDesc'),
     });
 
     // Reset copy status after 2 seconds
@@ -46,8 +48,8 @@ async function copyToClipboard() {
     }, 2000);
   }
   catch {
-    toast.error('Failed to copy to clipboard', {
-      description: 'Please manually copy the API key.',
+    toast.error(t('features.api_keys.messages.failedToCopy'), {
+      description: t('features.api_keys.messages.failedToCopyDesc'),
     });
   }
 }
@@ -94,10 +96,10 @@ onUnmounted(() => {
         </div>
         <div>
           <h3 class="text-xl font-semibold text-gray-900">
-            API Key Created Successfully
+            {{ t('features.api_keys.display.modalTitle') }}
           </h3>
           <p class="text-sm text-gray-600 mt-1">
-            Save this key securely - you won't see it again
+            {{ t('features.api_keys.display.modalSubtitle') }}
           </p>
         </div>
       </div>
@@ -106,11 +108,10 @@ onUnmounted(() => {
         <AlertDescription class="text-amber-900">
           <div class="flex items-center gap-2 mb-1">
             <Icon name="lucide:triangle-alert" size="1em" class="text-amber-600" />
-            <strong>Important:</strong>
+            <strong>{{ t('features.api_keys.display.warningTitle') }}</strong>
           </div>
           <p>
-            This is the only time you'll see this API key. Copy it now and store it securely.
-            You won't be able to see it again.
+            {{ t('features.api_keys.display.warningMessage') }}
           </p>
         </AlertDescription>
       </Alert>
@@ -118,7 +119,9 @@ onUnmounted(() => {
       <div class="space-y-6">
         <!-- API Key Name -->
         <div class="bg-gray-50 rounded-lg p-4">
-          <Label class="text-sm font-medium text-gray-700 mb-2 block">API Key Name</Label>
+          <Label class="text-sm font-medium text-gray-700 mb-2 block">
+            {{ t('features.api_keys.display.keyNameLabel') }}
+          </Label>
           <div class="text-base font-medium text-gray-900">
             {{ props.apiKey.name }}
           </div>
@@ -126,7 +129,9 @@ onUnmounted(() => {
 
         <!-- API Key Value -->
         <div>
-          <Label class="text-sm font-medium text-gray-700 mb-3 block">API Key Value</Label>
+          <Label class="text-sm font-medium text-gray-700 mb-3 block">
+            {{ t('features.api_keys.display.keyValueLabel') }}
+          </Label>
           <div class="space-y-3">
             <div class="relative">
               <input
@@ -147,7 +152,9 @@ onUnmounted(() => {
                   variant="ghost"
                   size="sm"
                   class="h-7 w-7 p-0 hover:bg-gray-200"
-                  :title="isKeyVisible ? 'Hide API key' : 'Show API key'"
+                  :title="isKeyVisible
+                    ? t('features.api_keys.actions.hideKey')
+                    : t('features.api_keys.actions.showKey')"
                   @click="toggleVisibility"
                 >
                   <Icon v-if="!isKeyVisible" name="lucide:eye" class="h-4 w-4" />
@@ -158,7 +165,9 @@ onUnmounted(() => {
                   size="sm"
                   class="h-7 w-7 p-0 hover:bg-gray-200"
                   :disabled="!props.keyValue"
-                  :title="isCopied ? 'Copied!' : 'Copy to clipboard'"
+                  :title="isCopied
+                    ? t('features.api_keys.btn.copied')
+                    : t('features.api_keys.btn.copyToClipboard')"
                   @click="copyToClipboard"
                 >
                   <Icon v-if="isCopied" name="lucide:check" class="h-4 w-4 text-green-600" />
@@ -175,13 +184,13 @@ onUnmounted(() => {
             <Icon name="lucide:shield-check" class="h-5 w-5 text-blue-600 mt-0.5 flex-shrink-0" />
             <div>
               <h4 class="text-sm font-medium text-blue-900 mb-2">
-                Security Best Practices
+                {{ t('features.api_keys.display.bestPracticesTitle') }}
               </h4>
               <ul class="text-xs text-blue-800 space-y-1">
-                <li>• Store this key in a secure location (password manager, secure vault)</li>
-                <li>• Never share it publicly or commit it to version control</li>
-                <li>• Use environment variables or secure configuration management</li>
-                <li>• Rotate this key regularly for enhanced security</li>
+                <li>• {{ t('features.api_keys.display.securityTip1') }}</li>
+                <li>• {{ t('features.api_keys.display.securityTip2') }}</li>
+                <li>• {{ t('features.api_keys.display.securityTip3') }}</li>
+                <li>• {{ t('features.api_keys.display.securityTip4') }}</li>
               </ul>
             </div>
           </div>
@@ -198,7 +207,7 @@ onUnmounted(() => {
         >
           <Icon v-if="isCopied" name="lucide:check" class="h-4 w-4 text-green-600" />
           <Icon v-else name="lucide:copy" class="h-4 w-4" />
-          {{ isCopied ? 'Copied!' : 'Copy Key' }}
+          {{ isCopied ? t('features.api_keys.btn.copied') : t('features.api_keys.btn.copyKey') }}
         </Button>
         <Button
           :variant="hasBeenCopied ? 'default' : 'destructive'"
@@ -208,7 +217,11 @@ onUnmounted(() => {
         >
           <Icon v-if="hasBeenCopied" name="lucide:check-circle" class="h-4 w-4" />
           <Icon v-else name="lucide:x-circle" class="h-4 w-4" />
-          {{ hasBeenCopied ? 'Done' : 'Close Without Copying' }}
+          {{
+            hasBeenCopied
+              ? t('features.api_keys.btn.done')
+              : t('features.api_keys.messages.closeWithoutCopying')
+          }}
         </Button>
       </div>
     </div>

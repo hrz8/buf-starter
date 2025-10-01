@@ -28,7 +28,7 @@ export default defineNuxtConfig({
     ssr: false,
   },
   hooks: {
-    // intended to make full spa (genrate only single index.html)
+    // intended to make full spa (generate only single index.html)
     // ref: https://nuxt.com/docs/guide/concepts/rendering#deploying-a-static-client-rendered-app
     'prerender:routes': function ({ routes }) {
       routes.clear();
@@ -61,6 +61,7 @@ export default defineNuxtConfig({
   i18n: {
     strategy: 'no_prefix',
     defaultLocale: 'en-US',
+    langDir: 'locales',
     locales: [
       {
         code: 'en-US',

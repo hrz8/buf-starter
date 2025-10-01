@@ -14,11 +14,13 @@ import {
   SidebarHeader,
   SidebarRail,
 } from '@/components/ui/sidebar';
-import { mainNavItems, settingsNavItems } from '@/config/navigation';
+import { useNavigationItems } from '@/composables/navigation/useNavigationItems';
 
 const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 });
+
+const { mainNavItems, settingsNavItems } = useNavigationItems();
 
 const data = {
   user: {
@@ -37,7 +39,7 @@ const data = {
     </SidebarHeader>
     <SidebarContent>
       <NavMenu :items="mainNavItems" />
-      <NavSettings :settings="data.settings" />
+      <NavSettings :settings="data.settings.value" />
     </SidebarContent>
     <SidebarFooter>
       <NavUser :user="data.user" />

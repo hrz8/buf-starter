@@ -23,6 +23,9 @@ const emit = defineEmits<{
   'cancel': [];
   'update:open': [value: boolean];
 }>();
+
+const { t } = useI18n();
+
 const isSheetOpen = computed({
   get: () => props.open ?? false,
   set: (value: boolean) => emit('update:open', value),
@@ -50,9 +53,9 @@ function handleSheetClose() {
     </SheetTrigger>
     <SheetContent class="w-full sm:max-w-[540px] overflow-y-auto">
       <SheetHeader>
-        <SheetTitle>Edit Employee</SheetTitle>
+        <SheetTitle>{{ t('features.employees.sheet.editTitle') }}</SheetTitle>
         <SheetDescription>
-          Update employee details below. All fields marked with * are required.
+          {{ t('features.employees.sheet.editDescription') }}
         </SheetDescription>
       </SheetHeader>
       <div class="mt-6 px-6">

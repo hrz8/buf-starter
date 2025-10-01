@@ -6,6 +6,7 @@ definePageMeta({
   layout: 'default',
 });
 
+const { t } = useI18n();
 const projectStore = useProjectStore();
 const projectId = computed(() => projectStore.activeProjectId);
 </script>
@@ -13,7 +14,7 @@ const projectId = computed(() => projectStore.activeProjectId);
 <template>
   <div v-if="!projectId" class="container mx-auto text-center py-8">
     <p class="text-muted-foreground">
-      Please select a project to manage API keys.
+      {{ t('features.api_keys.page.selectProjectMessage') }}
     </p>
   </div>
   <ApiKeyTable

@@ -15,6 +15,7 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { useApiKeyService } from '@/composables/services/useApiKeyService';
+import { useI18nSafe } from '@/composables/useI18nSafe';
 
 const props = defineProps<{
   projectId: string;
@@ -28,6 +29,7 @@ const emit = defineEmits<{
   'update:open': [value: boolean];
 }>();
 
+const { t, tFormatted } = useI18nSafe();
 const { deleteApiKey, deleteLoading, deleteError, resetDeleteState } = useApiKeyService();
 const isDialogOpen = computed({
   get: () => props.open ?? false,
@@ -42,8 +44,8 @@ async function handleDelete() {
     });
 
     if (success) {
-      toast.success('API key deleted successfully', {
-        description: `${props.apiKey.name} has been removed.`,
+      toast.success(t('features.api_keys.messages.deleteSuccess'), {
+        description: t('features.api_keys.messages.deleteSuccessDesc', { name: props.apiKey.name }),
       });
 
       isDialogOpen.value = false;
@@ -51,8 +53,8 @@ async function handleDelete() {
     }
   }
   catch {
-    toast.error('Failed to delete API key', {
-      description: deleteError.value || 'An unexpected error occurred. Please try again.',
+    toast.error(t('features.api_keys.messages.deleteError'), {
+      description: deleteError.value || t('features.api_keys.messages.deleteErrorDesc'),
     });
   }
 }
@@ -79,11 +81,11 @@ onUnmounted(() => {
     </AlertDialogTrigger>
     <AlertDialogContent>
       <AlertDialogHeader>
-        <AlertDialogTitle>Delete API Key</AlertDialogTitle>
+        <AlertDialogTitle>{{ t('features.api_keys.deleteDialog.title') }}</AlertDialogTitle>
         <AlertDialogDescription>
-          Are you sure you want to delete <strong>{{ apiKey.name }}</strong>?
-          This action cannot be undone and will permanently revoke this API key.
-          Any applications using this key will lose access immediately.
+          <component
+            :is="tFormatted('features.api_keys.deleteDialog.confirmMessage', { name: apiKey.name })"
+          />
         </AlertDialogDescription>
       </AlertDialogHeader>
       <AlertDialogFooter>
@@ -91,7 +93,7 @@ onUnmounted(() => {
           :disabled="deleteLoading"
           @click="handleCancel"
         >
-          Cancel
+          {{ t('common.btn.cancel') }}
         </AlertDialogCancel>
         <AlertDialogAction
           :disabled="deleteLoading"
@@ -103,7 +105,7 @@ onUnmounted(() => {
             name="lucide:loader-2"
             class="mr-2 h-4 w-4 animate-spin"
           />
-          {{ deleteLoading ? 'Deleting...' : 'Delete API Key' }}
+          {{ deleteLoading ? t('common.status.deleting') : t('features.api_keys.actions.delete') }}
         </AlertDialogAction>
       </AlertDialogFooter>
     </AlertDialogContent>

@@ -45,7 +45,7 @@ altalune/
 
 **Frontend (Nuxt.js):**
 
-- Vue 3 + TypeScript application in `frontend/` directory
+- Vue 3 (with Nuxt 4 full-SPA non-SSR) + TypeScript application in `frontend/` directory
 - Uses shadcn-vue UI components with Tailwind CSS
 - Connect-RPC client for type-safe API calls
 - Internationalization (i18n) support
@@ -151,6 +151,7 @@ Need new UI feature?
 The database uses **partitioned tables** where data is split by `project_id`. This is essential for multi-tenant data isolation and performance.
 
 **Partitioned Tables:**
+
 - `altalune_example_employees` - Partitioned by `project_id`
 - `altalune_project_api_keys` - Partitioned by `project_id`
 - Future tables may also use this pattern
@@ -165,9 +166,11 @@ The database uses **partitioned tables** where data is split by `project_id`. Th
    - Add foreign key constraint: `FOREIGN KEY (project_id) REFERENCES altalune_projects (id)`
 
 **Partition Naming Convention:** `{table_name}_p{project_id}`
+
 - Example: `altalune_example_employees_p1`, `altalune_example_employees_p2`
 
 **Manual Partition Creation (if needed):**
+
 ```sql
 -- Find project ID
 SELECT id FROM altalune_projects WHERE public_id = '{public_id}';

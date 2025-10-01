@@ -29,6 +29,8 @@ const emit = defineEmits<{
   cancel: [];
 }>();
 
+const { t } = useI18n();
+
 const {
   createApiKey,
   createLoading,
@@ -92,8 +94,8 @@ const onSubmit = form.handleSubmit(async (values) => {
     const result = await createApiKey(requestPayload);
 
     if (result.apiKey) {
-      toast.success('API key created successfully', {
-        description: `${values.name} has been created. Please save the key value securely.`,
+      toast.success(t('features.api_keys.messages.createSuccess'), {
+        description: t('features.api_keys.messages.createSuccessDesc', { name: values.name }),
       });
 
       emit('success', result);
@@ -102,8 +104,8 @@ const onSubmit = form.handleSubmit(async (values) => {
   }
   catch (error) {
     console.error('Failed to create API key:', error);
-    toast.error('Failed to create API key', {
-      description: createError.value || 'An unexpected error occurred. Please try again.',
+    toast.error(t('features.api_keys.messages.createError'), {
+      description: createError.value || t('features.api_keys.messages.createErrorDesc'),
     });
   }
 });
@@ -164,7 +166,7 @@ onUnmounted(() => {
       variant="destructive"
     >
       <Icon name="lucide:alert-circle" class="w-4 h-4" />
-      <AlertTitle>Error</AlertTitle>
+      <AlertTitle>{{ t('common.status.error') }}</AlertTitle>
       <AlertDescription>{{ createError }}</AlertDescription>
     </Alert>
 
@@ -173,18 +175,17 @@ onUnmounted(() => {
       name="name"
     >
       <FormItem>
-        <FormLabel>API Key Name *</FormLabel>
+        <FormLabel>{{ t('features.api_keys.form.nameLabel') }}</FormLabel>
         <FormControl>
           <Input
             v-bind="componentField"
-            placeholder="Production API Key"
+            :placeholder="t('features.api_keys.form.namePlaceholder')"
             :class="{ 'border-destructive': hasConnectRPCError('name') }"
             :disabled="createLoading"
           />
         </FormControl>
         <FormDescription>
-          A descriptive name for this API key (2-50 characters, alphanumeric with spaces, hyphens,
-          and underscores)
+          {{ t('features.api_keys.form.nameDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -201,7 +202,7 @@ onUnmounted(() => {
       name="expiration"
     >
       <FormItem>
-        <FormLabel>Expiration Date *</FormLabel>
+        <FormLabel>{{ t('features.api_keys.form.expirationLabel') }}</FormLabel>
         <FormControl>
           <Input
             v-bind="componentField"
@@ -212,7 +213,7 @@ onUnmounted(() => {
           />
         </FormControl>
         <FormDescription>
-          When this API key will expire and become invalid. Must be a future date.
+          {{ t('features.api_keys.form.expirationDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -231,7 +232,7 @@ onUnmounted(() => {
         :disabled="createLoading"
         @click="handleCancel"
       >
-        Cancel
+        {{ t('common.btn.cancel') }}
       </Button>
       <Button
         type="submit"
@@ -242,7 +243,7 @@ onUnmounted(() => {
           name="lucide:loader-2"
           class="mr-2 h-4 w-4 animate-spin"
         />
-        {{ createLoading ? 'Creating...' : 'Create API Key' }}
+        {{ createLoading ? t('common.status.creating') : t('features.api_keys.actions.create') }}
       </Button>
     </div>
   </form>

@@ -21,6 +21,8 @@ const emit = defineEmits<{
   toggleStatus: [];
 }>();
 
+const { t } = useI18n();
+
 function handleEdit() {
   emit('edit');
 }
@@ -52,14 +54,16 @@ function handleToggleStatus() {
         @click="handleEdit"
       >
         <Icon name="lucide:edit" class="mr-2 h-4 w-4" />
-        Edit API Key
+        {{ t('features.api_keys.actions.edit') }}
       </DropdownMenuItem>
       <DropdownMenuItem
         class="cursor-pointer"
         @click="handleToggleStatus"
       >
         <Icon name="lucide:power" class="mr-2 h-4 w-4" />
-        {{ apiKey.active ? 'Deactivate' : 'Activate' }} API Key
+        {{ apiKey.active
+          ? t('features.api_keys.actions.deactivate')
+          : t('features.api_keys.actions.activate') }}
       </DropdownMenuItem>
       <DropdownMenuSeparator />
       <DropdownMenuItem
@@ -67,7 +71,7 @@ function handleToggleStatus() {
         @click="handleDelete"
       >
         <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" />
-        Delete API Key
+        {{ t('features.api_keys.actions.delete') }}
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

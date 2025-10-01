@@ -9,9 +9,9 @@ import {
 } from '@/components/ui/breadcrumb';
 import { Separator } from '@/components/ui/separator';
 import { SidebarTrigger } from '@/components/ui/sidebar';
-import { useBreadcrumbs } from '~/composables/navigation/useBreadcrumbs';
+import { useBreadcrumbs } from '@/composables/navigation/useBreadcrumbs';
 
-const { locales, setLocale, locale } = useI18n();
+const { t, locales, setLocale, locale } = useI18n();
 const colorMode = useColorMode();
 
 const flags = {
@@ -111,23 +111,23 @@ const { breadcrumbs, hasBreadcrumbs } = useBreadcrumbs();
               transition-all dark:rotate-0 dark:scale-100
             "
           />
-          <span class="sr-only">Toggle theme</span>
+          <span class="sr-only">{{ t('layout.header.toggleTheme') }}</span>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem
             @click="colorMode = 'light'"
           >
-            Light
+            {{ t('layout.header.theme.light') }}
           </DropdownMenuItem>
           <DropdownMenuItem
             @click="colorMode = 'dark'"
           >
-            Dark
+            {{ t('layout.header.theme.dark') }}
           </DropdownMenuItem>
           <DropdownMenuItem
             @click="colorMode = 'auto'"
           >
-            System
+            {{ t('layout.header.theme.system') }}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

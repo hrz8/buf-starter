@@ -29,6 +29,8 @@ const emit = defineEmits<{
   cancel: [];
 }>();
 
+const { t } = useI18n();
+
 const isSheetOpen = ref(false);
 
 function handleEmployeeCreated(employee: Employee) {
@@ -49,13 +51,18 @@ function handleSheetClose() {
     </SheetTrigger>
     <SheetContent class="w-full sm:max-w-[540px] overflow-y-auto">
       <SheetHeader>
-        <SheetTitle>{{ props.initialData ? 'Duplicate Employee' : 'Add New Employee' }}</SheetTitle>
+        <SheetTitle>
+          {{
+            props.initialData
+              ? t('features.employees.sheet.duplicateTitle')
+              : t('features.employees.sheet.createTitle')
+          }}
+        </SheetTitle>
         <SheetDescription>
           {{
             props.initialData
-              ? `Review and modify the employee details below. All fields marked with *
-                are required.`
-              : 'Fill in the employee details below. All fields marked with * are required.'
+              ? t('features.employees.sheet.duplicateDescription')
+              : t('features.employees.sheet.createDescription')
           }}
         </SheetDescription>
       </SheetHeader>

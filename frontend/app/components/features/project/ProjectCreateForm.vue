@@ -38,6 +38,8 @@ const emit = defineEmits<{
   cancel: [];
 }>();
 
+const { t } = useI18n();
+
 const {
   createProject,
   createLoading,
@@ -65,18 +67,18 @@ const form = useForm({
   },
 });
 
-const environmentOptions = [
+const environmentOptions = computed(() => [
   {
-    label: 'Live',
+    label: t('features.projects.form.environment.live'),
     value: 'live',
-    description: 'Production environment for live data',
+    description: t('features.projects.form.environment.liveDesc'),
   },
   {
-    label: 'Sandbox',
+    label: t('features.projects.form.environment.sandbox'),
     value: 'sandbox',
-    description: 'Testing environment for development',
+    description: t('features.projects.form.environment.sandboxDesc'),
   },
-];
+]);
 
 const timezoneOptions = [
   'UTC',
@@ -111,8 +113,8 @@ const onSubmit = form.handleSubmit(async (values) => {
     const project = await createProject(values);
 
     if (project) {
-      toast.success('Project created successfully', {
-        description: `${values.name} has been created and is ready to use.`,
+      toast.success(t('features.projects.messages.createSuccess'), {
+        description: t('features.projects.messages.createSuccessDesc', { name: values.name }),
       });
 
       emit('success', project);
@@ -120,8 +122,8 @@ const onSubmit = form.handleSubmit(async (values) => {
     }
   }
   catch {
-    toast.error('Failed to create project', {
-      description: createError.value || 'An unexpected error occurred. Please try again.',
+    toast.error(t('features.projects.messages.createError'), {
+      description: createError.value || t('features.projects.messages.createErrorDesc'),
     });
   }
 });
@@ -158,7 +160,7 @@ onUnmounted(() => {
       variant="destructive"
     >
       <AlertCircle class="w-4 h-4" />
-      <AlertTitle>Error</AlertTitle>
+      <AlertTitle>{{ t('common.label.error') }}</AlertTitle>
       <AlertDescription>{{ createError }}</AlertDescription>
     </Alert>
 
@@ -167,17 +169,17 @@ onUnmounted(() => {
       name="name"
     >
       <FormItem>
-        <FormLabel>Project Name *</FormLabel>
+        <FormLabel>{{ t('features.projects.form.nameLabel') }}</FormLabel>
         <FormControl>
           <Input
             v-bind="componentField"
-            placeholder="My Awesome Project"
+            :placeholder="t('features.projects.form.namePlaceholder')"
             :class="{ 'border-destructive': hasConnectRPCError('name') }"
             :disabled="createLoading"
           />
         </FormControl>
         <FormDescription>
-          Project name (1-50 characters, letters, numbers, spaces, dashes, and underscores only)
+          {{ t('features.projects.form.nameDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -194,17 +196,17 @@ onUnmounted(() => {
       name="description"
     >
       <FormItem>
-        <FormLabel>Description</FormLabel>
+        <FormLabel>{{ t('features.projects.form.descriptionLabel') }}</FormLabel>
         <FormControl>
           <Input
             v-bind="componentField"
-            placeholder="Brief description of the project (optional)"
+            :placeholder="t('features.projects.form.descriptionPlaceholder')"
             :class="{ 'border-destructive': hasConnectRPCError('description') }"
             :disabled="createLoading"
           />
         </FormControl>
         <FormDescription>
-          Optional project description (maximum 100 characters)
+          {{ t('features.projects.form.descriptionDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -221,7 +223,7 @@ onUnmounted(() => {
       name="timezone"
     >
       <FormItem>
-        <FormLabel>Timezone *</FormLabel>
+        <FormLabel>{{ t('features.projects.form.timezoneLabel') }}</FormLabel>
         <FormControl>
           <div class="space-y-2">
             <Select
@@ -231,11 +233,11 @@ onUnmounted(() => {
               <SelectTrigger
                 :class="{ 'border-destructive': hasConnectRPCError('timezone') }"
               >
-                <SelectValue placeholder="Select a timezone" />
+                <SelectValue :placeholder="t('features.projects.form.timezonePlaceholder')" />
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Common Timezones</SelectLabel>
+                  <SelectLabel>{{ t('features.projects.form.commonTimezones') }}</SelectLabel>
                   <SelectItem
                     v-for="tz in timezoneOptions"
                     :key="tz"
@@ -247,12 +249,12 @@ onUnmounted(() => {
               </SelectContent>
             </Select>
             <div class="text-xs text-muted-foreground">
-              You can also type directly in the field above for custom timezones
+              {{ t('features.projects.form.timezoneHint') }}
             </div>
           </div>
         </FormControl>
         <FormDescription>
-          Project timezone for scheduling and data processing
+          {{ t('features.projects.form.timezoneDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -269,7 +271,7 @@ onUnmounted(() => {
       name="environment"
     >
       <FormItem>
-        <FormLabel>Environment *</FormLabel>
+        <FormLabel>{{ t('features.projects.form.environmentLabel') }}</FormLabel>
         <FormControl>
           <Select
             v-bind="componentField"
@@ -278,7 +280,7 @@ onUnmounted(() => {
             <SelectTrigger
               :class="{ 'border-destructive': hasConnectRPCError('environment') }"
             >
-              <SelectValue placeholder="Select environment" />
+              <SelectValue :placeholder="t('features.projects.form.environmentPlaceholder')" />
             </SelectTrigger>
             <SelectContent>
               <SelectItem
@@ -295,7 +297,7 @@ onUnmounted(() => {
           </Select>
         </FormControl>
         <FormDescription>
-          Choose the environment type for this project
+          {{ t('features.projects.form.environmentDescription') }}
         </FormDescription>
         <FormMessage />
         <div
@@ -314,7 +316,7 @@ onUnmounted(() => {
         :disabled="createLoading"
         @click="handleCancel"
       >
-        Cancel
+        {{ t('common.btn.cancel') }}
       </Button>
       <Button
         type="submit"
@@ -325,7 +327,7 @@ onUnmounted(() => {
           name="lucide:loader-2"
           class="mr-2 h-4 w-4 animate-spin"
         />
-        {{ createLoading ? 'Creating...' : 'Create Project' }}
+        {{ createLoading ? t('common.status.creating') : t('features.projects.actions.create') }}
       </Button>
     </div>
   </form>

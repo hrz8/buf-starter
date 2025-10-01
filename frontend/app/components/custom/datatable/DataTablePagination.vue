@@ -19,6 +19,17 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 
+const props = withDefaults(defineProps<Props>(), {
+  pending: false,
+  pageSizeOptions: () => [10, 20, 25, 50],
+  showPageSizeSelector: true,
+  showResultsInfo: true,
+});
+
+const emit = defineEmits<Emits>();
+
+const { t } = useI18n();
+
 interface Props {
   page: number;
   pageSize: number;
@@ -33,15 +44,6 @@ interface Emits {
   'update:page': [value: number];
   'update:pageSize': [value: number];
 }
-
-const props = withDefaults(defineProps<Props>(), {
-  pending: false,
-  pageSizeOptions: () => [10, 20, 25, 50],
-  showPageSizeSelector: true,
-  showResultsInfo: true,
-});
-
-const emit = defineEmits<Emits>();
 
 // Use VueUse breakpoints
 const breakpoints = useBreakpoints(breakpointsTailwind);
@@ -140,14 +142,14 @@ function goToPage(newPage: number) {
 
 const resultsText = computed(() => {
   if (props.rowCount === 0)
-    return 'No results';
+    return t('datatable.noResults');
 
   const start = ((props.page - 1) * props.pageSize) + 1;
   const end = Math.min(props.page * props.pageSize, props.rowCount);
 
   return isMobile.value
-    ? `${start}-${end} of ${props.rowCount}`
-    : `Showing ${start} to ${end} of ${props.rowCount} results`;
+    ? t('datatable.showingShort', { start, end, total: props.rowCount })
+    : t('datatable.showing', { start, end, total: props.rowCount });
 });
 </script>
 
@@ -173,7 +175,7 @@ const resultsText = computed(() => {
         class="flex items-center gap-2"
       >
         <p class="text-sm font-medium">
-          Rows
+          {{ t('datatable.rows') }}
         </p>
         <Select
           :model-value="String(pageSize)"

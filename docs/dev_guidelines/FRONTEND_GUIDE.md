@@ -2,6 +2,23 @@
 
 This systematic workflow ensures consistency, type safety, and proper architecture adherence when implementing new frontend features.
 
+## Code Formatting
+
+**Manual Format Command:**
+
+If format on save is not enabled, always run before committing:
+
+```bash
+cd frontend && pnpm lint:fix
+```
+
+**Why This Matters:**
+
+- The project uses ESLint with strict rules for Vue component structure
+- Auto-formatting prevents linting errors during development
+- Ensures consistent code style across the team
+- Required for CI/CD pipeline to pass
+
 ### Frontend Architecture Overview
 
 **Layer Structure:**
@@ -940,6 +957,372 @@ grep -r "from ['\"]lucide" frontend/app/components/
 
 # Search for specific icon usage patterns
 grep -r "import.*lucide-vue" frontend/app/
+```
+
+## Internationalization (i18n)
+
+### Translation File Structure
+
+**Location:** `frontend/i18n/locales/{locale}.json`
+
+**Supported Locales:**
+
+- `en-US.json` - English (US)
+- `id-ID.json` - Bahasa Indonesia
+
+### Key Principles
+
+1. **Fully Nested Structure** - All translations must use proper object nesting
+2. **Alphabetical Ordering** - Keys should be organized alphabetically for maintainability
+3. **No Mixed Nesting** - Avoid mixing flat keys (with dots) inside nested objects
+
+### Format Rules
+
+✅ **CORRECT - Fully nested structure:**
+
+```json
+{
+  "common": {
+    "btn": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "delete": "Delete"
+    },
+    "status": {
+      "loading": "Loading...",
+      "success": "Success"
+    }
+  },
+  "features": {
+    "api_keys": {
+      "actions": {
+        "create": "Create API Key",
+        "edit": "Edit API Key"
+      },
+      "columns": {
+        "name": "Name",
+        "status": "Status"
+      }
+    }
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "devices": {
+      "chat": "Chat",
+      "scan": "Scan"
+    }
+  }
+}
+```
+
+❌ **INCORRECT - Mixed nesting (flat keys inside nested objects):**
+
+```json
+{
+  "features": {
+    "api_keys": {
+      "actions.create": "Create API Key", // DON'T DO THIS
+      "columns.name": "Name"
+    }
+  }
+}
+```
+
+### Why Fully Nested?
+
+1. **Framework Support** - `@nuxtjs/i18n` requires consistent nesting
+2. **IDE Autocomplete** - Better TypeScript support for nested structures
+3. **Clear Organization** - Visual hierarchy matches logical structure
+4. **Standard Practice** - Follows common i18n patterns
+
+### Usage in Components
+
+**Basic Text Translation:**
+
+```vue
+<script setup lang="ts">
+const { t } = useI18n();
+</script>
+
+<template>
+  <h1>{{ t("features.api_keys.sheet.createTitle") }}</h1>
+  <Button>{{ t("common.btn.create") }}</Button>
+</template>
+```
+
+**Translation with Variables:**
+
+```json
+{
+  "features": {
+    "employees": {
+      "messages": {
+        "createSuccessDesc": "{name} has been added to the team."
+      }
+    }
+  }
+}
+```
+
+```typescript
+toast.success(
+  t("features.employees.messages.createSuccessDesc", { name: "John Doe" })
+);
+// Output: "John Doe has been added to the team."
+```
+
+**Formatted Text with Markdown:**
+
+For translations that need basic styling (bold, italic), use the `useI18nSafe` composable:
+
+```json
+{
+  "features": {
+    "api_keys": {
+      "deleteDialog": {
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone."
+      }
+    }
+  }
+}
+```
+
+```vue
+<script setup lang="ts">
+const { t, tFormatted } = useI18nSafe();
+</script>
+
+<template>
+  <AlertDialogDescription>
+    <component
+      :is="
+        tFormatted('features.api_keys.deleteDialog.confirmMessage', {
+          name: apiKey.name,
+        })
+      "
+    />
+  </AlertDialogDescription>
+</template>
+```
+
+**Supported Markdown Syntax:**
+
+- `**text**` → `<strong>text</strong>` (bold)
+- `*text*` → `<em>text</em>` (italic)
+- `__text__` → `<u>text</u>` (underline)
+
+### Special Character Escaping
+
+For special characters that conflict with i18n syntax:
+
+```json
+{
+  "features": {
+    "employees": {
+      "form": {
+        "emailPlaceholder": "john.doe{'@'}company.com"
+      }
+    }
+  }
+}
+```
+
+The `{'@'}` syntax escapes the `@` symbol, which would otherwise be interpreted as a linked message reference.
+
+### Reactive Translations in Computed Properties
+
+When using translations in programmatic rendering (e.g., TanStack Table columns), wrap in `computed()` for reactivity:
+
+```typescript
+// ❌ WRONG - Not reactive
+const columns = [
+  columnHelper.accessor("name", {
+    header: ({ column }) =>
+      h(DataTableColumnHeader, {
+        column,
+        title: t("features.api_keys.columns.name"), // Called once only
+      }),
+  }),
+];
+
+// ✅ CORRECT - Reactive
+const columns = computed(() => [
+  columnHelper.accessor("name", {
+    header: ({ column }) =>
+      h(DataTableColumnHeader, {
+        column,
+        title: t("features.api_keys.columns.name"), // Re-evaluated on locale change
+      }),
+  }),
+]);
+```
+
+### Configuration
+
+**File:** `frontend/nuxt.config.ts`
+
+```typescript
+export default defineNuxtConfig({
+  i18n: {
+    strategy: "no_prefix",
+    defaultLocale: "en-US",
+    lazy: true, // Enable lazy loading
+    langDir: "locales", // Translation files directory
+    locales: [
+      {
+        code: "en-US",
+        name: "English",
+        file: "en-US.json",
+        dir: "ltr",
+      },
+      {
+        code: "id-ID",
+        name: "Bahasa Indonesia",
+        file: "id-ID.json",
+        dir: "ltr",
+      },
+    ],
+  },
+});
+```
+
+### Adding New Translations
+
+**Step 1: Add to all locale files**
+
+Update **both** `en-US.json` and `id-ID.json`:
+
+```json
+// en-US.json
+{
+  "features": {
+    "new_feature": {
+      "title": "New Feature",
+      "description": "Feature description"
+    }
+  }
+}
+
+// id-ID.json
+{
+  "features": {
+    "new_feature": {
+      "title": "Fitur Baru",
+      "description": "Deskripsi fitur"
+    }
+  }
+}
+```
+
+**Step 2: Use in components**
+
+```vue
+<script setup lang="ts">
+const { t } = useI18n();
+</script>
+
+<template>
+  <h1>{{ t("features.new_feature.title") }}</h1>
+  <p>{{ t("features.new_feature.description") }}</p>
+</template>
+```
+
+### Important Notes
+
+**Database-Sourced Values:**
+
+Do NOT add translations for values that come from the database (roles, departments, categories, etc.). These should remain dynamic:
+
+```typescript
+// ❌ WRONG - Don't translate database values
+const roles = [{ value: "engineer", label: t("roles.engineer") }];
+
+// ✅ CORRECT - Use database values directly
+const roles = [{ value: "engineer", label: "Engineer" }];
+```
+
+**Error Codes:**
+
+Backend error codes should be translated for user-facing messages:
+
+```json
+{
+  "errorCodes": {
+    "60001": "Invalid input",
+    "60201": "Employee not found",
+    "69001": "Server Error"
+  }
+}
+```
+
+Usage:
+
+```typescript
+const errorMessage = t(`errorCodes.${errorCode}`);
+```
+
+### Translation Checklist
+
+When adding new translations:
+
+- [ ] Translation exists in **all** locale files
+- [ ] Keys follow fully nested structure (no mixed nesting)
+- [ ] Keys are organized alphabetically where appropriate
+- [ ] Variables use `{variable}` syntax
+- [ ] Special characters are properly escaped
+- [ ] Markdown formatting uses `useI18nSafe` composable
+- [ ] Reactive contexts use `computed()` wrapper
+- [ ] Database-sourced values are NOT translated
+
+### Common Patterns
+
+**Feature Actions:**
+
+```json
+{
+  "features": {
+    "{feature_name}": {
+      "actions": {
+        "create": "Create {Entity}",
+        "edit": "Edit {Entity}",
+        "delete": "Delete {Entity}"
+      }
+    }
+  }
+}
+```
+
+**Form Labels:**
+
+```json
+{
+  "features": {
+    "{feature_name}": {
+      "form": {
+        "nameLabel": "Name *",
+        "namePlaceholder": "Enter name",
+        "nameDescription": "Name description"
+      }
+    }
+  }
+}
+```
+
+**Messages:**
+
+```json
+{
+  "features": {
+    "{feature_name}": {
+      "messages": {
+        "createSuccess": "Entity created successfully",
+        "createSuccessDesc": "{name} has been created.",
+        "createError": "Failed to create entity",
+        "createErrorDesc": "An unexpected error occurred."
+      }
+    }
+  }
+}
 ```
 
 This workflow ensures type-safe, consistent, and maintainable frontend development while leveraging the power of protobuf validation and Connect-RPC.

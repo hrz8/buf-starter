@@ -19,6 +19,7 @@ interface Props {
   page?: number;
   pageSize?: number;
   rowCount?: number;
+  columnPrefix?: string;
 }
 
 interface Emits {
@@ -33,6 +34,7 @@ const props = withDefaults(defineProps<Props>(), {
   page: 1,
   pageSize: 10,
   rowCount: 0,
+  columnPrefix: 'columns',
 });
 
 const emit = defineEmits<Emits>();
@@ -96,6 +98,7 @@ defineExpose({
   <div class="space-y-4">
     <DataTableToolbar
       :table="table"
+      :column-prefix="columnPrefix"
       @refresh="emit('refresh')"
       @reset="emit('reset')"
     >

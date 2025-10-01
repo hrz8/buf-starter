@@ -10,15 +10,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-interface DataTableBasicRowActionsProps {
-  row: Row<any>;
-  actions?: {
-    edit?: boolean;
-    duplicate?: boolean;
-    delete?: boolean;
-  };
-}
-
 const props = withDefaults(defineProps<DataTableBasicRowActionsProps>(), {
   actions: () => ({
     edit: true,
@@ -32,6 +23,17 @@ const emit = defineEmits<{
   duplicate: [row: Row<any>];
   delete: [row: Row<any>];
 }>();
+
+const { t } = useI18n();
+
+interface DataTableBasicRowActionsProps {
+  row: Row<any>;
+  actions?: {
+    edit?: boolean;
+    duplicate?: boolean;
+    delete?: boolean;
+  };
+}
 
 function handleEdit() {
   emit('edit', props.row);
@@ -57,7 +59,7 @@ function handleDelete() {
           name="radix-icons:dots-horizontal"
           class="h-4 w-4"
         />
-        <span class="sr-only">Open menu</span>
+        <span class="sr-only">{{ t('datatable.openMenu') }}</span>
       </Button>
     </DropdownMenuTrigger>
     <DropdownMenuContent
@@ -69,7 +71,7 @@ function handleDelete() {
         @click="handleEdit"
       >
         <Icon name="lucide:edit" class="mr-2 h-4 w-4" />
-        Edit
+        {{ t('common.btn.edit') }}
       </DropdownMenuItem>
 
       <DropdownMenuItem
@@ -77,7 +79,7 @@ function handleDelete() {
         @click="handleDuplicate"
       >
         <Icon name="lucide:copy" class="mr-2 h-4 w-4" />
-        Make a copy
+        {{ t('datatable.makeCopy') }}
       </DropdownMenuItem>
 
       <DropdownMenuSeparator v-if="props.actions.delete" />
@@ -88,7 +90,7 @@ function handleDelete() {
         @click="handleDelete"
       >
         <Icon name="lucide:trash-2" class="mr-2 h-4 w-4" />
-        Delete
+        {{ t('common.btn.delete') }}
       </DropdownMenuItem>
     </DropdownMenuContent>
   </DropdownMenu>

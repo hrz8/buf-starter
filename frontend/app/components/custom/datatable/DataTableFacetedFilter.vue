@@ -16,6 +16,18 @@ import {
 } from '@/components/ui/popover';
 import { Separator } from '@/components/ui/separator';
 
+const props = withDefaults(defineProps<Props>(), {
+  multiple: true,
+});
+
+const emit = defineEmits<{
+  'update:modelValue': [value: string[]];
+  'update': [value: string[]];
+  'clear': [];
+}>();
+
+const { t } = useI18n();
+
 interface Option {
   label: string;
   value: string;
@@ -28,16 +40,6 @@ interface Props {
   modelValue: string[];
   multiple?: boolean;
 }
-
-const props = withDefaults(defineProps<Props>(), {
-  multiple: true,
-});
-
-const emit = defineEmits<{
-  'update:modelValue': [value: string[]];
-  'update': [value: string[]];
-  'clear': [];
-}>();
 
 const selectedValues = ref<string[]>(props.modelValue ?? []);
 const open = ref(false);
@@ -116,7 +118,7 @@ const selectedLabels = computed(() => {
               variant="secondary"
               class="rounded-sm px-1 font-normal"
             >
-              {{ selectedValues.length }} selected
+              {{ t('datatable.selected', { count: selectedValues.length }) }}
             </Badge>
           </div>
         </template>
@@ -127,9 +129,11 @@ const selectedLabels = computed(() => {
       align="start"
     >
       <Command>
-        <CommandInput :placeholder="`Search ${title?.toLowerCase()}...`" />
+        <CommandInput
+          :placeholder="t('datatable.searchPlaceholder', { filter: title?.toLowerCase() })"
+        />
         <CommandList>
-          <CommandEmpty>No results found.</CommandEmpty>
+          <CommandEmpty>{{ t('datatable.noResultsFound') }}</CommandEmpty>
           <CommandGroup>
             <CommandItem
               v-for="option in options"
@@ -167,7 +171,7 @@ const selectedLabels = computed(() => {
                 class="justify-center text-center"
                 @select="clearAll"
               >
-                Clear filters
+                {{ t('datatable.clearFilters') }}
               </CommandItem>
             </CommandGroup>
           </template>

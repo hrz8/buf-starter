@@ -13,12 +13,6 @@ import {
   TableRow,
 } from '@/components/ui/table';
 
-interface Props {
-  table: TanstackTable<any>;
-  pending?: boolean;
-  showBorder?: boolean;
-}
-
 const props = withDefaults(defineProps<Props>(), {
   pending: false,
   showBorder: true,
@@ -28,6 +22,14 @@ defineSlots<{
   loading?: () => any;
   empty?: () => any;
 }>();
+
+const { t } = useI18n();
+
+interface Props {
+  table: TanstackTable<any>;
+  pending?: boolean;
+  showBorder?: boolean;
+}
 
 const headerGroups = computed(() => props.table.getHeaderGroups());
 const rows = computed(() => props.table.getRowModel().rows);
@@ -70,7 +72,7 @@ const hasData = computed(() => rows.value.length > 0);
                 name="lucide:loader-2"
                 class="w-4 h-4 animate-spin"
               />
-              <span>Loading...</span>
+              <span>{{ t('common.status.loading') }}</span>
             </div>
           </slot>
         </TableEmpty>
@@ -92,8 +94,8 @@ const hasData = computed(() => rows.value.length > 0);
                 name="lucide:search-x"
                 class="w-8 h-8"
               />
-              <span class="font-medium">No data found</span>
-              <span class="text-sm">Try adjusting your search or filters</span>
+              <span class="font-medium">{{ t('datatable.noDataFound') }}</span>
+              <span class="text-sm">{{ t('datatable.tryAdjusting') }}</span>
             </div>
           </slot>
         </TableEmpty>

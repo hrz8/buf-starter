@@ -5,17 +5,23 @@ import type { Data } from '.';
 import { DataTableViewOptions } from '@/components/custom/datatable';
 import { Button } from '@/components/ui/button';
 
+const props = withDefaults(defineProps<Props>(), {
+  columnPrefix: 'columns',
+});
+
+const emit = defineEmits<Emits>();
+
+const { t } = useI18n();
+
 interface Props {
   table: Table<Data>;
+  columnPrefix?: string;
 }
 
 interface Emits {
   refresh: [];
   reset: [];
 }
-
-const props = defineProps<Props>();
-const emit = defineEmits<Emits>();
 
 const isFiltered = computed(() => props.table.getState().columnFilters.length > 0);
 
@@ -43,7 +49,7 @@ function onReset() {
         class="h-8 px-2 lg:px-3"
         @click="onReset"
       >
-        Reset
+        {{ t('datatable.reset') }}
         <Icon
           name="radix-icons:cross-2"
           class="ml-2 h-4 w-4"
@@ -61,7 +67,10 @@ function onReset() {
           class="h-4 w-4"
         />
       </Button>
-      <DataTableViewOptions :table="table" />
+      <DataTableViewOptions
+        :table="table"
+        :column-prefix="columnPrefix"
+      />
     </div>
   </div>
 </template>

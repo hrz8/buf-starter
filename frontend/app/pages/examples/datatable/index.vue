@@ -17,17 +17,19 @@ import {
   useDataTableFilter,
   useDataTableState,
 } from '@/components/custom/datatable/utils';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { useEmployeeService } from '@/composables/services/useEmployeeService';
-import { useQueryRequest } from '@/composables/useQueryRequest';
-import { useProjectStore } from '@/stores/project';
 import {
   EmployeeCreateSheet,
   EmployeeDeleteDialog,
   EmployeeEditSheet,
   EmployeeTableLoading,
-} from '~/components/features/employee';
+} from '@/components/features/employee';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { useEmployeeService } from '@/composables/services/useEmployeeService';
+import { useQueryRequest } from '@/composables/useQueryRequest';
+import { useProjectStore } from '@/stores/project';
+
+const { t } = useI18n();
 
 const { activeProjectId } = useProjectStore();
 
@@ -89,28 +91,28 @@ function getStatusDisplay(status: EmployeeStatus) {
   switch (status) {
     case EmployeeStatus.ACTIVE:
       return {
-        text: 'Active',
+        text: t('common.label.active'),
         class: 'bg-green-100 text-green-800',
       };
     case EmployeeStatus.INACTIVE:
       return {
-        text: 'Inactive',
+        text: t('common.label.inactive'),
         class: 'bg-red-100 text-red-800',
       };
     default:
       return {
-        text: 'Unknown',
+        text: t('features.employees.status.unknown'),
         class: 'bg-gray-100 text-gray-800',
       };
   }
 }
 
 const columnHelper = createColumnHelper<Employee>();
-const columns = [
+const columns = computed(() => [
   columnHelper.accessor('id', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'ID',
+      title: t('features.employees.columns.id'),
     }),
     cell: info => h('div', { class: 'font-bold w-40' }, info.getValue()),
     enableSorting: true,
@@ -118,7 +120,7 @@ const columns = [
   columnHelper.accessor('name', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Name',
+      title: t('features.employees.columns.name'),
     }),
     cell: info => info.getValue(),
     enableSorting: true,
@@ -126,7 +128,7 @@ const columns = [
   columnHelper.accessor('email', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Email',
+      title: t('features.employees.columns.email'),
     }),
     cell: info => info.getValue(),
     enableSorting: true,
@@ -134,7 +136,7 @@ const columns = [
   columnHelper.accessor('role', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Role',
+      title: t('features.employees.columns.role'),
     }),
     cell: info => info.getValue(),
     enableSorting: true,
@@ -142,7 +144,7 @@ const columns = [
   columnHelper.accessor('department', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Department',
+      title: t('features.employees.columns.department'),
     }),
     cell: info => info.getValue(),
     enableSorting: true,
@@ -150,7 +152,7 @@ const columns = [
   columnHelper.accessor('status', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Status',
+      title: t('features.employees.columns.status'),
     }),
     cell: (info) => {
       const status = getStatusDisplay(info.getValue() as EmployeeStatus);
@@ -163,25 +165,12 @@ const columns = [
   columnHelper.accessor('createdAt', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,
-      title: 'Created At',
+      title: t('features.employees.columns.createdAt'),
     }),
     cell: (info) => {
       const seconds = BigInt(info.getValue()?.seconds ?? 0n);
       const millis = Number(seconds * 1000n);
-      const date = new Date(millis); ;
-      return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
-    },
-    enableSorting: true,
-  }),
-  columnHelper.accessor('updatedAt', {
-    header: ({ column }) => h(DataTableColumnHeader, {
-      column,
-      title: 'Updated At',
-    }),
-    cell: (info) => {
-      const seconds = BigInt(info.getValue()?.seconds ?? 0n);
-      const millis = Number(seconds * 1000n);
-      const date = new Date(millis); ;
+      const date = new Date(millis);
       return `${date.toLocaleDateString()} ${date.toLocaleTimeString()}`;
     },
     enableSorting: true,
@@ -195,7 +184,7 @@ const columns = [
       onDuplicate: handleDuplicate,
     }),
   }),
-]; ;
+]);
 
 // role filter
 const roleFilter = useDataTableFilter(table, 'role');
@@ -219,7 +208,7 @@ const departmentOptions = computed(() =>
 const statusFilter = useDataTableFilter(table, 'status');
 const statusOptions = computed(() =>
   filters.value?.statuses?.values?.map((status: string) => ({
-    label: status === 'active' ? 'Active' : 'Inactive',
+    label: status === 'active' ? t('common.label.active') : t('common.label.inactive'),
     value: status,
   })) ?? [],
 );
@@ -340,7 +329,7 @@ function closeDuplicateSheet() {
               name="lucide:user-plus"
               class="mr-2 h-4 w-4"
             />
-            Add Employee
+            {{ t('features.employees.btn.create') }}
           </Button>
         </EmployeeCreateSheet>
       </div>
@@ -353,20 +342,21 @@ function closeDuplicateSheet() {
           :data="data"
           :pending="pending"
           :row-count="rowCount"
+          column-prefix="features.employees.columns"
           @refresh="refresh()"
           @reset="reset()"
         >
           <template #filters>
             <Input
               v-model="keyword"
-              placeholder="Search employees..."
+              :placeholder="t('features.employees.actions.search')"
               class="h-8 w-[150px] lg:w-[250px]"
             />
 
             <DataTableFacetedFilter
               v-if="roleOptions.length > 0"
               v-model="roleFilter.filterValues.value"
-              title="Role"
+              :title="t('features.employees.filter.role')"
               :options="roleOptions"
               @update="roleFilter.setFilter"
               @clear="roleFilter.clearFilter"
@@ -375,7 +365,7 @@ function closeDuplicateSheet() {
             <DataTableFacetedFilter
               v-if="departmentOptions.length > 0"
               v-model="departmentFilter.filterValues.value"
-              title="Department"
+              :title="t('features.employees.filter.department')"
               :options="departmentOptions!"
               @update="departmentFilter.setFilter"
               @clear="departmentFilter.clearFilter"
@@ -384,7 +374,7 @@ function closeDuplicateSheet() {
             <DataTableFacetedFilter
               v-if="statusOptions.length > 0"
               v-model="statusFilter.filterValues.value"
-              title="Status"
+              :title="t('features.employees.filter.status')"
               :options="statusOptions"
               @update="statusFilter.setFilter"
               @clear="statusFilter.clearFilter"
@@ -404,11 +394,10 @@ function closeDuplicateSheet() {
               </div>
               <div class="text-center space-y-2">
                 <h3 class="text-lg font-semibold">
-                  No employees found
+                  {{ t('features.employees.empty.title') }}
                 </h3>
                 <p class="text-muted-foreground max-w-md">
-                  We couldn't find any employees matching your criteria.
-                  Try adjusting your filters or search terms.
+                  {{ t('features.employees.empty.description') }}
                 </p>
               </div>
               <div class="flex space-x-2">
@@ -422,7 +411,7 @@ function closeDuplicateSheet() {
                       name="lucide:user-plus"
                       class="mr-2 h-4 w-4"
                     />
-                    Add Employee
+                    {{ t('features.employees.btn.create') }}
                   </Button>
                 </EmployeeCreateSheet>
               </div>
