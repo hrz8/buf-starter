@@ -213,5 +213,30 @@ PARTITION OF {table_name} FOR VALUES IN ({PROJECT_ID});
 - **[FRONTEND_GUIDE.md](./docs/dev_guidelines/FRONTEND_GUIDE.md)** - Frontend patterns, component architecture, form handling
 - **[DOMAIN_ARCHITECTURE_GUIDE.md](./docs/dev_guidelines/DOMAIN_ARCHITECTURE_GUIDE.md)** - Backend domain patterns
 - **[EFFICIENCY_GUIDE.md](./docs/dev_guidelines/EFFICIENCY_GUIDE.md)** - AI optimization, development efficiency process and checklists
+- **[BREADCRUMB_GUIDE.md](./docs/dev_guidelines/BREADCRUMB_GUIDE.md)** - Hierarchical navigation context for frontend
+
+## ⚠️ Critical Frontend Patterns
+
+### vee-validate FormField Best Practices
+
+When using vee-validate FormField components, follow these critical patterns to avoid "useFormField should be used within \<FormField>" errors:
+
+1. **Loading State Must Start as TRUE**: `const isLoading = ref(true)`
+2. **NO :key Attributes on FormField**: Never use `:key` on FormField components
+3. **Simple Conditional Rendering**: Use straightforward `v-if`/`v-else-if` patterns
+4. **Avoid Teleport Around Forms**: Don't wrap FormFields in Teleport/Portal
+
+**Full details:** See [FRONTEND_GUIDE.md - vee-validate FormField Best Practices](./docs/dev_guidelines/FRONTEND_GUIDE.md#vee-validate-formfield-best-practices)
+
+### Feature Organization Pattern
+
+Organize feature domains with centralized files:
+
+- **schema.ts** - Zod validation schemas (single source of truth)
+- **error.ts** - ConnectRPC error utilities (getConnectRPCError, hasConnectRPCError)
+- **constants.ts** - Shared constants (dropdown options, enums)
+
+**Benefits:** DRY, type-safe, maintainable, testable
+**Full details:** See [FRONTEND_GUIDE.md - Feature Organization and Refactoring Pattern](./docs/dev_guidelines/FRONTEND_GUIDE.md#feature-organization-and-refactoring-pattern)
 
 **Remember**: This guide provides the foundation. Consult specialized guides for detailed implementation patterns and workflows.

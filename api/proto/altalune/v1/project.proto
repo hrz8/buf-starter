@@ -62,7 +62,62 @@ message CreateProjectResponse {
   string message = 2;
 }
 
+message GetProjectRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+}
+
+message GetProjectResponse {
+  Project project = 1;
+}
+
+message UpdateProjectRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 50,
+      pattern: "^[a-zA-Z0-9\\s\\-_]+$"
+    }
+  ];
+  string description = 3 [
+    (buf.validate.field).string = { max_len: 100 }
+  ];
+  string timezone = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 50
+    }
+  ];
+}
+
+message UpdateProjectResponse {
+  Project project = 1;
+  string message = 2;
+}
+
+message DeleteProjectRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+}
+
+message DeleteProjectResponse {
+  string message = 1;
+}
+
 service ProjectService {
   rpc QueryProjects(QueryProjectsRequest) returns (QueryProjectsResponse) {}
   rpc CreateProject(CreateProjectRequest) returns (CreateProjectResponse) {}
+  rpc GetProject(GetProjectRequest) returns (GetProjectResponse) {}
+  rpc UpdateProject(UpdateProjectRequest) returns (UpdateProjectResponse) {}
+  rpc DeleteProject(DeleteProjectRequest) returns (DeleteProjectResponse) {}
 }

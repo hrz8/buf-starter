@@ -1,0 +1,65 @@
+import type { LucideIcon } from 'lucide-vue-next';
+import type { RouteLocationNormalizedLoaded } from 'vue-router';
+
+/**
+ * Breadcrumb configuration for a route
+ */
+export interface BreadcrumbConfig {
+  /**
+   * The route path that this breadcrumb represents
+   */
+  path: string;
+
+  /**
+   * Label for the breadcrumb
+   * Can be a static string, translation key, or dynamic function
+   */
+  label: string | ((
+    route: RouteLocationNormalizedLoaded,
+    t: (key: string, values?: Record<string, any>) => string,
+  ) => string);
+
+  /**
+   * Path to parent breadcrumb for building hierarchy
+   */
+  parent?: string;
+
+  /**
+   * Hide breadcrumb conditionally
+   */
+  hidden?: boolean | ((route: RouteLocationNormalizedLoaded) => boolean);
+
+  /**
+   * Translation key for i18n
+   * If provided, will be used with $t()
+   */
+  i18nKey?: string;
+}
+
+/**
+ * Sub-navigation item (child menu item)
+ */
+export interface NavSubItem {
+  title: string;
+  to: string;
+  icon?: LucideIcon;
+  match?: string | RegExp | ((route: RouteLocationNormalizedLoaded) => boolean);
+  breadcrumb?: BreadcrumbConfig;
+}
+
+/**
+ * Main navigation item with optional children
+ */
+export interface NavItem extends NavSubItem {
+  items?: NavSubItem[];
+}
+
+/**
+ * Settings navigation item
+ */
+export interface SettingsItem {
+  name: string;
+  url: string;
+  icon: LucideIcon;
+  breadcrumb?: BreadcrumbConfig;
+}

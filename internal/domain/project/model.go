@@ -100,3 +100,50 @@ type CreateProjectResult struct {
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
+
+func (r *CreateProjectResult) ToProject() *Project {
+	return &Project{
+		ID:          r.PublicID,
+		Name:        r.Name,
+		Description: r.Description,
+		Timezone:    r.Timezone,
+		Environment: r.Environment,
+		CreatedAt:   r.CreatedAt,
+		UpdatedAt:   r.UpdatedAt,
+	}
+}
+
+type UpdateProjectInput struct {
+	ID          int64
+	PublicID    string
+	Name        string
+	Description string
+	Timezone    string
+}
+
+type UpdateProjectResult struct {
+	ID          int64
+	PublicID    string
+	Name        string
+	Description string
+	Timezone    string
+	Environment EnvironmentStatus
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+func (r *UpdateProjectResult) ToProject() *Project {
+	return &Project{
+		ID:          r.PublicID,
+		Name:        r.Name,
+		Description: r.Description,
+		Timezone:    r.Timezone,
+		Environment: r.Environment,
+		CreatedAt:   r.CreatedAt,
+		UpdatedAt:   r.UpdatedAt,
+	}
+}
+
+type DeleteProjectInput struct {
+	PublicID string
+}

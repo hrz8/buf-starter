@@ -15,7 +15,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file altalune/v1/project.proto.
  */
 export const file_altalune_v1_project: GenFile = /*@__PURE__*/
-  fileDesc("ChlhbHRhbHVuZS92MS9wcm9qZWN0LnByb3RvEgthbHRhbHVuZS52MSK/AQoHUHJvamVjdBIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEhMKC2Rlc2NyaXB0aW9uGAMgASgJEhAKCHRpbWV6b25lGAQgASgJEhMKC2Vudmlyb25tZW50GAUgASgJEi4KCmNyZWF0ZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkAKFFF1ZXJ5UHJvamVjdHNSZXF1ZXN0EigKBXF1ZXJ5GAEgASgLMhkuYWx0YWx1bmUudjEuUXVlcnlSZXF1ZXN0ImkKFVF1ZXJ5UHJvamVjdHNSZXNwb25zZRIiCgRkYXRhGAEgAygLMhQuYWx0YWx1bmUudjEuUHJvamVjdBIsCgRtZXRhGAIgASgLMh4uYWx0YWx1bmUudjEuUXVlcnlNZXRhUmVzcG9uc2UiswEKFENyZWF0ZVByb2plY3RSZXF1ZXN0Ei8KBG5hbWUYASABKAlCIbpIHsgBAXIZEAEYMjITXlthLXpBLVowLTlcc1wtX10rJBIcCgtkZXNjcmlwdGlvbhgCIAEoCUIHukgEcgIYZBIeCgh0aW1lem9uZRgDIAEoCUIMukgJyAEBcgQQARgyEiwKC2Vudmlyb25tZW50GAQgASgJQhe6SBTIAQFyD1IEbGl2ZVIHc2FuZGJveCJPChVDcmVhdGVQcm9qZWN0UmVzcG9uc2USJQoHcHJvamVjdBgBIAEoCzIULmFsdGFsdW5lLnYxLlByb2plY3QSDwoHbWVzc2FnZRgCIAEoCTLEAQoOUHJvamVjdFNlcnZpY2USWAoNUXVlcnlQcm9qZWN0cxIhLmFsdGFsdW5lLnYxLlF1ZXJ5UHJvamVjdHNSZXF1ZXN0GiIuYWx0YWx1bmUudjEuUXVlcnlQcm9qZWN0c1Jlc3BvbnNlIgASWAoNQ3JlYXRlUHJvamVjdBIhLmFsdGFsdW5lLnYxLkNyZWF0ZVByb2plY3RSZXF1ZXN0GiIuYWx0YWx1bmUudjEuQ3JlYXRlUHJvamVjdFJlc3BvbnNlIgBCoQEKD2NvbS5hbHRhbHVuZS52MUIMUHJvamVjdFByb3RvUAFaM2dpdGh1Yi5jb20vaHJ6OC9hbHRhbHVuZS9nZW4vYWx0YWx1bmUvdjE7YWx0YWx1bmV2MaICA0FYWKoCC0FsdGFsdW5lLlYxygILQWx0YWx1bmVcVjHiAhdBbHRhbHVuZVxWMVxHUEJNZXRhZGF0YeoCDEFsdGFsdW5lOjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
+  fileDesc("ChlhbHRhbHVuZS92MS9wcm9qZWN0LnByb3RvEgthbHRhbHVuZS52MSK/AQoHUHJvamVjdBIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEhMKC2Rlc2NyaXB0aW9uGAMgASgJEhAKCHRpbWV6b25lGAQgASgJEhMKC2Vudmlyb25tZW50GAUgASgJEi4KCmNyZWF0ZWRfYXQYBiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYByABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIkAKFFF1ZXJ5UHJvamVjdHNSZXF1ZXN0EigKBXF1ZXJ5GAEgASgLMhkuYWx0YWx1bmUudjEuUXVlcnlSZXF1ZXN0ImkKFVF1ZXJ5UHJvamVjdHNSZXNwb25zZRIiCgRkYXRhGAEgAygLMhQuYWx0YWx1bmUudjEuUHJvamVjdBIsCgRtZXRhGAIgASgLMh4uYWx0YWx1bmUudjEuUXVlcnlNZXRhUmVzcG9uc2UiswEKFENyZWF0ZVByb2plY3RSZXF1ZXN0Ei8KBG5hbWUYASABKAlCIbpIHsgBAXIZEAEYMjITXlthLXpBLVowLTlcc1wtX10rJBIcCgtkZXNjcmlwdGlvbhgCIAEoCUIHukgEcgIYZBIeCgh0aW1lem9uZRgDIAEoCUIMukgJyAEBcgQQARgyEiwKC2Vudmlyb25tZW50GAQgASgJQhe6SBTIAQFyD1IEbGl2ZVIHc2FuZGJveCJPChVDcmVhdGVQcm9qZWN0UmVzcG9uc2USJQoHcHJvamVjdBgBIAEoCzIULmFsdGFsdW5lLnYxLlByb2plY3QSDwoHbWVzc2FnZRgCIAEoCSIsChFHZXRQcm9qZWN0UmVxdWVzdBIXCgJpZBgBIAEoCUILukgIyAEBcgOYAQ4iOwoSR2V0UHJvamVjdFJlc3BvbnNlEiUKB3Byb2plY3QYASABKAsyFC5hbHRhbHVuZS52MS5Qcm9qZWN0Ip4BChRVcGRhdGVQcm9qZWN0UmVxdWVzdBIXCgJpZBgBIAEoCUILukgIyAEBcgOYAQ4SLwoEbmFtZRgCIAEoCUIhukgeyAEBchkQARgyMhNeW2EtekEtWjAtOVxzXC1fXSskEhwKC2Rlc2NyaXB0aW9uGAMgASgJQge6SARyAhhkEh4KCHRpbWV6b25lGAQgASgJQgy6SAnIAQFyBBABGDIiTwoVVXBkYXRlUHJvamVjdFJlc3BvbnNlEiUKB3Byb2plY3QYASABKAsyFC5hbHRhbHVuZS52MS5Qcm9qZWN0Eg8KB21lc3NhZ2UYAiABKAkiLwoURGVsZXRlUHJvamVjdFJlcXVlc3QSFwoCaWQYASABKAlCC7pICMgBAXIDmAEOIigKFURlbGV0ZVByb2plY3RSZXNwb25zZRIPCgdtZXNzYWdlGAEgASgJMskDCg5Qcm9qZWN0U2VydmljZRJYCg1RdWVyeVByb2plY3RzEiEuYWx0YWx1bmUudjEuUXVlcnlQcm9qZWN0c1JlcXVlc3QaIi5hbHRhbHVuZS52MS5RdWVyeVByb2plY3RzUmVzcG9uc2UiABJYCg1DcmVhdGVQcm9qZWN0EiEuYWx0YWx1bmUudjEuQ3JlYXRlUHJvamVjdFJlcXVlc3QaIi5hbHRhbHVuZS52MS5DcmVhdGVQcm9qZWN0UmVzcG9uc2UiABJPCgpHZXRQcm9qZWN0Eh4uYWx0YWx1bmUudjEuR2V0UHJvamVjdFJlcXVlc3QaHy5hbHRhbHVuZS52MS5HZXRQcm9qZWN0UmVzcG9uc2UiABJYCg1VcGRhdGVQcm9qZWN0EiEuYWx0YWx1bmUudjEuVXBkYXRlUHJvamVjdFJlcXVlc3QaIi5hbHRhbHVuZS52MS5VcGRhdGVQcm9qZWN0UmVzcG9uc2UiABJYCg1EZWxldGVQcm9qZWN0EiEuYWx0YWx1bmUudjEuRGVsZXRlUHJvamVjdFJlcXVlc3QaIi5hbHRhbHVuZS52MS5EZWxldGVQcm9qZWN0UmVzcG9uc2UiAEKhAQoPY29tLmFsdGFsdW5lLnYxQgxQcm9qZWN0UHJvdG9QAVozZ2l0aHViLmNvbS9ocno4L2FsdGFsdW5lL2dlbi9hbHRhbHVuZS92MTthbHRhbHVuZXYxogIDQVhYqgILQWx0YWx1bmUuVjHKAgtBbHRhbHVuZVxWMeICF0FsdGFsdW5lXFYxXEdQQk1ldGFkYXRh6gIMQWx0YWx1bmU6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
 
 /**
  * @generated from message altalune.v1.Project
@@ -158,6 +158,128 @@ export const CreateProjectResponseSchema: GenMessage<CreateProjectResponse> = /*
   messageDesc(file_altalune_v1_project, 4);
 
 /**
+ * @generated from message altalune.v1.GetProjectRequest
+ */
+export type GetProjectRequest = Message<"altalune.v1.GetProjectRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message altalune.v1.GetProjectRequest.
+ * Use `create(GetProjectRequestSchema)` to create a new message.
+ */
+export const GetProjectRequestSchema: GenMessage<GetProjectRequest> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_project, 5);
+
+/**
+ * @generated from message altalune.v1.GetProjectResponse
+ */
+export type GetProjectResponse = Message<"altalune.v1.GetProjectResponse"> & {
+  /**
+   * @generated from field: altalune.v1.Project project = 1;
+   */
+  project?: Project;
+};
+
+/**
+ * Describes the message altalune.v1.GetProjectResponse.
+ * Use `create(GetProjectResponseSchema)` to create a new message.
+ */
+export const GetProjectResponseSchema: GenMessage<GetProjectResponse> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_project, 6);
+
+/**
+ * @generated from message altalune.v1.UpdateProjectRequest
+ */
+export type UpdateProjectRequest = Message<"altalune.v1.UpdateProjectRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+
+  /**
+   * @generated from field: string name = 2;
+   */
+  name: string;
+
+  /**
+   * @generated from field: string description = 3;
+   */
+  description: string;
+
+  /**
+   * @generated from field: string timezone = 4;
+   */
+  timezone: string;
+};
+
+/**
+ * Describes the message altalune.v1.UpdateProjectRequest.
+ * Use `create(UpdateProjectRequestSchema)` to create a new message.
+ */
+export const UpdateProjectRequestSchema: GenMessage<UpdateProjectRequest> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_project, 7);
+
+/**
+ * @generated from message altalune.v1.UpdateProjectResponse
+ */
+export type UpdateProjectResponse = Message<"altalune.v1.UpdateProjectResponse"> & {
+  /**
+   * @generated from field: altalune.v1.Project project = 1;
+   */
+  project?: Project;
+
+  /**
+   * @generated from field: string message = 2;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message altalune.v1.UpdateProjectResponse.
+ * Use `create(UpdateProjectResponseSchema)` to create a new message.
+ */
+export const UpdateProjectResponseSchema: GenMessage<UpdateProjectResponse> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_project, 8);
+
+/**
+ * @generated from message altalune.v1.DeleteProjectRequest
+ */
+export type DeleteProjectRequest = Message<"altalune.v1.DeleteProjectRequest"> & {
+  /**
+   * @generated from field: string id = 1;
+   */
+  id: string;
+};
+
+/**
+ * Describes the message altalune.v1.DeleteProjectRequest.
+ * Use `create(DeleteProjectRequestSchema)` to create a new message.
+ */
+export const DeleteProjectRequestSchema: GenMessage<DeleteProjectRequest> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_project, 9);
+
+/**
+ * @generated from message altalune.v1.DeleteProjectResponse
+ */
+export type DeleteProjectResponse = Message<"altalune.v1.DeleteProjectResponse"> & {
+  /**
+   * @generated from field: string message = 1;
+   */
+  message: string;
+};
+
+/**
+ * Describes the message altalune.v1.DeleteProjectResponse.
+ * Use `create(DeleteProjectResponseSchema)` to create a new message.
+ */
+export const DeleteProjectResponseSchema: GenMessage<DeleteProjectResponse> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_project, 10);
+
+/**
  * @generated from service altalune.v1.ProjectService
  */
 export const ProjectService: GenService<{
@@ -176,6 +298,30 @@ export const ProjectService: GenService<{
     methodKind: "unary";
     input: typeof CreateProjectRequestSchema;
     output: typeof CreateProjectResponseSchema;
+  },
+  /**
+   * @generated from rpc altalune.v1.ProjectService.GetProject
+   */
+  getProject: {
+    methodKind: "unary";
+    input: typeof GetProjectRequestSchema;
+    output: typeof GetProjectResponseSchema;
+  },
+  /**
+   * @generated from rpc altalune.v1.ProjectService.UpdateProject
+   */
+  updateProject: {
+    methodKind: "unary";
+    input: typeof UpdateProjectRequestSchema;
+    output: typeof UpdateProjectResponseSchema;
+  },
+  /**
+   * @generated from rpc altalune.v1.ProjectService.DeleteProject
+   */
+  deleteProject: {
+    methodKind: "unary";
+    input: typeof DeleteProjectRequestSchema;
+    output: typeof DeleteProjectResponseSchema;
   },
 }> = /*@__PURE__*/
   serviceDesc(file_altalune_v1_project, 0);

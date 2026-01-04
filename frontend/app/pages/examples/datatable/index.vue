@@ -396,7 +396,7 @@ function closeDuplicateSheet() {
                 <h3 class="text-lg font-semibold">
                   {{ t('features.employees.empty.title') }}
                 </h3>
-                <p class="text-muted-foreground max-w-md">
+                <p class="text-center text-muted-foreground max-w-md whitespace-normal break-words">
                   {{ t('features.employees.empty.description') }}
                 </p>
               </div>

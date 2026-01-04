@@ -331,6 +331,302 @@ func (x *CreateProjectResponse) GetMessage() string {
 	return ""
 }
 
+type GetProjectRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetProjectRequest) Reset() {
+	*x = GetProjectRequest{}
+	mi := &file_altalune_v1_project_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetProjectRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetProjectRequest) ProtoMessage() {}
+
+func (x *GetProjectRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_project_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetProjectRequest.ProtoReflect.Descriptor instead.
+func (*GetProjectRequest) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_project_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetProjectRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type GetProjectResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Project       *Project               `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetProjectResponse) Reset() {
+	*x = GetProjectResponse{}
+	mi := &file_altalune_v1_project_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetProjectResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetProjectResponse) ProtoMessage() {}
+
+func (x *GetProjectResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_project_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetProjectResponse.ProtoReflect.Descriptor instead.
+func (*GetProjectResponse) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_project_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *GetProjectResponse) GetProject() *Project {
+	if x != nil {
+		return x.Project
+	}
+	return nil
+}
+
+type UpdateProjectRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Timezone      string                 `protobuf:"bytes,4,opt,name=timezone,proto3" json:"timezone,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateProjectRequest) Reset() {
+	*x = UpdateProjectRequest{}
+	mi := &file_altalune_v1_project_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateProjectRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateProjectRequest) ProtoMessage() {}
+
+func (x *UpdateProjectRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_project_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateProjectRequest.ProtoReflect.Descriptor instead.
+func (*UpdateProjectRequest) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_project_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *UpdateProjectRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateProjectRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *UpdateProjectRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *UpdateProjectRequest) GetTimezone() string {
+	if x != nil {
+		return x.Timezone
+	}
+	return ""
+}
+
+type UpdateProjectResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Project       *Project               `protobuf:"bytes,1,opt,name=project,proto3" json:"project,omitempty"`
+	Message       string                 `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateProjectResponse) Reset() {
+	*x = UpdateProjectResponse{}
+	mi := &file_altalune_v1_project_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateProjectResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateProjectResponse) ProtoMessage() {}
+
+func (x *UpdateProjectResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_project_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateProjectResponse.ProtoReflect.Descriptor instead.
+func (*UpdateProjectResponse) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_project_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *UpdateProjectResponse) GetProject() *Project {
+	if x != nil {
+		return x.Project
+	}
+	return nil
+}
+
+func (x *UpdateProjectResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
+type DeleteProjectRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteProjectRequest) Reset() {
+	*x = DeleteProjectRequest{}
+	mi := &file_altalune_v1_project_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteProjectRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteProjectRequest) ProtoMessage() {}
+
+func (x *DeleteProjectRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_project_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteProjectRequest.ProtoReflect.Descriptor instead.
+func (*DeleteProjectRequest) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_project_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *DeleteProjectRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteProjectResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Message       string                 `protobuf:"bytes,1,opt,name=message,proto3" json:"message,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteProjectResponse) Reset() {
+	*x = DeleteProjectResponse{}
+	mi := &file_altalune_v1_project_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteProjectResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteProjectResponse) ProtoMessage() {}
+
+func (x *DeleteProjectResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_project_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteProjectResponse.ProtoReflect.Descriptor instead.
+func (*DeleteProjectResponse) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_project_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *DeleteProjectResponse) GetMessage() string {
+	if x != nil {
+		return x.Message
+	}
+	return ""
+}
+
 var File_altalune_v1_project_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_project_proto_rawDesc = "" +
@@ -358,10 +654,30 @@ const file_altalune_v1_project_proto_rawDesc = "" +
 	"\venvironment\x18\x04 \x01(\tB\x17\xbaH\x14\xc8\x01\x01r\x0fR\x04liveR\asandboxR\venvironment\"a\n" +
 	"\x15CreateProjectResponse\x12.\n" +
 	"\aproject\x18\x01 \x01(\v2\x14.altalune.v1.ProjectR\aproject\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage2\xc4\x01\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"0\n" +
+	"\x11GetProjectRequest\x12\x1b\n" +
+	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\"D\n" +
+	"\x12GetProjectResponse\x12.\n" +
+	"\aproject\x18\x01 \x01(\v2\x14.altalune.v1.ProjectR\aproject\"\xbf\x01\n" +
+	"\x14UpdateProjectRequest\x12\x1b\n" +
+	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\x125\n" +
+	"\x04name\x18\x02 \x01(\tB!\xbaH\x1e\xc8\x01\x01r\x19\x10\x01\x1822\x13^[a-zA-Z0-9\\s\\-_]+$R\x04name\x12)\n" +
+	"\vdescription\x18\x03 \x01(\tB\a\xbaH\x04r\x02\x18dR\vdescription\x12(\n" +
+	"\btimezone\x18\x04 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x01\x182R\btimezone\"a\n" +
+	"\x15UpdateProjectResponse\x12.\n" +
+	"\aproject\x18\x01 \x01(\v2\x14.altalune.v1.ProjectR\aproject\x12\x18\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"3\n" +
+	"\x14DeleteProjectRequest\x12\x1b\n" +
+	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\"1\n" +
+	"\x15DeleteProjectResponse\x12\x18\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage2\xc9\x03\n" +
 	"\x0eProjectService\x12X\n" +
 	"\rQueryProjects\x12!.altalune.v1.QueryProjectsRequest\x1a\".altalune.v1.QueryProjectsResponse\"\x00\x12X\n" +
-	"\rCreateProject\x12!.altalune.v1.CreateProjectRequest\x1a\".altalune.v1.CreateProjectResponse\"\x00B\xa1\x01\n" +
+	"\rCreateProject\x12!.altalune.v1.CreateProjectRequest\x1a\".altalune.v1.CreateProjectResponse\"\x00\x12O\n" +
+	"\n" +
+	"GetProject\x12\x1e.altalune.v1.GetProjectRequest\x1a\x1f.altalune.v1.GetProjectResponse\"\x00\x12X\n" +
+	"\rUpdateProject\x12!.altalune.v1.UpdateProjectRequest\x1a\".altalune.v1.UpdateProjectResponse\"\x00\x12X\n" +
+	"\rDeleteProject\x12!.altalune.v1.DeleteProjectRequest\x1a\".altalune.v1.DeleteProjectResponse\"\x00B\xa1\x01\n" +
 	"\x0fcom.altalune.v1B\fProjectProtoP\x01Z3github.com/hrz8/altalune/gen/altalune/v1;altalunev1\xa2\x02\x03AXX\xaa\x02\vAltalune.V1\xca\x02\vAltalune\\V1\xe2\x02\x17Altalune\\V1\\GPBMetadata\xea\x02\fAltalune::V1b\x06proto3"
 
 var (
@@ -376,33 +692,47 @@ func file_altalune_v1_project_proto_rawDescGZIP() []byte {
 	return file_altalune_v1_project_proto_rawDescData
 }
 
-var file_altalune_v1_project_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
+var file_altalune_v1_project_proto_msgTypes = make([]protoimpl.MessageInfo, 11)
 var file_altalune_v1_project_proto_goTypes = []any{
 	(*Project)(nil),               // 0: altalune.v1.Project
 	(*QueryProjectsRequest)(nil),  // 1: altalune.v1.QueryProjectsRequest
 	(*QueryProjectsResponse)(nil), // 2: altalune.v1.QueryProjectsResponse
 	(*CreateProjectRequest)(nil),  // 3: altalune.v1.CreateProjectRequest
 	(*CreateProjectResponse)(nil), // 4: altalune.v1.CreateProjectResponse
-	(*timestamppb.Timestamp)(nil), // 5: google.protobuf.Timestamp
-	(*QueryRequest)(nil),          // 6: altalune.v1.QueryRequest
-	(*QueryMetaResponse)(nil),     // 7: altalune.v1.QueryMetaResponse
+	(*GetProjectRequest)(nil),     // 5: altalune.v1.GetProjectRequest
+	(*GetProjectResponse)(nil),    // 6: altalune.v1.GetProjectResponse
+	(*UpdateProjectRequest)(nil),  // 7: altalune.v1.UpdateProjectRequest
+	(*UpdateProjectResponse)(nil), // 8: altalune.v1.UpdateProjectResponse
+	(*DeleteProjectRequest)(nil),  // 9: altalune.v1.DeleteProjectRequest
+	(*DeleteProjectResponse)(nil), // 10: altalune.v1.DeleteProjectResponse
+	(*timestamppb.Timestamp)(nil), // 11: google.protobuf.Timestamp
+	(*QueryRequest)(nil),          // 12: altalune.v1.QueryRequest
+	(*QueryMetaResponse)(nil),     // 13: altalune.v1.QueryMetaResponse
 }
 var file_altalune_v1_project_proto_depIdxs = []int32{
-	5, // 0: altalune.v1.Project.created_at:type_name -> google.protobuf.Timestamp
-	5, // 1: altalune.v1.Project.updated_at:type_name -> google.protobuf.Timestamp
-	6, // 2: altalune.v1.QueryProjectsRequest.query:type_name -> altalune.v1.QueryRequest
-	0, // 3: altalune.v1.QueryProjectsResponse.data:type_name -> altalune.v1.Project
-	7, // 4: altalune.v1.QueryProjectsResponse.meta:type_name -> altalune.v1.QueryMetaResponse
-	0, // 5: altalune.v1.CreateProjectResponse.project:type_name -> altalune.v1.Project
-	1, // 6: altalune.v1.ProjectService.QueryProjects:input_type -> altalune.v1.QueryProjectsRequest
-	3, // 7: altalune.v1.ProjectService.CreateProject:input_type -> altalune.v1.CreateProjectRequest
-	2, // 8: altalune.v1.ProjectService.QueryProjects:output_type -> altalune.v1.QueryProjectsResponse
-	4, // 9: altalune.v1.ProjectService.CreateProject:output_type -> altalune.v1.CreateProjectResponse
-	8, // [8:10] is the sub-list for method output_type
-	6, // [6:8] is the sub-list for method input_type
-	6, // [6:6] is the sub-list for extension type_name
-	6, // [6:6] is the sub-list for extension extendee
-	0, // [0:6] is the sub-list for field type_name
+	11, // 0: altalune.v1.Project.created_at:type_name -> google.protobuf.Timestamp
+	11, // 1: altalune.v1.Project.updated_at:type_name -> google.protobuf.Timestamp
+	12, // 2: altalune.v1.QueryProjectsRequest.query:type_name -> altalune.v1.QueryRequest
+	0,  // 3: altalune.v1.QueryProjectsResponse.data:type_name -> altalune.v1.Project
+	13, // 4: altalune.v1.QueryProjectsResponse.meta:type_name -> altalune.v1.QueryMetaResponse
+	0,  // 5: altalune.v1.CreateProjectResponse.project:type_name -> altalune.v1.Project
+	0,  // 6: altalune.v1.GetProjectResponse.project:type_name -> altalune.v1.Project
+	0,  // 7: altalune.v1.UpdateProjectResponse.project:type_name -> altalune.v1.Project
+	1,  // 8: altalune.v1.ProjectService.QueryProjects:input_type -> altalune.v1.QueryProjectsRequest
+	3,  // 9: altalune.v1.ProjectService.CreateProject:input_type -> altalune.v1.CreateProjectRequest
+	5,  // 10: altalune.v1.ProjectService.GetProject:input_type -> altalune.v1.GetProjectRequest
+	7,  // 11: altalune.v1.ProjectService.UpdateProject:input_type -> altalune.v1.UpdateProjectRequest
+	9,  // 12: altalune.v1.ProjectService.DeleteProject:input_type -> altalune.v1.DeleteProjectRequest
+	2,  // 13: altalune.v1.ProjectService.QueryProjects:output_type -> altalune.v1.QueryProjectsResponse
+	4,  // 14: altalune.v1.ProjectService.CreateProject:output_type -> altalune.v1.CreateProjectResponse
+	6,  // 15: altalune.v1.ProjectService.GetProject:output_type -> altalune.v1.GetProjectResponse
+	8,  // 16: altalune.v1.ProjectService.UpdateProject:output_type -> altalune.v1.UpdateProjectResponse
+	10, // 17: altalune.v1.ProjectService.DeleteProject:output_type -> altalune.v1.DeleteProjectResponse
+	13, // [13:18] is the sub-list for method output_type
+	8,  // [8:13] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_altalune_v1_project_proto_init() }
@@ -417,7 +747,7 @@ func file_altalune_v1_project_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_altalune_v1_project_proto_rawDesc), len(file_altalune_v1_project_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   5,
+			NumMessages:   11,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

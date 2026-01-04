@@ -11,4 +11,7 @@ type Repositor interface {
 	Query(ctx context.Context, params *query.QueryParams) (*query.QueryResult[Project], error)
 	Create(ctx context.Context, input *CreateProjectInput) (*CreateProjectResult, error)
 	GetByName(ctx context.Context, name string) (*Project, error)
+	GetByID(ctx context.Context, publicID string) (*Project, error)
+	Update(ctx context.Context, input *UpdateProjectInput) (*UpdateProjectResult, error)
+	Delete(ctx context.Context, publicID string) error
 }

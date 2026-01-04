@@ -132,3 +132,85 @@ func (s *Service) CreateProject(ctx context.Context, req *altalunev1.CreateProje
 		Message: "Project created successfully",
 	}, nil
 }
+
+func (s *Service) GetProject(ctx context.Context, req *altalunev1.GetProjectRequest) (*altalunev1.GetProjectResponse, error) {
+	if err := s.validator.Validate(req); err != nil {
+		return nil, altalune.NewInvalidPayloadError(err.Error())
+	}
+
+	project, err := s.projectRepo.GetByID(ctx, req.Id)
+	if err != nil {
+		if err == ErrProjectNotFound {
+			return nil, altalune.NewProjectNotFound(req.Id)
+		}
+		s.log.Error("failed to get project", "error", err, "project_id", req.Id)
+		return nil, altalune.NewUnexpectedError("failed to get project", err)
+	}
+
+	return &altalunev1.GetProjectResponse{
+		Project: project.ToProjectProto(),
+	}, nil
+}
+
+func (s *Service) UpdateProject(ctx context.Context, req *altalunev1.UpdateProjectRequest) (*altalunev1.UpdateProjectResponse, error) {
+	if err := s.validator.Validate(req); err != nil {
+		return nil, altalune.NewInvalidPayloadError(err.Error())
+	}
+
+	// Get internal ID
+	internalID, err := s.projectRepo.GetIDByPublicID(ctx, req.Id)
+	if err != nil {
+		if err == ErrProjectNotFound {
+			return nil, altalune.NewProjectNotFound(req.Id)
+		}
+		return nil, altalune.NewUnexpectedError("failed to resolve project ID", err)
+	}
+
+	input := &UpdateProjectInput{
+		ID:          internalID,
+		PublicID:    req.Id,
+		Name:        req.Name,
+		Description: req.Description,
+		Timezone:    req.Timezone,
+	}
+
+	result, err := s.projectRepo.Update(ctx, input)
+	if err != nil {
+		if err == ErrProjectNotFound {
+			return nil, altalune.NewProjectNotFound(req.Id)
+		}
+		if err == ErrProjectAlreadyExists {
+			return nil, altalune.NewAlreadyExistsError(req.Name)
+		}
+		s.log.Error("failed to update project", "error", err, "project_id", req.Id)
+		return nil, altalune.NewUnexpectedError("failed to update project", err)
+	}
+
+	s.log.Info("project updated successfully", "project_id", req.Id, "name", req.Name)
+
+	return &altalunev1.UpdateProjectResponse{
+		Project: result.ToProject().ToProjectProto(),
+		Message: "Project updated successfully",
+	}, nil
+}
+
+func (s *Service) DeleteProject(ctx context.Context, req *altalunev1.DeleteProjectRequest) (*altalunev1.DeleteProjectResponse, error) {
+	if err := s.validator.Validate(req); err != nil {
+		return nil, altalune.NewInvalidPayloadError(err.Error())
+	}
+
+	err := s.projectRepo.Delete(ctx, req.Id)
+	if err != nil {
+		if err == ErrProjectNotFound {
+			return nil, altalune.NewProjectNotFound(req.Id)
+		}
+		s.log.Error("failed to delete project", "error", err, "project_id", req.Id)
+		return nil, altalune.NewUnexpectedError("failed to delete project", err)
+	}
+
+	s.log.Info("project deleted successfully", "project_id", req.Id)
+
+	return &altalunev1.DeleteProjectResponse{
+		Message: "Project deleted successfully",
+	}, nil
+}

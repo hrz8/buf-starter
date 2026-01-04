@@ -3,7 +3,6 @@ import type { ApiKey } from '~~/gen/altalune/v1/api_key_pb';
 import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
-import * as z from 'zod';
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
 import { Button } from '@/components/ui/button';
@@ -18,6 +17,8 @@ import {
 import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useApiKeyService } from '@/composables/services/useApiKeyService';
+import { getConnectRPCError, hasConnectRPCError } from './error';
+import { apiKeyCreateSchema } from './schema';
 
 const props = defineProps<{
   projectId: string;
@@ -40,15 +41,7 @@ const {
 } = useApiKeyService();
 
 // Create form schema matching protobuf structure
-const formSchema = toTypedSchema(z.object({
-  projectId: z.string().length(14),
-  name: z
-    .string()
-    .min(2, 'Name must be at least 2 characters')
-    .max(50, 'Name must not exceed 50 characters')
-    .regex(/^[\w\s\-]+$/, 'Name can only contain letters, numbers, spaces, hyphens, and underscores'),
-  expiration: z.string().min(1, 'Expiration date is required'),
-}));
+const formSchema = toTypedSchema(apiKeyCreateSchema);
 
 // Compute initial values
 const initialFormValues = computed(() => {
@@ -66,16 +59,6 @@ const form = useForm({
   validationSchema: formSchema,
   initialValues: initialFormValues.value,
 });
-
-// Helper functions for ConnectRPC validation errors (fallback)
-function getConnectRPCError(fieldName: string): string {
-  const errors = createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`];
-  return errors?.[0] || '';
-}
-
-function hasConnectRPCError(fieldName: string): boolean {
-  return !!(createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`]);
-}
 
 // Handle form submission with vee-validate
 const onSubmit = form.handleSubmit(async (values) => {
@@ -180,7 +163,7 @@ onUnmounted(() => {
           <Input
             v-bind="componentField"
             :placeholder="t('features.api_keys.form.namePlaceholder')"
-            :class="{ 'border-destructive': hasConnectRPCError('name') }"
+            :class="{ 'border-destructive': hasConnectRPCError(createValidationErrors, 'name') }"
             :disabled="createLoading"
           />
         </FormControl>
@@ -189,10 +172,10 @@ onUnmounted(() => {
         </FormDescription>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('name')"
+          v-if="hasConnectRPCError(createValidationErrors, 'name')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('name') }}
+          {{ getConnectRPCError(createValidationErrors, 'name') }}
         </div>
       </FormItem>
     </FormField>
@@ -207,7 +190,9 @@ onUnmounted(() => {
           <Input
             v-bind="componentField"
             type="date"
-            :class="{ 'border-destructive': hasConnectRPCError('expiration') }"
+            :class="{
+              'border-destructive': hasConnectRPCError(createValidationErrors, 'expiration'),
+            }"
             :disabled="createLoading"
             :min="new Date().toISOString().split('T')[0]"
           />
@@ -217,10 +202,10 @@ onUnmounted(() => {
         </FormDescription>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('expiration')"
+          v-if="hasConnectRPCError(createValidationErrors, 'expiration')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('expiration') }}
+          {{ getConnectRPCError(createValidationErrors, 'expiration') }}
         </div>
       </FormItem>
     </FormField>

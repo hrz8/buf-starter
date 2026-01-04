@@ -49,6 +49,13 @@ export const useProjectStore = defineStore('project', () => {
     setActiveProject(project.id);
   }
 
+  function removeProject(publicId: string) {
+    projects.value = projects.value.filter(p => p.id !== publicId);
+    if (projects.value.length > 0) {
+      setActiveProject(projects.value[0]!.id);
+    }
+  }
+
   function setLoading(isLoading: boolean) {
     pending.value = isLoading;
   }
@@ -66,6 +73,7 @@ export const useProjectStore = defineStore('project', () => {
     setProjects,
     setActiveProject,
     addProject,
+    removeProject,
     setLoading,
     setError,
   };

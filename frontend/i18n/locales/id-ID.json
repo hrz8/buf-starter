@@ -286,7 +286,6 @@
         "nameLabel": "Nama Proyek *",
         "namePlaceholder": "Proyek Keren Saya",
         "timezoneDescription": "Zona waktu proyek untuk penjadwalan dan pemrosesan data",
-        "timezoneHint": "Anda juga dapat mengetik langsung di bidang di atas untuk zona waktu kustom",
         "timezoneLabel": "Zona Waktu *",
         "timezonePlaceholder": "Pilih zona waktu"
       },
@@ -299,6 +298,57 @@
       "sheet": {
         "createDescription": "Isi detail proyek di bawah ini. Semua bidang yang ditandai dengan * wajib diisi.",
         "createTitle": "Tambah Proyek Baru"
+      },
+      "settings": {
+        "actions": {
+          "cancel": "Batal",
+          "delete": "Hapus Proyek",
+          "deleting": "Menghapus...",
+          "save": "Simpan Perubahan",
+          "saving": "Menyimpan..."
+        },
+        "deleteDialog": {
+          "confirmDescription": "Ketik 'Confirm delete {name}' untuk mengonfirmasi",
+          "confirmLabel": "Ketik konfirmasi untuk menghapus",
+          "confirmPlaceholder": "Confirm delete [NamaProyek]",
+          "description": "Tindakan ini tidak dapat dibatalkan. Semua data yang terkait dengan proyek ini akan dihapus secara permanen.",
+          "lastProjectWarning": "Tidak dapat menghapus proyek terakhir. Anda harus memiliki setidaknya satu proyek.",
+          "title": "Hapus Proyek"
+        },
+        "description": "Kelola konfigurasi dan detail proyek Anda",
+        "form": {
+          "descriptionDescription": "Deskripsi singkat proyek Anda (opsional)",
+          "descriptionLabel": "Deskripsi",
+          "descriptionPlaceholder": "Masukkan deskripsi proyek",
+          "environmentDescription": "Tidak dapat diubah setelah proyek dibuat",
+          "environmentLabel": "Lingkungan",
+          "nameDescription": "Pengenal unik untuk proyek Anda",
+          "nameLabel": "Nama Proyek *",
+          "namePlaceholder": "Masukkan nama proyek",
+          "timezoneDescription": "Zona waktu untuk proyek ini",
+          "timezoneLabel": "Zona Waktu *",
+          "timezonePlaceholder": "Pilih zona waktu"
+        },
+        "messages": {
+          "deleteConfirmMismatch": "Teks konfirmasi tidak cocok. Silakan coba lagi.",
+          "deleteError": "Gagal menghapus proyek",
+          "deleteErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+          "deleteSuccess": "Proyek dihapus",
+          "deleteSuccessDesc": "{name} telah dihapus secara permanen",
+          "loadError": "Gagal memuat pengaturan proyek",
+          "noProjectSelected": "Silakan pilih proyek untuk melihat pengaturan",
+          "updateError": "Gagal memperbarui proyek",
+          "updateErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+          "updateSuccess": "Proyek diperbarui",
+          "updateSuccessDesc": "{name} telah berhasil diperbarui",
+          "fetchError": "Gagal memuat proyek",
+          "fetchErrorDesc": "Tidak dapat memuat pengaturan proyek. Silakan coba lagi."
+        },
+        "title": "Pengaturan Proyek",
+        "dangerZone": {
+          "title": "Zona Bahaya",
+          "description": "Hapus proyek ini secara permanen beserta semua data terkait. Tindakan ini tidak dapat dibatalkan."
+        }
       }
     }
   },
@@ -327,6 +377,7 @@
     "home": "Beranda",
     "settings": {
       "apiKeys": "Kunci API",
+      "project": "Pengaturan Proyek",
       "title": "Pengaturan"
     },
     "user": {

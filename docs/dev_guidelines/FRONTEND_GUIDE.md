@@ -315,6 +315,217 @@ Never bind multiple inputs to the same vee-validate field. Each field name shoul
 </FormField>
 ```
 
+## vee-validate FormField Best Practices
+
+### Critical: Understanding Vue's Provide/Inject Mechanism
+
+vee-validate's `FormField` component uses Vue's provide/inject mechanism to share context with child components like `FormControl`, `FormLabel`, `FormMessage`, etc. Breaking this mechanism causes the error: **"useFormField should be used within \<FormField>"**
+
+### Working Pattern Requirements
+
+To ensure FormField renders correctly and provides context:
+
+**1. Loading State Must Start as TRUE**
+
+```typescript
+// ✅ CORRECT - Starts as true
+const isLoading = ref(true);
+
+// ❌ WRONG - Starts as false
+const isLoading = ref(false);
+```
+
+**Why:** Vue's provide/inject needs stable component mounting. Starting with `true` ensures proper context setup before data arrives.
+
+**2. NO :key Attributes on FormField**
+
+```vue
+<!-- ❌ WRONG - :key breaks provide/inject -->
+<FormField v-slot="{ componentField }" name="name" :key="someValue">
+  <FormItem>...</FormItem>
+</FormField>
+
+<!-- ✅ CORRECT - No :key attribute -->
+<FormField v-slot="{ componentField }" name="name">
+  <FormItem>...</FormItem>
+</FormField>
+```
+
+**Why:** Vue's `:key` attribute forces component re-creation, breaking the provide/inject chain established by vee-validate.
+
+**3. Simple Conditional Rendering**
+
+```vue
+<!-- ✅ CORRECT - Simple v-if/v-else-if pattern -->
+<div v-if="isLoading">Loading...</div>
+<div v-else-if="currentData" class="space-y-6">
+  <form @submit="onSubmit">
+    <FormField v-slot="{ componentField }" name="name">
+      <FormItem>...</FormItem>
+    </FormField>
+  </form>
+</div>
+
+<!-- ❌ WRONG - Complex nested conditions -->
+<template v-if="!isLoading">
+  <div v-if="currentData">
+    <form v-if="!error">
+      <FormField>...</FormField>
+    </form>
+  </div>
+</template>
+```
+
+**Why:** Simpler component trees maintain stable provide/inject contexts.
+
+**4. Avoid Teleport/Portal Around Forms**
+
+```vue
+<!-- ❌ WRONG - Teleport breaks context -->
+<Teleport to="body">
+  <FormField>...</FormField>
+</Teleport>
+
+<!-- ✅ CORRECT - FormField in normal component tree -->
+<div>
+  <FormField>...</FormField>
+</div>
+```
+
+**Why:** Teleporting components breaks the component hierarchy that provide/inject relies on.
+
+### Component Structure Pattern
+
+**Complete Working Example:**
+
+```vue
+<script setup lang="ts">
+import type { Entity } from '~~/gen/domain/v1/entity_pb';
+import { toTypedSchema } from '@vee-validate/zod';
+import { useForm } from 'vee-validate';
+import * as z from 'zod';
+
+const props = defineProps<{
+  entityId: string;
+}>();
+
+// ✅ Start loading as TRUE
+const currentEntity = ref<Entity | null>(null);
+const isLoading = ref(true);
+const fetchError = ref<string | null>(null);
+
+// Form schema
+const formSchema = toTypedSchema(z.object({
+  name: z.string().min(1).max(50),
+  email: z.string().email(),
+}));
+
+const form = useForm({
+  validationSchema: formSchema,
+  initialValues: {
+    name: '',
+    email: '',
+  },
+});
+
+// Fetch data
+onMounted(async () => {
+  try {
+    const entity = await getEntity({ id: props.entityId });
+    if (entity) {
+      currentEntity.value = entity;
+      form.setValues({
+        name: entity.name,
+        email: entity.email,
+      });
+    }
+  }
+  catch (error) {
+    console.error('Failed to load:', error);
+    fetchError.value = 'Failed to load data';
+  }
+  finally {
+    isLoading.value = false; // ✅ Set to false after data loads
+  }
+});
+</script>
+
+<template>
+  <!-- ✅ Loading state -->
+  <div v-if="isLoading">
+    <Skeleton class="h-10 w-full" />
+    <Skeleton class="h-10 w-full" />
+  </div>
+
+  <!-- ✅ Error state -->
+  <Alert v-else-if="fetchError" variant="destructive">
+    <AlertTitle>Error</AlertTitle>
+    <AlertDescription>{{ fetchError }}</AlertDescription>
+  </Alert>
+
+  <!-- ✅ Form with data -->
+  <div v-else-if="currentEntity" class="space-y-6">
+    <form @submit="onSubmit">
+      <!-- ✅ NO :key attribute on FormField -->
+      <FormField v-slot="{ componentField }" name="name">
+        <FormItem>
+          <FormLabel>Name</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <FormField v-slot="{ componentField }" name="email">
+        <FormItem>
+          <FormLabel>Email</FormLabel>
+          <FormControl>
+            <Input v-bind="componentField" type="email" />
+          </FormControl>
+          <FormMessage />
+        </FormItem>
+      </FormField>
+
+      <Button type="submit">Save</Button>
+    </form>
+  </div>
+</template>
+```
+
+### Troubleshooting FormField Issues
+
+**Error: "useFormField should be used within \<FormField>"**
+
+Check these common causes:
+
+1. ✅ `isLoading` starts as `true`?
+2. ✅ No `:key` attributes on `FormField` components?
+3. ✅ Simple conditional rendering (v-if/v-else-if)?
+4. ✅ FormField not inside Teleport/Portal?
+5. ✅ All Form components imported from same source?
+
+**Debugging Steps:**
+
+1. **Test incrementally** - Add one field at a time, test after each addition
+2. **Create minimal reproduction** - Test FormField in isolation on a page
+3. **Check component tree** - Use Vue DevTools to verify component hierarchy
+4. **Verify imports** - Ensure all Form components come from `@/components/ui/form`
+
+### Summary
+
+**DO:**
+- ✅ Start `isLoading` as `true`
+- ✅ Use simple `v-if`/`v-else-if` conditionals
+- ✅ Keep FormFields in normal component tree
+- ✅ Test after each change when building complex forms
+
+**DON'T:**
+- ❌ Use `:key` on FormField components
+- ❌ Start `isLoading` as `false`
+- ❌ Nest FormFields in Teleport/Portal
+- ❌ Add multiple features without testing
+
 ```vue
 <script setup lang="ts">
 import { toTypedSchema } from "@vee-validate/zod";
@@ -1323,6 +1534,291 @@ When adding new translations:
     }
   }
 }
+```
+
+## Feature Organization and Refactoring Pattern
+
+### Directory Structure
+
+Each feature domain in `frontend/app/components/features/{domain}/` should follow this standardized structure:
+
+```
+features/
+└── {domain}/          # e.g., project, api_key, employee
+    ├── components/    # Domain UI components
+    │   ├── {Domain}CreateForm.vue
+    │   ├── {Domain}EditSheet.vue
+    │   ├── {Domain}DeleteDialog.vue
+    │   └── ...
+    ├── schema.ts      # Zod validation schemas
+    ├── error.ts       # ConnectRPC error utilities
+    ├── constants.ts   # Shared constants
+    └── index.ts       # Public exports (optional)
+```
+
+### File Responsibilities
+
+**1. schema.ts - Validation Schemas**
+
+Centralize all Zod schemas for the feature domain:
+
+```typescript
+// frontend/app/components/features/project/schema.ts
+import { z } from 'zod';
+
+/**
+ * Project Settings Form Schema
+ * Matches UpdateProjectRequest protobuf validation
+ */
+export const projectSettingsSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(50, 'Name must be 50 characters or less'),
+  description: z.string().max(100, 'Description must be 100 characters or less').optional(),
+  timezone: z.string().min(1, 'Timezone is required'),
+});
+
+export type ProjectSettingsFormData = z.infer<typeof projectSettingsSchema>;
+
+/**
+ * Project Creation Form Schema
+ * Matches CreateProjectRequest protobuf validation
+ */
+export const projectCreateSchema = z.object({
+  name: z.string().min(1).max(50),
+  description: z.string().max(100).optional(),
+  timezone: z.string().min(1),
+  environment: z.enum(['sandbox', 'live']),
+});
+
+export type ProjectCreateFormData = z.infer<typeof projectCreateSchema>;
+```
+
+**Benefits:**
+- ✅ Single source of truth for validation rules
+- ✅ Easy to maintain and update validation logic
+- ✅ Reusable across multiple components
+- ✅ Type inference with `z.infer`
+- ✅ Clear documentation with JSDoc comments
+
+**2. error.ts - ConnectRPC Error Utilities**
+
+Centralize error handling utilities for the feature:
+
+```typescript
+// frontend/app/components/features/project/error.ts
+import type { ComputedRef } from 'vue';
+
+/**
+ * Get ConnectRPC validation error for a specific field
+ * Checks both direct field name and nested 'value.fieldName' format
+ *
+ * @param validationErrors - Computed ref of validation errors from service
+ * @param fieldName - Field name to get error for
+ * @returns Error message string or empty string
+ */
+export function getConnectRPCError(
+  validationErrors: ComputedRef<Record<string, string[]>>,
+  fieldName: string,
+): string {
+  const errors =
+    validationErrors.value[fieldName] ||
+    validationErrors.value[`value.${fieldName}`];
+  return errors?.[0] || '';
+}
+
+/**
+ * Check if a field has ConnectRPC validation errors
+ *
+ * @param validationErrors - Computed ref of validation errors from service
+ * @param fieldName - Field name to check
+ * @returns True if field has errors
+ */
+export function hasConnectRPCError(
+  validationErrors: ComputedRef<Record<string, string[]>>,
+  fieldName: string,
+): boolean {
+  return !!(
+    validationErrors.value[fieldName] ||
+    validationErrors.value[`value.${fieldName}`]
+  );
+}
+```
+
+**Benefits:**
+- ✅ DRY - No duplicated error handling logic
+- ✅ Consistent error display across components
+- ✅ Easy to update error handling behavior globally
+- ✅ Type-safe with proper TypeScript signatures
+
+**3. constants.ts - Shared Constants**
+
+Centralize domain-specific constants:
+
+```typescript
+// frontend/app/components/features/project/constants.ts
+
+/**
+ * Timezone options for project configuration
+ * Common timezones sorted by geographical region
+ */
+export const TIMEZONE_OPTIONS = [
+  // UTC
+  'UTC',
+  // Americas
+  'America/New_York',
+  'America/Chicago',
+  'America/Denver',
+  'America/Los_Angeles',
+  'America/Toronto',
+  'America/Mexico_City',
+  'America/Sao_Paulo',
+  // Europe
+  'Europe/London',
+  'Europe/Paris',
+  'Europe/Berlin',
+  'Europe/Moscow',
+  // Asia
+  'Asia/Dubai',
+  'Asia/Kolkata',
+  'Asia/Singapore',
+  'Asia/Tokyo',
+  'Asia/Shanghai',
+  'Asia/Hong_Kong',
+  // Pacific
+  'Pacific/Auckland',
+  'Australia/Sydney',
+] as const;
+
+export type Timezone = typeof TIMEZONE_OPTIONS[number];
+
+/**
+ * Project environment types
+ */
+export const PROJECT_ENVIRONMENTS = {
+  SANDBOX: 'sandbox',
+  LIVE: 'live',
+} as const;
+
+export type ProjectEnvironment = typeof PROJECT_ENVIRONMENTS[keyof typeof PROJECT_ENVIRONMENTS];
+```
+
+**Benefits:**
+- ✅ Single source of truth for domain constants
+- ✅ Type-safe with `as const` and type inference
+- ✅ Easy to add/remove/update values
+- ✅ Prevents typos and magic strings
+- ✅ Clear documentation with comments
+
+### Component Usage
+
+**Before Refactoring:**
+
+```vue
+<script setup lang="ts">
+import { toTypedSchema } from '@vee-validate/zod';
+import * as z from 'zod';
+
+// ❌ Inline schema - duplicated across components
+const formSchema = toTypedSchema(z.object({
+  name: z.string().min(1).max(50),
+  timezone: z.string().min(1),
+}));
+
+// ❌ Inline constants - duplicated
+const timezones = ['UTC', 'America/New_York', 'Europe/London'];
+
+// ❌ Inline error utility - duplicated
+const getError = (field: string) => {
+  return validationErrors.value[field]?.[0] || '';
+};
+</script>
+```
+
+**After Refactoring:**
+
+```vue
+<script setup lang="ts">
+import { toTypedSchema } from '@vee-validate/zod';
+import { projectSettingsSchema } from './schema';
+import { TIMEZONE_OPTIONS } from './constants';
+import { getConnectRPCError, hasConnectRPCError } from './error';
+
+// ✅ Imported from centralized files
+const formSchema = toTypedSchema(projectSettingsSchema);
+const timezoneOptions = TIMEZONE_OPTIONS;
+
+// ✅ Using centralized utility
+const getError = (field: string) => getConnectRPCError(validationErrors, field);
+const hasError = (field: string) => hasConnectRPCError(validationErrors, field);
+</script>
+
+<template>
+  <Select>
+    <SelectItem v-for="tz in timezoneOptions" :key="tz" :value="tz">
+      {{ tz }}
+    </SelectItem>
+  </Select>
+
+  <!-- Error display with centralized utility -->
+  <div v-if="hasError('name')" class="text-destructive">
+    {{ getError('name') }}
+  </div>
+</template>
+```
+
+### Refactoring Checklist
+
+When refactoring an existing feature:
+
+- [ ] Create `schema.ts` with all Zod schemas
+- [ ] Export type definitions using `z.infer`
+- [ ] Create `error.ts` with ConnectRPC error utilities
+- [ ] Create `constants.ts` with shared constants (arrays, enums, etc.)
+- [ ] Update all components to import from centralized files
+- [ ] Remove duplicate validation schemas
+- [ ] Remove duplicate error handling functions
+- [ ] Remove duplicate constant arrays
+- [ ] Add JSDoc comments to all exports
+- [ ] Test all components after refactoring
+
+### Benefits of This Pattern
+
+1. **DRY Principle** - No code duplication across components
+2. **Single Source of Truth** - One place to update validation/constants
+3. **Type Safety** - Centralized types exported from schemas
+4. **Maintainability** - Easy to find and update domain-specific logic
+5. **Testability** - Can test schemas/utilities in isolation
+6. **Consistency** - Same validation and error handling everywhere
+7. **Documentation** - Clear JSDoc comments explain usage
+
+### When to Create These Files
+
+**schema.ts** - Create when:
+- Feature has 2+ forms using same validation rules
+- Validation logic is complex or reused
+- Need type inference across multiple components
+
+**error.ts** - Create when:
+- 2+ components use ConnectRPC error handling
+- Custom error formatting/parsing is needed
+- Want consistent error display patterns
+
+**constants.ts** - Create when:
+- Same array/object literal used in 2+ places
+- Dropdown options, enum values, or config used across components
+- Magic strings/numbers need to be avoided
+
+### Example: api_key Feature Structure
+
+```
+features/api_key/
+├── ApiKeyTable.vue
+├── ApiKeyCreateSheet.vue
+├── ApiKeyEditSheet.vue
+├── ApiKeyDeleteDialog.vue
+├── ApiKeyDisplayDialog.vue
+├── schema.ts           # Zod schemas for create/update
+├── error.ts           # getConnectRPCError, hasConnectRPCError
+└── constants.ts       # Status options, expiration defaults
 ```
 
 This workflow ensures type-safe, consistent, and maintainable frontend development while leveraging the power of protobuf validation and Connect-RPC.

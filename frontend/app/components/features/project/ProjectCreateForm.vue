@@ -1,12 +1,8 @@
 <script setup lang="ts">
 import type { Project } from '~~/gen/altalune/v1/project_pb';
 import { toTypedSchema } from '@vee-validate/zod';
-import { AlertCircle } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
-
-import * as z from 'zod';
-
 import {
   Alert,
   AlertDescription,
@@ -32,6 +28,9 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useProjectService } from '@/composables/services/useProjectService';
+import { TIMEZONE_OPTIONS } from './constants';
+import { getConnectRPCError, hasConnectRPCError } from './error';
+import { projectCreateSchema } from './schema';
 
 const emit = defineEmits<{
   success: [project: Project];
@@ -49,12 +48,7 @@ const {
 } = useProjectService();
 
 // Create Zod schema matching protobuf validation rules
-const formSchema = toTypedSchema(z.object({
-  name: z.string().min(1).max(50),
-  description: z.string().max(100).optional(),
-  timezone: z.string().min(1),
-  environment: z.string().min(1),
-}));
+const formSchema = toTypedSchema(projectCreateSchema);
 
 // Initialize vee-validate form
 const form = useForm({
@@ -63,7 +57,7 @@ const form = useForm({
     name: '',
     description: '',
     timezone: '',
-    environment: '',
+    environment: undefined,
   },
 });
 
@@ -80,32 +74,7 @@ const environmentOptions = computed(() => [
   },
 ]);
 
-const timezoneOptions = [
-  'UTC',
-  'America/New_York',
-  'America/Chicago',
-  'America/Denver',
-  'America/Los_Angeles',
-  'America/Toronto',
-  'Europe/London',
-  'Europe/Paris',
-  'Europe/Berlin',
-  'Asia/Tokyo',
-  'Asia/Shanghai',
-  'Asia/Kolkata',
-  'Australia/Sydney',
-  'Pacific/Auckland',
-];
-
-// ConnectRPC validation helpers (fallback layer)
-function getConnectRPCError(fieldName: string): string {
-  const errors = createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`];
-  return errors?.[0] || '';
-}
-
-function hasConnectRPCError(fieldName: string): boolean {
-  return !!(createValidationErrors.value[fieldName] || createValidationErrors.value[`value.${fieldName}`]);
-}
+const timezoneOptions = TIMEZONE_OPTIONS;
 
 // Handle form submission with vee-validate
 const onSubmit = form.handleSubmit(async (values) => {
@@ -139,7 +108,7 @@ function resetForm() {
       name: '',
       description: '',
       timezone: '',
-      environment: '',
+      environment: undefined,
     },
   });
   resetCreateState();
@@ -159,7 +128,7 @@ onUnmounted(() => {
       v-if="createError"
       variant="destructive"
     >
-      <AlertCircle class="w-4 h-4" />
+      <Icon name="lucide:alert-circle" size="1em" mode="svg" />
       <AlertTitle>{{ t('common.label.error') }}</AlertTitle>
       <AlertDescription>{{ createError }}</AlertDescription>
     </Alert>
@@ -174,7 +143,9 @@ onUnmounted(() => {
           <Input
             v-bind="componentField"
             :placeholder="t('features.projects.form.namePlaceholder')"
-            :class="{ 'border-destructive': hasConnectRPCError('name') }"
+            :class="{
+              'border-destructive': hasConnectRPCError(createValidationErrors, 'name'),
+            }"
             :disabled="createLoading"
           />
         </FormControl>
@@ -183,10 +154,10 @@ onUnmounted(() => {
         </FormDescription>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('name')"
+          v-if="hasConnectRPCError(createValidationErrors, 'name')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('name') }}
+          {{ getConnectRPCError(createValidationErrors, 'name') }}
         </div>
       </FormItem>
     </FormField>
@@ -201,7 +172,9 @@ onUnmounted(() => {
           <Input
             v-bind="componentField"
             :placeholder="t('features.projects.form.descriptionPlaceholder')"
-            :class="{ 'border-destructive': hasConnectRPCError('description') }"
+            :class="{
+              'border-destructive': hasConnectRPCError(createValidationErrors, 'description'),
+            }"
             :disabled="createLoading"
           />
         </FormControl>
@@ -210,10 +183,10 @@ onUnmounted(() => {
         </FormDescription>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('description')"
+          v-if="hasConnectRPCError(createValidationErrors, 'description')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('description') }}
+          {{ getConnectRPCError(createValidationErrors, 'description') }}
         </div>
       </FormItem>
     </FormField>
@@ -231,7 +204,9 @@ onUnmounted(() => {
               :disabled="createLoading"
             >
               <SelectTrigger
-                :class="{ 'border-destructive': hasConnectRPCError('timezone') }"
+                :class="{
+                  'border-destructive': hasConnectRPCError(createValidationErrors, 'timezone'),
+                }"
               >
                 <SelectValue :placeholder="t('features.projects.form.timezonePlaceholder')" />
               </SelectTrigger>
@@ -258,10 +233,10 @@ onUnmounted(() => {
         </FormDescription>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('timezone')"
+          v-if="hasConnectRPCError(createValidationErrors, 'timezone')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('timezone') }}
+          {{ getConnectRPCError(createValidationErrors, 'timezone') }}
         </div>
       </FormItem>
     </FormField>
@@ -278,7 +253,9 @@ onUnmounted(() => {
             :disabled="createLoading"
           >
             <SelectTrigger
-              :class="{ 'border-destructive': hasConnectRPCError('environment') }"
+              :class="{
+                'border-destructive': hasConnectRPCError(createValidationErrors, 'environment'),
+              }"
             >
               <SelectValue :placeholder="t('features.projects.form.environmentPlaceholder')" />
             </SelectTrigger>
@@ -301,10 +278,10 @@ onUnmounted(() => {
         </FormDescription>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('environment')"
+          v-if="hasConnectRPCError(createValidationErrors, 'environment')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('environment') }}
+          {{ getConnectRPCError(createValidationErrors, 'environment') }}
         </div>
       </FormItem>
     </FormField>

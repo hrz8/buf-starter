@@ -286,7 +286,6 @@
         "nameLabel": "Project Name *",
         "namePlaceholder": "My Awesome Project",
         "timezoneDescription": "Project timezone for scheduling and data processing",
-        "timezoneHint": "You can also type directly in the field above for custom timezones",
         "timezoneLabel": "Timezone *",
         "timezonePlaceholder": "Select a timezone"
       },
@@ -299,6 +298,57 @@
       "sheet": {
         "createDescription": "Fill in the project details below. All fields marked with * are required.",
         "createTitle": "Add New Project"
+      },
+      "settings": {
+        "actions": {
+          "cancel": "Cancel",
+          "delete": "Delete Project",
+          "deleting": "Deleting...",
+          "save": "Save Changes",
+          "saving": "Saving..."
+        },
+        "deleteDialog": {
+          "confirmDescription": "Type 'Confirm delete {name}' to confirm",
+          "confirmLabel": "Type confirmation to delete",
+          "confirmPlaceholder": "Confirm delete [ProjectName]",
+          "description": "This action cannot be undone. All data associated with this project will be permanently deleted.",
+          "lastProjectWarning": "Cannot delete the last project. You must have at least one project.",
+          "title": "Delete Project"
+        },
+        "description": "Manage your project configuration and details",
+        "form": {
+          "descriptionDescription": "Brief description of your project (optional)",
+          "descriptionLabel": "Description",
+          "descriptionPlaceholder": "Enter project description",
+          "environmentDescription": "Cannot be changed after project creation",
+          "environmentLabel": "Environment",
+          "nameDescription": "A unique identifier for your project",
+          "nameLabel": "Project Name *",
+          "namePlaceholder": "Enter project name",
+          "timezoneDescription": "The timezone for this project",
+          "timezoneLabel": "Timezone *",
+          "timezonePlaceholder": "Select timezone"
+        },
+        "messages": {
+          "deleteConfirmMismatch": "Confirmation text does not match. Please try again.",
+          "deleteError": "Failed to delete project",
+          "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+          "deleteSuccess": "Project deleted",
+          "deleteSuccessDesc": "{name} has been permanently deleted",
+          "loadError": "Failed to load project settings",
+          "noProjectSelected": "Please select a project to view settings",
+          "updateError": "Failed to update project",
+          "updateErrorDesc": "An unexpected error occurred. Please try again.",
+          "updateSuccess": "Project updated",
+          "updateSuccessDesc": "{name} has been updated successfully",
+          "fetchError": "Failed to load project",
+          "fetchErrorDesc": "Unable to load project settings. Please try again."
+        },
+        "title": "Project Settings",
+        "dangerZone": {
+          "title": "Danger Zone",
+          "description": "Permanently delete this project and all associated data. This action cannot be undone."
+        }
       }
     }
   },
@@ -327,6 +377,7 @@
     "home": "Home",
     "settings": {
       "apiKeys": "API Keys",
+      "project": "Project Settings",
       "title": "Settings"
     },
     "user": {

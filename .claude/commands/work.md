@@ -33,6 +33,18 @@
 - `useI18n()` for translations (no hardcoded strings)
 - Run `pnpm lint:fix` after changes
 
+**⚠️ Critical: vee-validate FormField**
+- Loading state MUST start as `true`: `const isLoading = ref(true)`
+- NO `:key` attributes on FormField components
+- Use simple `v-if`/`v-else-if` conditional rendering
+- Never wrap FormFields in Teleport/Portal
+
+**Feature Organization (schema.ts, error.ts, constants.ts)**
+- Centralize Zod schemas in `schema.ts`
+- Centralize ConnectRPC error utilities in `error.ts`
+- Centralize shared constants in `constants.ts`
+- See FRONTEND_GUIDE.md for full pattern details
+
 ### Integration
 
 - Type safety across layers

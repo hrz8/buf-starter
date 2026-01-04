@@ -1,5 +1,6 @@
-import type { NavItem, SettingsItem } from '@/config/navigation';
+import type { NavItem, SettingsItem } from '~/types/navigation';
 import {
+  Cog,
   Key,
   LucideHome,
   Puzzle,
@@ -9,6 +10,9 @@ import {
 /**
  * Composable for translatable navigation items
  * Provides reactive navigation items that respond to locale changes
+ *
+ * This is the SINGLE SOURCE OF TRUTH for navigation data.
+ * config/navigation.ts only contains utilities and special breadcrumbs.
  */
 export function useNavigationItems() {
   const { t } = useI18n();
@@ -97,6 +101,17 @@ export function useNavigationItems() {
         path: '/settings/api-keys',
         label: 'nav.settings.apiKeys',
         i18nKey: 'nav.settings.apiKeys',
+        parent: '/settings',
+      },
+    },
+    {
+      name: t('nav.settings.project'),
+      url: '/settings/project',
+      icon: Cog,
+      breadcrumb: {
+        path: '/settings/project',
+        label: 'nav.settings.project',
+        i18nKey: 'nav.settings.project',
         parent: '/settings',
       },
     },

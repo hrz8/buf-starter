@@ -37,3 +37,36 @@ func (h *Handler) CreateProject(
 	}
 	return connect.NewResponse(response), nil
 }
+
+func (h *Handler) GetProject(
+	ctx context.Context,
+	req *connect.Request[altalunev1.GetProjectRequest],
+) (*connect.Response[altalunev1.GetProjectResponse], error) {
+	response, err := h.svc.GetProject(ctx, req.Msg)
+	if err != nil {
+		return nil, altalune.ToConnectError(err)
+	}
+	return connect.NewResponse(response), nil
+}
+
+func (h *Handler) UpdateProject(
+	ctx context.Context,
+	req *connect.Request[altalunev1.UpdateProjectRequest],
+) (*connect.Response[altalunev1.UpdateProjectResponse], error) {
+	response, err := h.svc.UpdateProject(ctx, req.Msg)
+	if err != nil {
+		return nil, altalune.ToConnectError(err)
+	}
+	return connect.NewResponse(response), nil
+}
+
+func (h *Handler) DeleteProject(
+	ctx context.Context,
+	req *connect.Request[altalunev1.DeleteProjectRequest],
+) (*connect.Response[altalunev1.DeleteProjectResponse], error) {
+	response, err := h.svc.DeleteProject(ctx, req.Msg)
+	if err != nil {
+		return nil, altalune.ToConnectError(err)
+	}
+	return connect.NewResponse(response), nil
+}

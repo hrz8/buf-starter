@@ -1,168 +1,12 @@
-import type { LucideIcon } from 'lucide-vue-next';
-import type { RouteLocationNormalizedLoaded } from 'vue-router';
-import {
-  Key,
-  LucideHome,
-  Puzzle,
-  Smartphone,
-} from 'lucide-vue-next';
-
-/**
- * Breadcrumb configuration for a route
- */
-export interface BreadcrumbConfig {
-  /**
-   * The route path that this breadcrumb represents
-   */
-  path: string;
-
-  /**
-   * Label for the breadcrumb
-   * Can be a static string, translation key, or dynamic function
-   */
-  label: string | ((
-    route: RouteLocationNormalizedLoaded,
-    t: (key: string, values?: Record<string, any>) => string,
-  ) => string);
-
-  /**
-   * Path to parent breadcrumb for building hierarchy
-   */
-  parent?: string;
-
-  /**
-   * Hide breadcrumb conditionally
-   */
-  hidden?: boolean | ((route: RouteLocationNormalizedLoaded) => boolean);
-
-  /**
-   * Translation key for i18n
-   * If provided, will be used with $t()
-   */
-  i18nKey?: string;
-}
-
-/**
- * Sub-navigation item (child menu item)
- */
-export interface NavSubItem {
-  title: string;
-  to: string;
-  icon?: LucideIcon;
-  match?: string | RegExp | ((route: RouteLocationNormalizedLoaded) => boolean);
-  breadcrumb?: BreadcrumbConfig;
-}
-
-/**
- * Main navigation item with optional children
- */
-export interface NavItem extends NavSubItem {
-  items?: NavSubItem[];
-}
-
-/**
- * Settings navigation item
- */
-export interface SettingsItem {
-  name: string;
-  url: string;
-  icon: LucideIcon;
-  breadcrumb?: BreadcrumbConfig;
-}
-
-/**
- * Main navigation configuration
- * Used by both sidebar and breadcrumb components
- */
-export const mainNavItems: NavItem[] = [
-  {
-    title: 'Dashboard',
-    to: '/dashboard',
-    icon: LucideHome,
-    breadcrumb: {
-      path: '/dashboard',
-      label: 'nav.dashboard',
-      i18nKey: 'nav.dashboard',
-    },
-  },
-  {
-    title: 'Devices',
-    to: '/devices',
-    match: '/devices',
-    icon: Smartphone,
-    breadcrumb: {
-      path: '/devices',
-      label: 'nav.devices.title',
-      i18nKey: 'nav.devices.title',
-    },
-    items: [
-      {
-        title: 'Scan',
-        to: '/devices/scan',
-        breadcrumb: {
-          path: '/devices/scan',
-          label: 'nav.devices.scan',
-          i18nKey: 'nav.devices.scan',
-          parent: '/devices',
-        },
-      },
-      {
-        title: 'Chat',
-        to: '/devices/chat',
-        breadcrumb: {
-          path: '/devices/chat',
-          label: 'nav.devices.chat',
-          i18nKey: 'nav.devices.chat',
-          parent: '/devices',
-        },
-      },
-    ],
-  },
-  {
-    title: 'Examples',
-    to: '/examples',
-    match: '/examples',
-    icon: Puzzle,
-    breadcrumb: {
-      path: '/examples',
-      label: 'nav.examples.title',
-      i18nKey: 'nav.examples.title',
-    },
-    items: [
-      {
-        title: 'Datatable',
-        to: '/examples/datatable',
-        breadcrumb: {
-          path: '/examples/datatable',
-          label: 'nav.examples.datatable',
-          i18nKey: 'nav.examples.datatable',
-          parent: '/examples',
-        },
-      },
-    ],
-  },
-];
-
-/**
- * Settings navigation configuration
- */
-export const settingsNavItems: SettingsItem[] = [
-  {
-    name: 'Api Keys',
-    url: '/settings/api-keys',
-    icon: Key,
-    breadcrumb: {
-      path: '/settings/api-keys',
-      label: 'nav.settings.apiKeys',
-      i18nKey: 'nav.settings.apiKeys',
-      parent: '/settings',
-    },
-  },
-];
+import type { BreadcrumbConfig, NavItem, SettingsItem } from '~/types/navigation';
 
 /**
  * Special breadcrumb configurations for specific routes
  * Useful for dynamic routes or routes not in main navigation
+ *
+ * Note: Navigation items (mainNavItems, settingsNavItems) are now
+ * defined in composables/navigation/useNavigationItems.ts as the
+ * single source of truth for reactive, translatable navigation.
  */
 export const specialBreadcrumbs: Record<string, BreadcrumbConfig> = {
   '/': {
@@ -187,10 +31,18 @@ export const specialBreadcrumbs: Record<string, BreadcrumbConfig> = {
 };
 
 /**
- * Build a flat map of all breadcrumb configurations
- * for quick lookup by path
+ * Build a flat map of all breadcrumb configurations for quick lookup by path
+ *
+ * @param mainItems - Main navigation items from useNavigationItems()
+ * @param settingsItems - Settings navigation items from useNavigationItems()
+ * @param specialBreadcrumbs - Special breadcrumb configurations for routes not in nav
+ * @returns Map of path to breadcrumb configuration
  */
-export function buildBreadcrumbMap(): Map<string, BreadcrumbConfig> {
+export function buildBreadcrumbMap(
+  mainItems: NavItem[],
+  settingsItems: SettingsItem[],
+  specialBreadcrumbs: Record<string, BreadcrumbConfig>,
+): Map<string, BreadcrumbConfig> {
   const map = new Map<string, BreadcrumbConfig>();
 
   // Add special breadcrumbs
@@ -210,10 +62,10 @@ export function buildBreadcrumbMap(): Map<string, BreadcrumbConfig> {
     });
   }
 
-  addNavItems(mainNavItems);
+  addNavItems(mainItems);
 
   // Add breadcrumbs from settings navigation
-  settingsNavItems.forEach((item) => {
+  settingsItems.forEach((item) => {
     if (item.breadcrumb) {
       map.set(item.breadcrumb.path, item.breadcrumb);
     }

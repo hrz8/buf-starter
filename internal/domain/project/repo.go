@@ -431,6 +431,150 @@ func (r *Repo) GetByName(ctx context.Context, name string) (*Project, error) {
 	return &prj, nil
 }
 
+// GetByID retrieves a project by its public ID
+func (r *Repo) GetByID(ctx context.Context, publicID string) (*Project, error) {
+	sqlQuery := `
+		SELECT
+			public_id,
+			name,
+			description,
+			timezone,
+			environment,
+			created_at,
+			updated_at
+		FROM altalune_projects
+		WHERE public_id = $1
+	`
+
+	var prj Project
+	var description sql.NullString
+	var environment string
+
+	err := r.db.QueryRowContext(ctx, sqlQuery, publicID).Scan(
+		&prj.ID,
+		&prj.Name,
+		&description,
+		&prj.Timezone,
+		&environment,
+		&prj.CreatedAt,
+		&prj.UpdatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrProjectNotFound
+		}
+		return nil, fmt.Errorf("failed to get project: %w", err)
+	}
+
+	// Handle nullable description
+	if description.Valid {
+		prj.Description = description.String
+	}
+
+	// Map environment string to domain enum
+	switch environment {
+	case "live":
+		prj.Environment = EnvironmentStatusLive
+	case "sandbox":
+		prj.Environment = EnvironmentStatusSandbox
+	default:
+		prj.Environment = EnvironmentStatusSandbox
+	}
+
+	return &prj, nil
+}
+
+// Update updates a project in the database
+func (r *Repo) Update(ctx context.Context, input *UpdateProjectInput) (*UpdateProjectResult, error) {
+	// Check name uniqueness (exclude current project)
+	existing, err := r.GetByName(ctx, input.Name)
+	if err == nil && existing.ID != input.PublicID {
+		return nil, ErrProjectAlreadyExists
+	}
+
+	sqlQuery := `
+		UPDATE altalune_projects
+		SET name = $1, description = $2, timezone = $3, updated_at = CURRENT_TIMESTAMP
+		WHERE public_id = $4
+		RETURNING id, public_id, name, description, timezone, environment,
+		          created_at, updated_at
+	`
+
+	var result UpdateProjectResult
+	var description sql.NullString
+	var environment string
+
+	err = r.db.QueryRowContext(ctx, sqlQuery,
+		input.Name,
+		input.Description,
+		input.Timezone,
+		input.PublicID,
+	).Scan(
+		&result.ID,
+		&result.PublicID,
+		&result.Name,
+		&description,
+		&result.Timezone,
+		&environment,
+		&result.CreatedAt,
+		&result.UpdatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrProjectNotFound
+		}
+		if postgres.IsUniqueViolation(err) {
+			return nil, ErrProjectAlreadyExists
+		}
+		return nil, fmt.Errorf("failed to update project: %w", err)
+	}
+
+	// Handle nullable description
+	if description.Valid {
+		result.Description = description.String
+	}
+
+	// Map environment string to domain enum
+	switch environment {
+	case "live":
+		result.Environment = EnvironmentStatusLive
+	case "sandbox":
+		result.Environment = EnvironmentStatusSandbox
+	default:
+		result.Environment = EnvironmentStatusSandbox
+	}
+
+	return &result, nil
+}
+
+// Delete deletes a project from the database
+func (r *Repo) Delete(ctx context.Context, publicID string) error {
+	sqlQuery := `DELETE FROM altalune_projects WHERE public_id = $1`
+
+	result, err := r.db.ExecContext(ctx, sqlQuery, publicID)
+	if err != nil {
+		return fmt.Errorf("failed to delete project: %w", err)
+	}
+
+	rowsAffected, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("failed to get rows affected: %w", err)
+	}
+
+	if rowsAffected == 0 {
+		return ErrProjectNotFound
+	}
+
+	// CASCADE DELETE handles:
+	// - altalune_project_api_keys partitions
+	// - altalune_example_employees partitions
+	// - Future partitioned tables
+
+	return nil
+}
+
 // partitionedTables defines all tables that need partitions created for new projects
 // Add new tables here when they require partitioning by project_id
 var partitionedTables = []string{

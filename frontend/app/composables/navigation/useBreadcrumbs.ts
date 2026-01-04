@@ -1,7 +1,8 @@
 import type { ComputedRef } from 'vue';
 import type { RouteLocationNormalizedLoaded } from 'vue-router';
-import type { BreadcrumbConfig } from '@/config/navigation';
-import { buildBreadcrumbMap } from '@/config/navigation';
+import type { BreadcrumbConfig } from '~/types/navigation';
+import { buildBreadcrumbMap, specialBreadcrumbs } from '@/config/navigation';
+import { useNavigationItems } from './useNavigationItems';
 
 /**
  * Breadcrumb item for rendering
@@ -33,6 +34,9 @@ export interface BreadcrumbItem {
  * - Conditional visibility
  * - Always includes "Home" as first breadcrumb
  *
+ * Note: Breadcrumb map is built reactively from useNavigationItems() composable,
+ * which is the single source of truth for navigation data.
+ *
  * @example
  * ```vue
  * <script setup>
@@ -60,7 +64,18 @@ export interface BreadcrumbItem {
 export function useBreadcrumbs() {
   const route = useRoute();
   const { t } = useI18n();
-  const breadcrumbMap = buildBreadcrumbMap();
+
+  // Get navigation items from single source of truth
+  const { mainNavItems, settingsNavItems } = useNavigationItems();
+
+  // Build breadcrumb map reactively from navigation items
+  const breadcrumbMap = computed(() =>
+    buildBreadcrumbMap(
+      mainNavItems.value,
+      settingsNavItems.value,
+      specialBreadcrumbs,
+    ),
+  );
 
   /**
    * Find breadcrumb config for a given path
@@ -71,12 +86,12 @@ export function useBreadcrumbs() {
     const normalizedPath = path === '/' ? path : path.replace(/\/$/, '');
 
     // Try exact match first
-    if (breadcrumbMap.has(normalizedPath)) {
-      return breadcrumbMap.get(normalizedPath);
+    if (breadcrumbMap.value.has(normalizedPath)) {
+      return breadcrumbMap.value.get(normalizedPath);
     }
 
     // Try pattern matching for dynamic routes
-    for (const [pattern, config] of breadcrumbMap.entries()) {
+    for (const [pattern, config] of breadcrumbMap.value.entries()) {
       if (pattern.includes(':')) {
         // Convert pattern to regex (simple version)
         // /examples/datatable/:variant -> /examples/datatable/[^/]+
@@ -168,7 +183,7 @@ export function useBreadcrumbs() {
     const items: BreadcrumbItem[] = [];
 
     // Always add Home as first breadcrumb
-    const homeConfig = breadcrumbMap.get('/');
+    const homeConfig = breadcrumbMap.value.get('/');
     if (homeConfig) {
       const homeLabel = resolveLabel(homeConfig, route);
       if (homeLabel) {

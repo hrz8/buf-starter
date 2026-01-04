@@ -7,8 +7,10 @@ import { projectRepository } from '#shared/repository/project';
 import { create } from '@bufbuild/protobuf';
 import {
   CreateProjectRequestSchema,
-
+  DeleteProjectRequestSchema,
+  GetProjectRequestSchema,
   QueryProjectsRequestSchema,
+  UpdateProjectRequestSchema,
 } from '~~/gen/altalune/v1/project_pb';
 import { useConnectValidator } from '../useConnectValidator';
 import { useErrorMessage } from '../useErrorMessage';
@@ -20,9 +22,30 @@ export function useProjectService() {
 
   const queryValidator = useConnectValidator(QueryProjectsRequestSchema);
   const createValidator = useConnectValidator(CreateProjectRequestSchema);
+  const getValidator = useConnectValidator(GetProjectRequestSchema);
+  const updateValidator = useConnectValidator(UpdateProjectRequestSchema);
+  const deleteValidator = useConnectValidator(DeleteProjectRequestSchema);
 
-  // Create state for form submission
+  // State management
   const createState = reactive({
+    loading: false,
+    error: '',
+    success: false,
+  });
+
+  const getState = reactive({
+    loading: false,
+    error: '',
+    success: false,
+  });
+
+  const updateState = reactive({
+    loading: false,
+    error: '',
+    success: false,
+  });
+
+  const deleteState = reactive({
     loading: false,
     error: '',
     success: false,
@@ -98,6 +121,114 @@ export function useProjectService() {
     createValidator.reset();
   }
 
+  async function getProject(
+    req: MessageInitShape<typeof GetProjectRequestSchema>,
+  ): Promise<Project | null> {
+    getState.loading = true;
+    getState.error = '';
+    getState.success = false;
+
+    getValidator.reset();
+
+    if (!getValidator.validate(req)) {
+      getState.loading = false;
+      return null;
+    }
+
+    try {
+      const message = create(GetProjectRequestSchema, req);
+      const result = await project.getProject(message);
+      getState.success = true;
+      return result.project || null;
+    }
+    catch (err) {
+      getState.error = parseError(err);
+      throw new Error(getState.error);
+    }
+    finally {
+      getState.loading = false;
+    }
+  }
+
+  function resetGetState() {
+    getState.loading = false;
+    getState.error = '';
+    getState.success = false;
+    getValidator.reset();
+  }
+
+  async function updateProject(
+    req: MessageInitShape<typeof UpdateProjectRequestSchema>,
+  ): Promise<Project | null> {
+    updateState.loading = true;
+    updateState.error = '';
+    updateState.success = false;
+
+    updateValidator.reset();
+
+    if (!updateValidator.validate(req)) {
+      updateState.loading = false;
+      return null;
+    }
+
+    try {
+      const message = create(UpdateProjectRequestSchema, req);
+      const result = await project.updateProject(message);
+      updateState.success = true;
+      return result.project || null;
+    }
+    catch (err) {
+      updateState.error = parseError(err);
+      throw new Error(updateState.error);
+    }
+    finally {
+      updateState.loading = false;
+    }
+  }
+
+  function resetUpdateState() {
+    updateState.loading = false;
+    updateState.error = '';
+    updateState.success = false;
+    updateValidator.reset();
+  }
+
+  async function deleteProject(
+    req: MessageInitShape<typeof DeleteProjectRequestSchema>,
+  ): Promise<boolean> {
+    deleteState.loading = true;
+    deleteState.error = '';
+    deleteState.success = false;
+
+    deleteValidator.reset();
+
+    if (!deleteValidator.validate(req)) {
+      deleteState.loading = false;
+      return false;
+    }
+
+    try {
+      const message = create(DeleteProjectRequestSchema, req);
+      await project.deleteProject(message);
+      deleteState.success = true;
+      return true;
+    }
+    catch (err) {
+      deleteState.error = parseError(err);
+      throw new Error(deleteState.error);
+    }
+    finally {
+      deleteState.loading = false;
+    }
+  }
+
+  function resetDeleteState() {
+    deleteState.loading = false;
+    deleteState.error = '';
+    deleteState.success = false;
+    deleteValidator.reset();
+  }
+
   return {
     // Query
     query,
@@ -110,5 +241,29 @@ export function useProjectService() {
     createSuccess: computed(() => createState.success),
     createValidationErrors: createValidator.errors,
     resetCreateState,
+
+    // Get
+    getProject,
+    getLoading: computed(() => getState.loading),
+    getError: computed(() => getState.error),
+    getSuccess: computed(() => getState.success),
+    getValidationErrors: getValidator.errors,
+    resetGetState,
+
+    // Update
+    updateProject,
+    updateLoading: computed(() => updateState.loading),
+    updateError: computed(() => updateState.error),
+    updateSuccess: computed(() => updateState.success),
+    updateValidationErrors: updateValidator.errors,
+    resetUpdateState,
+
+    // Delete
+    deleteProject,
+    deleteLoading: computed(() => deleteState.loading),
+    deleteError: computed(() => deleteState.error),
+    deleteSuccess: computed(() => deleteState.success),
+    deleteValidationErrors: deleteValidator.errors,
+    resetDeleteState,
   };
 }

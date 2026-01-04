@@ -39,6 +39,15 @@ const (
 	// ProjectServiceCreateProjectProcedure is the fully-qualified name of the ProjectService's
 	// CreateProject RPC.
 	ProjectServiceCreateProjectProcedure = "/altalune.v1.ProjectService/CreateProject"
+	// ProjectServiceGetProjectProcedure is the fully-qualified name of the ProjectService's GetProject
+	// RPC.
+	ProjectServiceGetProjectProcedure = "/altalune.v1.ProjectService/GetProject"
+	// ProjectServiceUpdateProjectProcedure is the fully-qualified name of the ProjectService's
+	// UpdateProject RPC.
+	ProjectServiceUpdateProjectProcedure = "/altalune.v1.ProjectService/UpdateProject"
+	// ProjectServiceDeleteProjectProcedure is the fully-qualified name of the ProjectService's
+	// DeleteProject RPC.
+	ProjectServiceDeleteProjectProcedure = "/altalune.v1.ProjectService/DeleteProject"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
@@ -46,12 +55,18 @@ var (
 	projectServiceServiceDescriptor             = v1.File_altalune_v1_project_proto.Services().ByName("ProjectService")
 	projectServiceQueryProjectsMethodDescriptor = projectServiceServiceDescriptor.Methods().ByName("QueryProjects")
 	projectServiceCreateProjectMethodDescriptor = projectServiceServiceDescriptor.Methods().ByName("CreateProject")
+	projectServiceGetProjectMethodDescriptor    = projectServiceServiceDescriptor.Methods().ByName("GetProject")
+	projectServiceUpdateProjectMethodDescriptor = projectServiceServiceDescriptor.Methods().ByName("UpdateProject")
+	projectServiceDeleteProjectMethodDescriptor = projectServiceServiceDescriptor.Methods().ByName("DeleteProject")
 )
 
 // ProjectServiceClient is a client for the altalune.v1.ProjectService service.
 type ProjectServiceClient interface {
 	QueryProjects(context.Context, *connect.Request[v1.QueryProjectsRequest]) (*connect.Response[v1.QueryProjectsResponse], error)
 	CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error)
+	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
+	DeleteProject(context.Context, *connect.Request[v1.DeleteProjectRequest]) (*connect.Response[v1.DeleteProjectResponse], error)
 }
 
 // NewProjectServiceClient constructs a client for the altalune.v1.ProjectService service. By
@@ -76,6 +91,24 @@ func NewProjectServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 			connect.WithSchema(projectServiceCreateProjectMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		getProject: connect.NewClient[v1.GetProjectRequest, v1.GetProjectResponse](
+			httpClient,
+			baseURL+ProjectServiceGetProjectProcedure,
+			connect.WithSchema(projectServiceGetProjectMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		updateProject: connect.NewClient[v1.UpdateProjectRequest, v1.UpdateProjectResponse](
+			httpClient,
+			baseURL+ProjectServiceUpdateProjectProcedure,
+			connect.WithSchema(projectServiceUpdateProjectMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
+		deleteProject: connect.NewClient[v1.DeleteProjectRequest, v1.DeleteProjectResponse](
+			httpClient,
+			baseURL+ProjectServiceDeleteProjectProcedure,
+			connect.WithSchema(projectServiceDeleteProjectMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -83,6 +116,9 @@ func NewProjectServiceClient(httpClient connect.HTTPClient, baseURL string, opts
 type projectServiceClient struct {
 	queryProjects *connect.Client[v1.QueryProjectsRequest, v1.QueryProjectsResponse]
 	createProject *connect.Client[v1.CreateProjectRequest, v1.CreateProjectResponse]
+	getProject    *connect.Client[v1.GetProjectRequest, v1.GetProjectResponse]
+	updateProject *connect.Client[v1.UpdateProjectRequest, v1.UpdateProjectResponse]
+	deleteProject *connect.Client[v1.DeleteProjectRequest, v1.DeleteProjectResponse]
 }
 
 // QueryProjects calls altalune.v1.ProjectService.QueryProjects.
@@ -95,10 +131,28 @@ func (c *projectServiceClient) CreateProject(ctx context.Context, req *connect.R
 	return c.createProject.CallUnary(ctx, req)
 }
 
+// GetProject calls altalune.v1.ProjectService.GetProject.
+func (c *projectServiceClient) GetProject(ctx context.Context, req *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
+	return c.getProject.CallUnary(ctx, req)
+}
+
+// UpdateProject calls altalune.v1.ProjectService.UpdateProject.
+func (c *projectServiceClient) UpdateProject(ctx context.Context, req *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
+	return c.updateProject.CallUnary(ctx, req)
+}
+
+// DeleteProject calls altalune.v1.ProjectService.DeleteProject.
+func (c *projectServiceClient) DeleteProject(ctx context.Context, req *connect.Request[v1.DeleteProjectRequest]) (*connect.Response[v1.DeleteProjectResponse], error) {
+	return c.deleteProject.CallUnary(ctx, req)
+}
+
 // ProjectServiceHandler is an implementation of the altalune.v1.ProjectService service.
 type ProjectServiceHandler interface {
 	QueryProjects(context.Context, *connect.Request[v1.QueryProjectsRequest]) (*connect.Response[v1.QueryProjectsResponse], error)
 	CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error)
+	GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error)
+	UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error)
+	DeleteProject(context.Context, *connect.Request[v1.DeleteProjectRequest]) (*connect.Response[v1.DeleteProjectResponse], error)
 }
 
 // NewProjectServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -119,12 +173,36 @@ func NewProjectServiceHandler(svc ProjectServiceHandler, opts ...connect.Handler
 		connect.WithSchema(projectServiceCreateProjectMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	projectServiceGetProjectHandler := connect.NewUnaryHandler(
+		ProjectServiceGetProjectProcedure,
+		svc.GetProject,
+		connect.WithSchema(projectServiceGetProjectMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	projectServiceUpdateProjectHandler := connect.NewUnaryHandler(
+		ProjectServiceUpdateProjectProcedure,
+		svc.UpdateProject,
+		connect.WithSchema(projectServiceUpdateProjectMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
+	projectServiceDeleteProjectHandler := connect.NewUnaryHandler(
+		ProjectServiceDeleteProjectProcedure,
+		svc.DeleteProject,
+		connect.WithSchema(projectServiceDeleteProjectMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/altalune.v1.ProjectService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case ProjectServiceQueryProjectsProcedure:
 			projectServiceQueryProjectsHandler.ServeHTTP(w, r)
 		case ProjectServiceCreateProjectProcedure:
 			projectServiceCreateProjectHandler.ServeHTTP(w, r)
+		case ProjectServiceGetProjectProcedure:
+			projectServiceGetProjectHandler.ServeHTTP(w, r)
+		case ProjectServiceUpdateProjectProcedure:
+			projectServiceUpdateProjectHandler.ServeHTTP(w, r)
+		case ProjectServiceDeleteProjectProcedure:
+			projectServiceDeleteProjectHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -140,4 +218,16 @@ func (UnimplementedProjectServiceHandler) QueryProjects(context.Context, *connec
 
 func (UnimplementedProjectServiceHandler) CreateProject(context.Context, *connect.Request[v1.CreateProjectRequest]) (*connect.Response[v1.CreateProjectResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("altalune.v1.ProjectService.CreateProject is not implemented"))
+}
+
+func (UnimplementedProjectServiceHandler) GetProject(context.Context, *connect.Request[v1.GetProjectRequest]) (*connect.Response[v1.GetProjectResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("altalune.v1.ProjectService.GetProject is not implemented"))
+}
+
+func (UnimplementedProjectServiceHandler) UpdateProject(context.Context, *connect.Request[v1.UpdateProjectRequest]) (*connect.Response[v1.UpdateProjectResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("altalune.v1.ProjectService.UpdateProject is not implemented"))
+}
+
+func (UnimplementedProjectServiceHandler) DeleteProject(context.Context, *connect.Request[v1.DeleteProjectRequest]) (*connect.Response[v1.DeleteProjectResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("altalune.v1.ProjectService.DeleteProject is not implemented"))
 }
