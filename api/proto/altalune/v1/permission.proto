@@ -1,0 +1,141 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "altalune/v1/common.proto";
+
+// Permission represents a system permission with allow/deny effect
+message Permission {
+  string id = 1;                                    // Public nanoid (14 chars)
+  string name = 2;                                  // Machine-readable: "project:read"
+  string effect = 3;                                // "allow" or "deny"
+  string description = 4;                           // Human-readable (optional)
+  google.protobuf.Timestamp created_at = 98;
+  google.protobuf.Timestamp updated_at = 99;
+}
+
+// QueryPermissionsRequest for listing/searching permissions
+message QueryPermissionsRequest {
+  QueryRequest query = 1;
+}
+
+// QueryPermissionsResponse with permission list and metadata
+message QueryPermissionsResponse {
+  repeated Permission data = 1;
+  QueryMetaResponse meta = 2;
+}
+
+// CreatePermissionRequest for creating a new permission
+message CreatePermissionRequest {
+  string name = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 2,
+      max_len: 100,
+      pattern: "^[a-zA-Z0-9_:]+$"
+    }
+  ];
+
+  string effect = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: ["allow", "deny"]
+    }
+  ];
+
+  string description = 3 [
+    (buf.validate.field).string = {
+      max_len: 500
+    }
+  ];
+}
+
+// CreatePermissionResponse with created permission
+message CreatePermissionResponse {
+  Permission permission = 1;
+  string message = 2;
+}
+
+// GetPermissionRequest for retrieving a single permission
+message GetPermissionRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// GetPermissionResponse with permission data
+message GetPermissionResponse {
+  Permission permission = 1;
+}
+
+// UpdatePermissionRequest for updating permission details
+message UpdatePermissionRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 2,
+      max_len: 100,
+      pattern: "^[a-zA-Z0-9_:]+$"
+    }
+  ];
+
+  string effect = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: ["allow", "deny"]
+    }
+  ];
+
+  string description = 4 [
+    (buf.validate.field).string = {
+      max_len: 500
+    }
+  ];
+}
+
+// UpdatePermissionResponse with updated permission
+message UpdatePermissionResponse {
+  Permission permission = 1;
+  string message = 2;
+}
+
+// DeletePermissionRequest for deleting a permission
+message DeletePermissionRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// DeletePermissionResponse with confirmation message
+message DeletePermissionResponse {
+  string message = 1;
+}
+
+// PermissionService provides CRUD operations for permission management
+service PermissionService {
+  rpc QueryPermissions(QueryPermissionsRequest) returns (QueryPermissionsResponse) {}
+  rpc CreatePermission(CreatePermissionRequest) returns (CreatePermissionResponse) {}
+  rpc GetPermission(GetPermissionRequest) returns (GetPermissionResponse) {}
+  rpc UpdatePermission(UpdatePermissionRequest) returns (UpdatePermissionResponse) {}
+  rpc DeletePermission(DeletePermissionRequest) returns (DeletePermissionResponse) {}
+}

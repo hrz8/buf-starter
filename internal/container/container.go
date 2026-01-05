@@ -12,7 +12,11 @@ import (
 	api_key_domain "github.com/hrz8/altalune/internal/domain/api_key"
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
+	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
+	permission_domain "github.com/hrz8/altalune/internal/domain/permission"
 	project_domain "github.com/hrz8/altalune/internal/domain/project"
+	role_domain "github.com/hrz8/altalune/internal/domain/role"
+	user_domain "github.com/hrz8/altalune/internal/domain/user"
 	"github.com/hrz8/altalune/internal/postgres"
 	"github.com/hrz8/altalune/logger"
 
@@ -39,6 +43,12 @@ type Container struct {
 	// API Key Repository
 	apiKeyRepo api_key_domain.Repositor
 
+	// IAM Repositories
+	userRepo       user_domain.Repository
+	roleRepo       role_domain.Repository
+	permissionRepo permission_domain.Repository
+	iamMapperRepo  iam_mapper_domain.Repository
+
 	// Example Services
 	greeterService  greeterv1.GreeterServiceServer
 	employeeService altalunev1.EmployeeServiceServer
@@ -47,8 +57,12 @@ type Container struct {
 	projectRepo project_domain.Repositor
 
 	// Services
-	projectService altalunev1.ProjectServiceServer
-	apiKeyService  altalunev1.ApiKeyServiceServer
+	projectService    altalunev1.ProjectServiceServer
+	apiKeyService     altalunev1.ApiKeyServiceServer
+	userService       altalunev1.UserServiceServer
+	roleService       altalunev1.RoleServiceServer
+	permissionService altalunev1.PermissionServiceServer
+	iamMapperService  altalunev1.IAMMapperServiceServer
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling
@@ -92,6 +106,10 @@ func (c *Container) initRepositories() error {
 	c.employeeRepo = employee_domain.NewRepo(c.db)
 	c.projectRepo = project_domain.NewRepo(c.db)
 	c.apiKeyRepo = api_key_domain.NewRepo(c.db)
+	c.userRepo = user_domain.NewRepo(c.db)
+	c.roleRepo = role_domain.NewRepo(c.db)
+	c.permissionRepo = permission_domain.NewRepo(c.db)
+	c.iamMapperRepo = iam_mapper_domain.NewRepo(c.db)
 	return nil
 }
 
@@ -105,5 +123,10 @@ func (c *Container) initServices() error {
 	c.employeeService = employee_domain.NewService(validator, c.logger, c.projectRepo, c.employeeRepo)
 	c.projectService = project_domain.NewService(validator, c.logger, c.projectRepo)
 	c.apiKeyService = api_key_domain.NewService(validator, c.logger, c.projectRepo, c.apiKeyRepo)
+	c.userService = user_domain.NewService(validator, c.logger, c.userRepo)
+	c.roleService = role_domain.NewService(validator, c.logger, c.roleRepo)
+	c.permissionService = permission_domain.NewService(validator, c.logger, c.permissionRepo)
+	c.iamMapperService = iam_mapper_domain.NewService(validator, c.logger, c.iamMapperRepo, c.userRepo, c.roleRepo, c.permissionRepo, c.projectRepo)
+
 	return nil
 }

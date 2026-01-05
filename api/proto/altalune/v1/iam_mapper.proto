@@ -1,0 +1,254 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "altalune/v1/user.proto";
+import "altalune/v1/role.proto";
+import "altalune/v1/permission.proto";
+
+// ============================================================================
+// User-Role Mapping Messages
+// ============================================================================
+
+// AssignUserRolesRequest for assigning roles to a user
+message AssignUserRolesRequest {
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+  repeated string role_ids = 2 [
+    (buf.validate.field).repeated = { min_items: 1 }
+  ];
+}
+
+// RemoveUserRolesRequest for removing roles from a user
+message RemoveUserRolesRequest {
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+  repeated string role_ids = 2 [
+    (buf.validate.field).repeated = { min_items: 1 }
+  ];
+}
+
+// GetUserRolesRequest for retrieving all roles assigned to a user
+message GetUserRolesRequest {
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// GetUserRolesResponse with list of roles
+message GetUserRolesResponse {
+  repeated Role roles = 1;
+}
+
+// ============================================================================
+// Role-Permission Mapping Messages
+// ============================================================================
+
+// AssignRolePermissionsRequest for assigning permissions to a role
+message AssignRolePermissionsRequest {
+  string role_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+  repeated string permission_ids = 2 [
+    (buf.validate.field).repeated = { min_items: 1 }
+  ];
+}
+
+// RemoveRolePermissionsRequest for removing permissions from a role
+message RemoveRolePermissionsRequest {
+  string role_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+  repeated string permission_ids = 2 [
+    (buf.validate.field).repeated = { min_items: 1 }
+  ];
+}
+
+// GetRolePermissionsRequest for retrieving all permissions assigned to a role
+message GetRolePermissionsRequest {
+  string role_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// GetRolePermissionsResponse with list of permissions
+message GetRolePermissionsResponse {
+  repeated Permission permissions = 1;
+}
+
+// ============================================================================
+// User-Permission Mapping Messages (Direct Assignments)
+// ============================================================================
+
+// AssignUserPermissionsRequest for assigning permissions directly to a user
+message AssignUserPermissionsRequest {
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+  repeated string permission_ids = 2 [
+    (buf.validate.field).repeated = { min_items: 1 }
+  ];
+}
+
+// RemoveUserPermissionsRequest for removing permissions from a user
+message RemoveUserPermissionsRequest {
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+  repeated string permission_ids = 2 [
+    (buf.validate.field).repeated = { min_items: 1 }
+  ];
+}
+
+// GetUserPermissionsRequest for retrieving all permissions assigned to a user
+message GetUserPermissionsRequest {
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// GetUserPermissionsResponse with list of permissions
+message GetUserPermissionsResponse {
+  repeated Permission permissions = 1;
+}
+
+// ============================================================================
+// Project Members Messages
+// ============================================================================
+
+// ProjectMember for adding a user to a project with a role
+message ProjectMember {
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+  string role = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: ["owner", "admin", "member", "viewer"]
+    }
+  ];
+}
+
+// AssignProjectMembersRequest for adding members to a project
+message AssignProjectMembersRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+  repeated ProjectMember members = 2 [
+    (buf.validate.field).repeated = { min_items: 1 }
+  ];
+}
+
+// RemoveProjectMembersRequest for removing members from a project
+message RemoveProjectMembersRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+  repeated string user_ids = 2 [
+    (buf.validate.field).repeated = { min_items: 1 }
+  ];
+}
+
+// GetProjectMembersRequest for retrieving all members of a project
+message GetProjectMembersRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// ProjectMemberWithUser contains user details and their role in the project
+message ProjectMemberWithUser {
+  User user = 1;
+  string role = 2;
+  google.protobuf.Timestamp created_at = 3;
+}
+
+// GetProjectMembersResponse with list of members with user details
+message GetProjectMembersResponse {
+  repeated ProjectMemberWithUser members = 1;
+}
+
+// ============================================================================
+// IAMMapperService - Handles all IAM mapping operations
+// ============================================================================
+
+service IAMMapperService {
+  // User-Role Mappings
+  rpc AssignUserRoles(AssignUserRolesRequest) returns (google.protobuf.Empty) {}
+  rpc RemoveUserRoles(RemoveUserRolesRequest) returns (google.protobuf.Empty) {}
+  rpc GetUserRoles(GetUserRolesRequest) returns (GetUserRolesResponse) {}
+
+  // Role-Permission Mappings
+  rpc AssignRolePermissions(AssignRolePermissionsRequest) returns (google.protobuf.Empty) {}
+  rpc RemoveRolePermissions(RemoveRolePermissionsRequest) returns (google.protobuf.Empty) {}
+  rpc GetRolePermissions(GetRolePermissionsRequest) returns (GetRolePermissionsResponse) {}
+
+  // User-Permission Mappings (Direct Assignments)
+  rpc AssignUserPermissions(AssignUserPermissionsRequest) returns (google.protobuf.Empty) {}
+  rpc RemoveUserPermissions(RemoveUserPermissionsRequest) returns (google.protobuf.Empty) {}
+  rpc GetUserPermissions(GetUserPermissionsRequest) returns (GetUserPermissionsResponse) {}
+
+  // Project Members
+  rpc AssignProjectMembers(AssignProjectMembersRequest) returns (google.protobuf.Empty) {}
+  rpc RemoveProjectMembers(RemoveProjectMembersRequest) returns (google.protobuf.Empty) {}
+  rpc GetProjectMembers(GetProjectMembersRequest) returns (GetProjectMembersResponse) {}
+}

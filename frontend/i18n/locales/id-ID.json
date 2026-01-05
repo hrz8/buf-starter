@@ -46,7 +46,7 @@
     "60301": "Projek tidak ditemukan",
     "60401": "Kunci API tidak ditemukan",
     "60402": "Kunci API sudah ada",
-    "69001": "Kesalahan Server"
+    "69901": "Kesalahan Server"
   },
   "errorPage": {
     "goHome": "Kembali ke Beranda"

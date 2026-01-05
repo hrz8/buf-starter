@@ -13,7 +13,11 @@ import (
 	api_key_domain "github.com/hrz8/altalune/internal/domain/api_key"
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
+	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
+	permission_domain "github.com/hrz8/altalune/internal/domain/permission"
 	project_domain "github.com/hrz8/altalune/internal/domain/project"
+	role_domain "github.com/hrz8/altalune/internal/domain/role"
+	user_domain "github.com/hrz8/altalune/internal/domain/user"
 )
 
 func (s *Server) setupRoutes() *http.ServeMux {
@@ -35,6 +39,23 @@ func (s *Server) setupRoutes() *http.ServeMux {
 	apiKeyHandler := api_key_domain.NewHandler(s.c.GetApiKeyService())
 	apiKeyPath, apiKeyConnectHandler := altalunev1connect.NewApiKeyServiceHandler(apiKeyHandler)
 	connectrpcMux.Handle(apiKeyPath, apiKeyConnectHandler)
+
+	// IAM Domains
+	userHandler := user_domain.NewHandler(s.c.GetUserService())
+	userPath, userConnectHandler := altalunev1connect.NewUserServiceHandler(userHandler)
+	connectrpcMux.Handle(userPath, userConnectHandler)
+
+	roleHandler := role_domain.NewHandler(s.c.GetRoleService())
+	rolePath, roleConnectHandler := altalunev1connect.NewRoleServiceHandler(roleHandler)
+	connectrpcMux.Handle(rolePath, roleConnectHandler)
+
+	permissionHandler := permission_domain.NewHandler(s.c.GetPermissionService())
+	permissionPath, permissionConnectHandler := altalunev1connect.NewPermissionServiceHandler(permissionHandler)
+	connectrpcMux.Handle(permissionPath, permissionConnectHandler)
+
+	iamMapperHandler := iam_mapper_domain.NewHandler(s.c.GetIAMMapperService())
+	iamMapperPath, iamMapperConnectHandler := altalunev1connect.NewIAMMapperServiceHandler(iamMapperHandler)
+	connectrpcMux.Handle(iamMapperPath, iamMapperConnectHandler)
 
 	// main server mux
 	mux := http.NewServeMux()

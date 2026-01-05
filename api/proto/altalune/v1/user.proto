@@ -1,0 +1,178 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "altalune/v1/common.proto";
+
+// User represents a global system user with OAuth-only authentication
+message User {
+  string id = 1;                                    // Public nanoid (14 chars)
+  string email = 2;                                 // Unique, case-insensitive
+  string first_name = 3;                            // Optional
+  string last_name = 4;                             // Optional
+  bool is_active = 5;                               // User activation status
+  google.protobuf.Timestamp created_at = 98;
+  google.protobuf.Timestamp updated_at = 99;
+}
+
+// QueryUsersRequest for listing/searching users
+message QueryUsersRequest {
+  QueryRequest query = 1;
+}
+
+// QueryUsersResponse with user list and metadata
+message QueryUsersResponse {
+  repeated User data = 1;
+  QueryMetaResponse meta = 2;
+}
+
+// CreateUserRequest for creating a new user
+message CreateUserRequest {
+  string email = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      email: true,
+      max_len: 255
+    }
+  ];
+
+  string first_name = 2 [
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 100
+    }
+  ];
+
+  string last_name = 3 [
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 100
+    }
+  ];
+}
+
+// CreateUserResponse with created user
+message CreateUserResponse {
+  User user = 1;
+  string message = 2;
+}
+
+// GetUserRequest for retrieving a single user
+message GetUserRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// GetUserResponse with user data
+message GetUserResponse {
+  User user = 1;
+}
+
+// UpdateUserRequest for updating user profile
+message UpdateUserRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+
+  string email = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      email: true,
+      max_len: 255
+    }
+  ];
+
+  string first_name = 3 [
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 100
+    }
+  ];
+
+  string last_name = 4 [
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 100
+    }
+  ];
+}
+
+// UpdateUserResponse with updated user
+message UpdateUserResponse {
+  User user = 1;
+  string message = 2;
+}
+
+// DeleteUserRequest for deleting a user
+message DeleteUserRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// DeleteUserResponse with confirmation message
+message DeleteUserResponse {
+  string message = 1;
+}
+
+// ActivateUserRequest for activating a user account
+message ActivateUserRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// ActivateUserResponse with updated user
+message ActivateUserResponse {
+  User user = 1;
+  string message = 2;
+}
+
+// DeactivateUserRequest for deactivating a user account
+message DeactivateUserRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// DeactivateUserResponse with updated user
+message DeactivateUserResponse {
+  User user = 1;
+  string message = 2;
+}
+
+// UserService provides CRUD operations for user management
+service UserService {
+  rpc QueryUsers(QueryUsersRequest) returns (QueryUsersResponse) {}
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse) {}
+  rpc GetUser(GetUserRequest) returns (GetUserResponse) {}
+  rpc UpdateUser(UpdateUserRequest) returns (UpdateUserResponse) {}
+  rpc DeleteUser(DeleteUserRequest) returns (DeleteUserResponse) {}
+  rpc ActivateUser(ActivateUserRequest) returns (ActivateUserResponse) {}
+  rpc DeactivateUser(DeactivateUserRequest) returns (DeactivateUserResponse) {}
+}

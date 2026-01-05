@@ -57,3 +57,23 @@ func (c *Container) GetProjectService() altalunev1.ProjectServiceServer {
 func (c *Container) GetApiKeyService() altalunev1.ApiKeyServiceServer {
 	return c.apiKeyService
 }
+
+// GetUserService returns the user service
+func (c *Container) GetUserService() altalunev1.UserServiceServer {
+	return c.userService
+}
+
+// GetRoleService returns the role service
+func (c *Container) GetRoleService() altalunev1.RoleServiceServer {
+	return c.roleService
+}
+
+// GetPermissionService returns the permission service
+func (c *Container) GetPermissionService() altalunev1.PermissionServiceServer {
+	return c.permissionService
+}
+
+// GetIAMMapperService returns the IAM Mapper service
+func (c *Container) GetIAMMapperService() altalunev1.IAMMapperServiceServer {
+	return c.iamMapperService
+}

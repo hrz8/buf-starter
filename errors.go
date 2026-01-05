@@ -32,8 +32,39 @@ const (
 	CodeApiKeyNotFound      = "60401"
 	CodeApiKeyAlreadyExists = "60402"
 
-	// Internal Errors (609XX)
-	CodeUnexpectedError = "69001"
+	// User Domain Errors (605XX)
+	CodeUserNotFound         = "60500"
+	CodeUserAlreadyExists    = "60501"
+	CodeUserInvalidEmail     = "60502"
+	CodeUserAlreadyActive    = "60503"
+	CodeUserAlreadyInactive  = "60504"
+	CodeUserCannotDeleteSelf = "60505"
+
+	// Role Domain Errors (606XX)
+	CodeRoleNotFound      = "60600"
+	CodeRoleAlreadyExists = "60601"
+	CodeRoleInvalidName   = "60602"
+	CodeRoleInUse         = "60603"
+
+	// Permission Domain Errors (607XX)
+	CodePermissionNotFound      = "60700"
+	CodePermissionAlreadyExists = "60701"
+	CodePermissionInvalidName   = "60702"
+	CodePermissionInvalidEffect = "60703"
+	CodePermissionInUse         = "60704"
+
+	// IAM Mapper Domain Errors (608XX)
+	CodeMappingNotFound           = "60800"
+	CodeMappingAlreadyExists      = "60801"
+	CodeInvalidProjectRole        = "60802"
+	CodeCannotRemoveLastOwner     = "60803"
+	CodeMappingUserNotFound       = "60804"
+	CodeMappingRoleNotFound       = "60805"
+	CodeMappingPermissionNotFound = "60806"
+	CodeMappingProjectNotFound    = "60807"
+
+	// Internal Errors (699XX)
+	CodeUnexpectedError = "69901"
 )
 
 // AppError represents a structured application error
@@ -246,6 +277,320 @@ func NewApiKeyAlreadyExistsError(name string) *AppError {
 				Code: code,
 				Meta: map[string]string{
 					"name": name,
+				},
+			},
+		},
+	}
+}
+
+// User Domain Errors
+
+// NewUserNotFoundError creates an error for when a user is not found
+func NewUserNotFoundError(userID string) *AppError {
+	code := CodeUserNotFound
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("User with ID '%s' not found", userID),
+		grpcCode: codes.NotFound,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"user_id": userID,
+				},
+			},
+		},
+	}
+}
+
+// NewUserAlreadyExistsError creates a new user already exists error
+func NewUserAlreadyExistsError(email string) *AppError {
+	code := CodeUserAlreadyExists
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("User with email '%s' already exists", email),
+		grpcCode: codes.AlreadyExists,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"email": email,
+				},
+			},
+		},
+	}
+}
+
+// NewUserInvalidEmailError creates an error for invalid email
+func NewUserInvalidEmailError(email string) *AppError {
+	code := CodeUserInvalidEmail
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Invalid email format: '%s'", email),
+		grpcCode: codes.InvalidArgument,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"email": email,
+				},
+			},
+		},
+	}
+}
+
+// NewUserAlreadyActiveError creates an error when user is already active
+func NewUserAlreadyActiveError(userID string) *AppError {
+	code := CodeUserAlreadyActive
+	return &AppError{
+		code:     code,
+		message:  "User is already active",
+		grpcCode: codes.FailedPrecondition,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"user_id": userID,
+				},
+			},
+		},
+	}
+}
+
+// NewUserAlreadyInactiveError creates an error when user is already inactive
+func NewUserAlreadyInactiveError(userID string) *AppError {
+	code := CodeUserAlreadyInactive
+	return &AppError{
+		code:     code,
+		message:  "User is already inactive",
+		grpcCode: codes.FailedPrecondition,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"user_id": userID,
+				},
+			},
+		},
+	}
+}
+
+// NewUserCannotDeleteSelfError creates an error when user tries to delete themselves
+func NewUserCannotDeleteSelfError(userID string) *AppError {
+	code := CodeUserCannotDeleteSelf
+	return &AppError{
+		code:     code,
+		message:  "Cannot delete your own user account",
+		grpcCode: codes.PermissionDenied,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"user_id": userID,
+				},
+			},
+		},
+	}
+}
+
+// Role Domain Errors
+
+// NewRoleNotFoundError creates an error for when a role is not found
+func NewRoleNotFoundError(roleID string) *AppError {
+	code := CodeRoleNotFound
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Role with ID '%s' not found", roleID),
+		grpcCode: codes.NotFound,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"role_id": roleID,
+				},
+			},
+		},
+	}
+}
+
+// NewRoleAlreadyExistsError creates a new role already exists error
+func NewRoleAlreadyExistsError(name string) *AppError {
+	code := CodeRoleAlreadyExists
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Role with name '%s' already exists", name),
+		grpcCode: codes.AlreadyExists,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"name": name,
+				},
+			},
+		},
+	}
+}
+
+// NewRoleInvalidNameError creates an error for invalid role name
+func NewRoleInvalidNameError(name string) *AppError {
+	code := CodeRoleInvalidName
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Invalid role name: '%s'", name),
+		grpcCode: codes.InvalidArgument,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"name": name,
+				},
+			},
+		},
+	}
+}
+
+// NewRoleInUseError creates an error when role cannot be deleted because it's in use
+func NewRoleInUseError(roleID string) *AppError {
+	code := CodeRoleInUse
+	return &AppError{
+		code:     code,
+		message:  "Role is in use and cannot be deleted",
+		grpcCode: codes.FailedPrecondition,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"role_id": roleID,
+				},
+			},
+		},
+	}
+}
+
+// Permission Domain Errors
+
+// NewPermissionNotFoundError creates an error for when a permission is not found
+func NewPermissionNotFoundError(permissionID string) *AppError {
+	code := CodePermissionNotFound
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Permission with ID '%s' not found", permissionID),
+		grpcCode: codes.NotFound,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"permission_id": permissionID,
+				},
+			},
+		},
+	}
+}
+
+// NewPermissionAlreadyExistsError creates a new permission already exists error
+func NewPermissionAlreadyExistsError(name string) *AppError {
+	code := CodePermissionAlreadyExists
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Permission with name '%s' already exists", name),
+		grpcCode: codes.AlreadyExists,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"name": name,
+				},
+			},
+		},
+	}
+}
+
+// NewPermissionInvalidNameError creates an error for invalid permission name
+func NewPermissionInvalidNameError(name string) *AppError {
+	code := CodePermissionInvalidName
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Invalid permission name: '%s' (must match ^[a-zA-Z0-9_:]+$)", name),
+		grpcCode: codes.InvalidArgument,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"name": name,
+				},
+			},
+		},
+	}
+}
+
+// NewPermissionInvalidEffectError creates an error for invalid permission effect
+func NewPermissionInvalidEffectError(effect string) *AppError {
+	code := CodePermissionInvalidEffect
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Invalid permission effect: '%s' (must be 'allow' or 'deny')", effect),
+		grpcCode: codes.InvalidArgument,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"effect": effect,
+				},
+			},
+		},
+	}
+}
+
+// NewPermissionInUseError creates an error when permission cannot be deleted because it's in use
+func NewPermissionInUseError(permissionID string) *AppError {
+	code := CodePermissionInUse
+	return &AppError{
+		code:     code,
+		message:  "Permission is in use and cannot be deleted",
+		grpcCode: codes.FailedPrecondition,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"permission_id": permissionID,
+				},
+			},
+		},
+	}
+}
+
+// IAM Mapper Domain Errors
+
+// NewInvalidProjectRoleError creates an error for invalid project role
+func NewInvalidProjectRoleError(role string) *AppError {
+	code := CodeInvalidProjectRole
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Invalid project role: '%s' (must be owner, admin, member, or viewer)", role),
+		grpcCode: codes.InvalidArgument,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"role": role,
+				},
+			},
+		},
+	}
+}
+
+// NewCannotRemoveLastOwnerError creates an error when trying to remove the last owner
+func NewCannotRemoveLastOwnerError(projectID string) *AppError {
+	code := CodeCannotRemoveLastOwner
+	return &AppError{
+		code:     code,
+		message:  "Cannot remove the last owner from the project",
+		grpcCode: codes.FailedPrecondition,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"project_id": projectID,
 				},
 			},
 		},

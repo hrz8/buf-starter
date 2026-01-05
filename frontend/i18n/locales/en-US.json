@@ -46,7 +46,7 @@
     "60301": "Project not found",
     "60401": "API key not found",
     "60402": "API key already exists",
-    "69001": "Server Error"
+    "69901": "Server Error"
   },
   "errorPage": {
     "goHome": "Go back Home"

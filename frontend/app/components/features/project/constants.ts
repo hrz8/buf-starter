@@ -22,6 +22,7 @@ export const TIMEZONE_OPTIONS = [
   'Asia/Dubai',
   'Asia/Kolkata',
   'Asia/Singapore',
+  'Asia/Jakarta',
   'Asia/Tokyo',
   'Asia/Shanghai',
   'Asia/Hong_Kong',
