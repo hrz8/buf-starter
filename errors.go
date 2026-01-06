@@ -41,10 +41,11 @@ const (
 	CodeUserCannotDeleteSelf = "60505"
 
 	// Role Domain Errors (606XX)
-	CodeRoleNotFound      = "60600"
-	CodeRoleAlreadyExists = "60601"
-	CodeRoleInvalidName   = "60602"
-	CodeRoleInUse         = "60603"
+	CodeRoleNotFound       = "60600"
+	CodeRoleAlreadyExists  = "60601"
+	CodeRoleInvalidName    = "60602"
+	CodeRoleInUse          = "60603"
+	CodeRoleProtected      = "60604"
 
 	// Permission Domain Errors (607XX)
 	CodePermissionNotFound      = "60700"
@@ -52,6 +53,7 @@ const (
 	CodePermissionInvalidName   = "60702"
 	CodePermissionInvalidEffect = "60703"
 	CodePermissionInUse         = "60704"
+	CodePermissionProtected     = "60705"
 
 	// IAM Mapper Domain Errors (608XX)
 	CodeMappingNotFound           = "60800"
@@ -467,6 +469,24 @@ func NewRoleInUseError(roleID string) *AppError {
 	}
 }
 
+// NewRoleProtectedError creates an error when trying to delete a protected role
+func NewRoleProtectedError(roleName string) *AppError {
+	code := CodeRoleProtected
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Role '%s' is protected and cannot be deleted or modified", roleName),
+		grpcCode: codes.PermissionDenied,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"role_name": roleName,
+				},
+			},
+		},
+	}
+}
+
 // Permission Domain Errors
 
 // NewPermissionNotFoundError creates an error for when a permission is not found
@@ -553,6 +573,24 @@ func NewPermissionInUseError(permissionID string) *AppError {
 				Code: code,
 				Meta: map[string]string{
 					"permission_id": permissionID,
+				},
+			},
+		},
+	}
+}
+
+// NewPermissionProtectedError creates an error when trying to delete a protected permission
+func NewPermissionProtectedError(permissionName string) *AppError {
+	code := CodePermissionProtected
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Permission '%s' is protected and cannot be deleted or modified", permissionName),
+		grpcCode: codes.PermissionDenied,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"permission_name": permissionName,
 				},
 			},
 		},

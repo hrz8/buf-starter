@@ -19,8 +19,8 @@ INSERT INTO altalune_roles (
   name,
   description
 ) VALUES (
-  'iam_role_sadmin',
-  'super_admin',
+  'p9bpzwy5essy7m',
+  'superadmin',
   'System super administrator'
 );
 
@@ -33,7 +33,7 @@ INSERT INTO altalune_permissions (
   effect,
   description
 ) VALUES (
-  'iam_perm_root01',
+  'jn9928r4s7vmmq',
   'root',
   'allow',
   'Full system access - wildcard permission'
@@ -49,7 +49,7 @@ INSERT INTO altalune_users (
   last_name,
   is_active
 ) VALUES (
-  'iam_user_admin1',
+  'gpwnrdd5lwmwe5',
   'admin@altalune.local',
   'Super',
   'Admin',
@@ -68,7 +68,7 @@ INSERT INTO altalune_user_identities (
   provider_user_id,
   email
 ) VALUES (
-  'iam_identity_g1',
+  'unxf2rnnbsqjzw',
   (SELECT id FROM altalune_users WHERE email = 'admin@altalune.local'),
   'google',
   'mock-google-user-id-123456789',
@@ -83,7 +83,7 @@ INSERT INTO altalune_users_roles (
   role_id
 ) VALUES (
   (SELECT id FROM altalune_users WHERE email = 'admin@altalune.local'),
-  (SELECT id FROM altalune_roles WHERE name = 'super_admin')
+  (SELECT id FROM altalune_roles WHERE name = 'superadmin')
 );
 
 -- -----------------------------------------------------------------------------
@@ -93,7 +93,7 @@ INSERT INTO altalune_roles_permissions (
   role_id,
   permission_id
 ) VALUES (
-  (SELECT id FROM altalune_roles WHERE name = 'super_admin'),
+  (SELECT id FROM altalune_roles WHERE name = 'superadmin'),
   (SELECT id FROM altalune_permissions WHERE name = 'root')
 );
 
@@ -122,28 +122,28 @@ WHERE user_id = (SELECT id FROM altalune_users WHERE email = 'admin@altalune.loc
 
 -- Remove role-permission assignment
 DELETE FROM altalune_roles_permissions
-WHERE role_id = (SELECT id FROM altalune_roles WHERE name = 'super_admin')
+WHERE role_id = (SELECT id FROM altalune_roles WHERE name = 'superadmin')
   AND permission_id = (SELECT id FROM altalune_permissions WHERE name = 'root');
 
 -- Remove user-role assignment
 DELETE FROM altalune_users_roles
 WHERE user_id = (SELECT id FROM altalune_users WHERE email = 'admin@altalune.local')
-  AND role_id = (SELECT id FROM altalune_roles WHERE name = 'super_admin');
+  AND role_id = (SELECT id FROM altalune_roles WHERE name = 'superadmin');
 
 -- Delete OAuth identity
 DELETE FROM altalune_user_identities
-WHERE public_id = 'iam_identity_g1';
+WHERE public_id = 'unxf2rnnbsqjzw';
 
 -- Delete mock admin user
 DELETE FROM altalune_users
-WHERE public_id = 'iam_user_admin1';
+WHERE public_id = 'gpwnrdd5lwmwe5';
 
 -- Delete root permission
 DELETE FROM altalune_permissions
-WHERE public_id = 'iam_perm_root01';
+WHERE public_id = 'jn9928r4s7vmmq';
 
 -- Delete super_admin role
 DELETE FROM altalune_roles
-WHERE public_id = 'iam_role_sadmin';
+WHERE public_id = 'p9bpzwy5essy7m';
 
 -- +goose StatementEnd
