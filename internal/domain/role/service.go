@@ -195,13 +195,32 @@ func (s *Service) DeleteRole(ctx context.Context, req *altalunev1.DeleteRoleRequ
 		return nil, altalune.NewInvalidPayloadError(err.Error())
 	}
 
-	err := s.roleRepo.Delete(ctx, req.Id)
+	// First get the role to check if it's protected
+	role, err := s.roleRepo.GetByID(ctx, req.Id)
+	if err != nil {
+		if err == ErrRoleNotFound {
+			return nil, altalune.NewRoleNotFoundError(req.Id)
+		}
+		s.log.Error("failed to get role for deletion check", "error", err, "role_id", req.Id)
+		return nil, altalune.NewUnexpectedError("failed to get role", err)
+	}
+
+	// Check if role is protected
+	if role.Name == "superadmin" {
+		s.log.Warn("attempt to delete protected role", "role_name", role.Name, "role_id", req.Id)
+		return nil, altalune.NewRoleProtectedError(role.Name)
+	}
+
+	err = s.roleRepo.Delete(ctx, req.Id)
 	if err != nil {
 		if err == ErrRoleNotFound {
 			return nil, altalune.NewRoleNotFoundError(req.Id)
 		}
 		if err == ErrRoleInUse {
 			return nil, altalune.NewRoleInUseError(req.Id)
+		}
+		if err == ErrRoleProtected {
+			return nil, altalune.NewRoleProtectedError(role.Name)
 		}
 		s.log.Error("failed to delete role", "error", err, "role_id", req.Id)
 		return nil, altalune.NewUnexpectedError("failed to delete role", err)

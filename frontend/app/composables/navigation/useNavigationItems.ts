@@ -4,7 +4,9 @@ import {
   Key,
   LucideHome,
   Puzzle,
+  ShieldCheck,
   Smartphone,
+  Users,
 } from 'lucide-vue-next';
 
 /**
@@ -117,8 +119,48 @@ export function useNavigationItems() {
     },
   ]);
 
+  /**
+   * IAM navigation items with translations
+   */
+  const iamNavItems = computed<SettingsItem[]>(() => [
+    {
+      name: t('nav.iam.users'),
+      url: '/iam/users',
+      icon: Users,
+      breadcrumb: {
+        path: '/iam/users',
+        label: 'nav.iam.users',
+        i18nKey: 'nav.iam.users',
+        parent: '/iam',
+      },
+    },
+    {
+      name: t('nav.iam.roles'),
+      url: '/iam/roles',
+      icon: ShieldCheck,
+      breadcrumb: {
+        path: '/iam/roles',
+        label: 'nav.iam.roles',
+        i18nKey: 'nav.iam.roles',
+        parent: '/iam',
+      },
+    },
+    {
+      name: t('nav.iam.permissions'),
+      url: '/iam/permissions',
+      icon: Key,
+      breadcrumb: {
+        path: '/iam/permissions',
+        label: 'nav.iam.permissions',
+        i18nKey: 'nav.iam.permissions',
+        parent: '/iam',
+      },
+    },
+  ]);
+
   return {
     mainNavItems,
     settingsNavItems,
+    iamNavItems,
   };
 }

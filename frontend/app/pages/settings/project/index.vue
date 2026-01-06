@@ -14,7 +14,6 @@ const projectId = computed(() => projectStore.activeProjectId);
         {{ t('features.projects.settings.messages.noProjectSelected') }}
       </p>
     </div>
-
     <ProjectSettingsForm v-else :project-id="projectId" />
   </div>
 </template>

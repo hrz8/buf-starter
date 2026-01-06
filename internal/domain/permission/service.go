@@ -226,13 +226,32 @@ func (s *Service) DeletePermission(ctx context.Context, req *altalunev1.DeletePe
 		return nil, altalune.NewInvalidPayloadError(err.Error())
 	}
 
-	err := s.permissionRepo.Delete(ctx, req.Id)
+	// First get the permission to check if it's protected
+	permission, err := s.permissionRepo.GetByID(ctx, req.Id)
+	if err != nil {
+		if err == ErrPermissionNotFound {
+			return nil, altalune.NewPermissionNotFoundError(req.Id)
+		}
+		s.log.Error("failed to get permission for deletion check", "error", err, "permission_id", req.Id)
+		return nil, altalune.NewUnexpectedError("failed to get permission", err)
+	}
+
+	// Check if permission is protected
+	if permission.Name == "root" {
+		s.log.Warn("attempt to delete protected permission", "permission_name", permission.Name, "permission_id", req.Id)
+		return nil, altalune.NewPermissionProtectedError(permission.Name)
+	}
+
+	err = s.permissionRepo.Delete(ctx, req.Id)
 	if err != nil {
 		if err == ErrPermissionNotFound {
 			return nil, altalune.NewPermissionNotFoundError(req.Id)
 		}
 		if err == ErrPermissionInUse {
 			return nil, altalune.NewPermissionInUseError(req.Id)
+		}
+		if err == ErrPermissionProtected {
+			return nil, altalune.NewPermissionProtectedError(permission.Name)
 		}
 		s.log.Error("failed to delete permission", "error", err, "permission_id", req.Id)
 		return nil, altalune.NewUnexpectedError("failed to delete permission", err)

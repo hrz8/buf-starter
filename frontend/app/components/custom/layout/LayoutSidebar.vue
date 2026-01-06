@@ -2,6 +2,7 @@
 import type { SidebarProps } from '@/components/ui/sidebar';
 
 import {
+  NavIAM,
   NavMenu,
   NavProject,
   NavSettings,
@@ -20,7 +21,7 @@ const props = withDefaults(defineProps<SidebarProps>(), {
   collapsible: 'icon',
 });
 
-const { mainNavItems, settingsNavItems } = useNavigationItems();
+const { mainNavItems, settingsNavItems, iamNavItems } = useNavigationItems();
 
 const data = {
   user: {
@@ -29,6 +30,7 @@ const data = {
     avatar: '/avatars/shadcn.jpg',
   },
   settings: settingsNavItems,
+  iam: iamNavItems,
 };
 </script>
 
@@ -39,6 +41,7 @@ const data = {
     </SidebarHeader>
     <SidebarContent>
       <NavMenu :items="mainNavItems" />
+      <NavIAM :items="data.iam.value" />
       <NavSettings :settings="data.settings.value" />
     </SidebarContent>
     <SidebarFooter>

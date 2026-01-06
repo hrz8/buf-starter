@@ -46,6 +46,31 @@
     "60301": "Projek tidak ditemukan",
     "60401": "Kunci API tidak ditemukan",
     "60402": "Kunci API sudah ada",
+    "60500": "Pengguna tidak ditemukan",
+    "60501": "Pengguna sudah ada",
+    "60502": "Alamat email tidak valid",
+    "60503": "Pengguna sudah aktif",
+    "60504": "Pengguna sudah tidak aktif",
+    "60505": "Tidak dapat menghapus akun Anda sendiri",
+    "60600": "Peran tidak ditemukan",
+    "60601": "Peran sudah ada",
+    "60602": "Nama peran tidak valid",
+    "60603": "Peran sedang digunakan dan tidak dapat dihapus",
+    "60604": "Peran dilindungi dan tidak dapat dihapus",
+    "60700": "Izin tidak ditemukan",
+    "60701": "Izin sudah ada",
+    "60702": "Format nama izin tidak valid",
+    "60703": "Efek izin tidak valid (harus 'allow' atau 'deny')",
+    "60704": "Izin sedang digunakan dan tidak dapat dihapus",
+    "60705": "Izin dilindungi dan tidak dapat dihapus",
+    "60800": "Pemetaan tidak ditemukan",
+    "60801": "Pemetaan sudah ada",
+    "60802": "Peran proyek tidak valid",
+    "60803": "Tidak dapat menghapus pemilik terakhir dari proyek",
+    "60804": "Pengguna tidak ditemukan dalam pemetaan",
+    "60805": "Peran tidak ditemukan dalam pemetaan",
+    "60806": "Izin tidak ditemukan dalam pemetaan",
+    "60807": "Proyek tidak ditemukan dalam pemetaan",
     "69901": "Kesalahan Server"
   },
   "errorPage": {
@@ -170,6 +195,184 @@
         "expired": "Kadaluarsa",
         "expiringSoon": "Segera Kadaluarsa",
         "inactive": "Tidak Aktif",
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "permissions": {
+      "actions": {
+        "create": "Buat Izin",
+        "delete": "Hapus Izin",
+        "edit": "Ubah Izin",
+        "refresh": "Muat Ulang",
+        "search": "Cari izin..."
+      },
+      "columns": {
+        "createdAt": "Dibuat Pada",
+        "description": "Deskripsi",
+        "effect": "Efek",
+        "name": "Nama"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Apakah Anda yakin ingin menghapus **{name}**? Tindakan ini tidak dapat dibatalkan dan akan menghapus izin ini secara permanen dari sistem.",
+        "title": "Hapus Izin"
+      },
+      "effect": {
+        "allow": "Izinkan",
+        "deny": "Tolak"
+      },
+      "empty": {
+        "description": "Kami tidak dapat menemukan izin yang sesuai dengan kriteria Anda. Coba sesuaikan filter atau istilah pencarian Anda.",
+        "title": "Tidak ada izin ditemukan"
+      },
+      "filter": {
+        "effect": "Efek"
+      },
+      "form": {
+        "descriptionLabel": "Deskripsi (Opsional)",
+        "descriptionPlaceholder": "Jelaskan apa yang diizinkan oleh izin ini",
+        "effectDescription": "Tentukan apakah izin ini mengizinkan atau menolak akses",
+        "effectLabel": "Efek *",
+        "nameDescription": "Format: huruf, angka, garis bawah, dan titik dua (mis., \"project:read:metadata\")",
+        "nameLabel": "Nama Izin *",
+        "namePlaceholder": "project:read"
+      },
+      "loading": "Memuat izin...",
+      "messages": {
+        "createError": "Gagal membuat izin",
+        "createErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+        "createSuccess": "Izin dibuat",
+        "createSuccessDesc": "Izin \"{name}\" telah berhasil dibuat.",
+        "deleteError": "Gagal menghapus izin",
+        "deleteErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+        "deleteSuccess": "Izin berhasil dihapus",
+        "deleteSuccessDesc": "\"{name}\" telah dihapus.",
+        "updateError": "Gagal memperbarui izin",
+        "updateErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+        "updateSuccess": "Izin berhasil diperbarui",
+        "updateSuccessDesc": "\"{name}\" telah diperbarui."
+      },
+      "sheet": {
+        "createDescription": "Buat izin baru yang dapat ditetapkan ke peran dan pengguna.",
+        "createTitle": "Buat Izin Baru",
+        "editDescription": "Perbarui detail izin di bawah ini. Semua bidang yang ditandai dengan * wajib diisi.",
+        "editTitle": "Ubah Izin"
+      },
+      "status": {
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "roles": {
+      "actions": {
+        "create": "Buat Peran",
+        "delete": "Hapus Peran",
+        "edit": "Ubah Peran",
+        "refresh": "Muat Ulang",
+        "search": "Cari peran..."
+      },
+      "columns": {
+        "createdAt": "Dibuat Pada",
+        "description": "Deskripsi",
+        "name": "Nama"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Apakah Anda yakin ingin menghapus **{name}**? Tindakan ini tidak dapat dibatalkan dan akan menghapus peran ini secara permanen dari sistem.",
+        "title": "Hapus Peran"
+      },
+      "empty": {
+        "description": "Kami tidak dapat menemukan peran yang sesuai dengan kriteria Anda. Coba sesuaikan filter atau istilah pencarian Anda.",
+        "title": "Tidak ada peran ditemukan"
+      },
+      "form": {
+        "descriptionLabel": "Deskripsi (Opsional)",
+        "descriptionPlaceholder": "Jelaskan untuk apa peran ini digunakan",
+        "nameDescription": "Format: huruf, angka, dan garis bawah (mis., \"admin\" atau \"project_manager\")",
+        "nameLabel": "Nama Peran *",
+        "namePlaceholder": "admin"
+      },
+      "loading": "Memuat peran...",
+      "messages": {
+        "createError": "Gagal membuat peran",
+        "createErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+        "createSuccess": "Peran dibuat",
+        "createSuccessDesc": "Peran \"{name}\" telah berhasil dibuat.",
+        "deleteError": "Gagal menghapus peran",
+        "deleteErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+        "deleteSuccess": "Peran berhasil dihapus",
+        "deleteSuccessDesc": "\"{name}\" telah dihapus.",
+        "updateError": "Gagal memperbarui peran",
+        "updateErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+        "updateSuccess": "Peran berhasil diperbarui",
+        "updateSuccessDesc": "\"{name}\" telah diperbarui."
+      },
+      "sheet": {
+        "createDescription": "Buat peran baru yang dapat ditetapkan ke pengguna.",
+        "createTitle": "Buat Peran Baru",
+        "editDescription": "Perbarui detail peran di bawah ini. Semua bidang yang ditandai dengan * wajib diisi.",
+        "editTitle": "Ubah Peran"
+      },
+      "tabs": {
+        "details": "Detail",
+        "permissions": "Izin"
+      },
+      "status": {
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "users": {
+      "actions": {
+        "create": "Buat Pengguna",
+        "delete": "Hapus Pengguna",
+        "edit": "Ubah Pengguna",
+        "openMenu": "Buka menu",
+        "search": "Cari pengguna..."
+      },
+      "columns": {
+        "createdAt": "Dibuat Pada",
+        "email": "Email",
+        "firstName": "Nama Depan",
+        "lastName": "Nama Belakang"
+      },
+      "dialog": {
+        "deleteDescription": "Apakah Anda yakin ingin menghapus {name}? Tindakan ini tidak dapat dibatalkan.",
+        "deleteTitle": "Hapus Pengguna"
+      },
+      "empty": {
+        "description": "Mulai dengan membuat pengguna pertama Anda.",
+        "title": "Tidak ada pengguna ditemukan"
+      },
+      "form": {
+        "emailDescription": "Alamat email pengguna untuk autentikasi dan komunikasi",
+        "emailLabel": "Email",
+        "emailPlaceholder": "pengguna{'@'}contoh.com",
+        "firstNameLabel": "Nama Depan",
+        "firstNamePlaceholder": "John",
+        "lastNameLabel": "Nama Belakang",
+        "lastNamePlaceholder": "Doe"
+      },
+      "loading": "Memuat pengguna...",
+      "messages": {
+        "createError": "Gagal membuat pengguna",
+        "createSuccess": "Pengguna dibuat",
+        "createSuccessDesc": "{name} telah dibuat dengan sukses.",
+        "deleteError": "Gagal menghapus pengguna",
+        "deleteSuccess": "Pengguna dihapus",
+        "deleteSuccessDesc": "{name} telah dihapus dengan sukses.",
+        "updateError": "Gagal memperbarui pengguna",
+        "updateSuccess": "Pengguna berhasil diperbarui",
+        "updateSuccessDesc": "{name} telah diperbarui."
+      },
+      "sheet": {
+        "createDescription": "Buat akun pengguna baru.",
+        "createTitle": "Buat Pengguna Baru",
+        "editDescription": "Perbarui detail pengguna di bawah ini. Semua bidang yang ditandai dengan * wajib diisi.",
+        "editTitle": "Ubah Pengguna"
+      },
+      "tabs": {
+        "permissions": "Izin",
+        "profile": "Profil",
+        "roles": "Peran"
+      },
+      "status": {
         "unknown": "Tidak Diketahui"
       }
     },
@@ -375,6 +578,12 @@
       "title": "Contoh"
     },
     "home": "Beranda",
+    "iam": {
+      "title": "Identitas & Akses",
+      "users": "Pengguna",
+      "roles": "Peran",
+      "permissions": "Izin"
+    },
     "settings": {
       "apiKeys": "Kunci API",
       "project": "Pengaturan Proyek",

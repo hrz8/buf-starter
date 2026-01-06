@@ -46,6 +46,31 @@
     "60301": "Project not found",
     "60401": "API key not found",
     "60402": "API key already exists",
+    "60500": "User not found",
+    "60501": "User already exists",
+    "60502": "Invalid email address",
+    "60503": "User is already active",
+    "60504": "User is already inactive",
+    "60505": "Cannot delete your own account",
+    "60600": "Role not found",
+    "60601": "Role already exists",
+    "60602": "Invalid role name",
+    "60603": "Role is in use and cannot be deleted",
+    "60604": "Role is protected and cannot be deleted",
+    "60700": "Permission not found",
+    "60701": "Permission already exists",
+    "60702": "Invalid permission name format",
+    "60703": "Invalid permission effect (must be 'allow' or 'deny')",
+    "60704": "Permission is in use and cannot be deleted",
+    "60705": "Permission is protected and cannot be deleted",
+    "60800": "Mapping not found",
+    "60801": "Mapping already exists",
+    "60802": "Invalid project role",
+    "60803": "Cannot remove the last owner from the project",
+    "60804": "User not found in mapping",
+    "60805": "Role not found in mapping",
+    "60806": "Permission not found in mapping",
+    "60807": "Project not found in mapping",
     "69901": "Server Error"
   },
   "errorPage": {
@@ -170,6 +195,184 @@
         "expired": "Expired",
         "expiringSoon": "Expiring Soon",
         "inactive": "Inactive",
+        "unknown": "Unknown"
+      }
+    },
+    "permissions": {
+      "actions": {
+        "create": "Create Permission",
+        "delete": "Delete Permission",
+        "edit": "Edit Permission",
+        "refresh": "Refresh",
+        "search": "Search permissions..."
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "description": "Description",
+        "effect": "Effect",
+        "name": "Name"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently remove this permission from the system.",
+        "title": "Delete Permission"
+      },
+      "effect": {
+        "allow": "Allow",
+        "deny": "Deny"
+      },
+      "empty": {
+        "description": "We couldn't find any permissions matching your criteria. Try adjusting your filters or search terms.",
+        "title": "No permissions found"
+      },
+      "filter": {
+        "effect": "Effect"
+      },
+      "form": {
+        "descriptionLabel": "Description (Optional)",
+        "descriptionPlaceholder": "Describe what this permission allows",
+        "effectDescription": "Specify whether this permission allows or denies access",
+        "effectLabel": "Effect *",
+        "nameDescription": "Format: letters, numbers, underscores, and colons (e.g., \"project:read:metadata\")",
+        "nameLabel": "Permission Name *",
+        "namePlaceholder": "project:read"
+      },
+      "loading": "Loading permissions...",
+      "messages": {
+        "createError": "Failed to create permission",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "Permission created",
+        "createSuccessDesc": "Permission \"{name}\" has been created successfully.",
+        "deleteError": "Failed to delete permission",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "Permission deleted successfully",
+        "deleteSuccessDesc": "\"{name}\" has been removed.",
+        "updateError": "Failed to update permission",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "updateSuccess": "Permission updated successfully",
+        "updateSuccessDesc": "\"{name}\" has been updated."
+      },
+      "sheet": {
+        "createDescription": "Create a new permission that can be assigned to roles and users.",
+        "createTitle": "Create New Permission",
+        "editDescription": "Update permission details below. All fields marked with * are required.",
+        "editTitle": "Edit Permission"
+      },
+      "status": {
+        "unknown": "Unknown"
+      }
+    },
+    "roles": {
+      "actions": {
+        "create": "Create Role",
+        "delete": "Delete Role",
+        "edit": "Edit Role",
+        "refresh": "Refresh",
+        "search": "Search roles..."
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "description": "Description",
+        "name": "Name"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently remove this role from the system.",
+        "title": "Delete Role"
+      },
+      "empty": {
+        "description": "We couldn't find any roles matching your criteria. Try adjusting your filters or search terms.",
+        "title": "No roles found"
+      },
+      "form": {
+        "descriptionLabel": "Description (Optional)",
+        "descriptionPlaceholder": "Describe what this role is used for",
+        "nameDescription": "Format: letters, numbers, and underscores (e.g., \"admin\" or \"project_manager\")",
+        "nameLabel": "Role Name *",
+        "namePlaceholder": "admin"
+      },
+      "loading": "Loading roles...",
+      "messages": {
+        "createError": "Failed to create role",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "Role created",
+        "createSuccessDesc": "Role \"{name}\" has been created successfully.",
+        "deleteError": "Failed to delete role",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "Role deleted successfully",
+        "deleteSuccessDesc": "\"{name}\" has been removed.",
+        "updateError": "Failed to update role",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "updateSuccess": "Role updated successfully",
+        "updateSuccessDesc": "\"{name}\" has been updated."
+      },
+      "sheet": {
+        "createDescription": "Create a new role that can be assigned to users.",
+        "createTitle": "Create New Role",
+        "editDescription": "Update role details below. All fields marked with * are required.",
+        "editTitle": "Edit Role"
+      },
+      "tabs": {
+        "details": "Details",
+        "permissions": "Permissions"
+      },
+      "status": {
+        "unknown": "Unknown"
+      }
+    },
+    "users": {
+      "actions": {
+        "create": "Create User",
+        "delete": "Delete User",
+        "edit": "Edit User",
+        "openMenu": "Open menu",
+        "search": "Search users..."
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name"
+      },
+      "dialog": {
+        "deleteDescription": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "deleteTitle": "Delete User"
+      },
+      "empty": {
+        "description": "Get started by creating your first user.",
+        "title": "No users found"
+      },
+      "form": {
+        "emailDescription": "User's email address for authentication and communication",
+        "emailLabel": "Email",
+        "emailPlaceholder": "john.doe{'@'}example.com",
+        "firstNameLabel": "First Name",
+        "firstNamePlaceholder": "John",
+        "lastNameLabel": "Last Name",
+        "lastNamePlaceholder": "Doe"
+      },
+      "loading": "Loading users...",
+      "messages": {
+        "createError": "Failed to create user",
+        "createSuccess": "User created",
+        "createSuccessDesc": "{name} has been created successfully.",
+        "deleteError": "Failed to delete user",
+        "deleteSuccess": "User deleted",
+        "deleteSuccessDesc": "{name} has been deleted successfully.",
+        "updateError": "Failed to update user",
+        "updateSuccess": "User updated successfully",
+        "updateSuccessDesc": "{name} has been updated."
+      },
+      "sheet": {
+        "createDescription": "Create a new user account.",
+        "createTitle": "Create New User",
+        "editDescription": "Update user details below. All fields marked with * are required.",
+        "editTitle": "Edit User"
+      },
+      "tabs": {
+        "permissions": "Permissions",
+        "profile": "Profile",
+        "roles": "Roles"
+      },
+      "status": {
         "unknown": "Unknown"
       }
     },
@@ -375,6 +578,12 @@
       "title": "Examples"
     },
     "home": "Home",
+    "iam": {
+      "title": "Identity & Access",
+      "users": "Users",
+      "roles": "Roles",
+      "permissions": "Permissions"
+    },
     "settings": {
       "apiKeys": "API Keys",
       "project": "Project Settings",

@@ -1461,7 +1461,7 @@ Backend error codes should be translated for user-facing messages:
   "errorCodes": {
     "60001": "Invalid input",
     "60201": "Employee not found",
-    "69001": "Server Error"
+    "69901": "Server Error"
   }
 }
 ```

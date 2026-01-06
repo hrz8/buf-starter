@@ -66,13 +66,14 @@ export function useBreadcrumbs() {
   const { t } = useI18n();
 
   // Get navigation items from single source of truth
-  const { mainNavItems, settingsNavItems } = useNavigationItems();
+  const { mainNavItems, settingsNavItems, iamNavItems } = useNavigationItems();
 
   // Build breadcrumb map reactively from navigation items
   const breadcrumbMap = computed(() =>
     buildBreadcrumbMap(
       mainNavItems.value,
       settingsNavItems.value,
+      iamNavItems.value,
       specialBreadcrumbs,
     ),
   );

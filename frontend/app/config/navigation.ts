@@ -14,6 +14,11 @@ export const specialBreadcrumbs: Record<string, BreadcrumbConfig> = {
     label: 'nav.home',
     i18nKey: 'nav.home',
   },
+  '/iam': {
+    path: '/iam',
+    label: 'nav.iam.title',
+    i18nKey: 'nav.iam.title',
+  },
   '/settings': {
     path: '/settings',
     label: 'nav.settings.title',
@@ -35,12 +40,14 @@ export const specialBreadcrumbs: Record<string, BreadcrumbConfig> = {
  *
  * @param mainItems - Main navigation items from useNavigationItems()
  * @param settingsItems - Settings navigation items from useNavigationItems()
+ * @param iamItems - IAM navigation items from useNavigationItems()
  * @param specialBreadcrumbs - Special breadcrumb configurations for routes not in nav
  * @returns Map of path to breadcrumb configuration
  */
 export function buildBreadcrumbMap(
   mainItems: NavItem[],
   settingsItems: SettingsItem[],
+  iamItems: SettingsItem[],
   specialBreadcrumbs: Record<string, BreadcrumbConfig>,
 ): Map<string, BreadcrumbConfig> {
   const map = new Map<string, BreadcrumbConfig>();
@@ -63,6 +70,13 @@ export function buildBreadcrumbMap(
   }
 
   addNavItems(mainItems);
+
+  // Add breadcrumbs from IAM navigation
+  iamItems.forEach((item) => {
+    if (item.breadcrumb) {
+      map.set(item.breadcrumb.path, item.breadcrumb);
+    }
+  });
 
   // Add breadcrumbs from settings navigation
   settingsItems.forEach((item) => {
