@@ -2,6 +2,7 @@ import type { NavItem, SettingsItem } from '~/types/navigation';
 import {
   Cog,
   Key,
+  KeyRound,
   LucideHome,
   Puzzle,
   ShieldCheck,
@@ -153,6 +154,17 @@ export function useNavigationItems() {
         path: '/iam/permissions',
         label: 'nav.iam.permissions',
         i18nKey: 'nav.iam.permissions',
+        parent: '/iam',
+      },
+    },
+    {
+      name: t('nav.iam.oauthProviders'),
+      url: '/iam/oauth-provider',
+      icon: KeyRound,
+      breadcrumb: {
+        path: '/iam/oauth-provider',
+        label: 'nav.iam.oauthProviders',
+        i18nKey: 'nav.iam.oauthProviders',
         parent: '/iam',
       },
     },

@@ -70,6 +70,10 @@
     "60805": "Role not found in mapping",
     "60806": "Permission not found in mapping",
     "60807": "Project not found in mapping",
+    "60810": "OAuth provider not found",
+    "60811": "Duplicate provider type (already exists)",
+    "60812": "Failed to encrypt client secret",
+    "60813": "Failed to decrypt client secret",
     "69901": "Server Error"
   },
   "errorPage": {
@@ -556,6 +560,98 @@
           "description": "Permanently delete this project and all associated data. This action cannot be undone."
         }
       }
+    },
+    "oauth": {
+      "page": {
+        "title": "OAuth Providers",
+        "description": "Configure OAuth authentication providers for user login"
+      },
+      "table": {
+        "providerType": "Provider",
+        "clientId": "Client ID",
+        "redirectUrl": "Redirect URL",
+        "scopes": "Scopes",
+        "status": "Status",
+        "enabled": "Status",
+        "createdAt": "Created",
+        "actions": "Actions",
+        "search": "Search providers...",
+        "noScopes": "No scopes"
+      },
+      "loading": "Loading OAuth providers...",
+      "status": {
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+      },
+      "fields": {
+        "providerType": "Provider Type",
+        "clientId": "Client ID",
+        "clientSecret": "Client Secret",
+        "updateClientSecret": "Update Client Secret",
+        "redirectUrl": "Redirect URL",
+        "scopes": "Scopes",
+        "enabled": "Enabled"
+      },
+      "descriptions": {
+        "providerType": "Select the OAuth provider (cannot be changed after creation)",
+        "providerTypeImmutable": "Provider type cannot be changed after creation",
+        "clientSecret": "Secret credential from OAuth provider (encrypted before storage)",
+        "updateClientSecret": "Leave empty to keep the current secret",
+        "scopes": "Comma-separated list of OAuth scopes",
+        "enabled": "Enable or disable this provider for authentication"
+      },
+      "actions": {
+        "create": "Create Provider",
+        "createFirst": "Create your first provider",
+        "update": "Update Provider",
+        "delete": "Delete Provider",
+        "search": "Search providers...",
+        "revealSecret": "Reveal Secret",
+        "hideSecret": "Hide Secret",
+        "copySecret": "Copy Secret"
+      },
+      "messages": {
+        "createSuccess": "OAuth provider created",
+        "createSuccessDesc": "Provider {name} has been configured successfully",
+        "createError": "Failed to create provider",
+        "updateSuccess": "OAuth provider updated",
+        "updateSuccessDesc": "{name} provider has been updated successfully",
+        "updateError": "Failed to update provider",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "OAuth provider deleted",
+        "deleteSuccessDesc": "{name} provider has been removed successfully",
+        "deleteError": "Failed to delete provider",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "secretRevealed": "Client secret revealed",
+        "secretRevealedDesc": "Secret will auto-hide in 30 seconds",
+        "secretRevealError": "Failed to reveal secret",
+        "secretRevealErrorDesc": "Could not decrypt client secret",
+        "secretHidden": "Client secret hidden",
+        "secretCopied": "Client secret copied to clipboard",
+        "failedToCopy": "Failed to copy to clipboard",
+        "autoHiding": "Auto-hiding in {seconds}s",
+        "noSecretSet": "No client secret set"
+      },
+      "filters": {
+        "providerType": "Provider Type",
+        "enabled": "Status",
+        "status": "Status"
+      },
+      "immutable": "Immutable",
+      "deleteDialog": {
+        "title": "Delete OAuth Provider",
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently remove this OAuth provider configuration."
+      },
+      "sheet": {
+        "createTitle": "Create OAuth Provider",
+        "createDescription": "Configure a new OAuth provider for authentication.",
+        "editTitle": "Edit OAuth Provider",
+        "editDescription": "Update OAuth provider configuration below."
+      },
+      "empty": {
+        "title": "No OAuth providers found",
+        "description": "We couldn't find any OAuth providers. Try adjusting your filters or create a new provider."
+      }
     }
   },
   "layout": {
@@ -585,10 +681,12 @@
       "title": "Identity & Access",
       "users": "Users",
       "roles": "Roles",
-      "permissions": "Permissions"
+      "permissions": "Permissions",
+      "oauthProviders": "OAuth Providers"
     },
     "settings": {
       "apiKeys": "API Keys",
+      "oauth": "OAuth Providers",
       "project": "Project Settings",
       "title": "Settings"
     },

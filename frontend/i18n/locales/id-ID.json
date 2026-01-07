@@ -60,7 +60,6 @@
     "60700": "Izin tidak ditemukan",
     "60701": "Izin sudah ada",
     "60702": "Format nama izin tidak valid",
-    "60703": "Efek izin tidak valid (harus 'allow' atau 'deny')",
     "60704": "Izin sedang digunakan dan tidak dapat dihapus",
     "60705": "Izin dilindungi dan tidak dapat dihapus",
     "60800": "Pemetaan tidak ditemukan",
@@ -71,6 +70,10 @@
     "60805": "Peran tidak ditemukan dalam pemetaan",
     "60806": "Izin tidak ditemukan dalam pemetaan",
     "60807": "Proyek tidak ditemukan dalam pemetaan",
+    "60810": "Penyedia OAuth tidak ditemukan",
+    "60811": "Tipe penyedia duplikat (sudah ada)",
+    "60812": "Gagal mengenkripsi client secret",
+    "60813": "Gagal mendekripsi client secret",
     "69901": "Kesalahan Server"
   },
   "errorPage": {
@@ -557,6 +560,98 @@
           "description": "Hapus proyek ini secara permanen beserta semua data terkait. Tindakan ini tidak dapat dibatalkan."
         }
       }
+    },
+    "oauth": {
+      "page": {
+        "title": "Penyedia OAuth",
+        "description": "Konfigurasi penyedia autentikasi OAuth untuk login pengguna"
+      },
+      "table": {
+        "providerType": "Penyedia",
+        "clientId": "Client ID",
+        "redirectUrl": "URL Redirect",
+        "scopes": "Cakupan",
+        "status": "Status",
+        "enabled": "Status",
+        "createdAt": "Dibuat",
+        "actions": "Aksi",
+        "search": "Cari penyedia...",
+        "noScopes": "Tidak ada cakupan"
+      },
+      "loading": "Memuat penyedia OAuth...",
+      "status": {
+        "enabled": "Aktif",
+        "disabled": "Nonaktif"
+      },
+      "fields": {
+        "providerType": "Tipe Penyedia",
+        "clientId": "Client ID",
+        "clientSecret": "Client Secret",
+        "updateClientSecret": "Perbarui Client Secret",
+        "redirectUrl": "URL Redirect",
+        "scopes": "Cakupan",
+        "enabled": "Aktif"
+      },
+      "descriptions": {
+        "providerType": "Pilih penyedia OAuth (tidak dapat diubah setelah dibuat)",
+        "providerTypeImmutable": "Tipe penyedia tidak dapat diubah setelah dibuat",
+        "clientSecret": "Kredensial rahasia dari penyedia OAuth (dienkripsi sebelum disimpan)",
+        "updateClientSecret": "Biarkan kosong untuk mempertahankan secret saat ini",
+        "scopes": "Daftar cakupan OAuth yang dipisahkan koma",
+        "enabled": "Aktifkan atau nonaktifkan penyedia ini untuk autentikasi"
+      },
+      "actions": {
+        "create": "Buat Penyedia",
+        "createFirst": "Buat penyedia pertama Anda",
+        "update": "Perbarui Penyedia",
+        "delete": "Hapus Penyedia",
+        "search": "Cari penyedia...",
+        "revealSecret": "Tampilkan Secret",
+        "hideSecret": "Sembunyikan Secret",
+        "copySecret": "Salin Secret"
+      },
+      "messages": {
+        "createSuccess": "Penyedia OAuth dibuat",
+        "createSuccessDesc": "Penyedia {name} telah dikonfigurasi dengan sukses",
+        "createError": "Gagal membuat penyedia",
+        "updateSuccess": "Penyedia OAuth diperbarui",
+        "updateSuccessDesc": "Penyedia {name} telah diperbarui dengan sukses",
+        "updateError": "Gagal memperbarui penyedia",
+        "updateErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+        "deleteSuccess": "Penyedia OAuth dihapus",
+        "deleteSuccessDesc": "Penyedia {name} telah dihapus dengan sukses",
+        "deleteError": "Gagal menghapus penyedia",
+        "deleteErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
+        "secretRevealed": "Client secret ditampilkan",
+        "secretRevealedDesc": "Secret akan otomatis disembunyikan dalam 30 detik",
+        "secretRevealError": "Gagal menampilkan secret",
+        "secretRevealErrorDesc": "Tidak dapat mendekripsi client secret",
+        "secretHidden": "Client secret disembunyikan",
+        "secretCopied": "Client secret disalin ke clipboard",
+        "failedToCopy": "Gagal menyalin ke clipboard",
+        "autoHiding": "Otomatis menyembunyikan dalam {seconds}d",
+        "noSecretSet": "Tidak ada client secret yang diatur"
+      },
+      "filters": {
+        "providerType": "Tipe Penyedia",
+        "enabled": "Status",
+        "status": "Status"
+      },
+      "immutable": "Tidak dapat diubah",
+      "deleteDialog": {
+        "title": "Hapus Penyedia OAuth",
+        "confirmMessage": "Apakah Anda yakin ingin menghapus **{name}**? Tindakan ini tidak dapat dibatalkan dan akan menghapus konfigurasi penyedia OAuth ini secara permanen."
+      },
+      "sheet": {
+        "createTitle": "Buat Penyedia OAuth",
+        "createDescription": "Konfigurasi penyedia OAuth baru untuk autentikasi.",
+        "editTitle": "Ubah Penyedia OAuth",
+        "editDescription": "Perbarui konfigurasi penyedia OAuth di bawah ini."
+      },
+      "empty": {
+        "title": "Tidak ada penyedia OAuth ditemukan",
+        "description": "Kami tidak dapat menemukan penyedia OAuth. Coba sesuaikan filter Anda atau buat penyedia baru."
+      }
     }
   },
   "layout": {
@@ -586,10 +681,12 @@
       "title": "Identitas & Akses",
       "users": "Pengguna",
       "roles": "Peran",
-      "permissions": "Izin"
+      "permissions": "Izin",
+      "oauthProviders": "Penyedia OAuth"
     },
     "settings": {
       "apiKeys": "Kunci API",
+      "oauth": "Penyedia OAuth",
       "project": "Pengaturan Proyek",
       "title": "Pengaturan"
     },

@@ -21,7 +21,7 @@ import PermissionDeleteDialog from './PermissionDeleteDialog.vue';
 import PermissionRowActions from './PermissionRowActions.vue';
 import PermissionUpdateSheet from './PermissionUpdateSheet.vue';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 // Services
 const {
@@ -35,7 +35,7 @@ const pageSize = ref(10);
 const keyword = ref('');
 
 const dataTableRef = ref<InstanceType<typeof DataTable> | null>(null);
-const table = computed(() => dataTableRef.value?.table);
+// const table = computed(() => dataTableRef.value?.table);
 
 const { columnFilters, sorting } = useDataTableState(dataTableRef);
 
@@ -90,7 +90,7 @@ function formatDate(timestamp: any): string {
   const seconds = BigInt(timestamp.seconds);
   const millis = Number(seconds * 1000n);
   const date = new Date(millis);
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString(locale.value, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',

@@ -21,7 +21,7 @@ import UserDeleteDialog from './UserDeleteDialog.vue';
 import UserRowActions from './UserRowActions.vue';
 import UserUpdateSheet from './UserUpdateSheet.vue';
 
-const { t } = useI18n();
+const { t, locale } = useI18n();
 
 // Services
 const {
@@ -89,7 +89,7 @@ function formatDate(timestamp: any): string {
   const seconds = BigInt(timestamp.seconds);
   const millis = Number(seconds * 1000n);
   const date = new Date(millis);
-  return date.toLocaleDateString('en-US', {
+  return date.toLocaleDateString(locale.value, {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
