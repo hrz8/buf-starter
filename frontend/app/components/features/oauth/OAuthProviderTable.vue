@@ -160,7 +160,8 @@ const columns = computed(() => [
     }),
     cell: ({ row }) => {
       const clientId = row.original.clientId;
-      return h('code', { class: 'text-xs font-mono' }, clientId);
+      const truncated = clientId.length > 40 ? `${clientId.slice(0, 20)}...${clientId.slice(-20)}` : clientId;
+      return h('code', { class: 'text-xs font-mono', title: clientId }, truncated);
     },
     enableSorting: false,
   }),
