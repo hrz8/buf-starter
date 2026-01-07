@@ -8,12 +8,11 @@ import "google/protobuf/timestamp.proto";
 import "buf/validate/validate.proto";
 import "altalune/v1/common.proto";
 
-// Permission represents a system permission with allow/deny effect
+// Permission represents a system permission
 message Permission {
   string id = 1;                                    // Public nanoid (14 chars)
   string name = 2;                                  // Machine-readable: "project:read"
-  string effect = 3;                                // "allow" or "deny"
-  string description = 4;                           // Human-readable (optional)
+  string description = 3;                           // Human-readable (optional)
   google.protobuf.Timestamp created_at = 98;
   google.protobuf.Timestamp updated_at = 99;
 }
@@ -40,14 +39,7 @@ message CreatePermissionRequest {
     }
   ];
 
-  string effect = 2 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {
-      in: ["allow", "deny"]
-    }
-  ];
-
-  string description = 3 [
+  string description = 2 [
     (buf.validate.field).string = {
       max_len: 500
     }
@@ -95,14 +87,7 @@ message UpdatePermissionRequest {
     }
   ];
 
-  string effect = 3 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {
-      in: ["allow", "deny"]
-    }
-  ];
-
-  string description = 4 [
+  string description = 3 [
     (buf.validate.field).string = {
       max_len: 500
     }

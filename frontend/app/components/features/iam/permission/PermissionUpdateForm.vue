@@ -21,17 +21,9 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Textarea } from '@/components/ui/textarea';
 import { usePermissionService } from '@/composables/services/usePermissionService';
-import { PERMISSION_EFFECT_OPTIONS } from './constants';
 import { getConnectRPCError, getTranslatedConnectError, hasConnectRPCError } from './error';
 import { permissionUpdateSchema } from './schema';
 
@@ -66,7 +58,7 @@ const form = useForm({
   validationSchema: formSchema,
   initialValues: {
     id: props.permissionId,
-    effect: 'allow',
+    name: '',
     description: '',
   },
 });
@@ -89,7 +81,7 @@ async function fetchPermission() {
       // Update form values using vee-validate setValues
       form.setValues({
         id: fetchedPermission.id,
-        effect: fetchedPermission.effect as 'allow' | 'deny',
+        name: fetchedPermission.name,
         description: fetchedPermission.description || '',
       });
     }
@@ -192,58 +184,21 @@ onUnmounted(() => {
       <AlertDescription>{{ updateError }}</AlertDescription>
     </Alert>
 
-    <!-- Name field - Read Only -->
-    <div class="space-y-2">
-      <label
-        class="text-sm font-medium leading-none peer-disabled:cursor-not-allowed
-               peer-disabled:opacity-70"
-      >
-        {{ t('features.permissions.form.nameLabel') }}
-      </label>
-      <Input
-        :model-value="permission.name"
-        disabled
-        class="bg-muted"
-      />
-      <p class="text-sm text-muted-foreground">
-        {{ t('features.permissions.form.nameDescription') }}
-      </p>
-    </div>
-
-    <!-- Effect field - Editable -->
-    <FormField v-slot="{ componentField }" name="effect">
+    <!-- Name field - Read Only but included in form -->
+    <FormField v-slot="{ componentField }" name="name">
       <FormItem>
-        <FormLabel>{{ t('features.permissions.form.effectLabel') }}</FormLabel>
-        <Select v-bind="componentField" :disabled="updateLoading">
-          <FormControl>
-            <SelectTrigger
-              :class="{
-                'border-destructive': hasConnectRPCError(updateValidationErrors, 'effect'),
-              }"
-            >
-              <SelectValue placeholder="Select effect" />
-            </SelectTrigger>
-          </FormControl>
-          <SelectContent>
-            <SelectItem
-              v-for="option in PERMISSION_EFFECT_OPTIONS"
-              :key="option.value"
-              :value="option.value"
-            >
-              {{ option.label }}
-            </SelectItem>
-          </SelectContent>
-        </Select>
+        <FormLabel>{{ t('features.permissions.form.nameLabel') }}</FormLabel>
+        <FormControl>
+          <Input
+            v-bind="componentField"
+            disabled
+            class="bg-muted"
+          />
+        </FormControl>
         <FormDescription>
-          {{ t('features.permissions.form.effectDescription') }}
+          {{ t('features.permissions.form.nameDescription') }}
         </FormDescription>
         <FormMessage />
-        <div
-          v-if="hasConnectRPCError(updateValidationErrors, 'effect')"
-          class="text-sm text-destructive"
-        >
-          {{ getConnectRPCError(updateValidationErrors, 'effect') }}
-        </div>
       </FormItem>
     </FormField>
 

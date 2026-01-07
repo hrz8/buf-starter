@@ -51,7 +51,6 @@ const (
 	CodePermissionNotFound      = "60700"
 	CodePermissionAlreadyExists = "60701"
 	CodePermissionInvalidName   = "60702"
-	CodePermissionInvalidEffect = "60703"
 	CodePermissionInUse         = "60704"
 	CodePermissionProtected     = "60705"
 
@@ -537,24 +536,6 @@ func NewPermissionInvalidNameError(name string) *AppError {
 				Code: code,
 				Meta: map[string]string{
 					"name": name,
-				},
-			},
-		},
-	}
-}
-
-// NewPermissionInvalidEffectError creates an error for invalid permission effect
-func NewPermissionInvalidEffectError(effect string) *AppError {
-	code := CodePermissionInvalidEffect
-	return &AppError{
-		code:     code,
-		message:  fmt.Sprintf("Invalid permission effect: '%s' (must be 'allow' or 'deny')", effect),
-		grpcCode: codes.InvalidArgument,
-		details: []proto.Message{
-			&altalunev1.ErrorDetail{
-				Code: code,
-				Meta: map[string]string{
-					"effect": effect,
 				},
 			},
 		},

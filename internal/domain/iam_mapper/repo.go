@@ -152,7 +152,7 @@ func (r *Repo) RemoveRolePermissions(ctx context.Context, roleID int64, permissi
 
 func (r *Repo) GetRolePermissions(ctx context.Context, roleID int64) ([]*permission.Permission, error) {
 	query := `
-		SELECT p.id, p.public_id, p.name, p.effect, p.description, p.created_at, p.updated_at
+		SELECT p.id, p.public_id, p.name, p.description, p.created_at, p.updated_at
 		FROM altalune_permissions p
 		INNER JOIN altalune_roles_permissions rp ON rp.permission_id = p.id
 		WHERE rp.role_id = $1
@@ -172,7 +172,6 @@ func (r *Repo) GetRolePermissions(ctx context.Context, roleID int64) ([]*permiss
 			&result.ID,
 			&result.PublicID,
 			&result.Name,
-			&result.Effect,
 			&result.Description,
 			&result.CreatedAt,
 			&result.UpdatedAt,
@@ -238,14 +237,14 @@ func (r *Repo) RemoveUserPermissions(ctx context.Context, userID int64, permissi
 
 func (r *Repo) GetUserPermissions(ctx context.Context, userID int64) ([]*permission.Permission, error) {
 	query := `
-		SELECT DISTINCT p.id, p.public_id, p.name, p.effect, p.description, p.created_at, p.updated_at
+		SELECT DISTINCT p.id, p.public_id, p.name, p.description, p.created_at, p.updated_at
 		FROM altalune_permissions p
 		INNER JOIN altalune_users_permissions up ON up.permission_id = p.id
 		WHERE up.user_id = $1
 
 		UNION
 
-		SELECT DISTINCT p.id, p.public_id, p.name, p.effect, p.description, p.created_at, p.updated_at
+		SELECT DISTINCT p.id, p.public_id, p.name, p.description, p.created_at, p.updated_at
 		FROM altalune_permissions p
 		INNER JOIN altalune_roles_permissions rp ON rp.permission_id = p.id
 		INNER JOIN altalune_users_roles ur ON ur.role_id = rp.role_id
@@ -267,7 +266,6 @@ func (r *Repo) GetUserPermissions(ctx context.Context, userID int64) ([]*permiss
 			&result.ID,
 			&result.PublicID,
 			&result.Name,
-			&result.Effect,
 			&result.Description,
 			&result.CreatedAt,
 			&result.UpdatedAt,

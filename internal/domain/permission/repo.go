@@ -47,7 +47,6 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 			id,
 			public_id,
 			name,
-			effect,
 			description,
 			created_at,
 			updated_at
@@ -82,8 +81,6 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 			// Map field names to database columns
 			var dbColumn string
 			switch field {
-			case "effect":
-				dbColumn = "effect"
 			case "name":
 				dbColumn = "name"
 			default:
@@ -143,7 +140,6 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 			&perm.ID,
 			&perm.PublicID,
 			&perm.Name,
-			&perm.Effect,
 			&description,
 			&perm.CreatedAt,
 			&perm.UpdatedAt,
@@ -201,8 +197,6 @@ func (r *Repo) buildOrderClause(sorting *query.SortingParams) string {
 	switch sorting.Field {
 	case "name":
 		dbColumn = "name"
-	case "effect":
-		dbColumn = "effect"
 	case "description":
 		dbColumn = "description"
 	case "createdAt", "created_at":
@@ -227,8 +221,7 @@ func (r *Repo) buildOrderClause(sorting *query.SortingParams) string {
 func (r *Repo) getDistinctValues(ctx context.Context) (map[string][]string, error) {
 	filters := make(map[string][]string)
 
-	// effect filter
-	filters["effect"] = []string{"allow", "deny"}
+	// No filters currently needed for permissions
 
 	return filters, nil
 }
@@ -243,12 +236,11 @@ func (r *Repo) Create(ctx context.Context, input *CreatePermissionInput) (*Creat
 		INSERT INTO altalune_permissions (
 			public_id,
 			name,
-			effect,
 			description,
 			created_at,
 			updated_at
-		) VALUES ($1, $2, $3, $4, $5, $6)
-		RETURNING id, public_id, name, effect, description, created_at, updated_at
+		) VALUES ($1, $2, $3, $4, $5)
+		RETURNING id, public_id, name, description, created_at, updated_at
 	`
 
 	now := time.Now()
@@ -260,7 +252,6 @@ func (r *Repo) Create(ctx context.Context, input *CreatePermissionInput) (*Creat
 		insertQuery,
 		publicID,
 		input.Name,
-		input.Effect,
 		input.Description,
 		now,
 		now,
@@ -268,7 +259,6 @@ func (r *Repo) Create(ctx context.Context, input *CreatePermissionInput) (*Creat
 		&result.ID,
 		&result.PublicID,
 		&result.Name,
-		&result.Effect,
 		&description,
 		&result.CreatedAt,
 		&result.UpdatedAt,
@@ -299,7 +289,6 @@ func (r *Repo) GetByName(ctx context.Context, name string) (*Permission, error) 
 		SELECT
 			public_id,
 			name,
-			effect,
 			description,
 			created_at,
 			updated_at
@@ -314,7 +303,6 @@ func (r *Repo) GetByName(ctx context.Context, name string) (*Permission, error) 
 	err := r.db.QueryRowContext(ctx, query, name).Scan(
 		&perm.ID,
 		&perm.Name,
-		&perm.Effect,
 		&description,
 		&perm.CreatedAt,
 		&perm.UpdatedAt,
@@ -341,7 +329,6 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*Permission, error
 		SELECT
 			public_id,
 			name,
-			effect,
 			description,
 			created_at,
 			updated_at
@@ -355,7 +342,6 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*Permission, error
 	err := r.db.QueryRowContext(ctx, sqlQuery, publicID).Scan(
 		&perm.ID,
 		&perm.Name,
-		&perm.Effect,
 		&description,
 		&perm.CreatedAt,
 		&perm.UpdatedAt,
@@ -386,9 +372,9 @@ func (r *Repo) Update(ctx context.Context, input *UpdatePermissionInput) (*Updat
 
 	sqlQuery := `
 		UPDATE altalune_permissions
-		SET name = $1, effect = $2, description = $3, updated_at = CURRENT_TIMESTAMP
-		WHERE public_id = $4
-		RETURNING id, public_id, name, effect, description, created_at, updated_at
+		SET name = $1, description = $2, updated_at = CURRENT_TIMESTAMP
+		WHERE public_id = $3
+		RETURNING id, public_id, name, description, created_at, updated_at
 	`
 
 	var result UpdatePermissionResult
@@ -396,14 +382,12 @@ func (r *Repo) Update(ctx context.Context, input *UpdatePermissionInput) (*Updat
 
 	err = r.db.QueryRowContext(ctx, sqlQuery,
 		input.Name,
-		input.Effect,
 		input.Description,
 		input.PublicID,
 	).Scan(
 		&result.ID,
 		&result.PublicID,
 		&result.Name,
-		&result.Effect,
 		&description,
 		&result.CreatedAt,
 		&result.UpdatedAt,

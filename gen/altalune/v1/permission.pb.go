@@ -23,13 +23,12 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
-// Permission represents a system permission with allow/deny effect
+// Permission represents a system permission
 type Permission struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                   // Public nanoid (14 chars)
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`               // Machine-readable: "project:read"
-	Effect        string                 `protobuf:"bytes,3,opt,name=effect,proto3" json:"effect,omitempty"`           // "allow" or "deny"
-	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"` // Human-readable (optional)
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"` // Human-readable (optional)
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -76,13 +75,6 @@ func (x *Permission) GetId() string {
 func (x *Permission) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *Permission) GetEffect() string {
-	if x != nil {
-		return x.Effect
 	}
 	return ""
 }
@@ -210,8 +202,7 @@ func (x *QueryPermissionsResponse) GetMeta() *QueryMetaResponse {
 type CreatePermissionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Effect        string                 `protobuf:"bytes,2,opt,name=effect,proto3" json:"effect,omitempty"`
-	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -249,13 +240,6 @@ func (*CreatePermissionRequest) Descriptor() ([]byte, []int) {
 func (x *CreatePermissionRequest) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *CreatePermissionRequest) GetEffect() string {
-	if x != nil {
-		return x.Effect
 	}
 	return ""
 }
@@ -415,8 +399,7 @@ type UpdatePermissionRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
 	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Effect        string                 `protobuf:"bytes,3,opt,name=effect,proto3" json:"effect,omitempty"`
-	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -461,13 +444,6 @@ func (x *UpdatePermissionRequest) GetId() string {
 func (x *UpdatePermissionRequest) GetName() string {
 	if x != nil {
 		return x.Name
-	}
-	return ""
-}
-
-func (x *UpdatePermissionRequest) GetEffect() string {
-	if x != nil {
-		return x.Effect
 	}
 	return ""
 }
@@ -626,13 +602,12 @@ var File_altalune_v1_permission_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_permission_proto_rawDesc = "" +
 	"\n" +
-	"\x1caltalune/v1/permission.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\xe0\x01\n" +
+	"\x1caltalune/v1/permission.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\xc8\x01\n" +
 	"\n" +
 	"Permission\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
-	"\x04name\x18\x02 \x01(\tR\x04name\x12\x16\n" +
-	"\x06effect\x18\x03 \x01(\tR\x06effect\x12 \n" +
-	"\vdescription\x18\x04 \x01(\tR\vdescription\x129\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x129\n" +
 	"\n" +
 	"created_at\x18b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
@@ -641,11 +616,10 @@ const file_altalune_v1_permission_proto_rawDesc = "" +
 	"\x05query\x18\x01 \x01(\v2\x19.altalune.v1.QueryRequestR\x05query\"{\n" +
 	"\x18QueryPermissionsResponse\x12+\n" +
 	"\x04data\x18\x01 \x03(\v2\x17.altalune.v1.PermissionR\x04data\x122\n" +
-	"\x04meta\x18\x02 \x01(\v2\x1e.altalune.v1.QueryMetaResponseR\x04meta\"\xa8\x01\n" +
+	"\x04meta\x18\x02 \x01(\v2\x1e.altalune.v1.QueryMetaResponseR\x04meta\"y\n" +
 	"\x17CreatePermissionRequest\x122\n" +
-	"\x04name\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x16\x10\x02\x18d2\x10^[a-zA-Z0-9_:]+$R\x04name\x12-\n" +
-	"\x06effect\x18\x02 \x01(\tB\x15\xbaH\x12\xc8\x01\x01r\rR\x05allowR\x04denyR\x06effect\x12*\n" +
-	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\xf4\x03R\vdescription\"m\n" +
+	"\x04name\x18\x01 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x16\x10\x02\x18d2\x10^[a-zA-Z0-9_:]+$R\x04name\x12*\n" +
+	"\vdescription\x18\x02 \x01(\tB\b\xbaH\x05r\x03\x18\xf4\x03R\vdescription\"m\n" +
 	"\x18CreatePermissionResponse\x127\n" +
 	"\n" +
 	"permission\x18\x01 \x01(\v2\x17.altalune.v1.PermissionR\n" +
@@ -656,12 +630,11 @@ const file_altalune_v1_permission_proto_rawDesc = "" +
 	"\x15GetPermissionResponse\x127\n" +
 	"\n" +
 	"permission\x18\x01 \x01(\v2\x17.altalune.v1.PermissionR\n" +
-	"permission\"\xc6\x01\n" +
+	"permission\"\x97\x01\n" +
 	"\x17UpdatePermissionRequest\x12\x1c\n" +
 	"\x02id\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x14R\x02id\x122\n" +
-	"\x04name\x18\x02 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x16\x10\x02\x18d2\x10^[a-zA-Z0-9_:]+$R\x04name\x12-\n" +
-	"\x06effect\x18\x03 \x01(\tB\x15\xbaH\x12\xc8\x01\x01r\rR\x05allowR\x04denyR\x06effect\x12*\n" +
-	"\vdescription\x18\x04 \x01(\tB\b\xbaH\x05r\x03\x18\xf4\x03R\vdescription\"m\n" +
+	"\x04name\x18\x02 \x01(\tB\x1e\xbaH\x1b\xc8\x01\x01r\x16\x10\x02\x18d2\x10^[a-zA-Z0-9_:]+$R\x04name\x12*\n" +
+	"\vdescription\x18\x03 \x01(\tB\b\xbaH\x05r\x03\x18\xf4\x03R\vdescription\"m\n" +
 	"\x18UpdatePermissionResponse\x127\n" +
 	"\n" +
 	"permission\x18\x01 \x01(\v2\x17.altalune.v1.PermissionR\n" +

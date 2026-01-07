@@ -17,16 +17,8 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { Textarea } from '@/components/ui/textarea';
 import { usePermissionService } from '@/composables/services/usePermissionService';
-import { PERMISSION_EFFECT_OPTIONS } from './constants';
 import { getConnectRPCError, getTranslatedConnectError, hasConnectRPCError } from './error';
 import { permissionSchema } from './schema';
 
@@ -51,7 +43,6 @@ const form = useForm({
   validationSchema: toTypedSchema(permissionSchema),
   initialValues: {
     name: '',
-    effect: 'allow',
     description: '',
   },
 });
@@ -91,7 +82,6 @@ function resetForm() {
   form.resetForm({
     values: {
       name: '',
-      effect: 'allow',
       description: '',
     },
   });
@@ -137,39 +127,6 @@ function handleCancel() {
             class="text-sm text-destructive"
           >
             {{ getConnectRPCError(createValidationErrors, 'name') }}
-          </div>
-        </FormItem>
-      </FormField>
-
-      <FormField v-slot="{ componentField }" name="effect">
-        <FormItem>
-          <FormLabel>Effect *</FormLabel>
-          <Select v-bind="componentField" :disabled="createLoading">
-            <FormControl>
-              <SelectTrigger
-                :class="{
-                  'border-destructive': hasConnectRPCError(createValidationErrors, 'effect'),
-                }"
-              >
-                <SelectValue placeholder="Select effect" />
-              </SelectTrigger>
-            </FormControl>
-            <SelectContent>
-              <SelectItem
-                v-for="option in PERMISSION_EFFECT_OPTIONS"
-                :key="option.value"
-                :value="option.value"
-              >
-                {{ option.label }}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-          <FormMessage />
-          <div
-            v-if="hasConnectRPCError(createValidationErrors, 'effect')"
-            class="text-sm text-destructive"
-          >
-            {{ getConnectRPCError(createValidationErrors, 'effect') }}
           </div>
         </FormItem>
       </FormField>

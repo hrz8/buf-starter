@@ -10,8 +10,6 @@ const permissionNameValidation = z
   .max(100)
   .regex(/^[\w:]+$/, 'Name can only contain letters, numbers, underscores, and colons');
 
-const permissionEffectValidation = z.enum(['allow', 'deny']);
-
 const permissionDescriptionValidation = z.string().max(500).optional();
 
 /**
@@ -20,7 +18,6 @@ const permissionDescriptionValidation = z.string().max(500).optional();
  */
 export const permissionSchema = z.object({
   name: permissionNameValidation,
-  effect: permissionEffectValidation,
   description: permissionDescriptionValidation,
 });
 
@@ -29,11 +26,11 @@ export type PermissionFormData = z.infer<typeof permissionSchema>;
 /**
  * Permission Update Form Schema
  * Matches UpdatePermissionRequest protobuf validation
- * Note: name is read-only, only effect and description can be updated
+ * Note: name is required by backend but displayed as read-only in UI
  */
 export const permissionUpdateSchema = z.object({
   id: z.string().min(1),
-  effect: permissionEffectValidation,
+  name: permissionNameValidation,
   description: permissionDescriptionValidation,
 });
 

@@ -211,6 +211,14 @@ function reset() {
 <template>
   <div>
     <div class="space-y-5 px-4 py-3 sm:px-6 lg:px-8">
+      <div class="container mx-auto">
+        <h2 class="text-2xl font-bold">
+          {{ t('features.roles.page.title') }}
+        </h2>
+        <p class="text-muted-foreground">
+          {{ t('features.roles.page.description') }}
+        </p>
+      </div>
       <div class="container mx-auto flex justify-end">
         <RoleCreateSheet
           @success="handleRoleCreated"

@@ -93,15 +93,6 @@ func (s *Service) CreatePermission(ctx context.Context, req *altalunev1.CreatePe
 		return nil, altalune.NewPermissionInvalidNameError(name)
 	}
 
-	// Validate and normalize effect
-	effect := strings.ToLower(strings.TrimSpace(req.Effect))
-	if effect == "" {
-		effect = "allow" // Default to allow
-	}
-	if effect != "allow" && effect != "deny" {
-		return nil, altalune.NewPermissionInvalidEffectError(effect)
-	}
-
 	// Check if permission with same name already exists
 	existingPermission, err := s.permissionRepo.GetByName(ctx, name)
 	if err != nil && err != ErrPermissionNotFound {
@@ -118,7 +109,6 @@ func (s *Service) CreatePermission(ctx context.Context, req *altalunev1.CreatePe
 
 	result, err := s.permissionRepo.Create(ctx, &CreatePermissionInput{
 		Name:        name,
-		Effect:      effect,
 		Description: strings.TrimSpace(req.Description),
 	})
 	if err != nil {
@@ -136,7 +126,6 @@ func (s *Service) CreatePermission(ctx context.Context, req *altalunev1.CreatePe
 		Permission: &altalunev1.Permission{
 			Id:          result.PublicID,
 			Name:        result.Name,
-			Effect:      result.Effect,
 			Description: result.Description,
 			CreatedAt:   timestamppb.New(result.CreatedAt),
 			UpdatedAt:   timestamppb.New(result.UpdatedAt),
@@ -184,20 +173,10 @@ func (s *Service) UpdatePermission(ctx context.Context, req *altalunev1.UpdatePe
 		return nil, altalune.NewPermissionInvalidNameError(name)
 	}
 
-	// Validate and normalize effect
-	effect := strings.ToLower(strings.TrimSpace(req.Effect))
-	if effect == "" {
-		effect = "allow" // Default to allow
-	}
-	if effect != "allow" && effect != "deny" {
-		return nil, altalune.NewPermissionInvalidEffectError(effect)
-	}
-
 	input := &UpdatePermissionInput{
 		ID:          internalID,
 		PublicID:    req.Id,
 		Name:        name,
-		Effect:      effect,
 		Description: strings.TrimSpace(req.Description),
 	}
 

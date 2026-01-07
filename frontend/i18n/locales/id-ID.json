@@ -182,7 +182,9 @@
         "updateSuccessDesc": "{name} telah diperbarui."
       },
       "page": {
-        "selectProjectMessage": "Silakan pilih proyek untuk mengelola kunci API."
+        "description": "Kelola kunci API untuk akses terprogram yang aman ke sumber daya dan layanan proyek Anda.",
+        "selectProjectMessage": "Silakan pilih proyek untuk mengelola kunci API.",
+        "title": "Kunci API"
       },
       "sheet": {
         "createDescription": "Buat kunci API baru untuk proyek Anda. Kunci yang dihasilkan hanya akan ditampilkan sekali, jadi pastikan untuk menyimpannya dengan aman.",
@@ -209,34 +211,28 @@
       "columns": {
         "createdAt": "Dibuat Pada",
         "description": "Deskripsi",
-        "effect": "Efek",
         "name": "Nama"
       },
       "deleteDialog": {
         "confirmMessage": "Apakah Anda yakin ingin menghapus **{name}**? Tindakan ini tidak dapat dibatalkan dan akan menghapus izin ini secara permanen dari sistem.",
         "title": "Hapus Izin"
       },
-      "effect": {
-        "allow": "Izinkan",
-        "deny": "Tolak"
-      },
       "empty": {
         "description": "Kami tidak dapat menemukan izin yang sesuai dengan kriteria Anda. Coba sesuaikan filter atau istilah pencarian Anda.",
         "title": "Tidak ada izin ditemukan"
       },
-      "filter": {
-        "effect": "Efek"
-      },
       "form": {
         "descriptionLabel": "Deskripsi (Opsional)",
         "descriptionPlaceholder": "Jelaskan apa yang diizinkan oleh izin ini",
-        "effectDescription": "Tentukan apakah izin ini mengizinkan atau menolak akses",
-        "effectLabel": "Efek *",
         "nameDescription": "Format: huruf, angka, garis bawah, dan titik dua (mis., \"project:read:metadata\")",
         "nameLabel": "Nama Izin *",
         "namePlaceholder": "project:read"
       },
       "loading": "Memuat izin...",
+      "page": {
+        "description": "Tentukan izin akses granular yang dapat ditetapkan ke peran dan pengguna untuk kontrol akses yang lebih detail.",
+        "title": "Izin"
+      },
       "messages": {
         "createError": "Gagal membuat izin",
         "createErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
@@ -290,6 +286,10 @@
         "namePlaceholder": "admin"
       },
       "loading": "Memuat peran...",
+      "page": {
+        "description": "Buat dan kelola peran untuk mendefinisikan izin pengguna dan tingkat akses di seluruh sistem Anda.",
+        "title": "Peran"
+      },
       "messages": {
         "createError": "Gagal membuat peran",
         "createErrorDesc": "Terjadi kesalahan yang tidak terduga. Silakan coba lagi.",
@@ -350,6 +350,10 @@
         "lastNamePlaceholder": "Doe"
       },
       "loading": "Memuat pengguna...",
+      "page": {
+        "description": "Kelola akun pengguna, izin, dan kontrol akses untuk organisasi Anda.",
+        "title": "Pengguna"
+      },
       "messages": {
         "createError": "Gagal membuat pengguna",
         "createSuccess": "Pengguna dibuat",

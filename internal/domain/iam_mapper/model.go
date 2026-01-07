@@ -114,7 +114,6 @@ type PermissionQueryResult struct {
 	ID          int64     `db:"id"`
 	PublicID    string    `db:"public_id"`
 	Name        string    `db:"name"`
-	Effect      string    `db:"effect"`
 	Description string    `db:"description"`
 	CreatedAt   time.Time `db:"created_at"`
 	UpdatedAt   time.Time `db:"updated_at"`
@@ -125,7 +124,6 @@ func (r *PermissionQueryResult) ToPermission() *permission.Permission {
 	return &permission.Permission{
 		ID:          r.PublicID,
 		Name:        r.Name,
-		Effect:      r.Effect,
 		Description: r.Description,
 		CreatedAt:   r.CreatedAt,
 		UpdatedAt:   r.UpdatedAt,

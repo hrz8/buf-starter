@@ -60,7 +60,6 @@
     "60700": "Permission not found",
     "60701": "Permission already exists",
     "60702": "Invalid permission name format",
-    "60703": "Invalid permission effect (must be 'allow' or 'deny')",
     "60704": "Permission is in use and cannot be deleted",
     "60705": "Permission is protected and cannot be deleted",
     "60800": "Mapping not found",
@@ -182,7 +181,9 @@
         "updateSuccessDesc": "{name} has been updated."
       },
       "page": {
-        "selectProjectMessage": "Please select a project to manage API keys."
+        "description": "Manage API keys for secure programmatic access to your project's resources and services.",
+        "selectProjectMessage": "Please select a project to manage API keys.",
+        "title": "API Keys"
       },
       "sheet": {
         "createDescription": "Create a new API key for your project. The generated key will only be shown once, so make sure to save it securely.",
@@ -209,34 +210,28 @@
       "columns": {
         "createdAt": "Created At",
         "description": "Description",
-        "effect": "Effect",
         "name": "Name"
       },
       "deleteDialog": {
         "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently remove this permission from the system.",
         "title": "Delete Permission"
       },
-      "effect": {
-        "allow": "Allow",
-        "deny": "Deny"
-      },
       "empty": {
         "description": "We couldn't find any permissions matching your criteria. Try adjusting your filters or search terms.",
         "title": "No permissions found"
       },
-      "filter": {
-        "effect": "Effect"
-      },
       "form": {
         "descriptionLabel": "Description (Optional)",
         "descriptionPlaceholder": "Describe what this permission allows",
-        "effectDescription": "Specify whether this permission allows or denies access",
-        "effectLabel": "Effect *",
         "nameDescription": "Format: letters, numbers, underscores, and colons (e.g., \"project:read:metadata\")",
         "nameLabel": "Permission Name *",
         "namePlaceholder": "project:read"
       },
       "loading": "Loading permissions...",
+      "page": {
+        "description": "Define granular access permissions that can be assigned to roles and users for fine-grained access control.",
+        "title": "Permissions"
+      },
       "messages": {
         "createError": "Failed to create permission",
         "createErrorDesc": "An unexpected error occurred. Please try again.",
@@ -290,6 +285,10 @@
         "namePlaceholder": "admin"
       },
       "loading": "Loading roles...",
+      "page": {
+        "description": "Create and manage roles to define user permissions and access levels across your system.",
+        "title": "Roles"
+      },
       "messages": {
         "createError": "Failed to create role",
         "createErrorDesc": "An unexpected error occurred. Please try again.",
@@ -350,6 +349,10 @@
         "lastNamePlaceholder": "Doe"
       },
       "loading": "Loading users...",
+      "page": {
+        "description": "Manage user accounts, permissions, and access control for your organization.",
+        "title": "Users"
+      },
       "messages": {
         "createError": "Failed to create user",
         "createSuccess": "User created",

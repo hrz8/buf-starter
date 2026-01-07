@@ -20,16 +20,16 @@ func mapPermissionsToProto(permissions []*Permission) []*altalunev1.Permission {
 // mapFiltersToProto converts domain filters to proto FilterValues map
 func mapFiltersToProto(filters map[string][]string) map[string]*altalunev1.FilterValues {
 	if filters == nil {
-		filters = make(map[string][]string)
+		return make(map[string]*altalunev1.FilterValues)
 	}
 
 	result := make(map[string]*altalunev1.FilterValues)
 
-	// Map effect filter
-	if effects, ok := filters["effect"]; ok && effects != nil {
-		result["effect"] = &altalunev1.FilterValues{Values: effects}
-	} else {
-		result["effect"] = &altalunev1.FilterValues{Values: []string{"allow", "deny"}}
+	// Map any filters that exist
+	for key, values := range filters {
+		if values != nil {
+			result[key] = &altalunev1.FilterValues{Values: values}
+		}
 	}
 
 	return result

@@ -7,10 +7,8 @@ import { toast } from 'vue-sonner';
 import {
   DataTable,
   DataTableColumnHeader,
-  DataTableFacetedFilter,
 } from '@/components/custom/datatable';
 import {
-  useDataTableFilter,
   useDataTableState,
 } from '@/components/custom/datatable/utils';
 import { Button } from '@/components/ui/button';
@@ -81,7 +79,6 @@ const {
 
 const data = computed(() => response.value?.data ?? []);
 const rowCount = computed(() => response.value?.meta?.rowCount ?? 0);
-const filters = computed(() => response.value?.meta?.filters);
 
 // Column helper
 const columnHelper = createColumnHelper<Permission>();
@@ -98,27 +95,6 @@ function formatDate(timestamp: any): string {
     month: 'short',
     day: 'numeric',
   });
-}
-
-// Effect badge display
-function getEffectDisplay(effect: string) {
-  switch (effect) {
-    case 'allow':
-      return {
-        text: t('features.permissions.effect.allow'),
-        class: 'bg-green-100 text-green-800',
-      };
-    case 'deny':
-      return {
-        text: t('features.permissions.effect.deny'),
-        class: 'bg-red-100 text-red-800',
-      };
-    default:
-      return {
-        text: effect,
-        class: 'bg-gray-100 text-gray-800',
-      };
-  }
 }
 
 // Table columns (computed for reactivity with i18n)
@@ -139,20 +115,6 @@ const columns = computed(() => [
     cell: (info) => {
       const desc = info.getValue();
       return h('div', { class: 'text-sm text-muted-foreground max-w-md truncate' }, desc || '-');
-    },
-    enableSorting: false,
-  }),
-  columnHelper.accessor('effect', {
-    header: ({ column }) => h(DataTableColumnHeader, {
-      column,
-      title: t('features.permissions.columns.effect'),
-    }),
-    cell: ({ row }) => {
-      const permission = row.original;
-      const effectDisplay = getEffectDisplay(permission.effect);
-      return h('span', {
-        class: ['inline-flex items-center rounded-full px-2 py-1 text-xs font-medium', effectDisplay.class],
-      }, effectDisplay.text);
     },
     enableSorting: false,
   }),
@@ -178,19 +140,6 @@ const columns = computed(() => [
     },
   }),
 ]);
-
-// Effect filter - matches 'effect' column ID
-const effectFilter = useDataTableFilter(table, 'effect');
-const effectOptions = computed(() =>
-  filters.value?.effects?.values?.map((effect: string) => ({
-    label: effect === 'allow'
-      ? t('features.permissions.effect.allow')
-      : effect === 'deny'
-        ? t('features.permissions.effect.deny')
-        : effect,
-    value: effect,
-  })) ?? [],
-);
 
 // Create sheet state
 const createdPermission = ref<Permission | null>(null);
@@ -256,13 +205,21 @@ function closeDeleteDialog() {
 
 // Reset all filters
 function reset() {
-  effectFilter.clearFilter();
+  // No filters currently active
 }
 </script>
 
 <template>
   <div>
     <div class="space-y-5 px-4 py-3 sm:px-6 lg:px-8">
+      <div class="container mx-auto">
+        <h2 class="text-2xl font-bold">
+          {{ t('features.permissions.page.title') }}
+        </h2>
+        <p class="text-muted-foreground">
+          {{ t('features.permissions.page.description') }}
+        </p>
+      </div>
       <div class="container mx-auto flex justify-end">
         <PermissionCreateSheet
           @success="handlePermissionCreated"
@@ -292,15 +249,6 @@ function reset() {
               v-model="keyword"
               :placeholder="t('features.permissions.actions.search')"
               class="h-8 w-[150px] lg:w-[250px]"
-            />
-
-            <DataTableFacetedFilter
-              v-if="effectOptions.length > 0"
-              v-model="effectFilter.filterValues.value"
-              :title="t('features.permissions.filter.effect')"
-              :options="effectOptions"
-              @update="effectFilter.setFilter"
-              @clear="effectFilter.clearFilter"
             />
           </template>
           <template #loading>

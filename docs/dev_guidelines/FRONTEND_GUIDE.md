@@ -889,6 +889,174 @@ cd frontend && pnpm dev
 - [ ] Tested responsive design on mobile/desktop
 - [ ] Verified accessibility (keyboard navigation, screen readers)
 
+## Page Title and Description Pattern
+
+All table/CRUD pages should include a title and description section at the top to provide context about the page's purpose.
+
+### Pattern Structure
+
+```vue
+<template>
+  <div>
+    <div class="space-y-5 px-4 py-3 sm:px-6 lg:px-8">
+      <!-- Page Title & Description -->
+      <div class="container mx-auto">
+        <h2 class="text-2xl font-bold">
+          {{ t('features.{domain}.page.title') }}
+        </h2>
+        <p class="text-muted-foreground">
+          {{ t('features.{domain}.page.description') }}
+        </p>
+      </div>
+
+      <!-- Action Buttons (Create, etc.) -->
+      <div class="container mx-auto flex justify-end">
+        <!-- ... -->
+      </div>
+
+      <!-- Data Table -->
+      <div class="container mx-auto">
+        <!-- ... -->
+      </div>
+    </div>
+  </div>
+</template>
+```
+
+### Translation Keys
+
+Add these keys to both `en-US.json` and `id-ID.json`:
+
+```json
+{
+  "features": {
+    "{domain}": {
+      "page": {
+        "title": "Page Title",
+        "description": "Brief description of what this page manages or allows users to do."
+      }
+    }
+  }
+}
+```
+
+### Real Examples
+
+**Users Page** (`UserTable.vue`):
+```json
+// en-US.json
+"users": {
+  "page": {
+    "title": "Users",
+    "description": "Manage user accounts, permissions, and access control for your organization."
+  }
+}
+
+// id-ID.json
+"users": {
+  "page": {
+    "title": "Pengguna",
+    "description": "Kelola akun pengguna, izin, dan kontrol akses untuk organisasi Anda."
+  }
+}
+```
+
+**Roles Page** (`RoleTable.vue`):
+```json
+// en-US.json
+"roles": {
+  "page": {
+    "title": "Roles",
+    "description": "Create and manage roles to define user permissions and access levels across your system."
+  }
+}
+
+// id-ID.json
+"roles": {
+  "page": {
+    "title": "Peran",
+    "description": "Buat dan kelola peran untuk mendefinisikan izin pengguna dan tingkat akses di seluruh sistem Anda."
+  }
+}
+```
+
+**Permissions Page** (`PermissionTable.vue`):
+```json
+// en-US.json
+"permissions": {
+  "page": {
+    "title": "Permissions",
+    "description": "Define granular access permissions that can be assigned to roles and users for fine-grained access control."
+  }
+}
+
+// id-ID.json
+"permissions": {
+  "page": {
+    "title": "Izin",
+    "description": "Tentukan izin akses granular yang dapat ditetapkan ke peran dan pengguna untuk kontrol akses yang lebih detail."
+  }
+}
+```
+
+**API Keys Page** (`ApiKeyTable.vue`):
+```json
+// en-US.json
+"api_keys": {
+  "page": {
+    "title": "API Keys",
+    "description": "Manage API keys for secure programmatic access to your project's resources and services."
+  }
+}
+
+// id-ID.json
+"api_keys": {
+  "page": {
+    "title": "Kunci API",
+    "description": "Kelola kunci API untuk akses terprogram yang aman ke sumber daya dan layanan proyek Anda."
+  }
+}
+```
+
+### Styling Guidelines
+
+- **Title**: Use `text-2xl font-bold` for consistent heading size
+- **Description**: Use `text-muted-foreground` for subtle, secondary text
+- **Container**: Wrap in `container mx-auto` for consistent width and centering
+- **Spacing**: Place in the existing `space-y-5` container for proper vertical rhythm
+
+### Description Best Practices
+
+A good page description should:
+1. **Be concise**: 1-2 sentences maximum
+2. **Explain purpose**: What can users do on this page?
+3. **Use action verbs**: "Manage", "Create", "Define", "Configure"
+4. **Provide context**: Why would users visit this page?
+5. **Be user-focused**: Write from the user's perspective
+
+### When to Add Titles
+
+✅ **Always add for:**
+- Table/CRUD pages (list views)
+- Settings pages
+- Dashboard pages
+- Management pages
+
+❌ **Skip for:**
+- Modal/Sheet content (use sheet/dialog titles instead)
+- Nested components
+- Form-only pages inside sheets/dialogs
+
+### Checklist
+
+When adding a new table/CRUD page:
+- [ ] Add `page.title` and `page.description` to feature translations
+- [ ] Translate to all supported locales (en-US, id-ID)
+- [ ] Add title/description section at top of page template
+- [ ] Use correct CSS classes (`text-2xl font-bold`, `text-muted-foreground`)
+- [ ] Verify spacing and layout match existing pages
+- [ ] Test in both English and Indonesian
+
 ## Sheet/Dialog Best Practices
 
 **Common Issue: Sheets/Dialogs Inside Dropdown Menus**
