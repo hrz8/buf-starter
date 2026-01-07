@@ -64,6 +64,12 @@ const (
 	CodeMappingPermissionNotFound = "60806"
 	CodeMappingProjectNotFound    = "60807"
 
+	// OAuth Provider Domain Errors (608XX continued)
+	CodeOAuthProviderNotFound        = "60810"
+	CodeOAuthProviderDuplicateType   = "60811"
+	CodeOAuthProviderEncryptionError = "60812"
+	CodeOAuthProviderDecryptionError = "60813"
+
 	// Internal Errors (699XX)
 	CodeUnexpectedError = "69901"
 )
@@ -610,6 +616,78 @@ func NewCannotRemoveLastOwnerError(projectID string) *AppError {
 				Code: code,
 				Meta: map[string]string{
 					"project_id": projectID,
+				},
+			},
+		},
+	}
+}
+
+// NewOAuthProviderNotFoundError creates an error for when an OAuth provider is not found
+func NewOAuthProviderNotFoundError(providerID string) *AppError {
+	code := CodeOAuthProviderNotFound
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("OAuth provider with ID '%s' not found", providerID),
+		grpcCode: codes.NotFound,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"provider_id": providerID,
+				},
+			},
+		},
+	}
+}
+
+// NewOAuthProviderDuplicateTypeError creates an error for duplicate provider type
+func NewOAuthProviderDuplicateTypeError(providerType string) *AppError {
+	code := CodeOAuthProviderDuplicateType
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("OAuth provider with type '%s' already exists", providerType),
+		grpcCode: codes.AlreadyExists,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"provider_type": providerType,
+				},
+			},
+		},
+	}
+}
+
+// NewOAuthProviderEncryptionError creates an error for client secret encryption failure
+func NewOAuthProviderEncryptionError(providerID string) *AppError {
+	code := CodeOAuthProviderEncryptionError
+	return &AppError{
+		code:     code,
+		message:  "Failed to encrypt OAuth provider client secret",
+		grpcCode: codes.Internal,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"provider_id": providerID,
+				},
+			},
+		},
+	}
+}
+
+// NewOAuthProviderDecryptionError creates an error for client secret decryption failure
+func NewOAuthProviderDecryptionError(providerID string) *AppError {
+	code := CodeOAuthProviderDecryptionError
+	return &AppError{
+		code:     code,
+		message:  "Failed to decrypt OAuth provider client secret",
+		grpcCode: codes.Internal,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"provider_id": providerID,
 				},
 			},
 		},

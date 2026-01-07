@@ -77,3 +77,8 @@ func (c *Container) GetPermissionService() altalunev1.PermissionServiceServer {
 func (c *Container) GetIAMMapperService() altalunev1.IAMMapperServiceServer {
 	return c.iamMapperService
 }
+
+// GetOAuthProviderService returns the OAuth provider service
+func (c *Container) GetOAuthProviderService() altalunev1.OAuthProviderServiceServer {
+	return c.oauthProviderService
+}

@@ -1,0 +1,208 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "altalune/v1/common.proto";
+
+// ProviderType enum for supported OAuth providers
+enum ProviderType {
+  PROVIDER_TYPE_UNSPECIFIED = 0;
+  PROVIDER_TYPE_GOOGLE = 1;
+  PROVIDER_TYPE_GITHUB = 2;
+  PROVIDER_TYPE_MICROSOFT = 3;
+  PROVIDER_TYPE_APPLE = 4;
+}
+
+// OAuthProvider represents an OAuth provider configuration
+// CRITICAL: Never includes actual client_secret (use client_secret_set instead)
+message OAuthProvider {
+  string id = 1;                                    // Public nanoid (14 chars)
+  ProviderType provider_type = 2;                   // OAuth provider type
+  string client_id = 3;                             // OAuth client ID (public)
+  bool client_secret_set = 4;                       // True if secret exists (NEVER actual secret)
+  string redirect_url = 5;                          // OAuth redirect/callback URL
+  string scopes = 6;                                // Comma-separated OAuth scopes
+  bool enabled = 7;                                 // Whether provider is enabled
+  google.protobuf.Timestamp created_at = 98;
+  google.protobuf.Timestamp updated_at = 99;
+}
+
+// QueryOAuthProvidersRequest for listing/searching OAuth providers
+message QueryOAuthProvidersRequest {
+  QueryRequest query = 1;
+}
+
+// QueryOAuthProvidersResponse with provider list and metadata
+message QueryOAuthProvidersResponse {
+  repeated OAuthProvider data = 1;
+  QueryMetaResponse meta = 2;
+}
+
+// CreateOAuthProviderRequest for creating a new OAuth provider
+message CreateOAuthProviderRequest {
+  ProviderType provider_type = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).enum.defined_only = true
+  ];
+
+  string client_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 500
+    }
+  ];
+
+  string client_secret = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 500
+    }
+  ];
+
+  string redirect_url = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      uri: true,
+      max_len: 500
+    }
+  ];
+
+  string scopes = 5 [
+    (buf.validate.field).string.max_len = 1000
+  ];
+
+  bool enabled = 6;
+}
+
+// CreateOAuthProviderResponse with created provider
+message CreateOAuthProviderResponse {
+  OAuthProvider provider = 1;
+  string message = 2;
+}
+
+// GetOAuthProviderRequest for retrieving a single OAuth provider
+message GetOAuthProviderRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// GetOAuthProviderResponse with provider data
+message GetOAuthProviderResponse {
+  OAuthProvider provider = 1;
+}
+
+// UpdateOAuthProviderRequest for updating OAuth provider
+// CRITICAL: provider_type is NOT included (immutable after creation)
+message UpdateOAuthProviderRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+
+  string client_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 500
+    }
+  ];
+
+  // Optional - if empty, existing secret is retained
+  string client_secret = 3 [
+    (buf.validate.field).string.max_len = 500
+  ];
+
+  string redirect_url = 4 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      uri: true,
+      max_len: 500
+    }
+  ];
+
+  string scopes = 5 [
+    (buf.validate.field).string.max_len = 1000
+  ];
+
+  bool enabled = 6;
+}
+
+// UpdateOAuthProviderResponse with updated provider
+message UpdateOAuthProviderResponse {
+  OAuthProvider provider = 1;
+  string message = 2;
+}
+
+// DeleteOAuthProviderRequest for deleting OAuth provider
+message DeleteOAuthProviderRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// DeleteOAuthProviderResponse confirms deletion
+message DeleteOAuthProviderResponse {
+  string message = 1;
+}
+
+// RevealClientSecretRequest for decrypting client secret
+// SECURITY: This is an explicit, separate RPC to track secret access
+message RevealClientSecretRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// RevealClientSecretResponse with plaintext client secret
+// WARNING: Only use for explicit reveal operations
+message RevealClientSecretResponse {
+  string client_secret = 1;  // Plaintext decrypted secret
+}
+
+// OAuthProviderService handles OAuth provider configuration management
+service OAuthProviderService {
+  // Query returns a paginated list of OAuth providers
+  rpc QueryOAuthProviders(QueryOAuthProvidersRequest) returns (QueryOAuthProvidersResponse) {}
+
+  // CreateOAuthProvider creates a new OAuth provider configuration
+  // Client secret is encrypted before storage
+  rpc CreateOAuthProvider(CreateOAuthProviderRequest) returns (CreateOAuthProviderResponse) {}
+
+  // GetOAuthProvider retrieves a single OAuth provider by ID
+  // Client secret is NOT included (use RevealClientSecret)
+  rpc GetOAuthProvider(GetOAuthProviderRequest) returns (GetOAuthProviderResponse) {}
+
+  // UpdateOAuthProvider updates an existing OAuth provider
+  // Provider type is immutable (cannot be changed)
+  // Client secret is re-encrypted if provided, otherwise retained
+  rpc UpdateOAuthProvider(UpdateOAuthProviderRequest) returns (UpdateOAuthProviderResponse) {}
+
+  // DeleteOAuthProvider deletes an OAuth provider
+  rpc DeleteOAuthProvider(DeleteOAuthProviderRequest) returns (DeleteOAuthProviderResponse) {}
+
+  // RevealClientSecret decrypts and returns the plaintext client secret
+  // SECURITY: Separate RPC for audit logging and access control
+  rpc RevealClientSecret(RevealClientSecretRequest) returns (RevealClientSecretResponse) {}
+}

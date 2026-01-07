@@ -13,6 +13,7 @@ import (
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
 	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
+	oauth_provider_domain "github.com/hrz8/altalune/internal/domain/oauth_provider"
 	permission_domain "github.com/hrz8/altalune/internal/domain/permission"
 	project_domain "github.com/hrz8/altalune/internal/domain/project"
 	role_domain "github.com/hrz8/altalune/internal/domain/role"
@@ -44,10 +45,11 @@ type Container struct {
 	apiKeyRepo api_key_domain.Repositor
 
 	// IAM Repositories
-	userRepo       user_domain.Repository
-	roleRepo       role_domain.Repository
-	permissionRepo permission_domain.Repository
-	iamMapperRepo  iam_mapper_domain.Repository
+	userRepo          user_domain.Repository
+	roleRepo          role_domain.Repository
+	permissionRepo    permission_domain.Repository
+	iamMapperRepo     iam_mapper_domain.Repository
+	oauthProviderRepo oauth_provider_domain.Repository
 
 	// Example Services
 	greeterService  greeterv1.GreeterServiceServer
@@ -57,12 +59,13 @@ type Container struct {
 	projectRepo project_domain.Repositor
 
 	// Services
-	projectService    altalunev1.ProjectServiceServer
-	apiKeyService     altalunev1.ApiKeyServiceServer
-	userService       altalunev1.UserServiceServer
-	roleService       altalunev1.RoleServiceServer
-	permissionService altalunev1.PermissionServiceServer
-	iamMapperService  altalunev1.IAMMapperServiceServer
+	projectService       altalunev1.ProjectServiceServer
+	apiKeyService        altalunev1.ApiKeyServiceServer
+	userService          altalunev1.UserServiceServer
+	roleService          altalunev1.RoleServiceServer
+	permissionService    altalunev1.PermissionServiceServer
+	iamMapperService     altalunev1.IAMMapperServiceServer
+	oauthProviderService altalunev1.OAuthProviderServiceServer
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling
@@ -110,6 +113,8 @@ func (c *Container) initRepositories() error {
 	c.roleRepo = role_domain.NewRepo(c.db)
 	c.permissionRepo = permission_domain.NewRepo(c.db)
 	c.iamMapperRepo = iam_mapper_domain.NewRepo(c.db)
+	// OAuth Provider Repository with encryption key from config
+	c.oauthProviderRepo = oauth_provider_domain.NewRepo(c.db, c.config.GetIAMEncryptionKey())
 	return nil
 }
 
@@ -127,6 +132,7 @@ func (c *Container) initServices() error {
 	c.roleService = role_domain.NewService(validator, c.logger, c.roleRepo)
 	c.permissionService = permission_domain.NewService(validator, c.logger, c.permissionRepo)
 	c.iamMapperService = iam_mapper_domain.NewService(validator, c.logger, c.iamMapperRepo, c.userRepo, c.roleRepo, c.permissionRepo, c.projectRepo)
+	c.oauthProviderService = oauth_provider_domain.NewService(validator, c.logger, c.oauthProviderRepo)
 
 	return nil
 }
