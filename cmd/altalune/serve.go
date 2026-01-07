@@ -12,6 +12,7 @@ import (
 	"github.com/hrz8/altalune/internal/config"
 	"github.com/hrz8/altalune/internal/container"
 	"github.com/hrz8/altalune/internal/server"
+	"github.com/hrz8/altalune/internal/shared/crypto"
 	"github.com/hrz8/altalune/server/grpcserver"
 	"github.com/hrz8/altalune/server/httpserver"
 	"github.com/spf13/cobra"
@@ -37,6 +38,11 @@ func serve(rootCmd *cobra.Command) func(cmd *cobra.Command, args []string) error
 		cfg, err := config.Load(configPath)
 		if err != nil {
 			return fmt.Errorf("error loading configuration file: %w", err)
+		}
+
+		// Validate encryption key before starting server
+		if err := validateEncryptionKey(cfg); err != nil {
+			return err // Exit application
 		}
 
 		// Bootstrapping
@@ -148,4 +154,30 @@ func cleanup(cfg altalune.Config, cleanupFuncs ...func() error) {
 	case <-cleanupDone:
 		log.Println("✨ cleanup done")
 	}
+}
+
+// validateEncryptionKey validates the IAM encryption key on application startup.
+// This ensures the application cannot start with a missing or invalid encryption key,
+// which would cause runtime failures when encrypting/decrypting OAuth client secrets.
+//
+// The validation checks:
+// 1. Key is not empty (present in config)
+// 2. Key is exactly 32 bytes (256 bits) for AES-256-GCM
+//
+// If validation fails, the application will exit with a clear error message.
+func validateEncryptionKey(cfg altalune.Config) error {
+	key := cfg.GetIAMEncryptionKey()
+
+	if len(key) == 0 {
+		log.Println("❌ ERROR: IAM_ENCRYPTION_KEY is not set in config.yaml")
+		return fmt.Errorf("IAM encryption key is required in config.yaml (security.iamEncryptionKey)")
+	}
+
+	if err := crypto.ValidateKey(key); err != nil {
+		log.Printf("❌ ERROR: invalid IAM encryption key: %v\n", err)
+		return fmt.Errorf("IAM encryption key validation failed: %w", err)
+	}
+
+	log.Println("✅ IAM encryption key validated successfully")
+	return nil
 }

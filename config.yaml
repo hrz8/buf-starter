@@ -17,11 +17,12 @@ server:
 # Database configuration
 database:
   url: "postgres://postgres:toor@localhost:5432/altalune?sslmode=disable"   # PostgreSQL connection string
-  maxConnections: 25                                                      # Maximum database connections (default: 25)
-  maxIdleTime: 300                                                        # Max idle time for connections in seconds (default: 300)
-  connectTimeout: 10                                                      # Database connection timeout in seconds (default: 10)
+  maxConnections: 25                                                        # Maximum database connections (default: 25)
+  maxIdleTime: 300                                                          # Max idle time for connections in seconds (default: 300)
+  connectTimeout: 10                                                        # Database connection timeout in seconds (default: 10)
 
 # Security configuration
 security:
   allowedOrigins:   # CORS allowed origins (default: ["*"])
     - "*"
+  iamEncryptionKey: "rsLNVZTD4n8fQyvu8g8gaOHni7CKo2zweuxg2fuA8RY="  # 32-byte AES-256-GCM encryption key (base64-encoded) / openssl rand -base64 32

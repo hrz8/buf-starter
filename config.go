@@ -22,4 +22,9 @@ type Config interface {
 
 	// Security configuration
 	GetAllowedOrigins() []string
+
+	// IAM encryption configuration
+	// GetIAMEncryptionKey returns the 32-byte encryption key for IAM secrets
+	// This key is used to encrypt/decrypt OAuth client secrets
+	GetIAMEncryptionKey() []byte
 }

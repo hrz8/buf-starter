@@ -64,7 +64,8 @@ func (c *DatabaseConfig) setDefaults() {
 }
 
 type SecurityConfig struct {
-	AllowedOrigins []string `yaml:"allowedOrigins" validate:"required,min=1,dive,required"`
+	AllowedOrigins   []string `yaml:"allowedOrigins" validate:"required,min=1,dive,required"`
+	IAMEncryptionKey string   `yaml:"iamEncryptionKey" validate:"required,len=44"` // base64-encoded 32-byte key = 44 chars
 }
 
 func (c *SecurityConfig) setDefaults() {

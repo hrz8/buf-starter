@@ -1,6 +1,7 @@
 package config
 
 import (
+	"encoding/base64"
 	"time"
 
 	"github.com/hrz8/altalune"
@@ -64,4 +65,16 @@ func (c *AppConfig) GetAllowedOrigins() []string {
 	origins := make([]string, len(c.Security.AllowedOrigins))
 	copy(origins, c.Security.AllowedOrigins)
 	return origins
+}
+
+func (c *AppConfig) GetIAMEncryptionKey() []byte {
+	// Return the encryption key from YAML config (no environment variable fallback)
+	// The key is stored as base64-encoded string in config.yaml (44 chars)
+	// and must be decoded to get the 32-byte key
+	key, err := base64.StdEncoding.DecodeString(c.Security.IAMEncryptionKey)
+	if err != nil {
+		// Return empty slice if decode fails (will fail validation)
+		return []byte{}
+	}
+	return key
 }
