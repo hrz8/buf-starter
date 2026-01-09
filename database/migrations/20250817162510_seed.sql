@@ -7,17 +7,19 @@ CREATE TABLE IF NOT EXISTS altalune_example_employees_p1
   PARTITION OF altalune_example_employees FOR VALUES IN (1);
 
 INSERT INTO altalune_projects (
-  public_id, 
-  name, 
-  description, 
-  timezone, 
-  environment
+  public_id,
+  name,
+  description,
+  timezone,
+  environment,
+  is_default
 ) VALUES (
   'lb5pzkgrnbanlw',
   'Default Project',
   'Default project for onboarding',
   'Asia/Jakarta',
-  'sandbox'
+  'live',
+  true
 );
 
 INSERT INTO altalune_project_api_keys (

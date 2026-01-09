@@ -45,13 +45,14 @@ func (r *Repo) GetIDByPublicID(ctx context.Context, publicID string) (int64, err
 func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.QueryResult[Project], error) {
 	// Build the base query
 	baseQuery := `
-		SELECT 
+		SELECT
 			id,
 			public_id,
 			name,
 			description,
 			timezone,
 			environment,
+			is_default,
 			created_at,
 			updated_at
 		FROM altalune_projects
@@ -152,6 +153,7 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 			&description,
 			&prj.Timezone,
 			&environment,
+			&prj.IsDefault,
 			&prj.CreatedAt,
 			&prj.UpdatedAt,
 		)
@@ -313,7 +315,7 @@ func (r *Repo) Create(ctx context.Context, input *CreateProjectInput) (*CreatePr
 			created_at,
 			updated_at
 		) VALUES ($1, $2, $3, $4, $5, $6, $7)
-		RETURNING id, public_id, name, description, timezone, environment, created_at, updated_at
+		RETURNING id, public_id, name, description, timezone, environment, is_default, created_at, updated_at
 	`
 
 	now := time.Now()
@@ -338,6 +340,7 @@ func (r *Repo) Create(ctx context.Context, input *CreateProjectInput) (*CreatePr
 		&description,
 		&result.Timezone,
 		&returnedEnvironment,
+		&result.IsDefault,
 		&result.CreatedAt,
 		&result.UpdatedAt,
 	)
@@ -393,6 +396,7 @@ func (r *Repo) GetByName(ctx context.Context, name string) (*Project, error) {
 			description,
 			timezone,
 			environment,
+			is_default,
 			created_at,
 			updated_at
 		FROM altalune_projects
@@ -410,6 +414,7 @@ func (r *Repo) GetByName(ctx context.Context, name string) (*Project, error) {
 		&description,
 		&prj.Timezone,
 		&environment,
+		&prj.IsDefault,
 		&prj.CreatedAt,
 		&prj.UpdatedAt,
 	)
@@ -448,6 +453,7 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*Project, error) {
 			description,
 			timezone,
 			environment,
+			is_default,
 			created_at,
 			updated_at
 		FROM altalune_projects
@@ -464,6 +470,7 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*Project, error) {
 		&description,
 		&prj.Timezone,
 		&environment,
+		&prj.IsDefault,
 		&prj.CreatedAt,
 		&prj.UpdatedAt,
 	)
@@ -505,7 +512,7 @@ func (r *Repo) Update(ctx context.Context, input *UpdateProjectInput) (*UpdatePr
 		UPDATE altalune_projects
 		SET name = $1, description = $2, timezone = $3, updated_at = CURRENT_TIMESTAMP
 		WHERE public_id = $4
-		RETURNING id, public_id, name, description, timezone, environment,
+		RETURNING id, public_id, name, description, timezone, environment, is_default,
 		          created_at, updated_at
 	`
 
@@ -525,6 +532,7 @@ func (r *Repo) Update(ctx context.Context, input *UpdateProjectInput) (*UpdatePr
 		&description,
 		&result.Timezone,
 		&environment,
+		&result.IsDefault,
 		&result.CreatedAt,
 		&result.UpdatedAt,
 	)

@@ -2,6 +2,7 @@
 import type { Project } from '~~/gen/altalune/v1/project_pb';
 
 import { ProjectCreateSheet } from '@/components/features/project';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -180,7 +181,14 @@ function handleAddProjectClick() {
                 :name="getProjectIcon(project.id) ?? DEFAULT_PROJECT_ICON"
                 size="1em"
               />
-              {{ project.name }}
+              <span class="flex-1">{{ project.name }}</span>
+              <Badge
+                v-if="project.isDefault"
+                variant="secondary"
+                class="text-xs"
+              >
+                {{ t('features.projects.labels.default') }}
+              </Badge>
               <DropdownMenuShortcut>⌘{{ index + 1 }}</DropdownMenuShortcut>
             </DropdownMenuItem>
           </template>

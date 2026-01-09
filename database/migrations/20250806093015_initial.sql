@@ -7,6 +7,7 @@ CREATE TABLE IF NOT EXISTS altalune_projects (
   description VARCHAR(100),
   timezone VARCHAR(50) NOT NULL,
   environment VARCHAR(50) NOT NULL DEFAULT 'sandbox',
+  is_default BOOLEAN NOT NULL DEFAULT false,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT chk_altalune_projects_environment CHECK (environment IN ('live', 'sandbox'))

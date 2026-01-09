@@ -8,14 +8,15 @@ import "google/protobuf/timestamp.proto";
 import "buf/validate/validate.proto";
 import "altalune/v1/common.proto";
 
-message Project { 
+message Project {
   string id = 1;
   string name = 2;
   string description = 3;
   string timezone = 4;
   string environment = 5;
-  google.protobuf.Timestamp created_at = 6;
-  google.protobuf.Timestamp updated_at = 7;
+  bool is_default = 6;
+  google.protobuf.Timestamp created_at = 7;
+  google.protobuf.Timestamp updated_at = 8;
 }
 
 message QueryProjectsRequest {

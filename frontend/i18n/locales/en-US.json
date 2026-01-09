@@ -480,6 +480,10 @@
       },
       "error": "Oops, something went wrong",
       "label": "Projects",
+      "labels": {
+        "default": "Default",
+        "defaultProject": "Default Project"
+      },
       "noProjectSelected": "No project selected",
       "noProjectsFound": "No projects found",
       "form": {

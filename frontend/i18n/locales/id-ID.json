@@ -480,6 +480,10 @@
       },
       "error": "Ups, terjadi kesalahan",
       "label": "Proyek",
+      "labels": {
+        "default": "Default",
+        "defaultProject": "Proyek Default"
+      },
       "noProjectSelected": "Tidak ada proyek dipilih",
       "noProjectsFound": "Tidak ada proyek ditemukan",
       "form": {

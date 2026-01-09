@@ -199,7 +199,23 @@ func (s *Service) DeleteProject(ctx context.Context, req *altalunev1.DeleteProje
 		return nil, altalune.NewInvalidPayloadError(err.Error())
 	}
 
-	err := s.projectRepo.Delete(ctx, req.Id)
+	// Fetch project first to check if it's default
+	project, err := s.projectRepo.GetByID(ctx, req.Id)
+	if err != nil {
+		if err == ErrProjectNotFound {
+			return nil, altalune.NewProjectNotFound(req.Id)
+		}
+		s.log.Error("failed to get project for deletion check", "error", err, "project_id", req.Id)
+		return nil, altalune.NewUnexpectedError("failed to get project", err)
+	}
+
+	// Prevent deletion of default project
+	if project.IsDefault {
+		s.log.Warn("attempted to delete default project", "project_id", req.Id)
+		return nil, altalune.NewInvalidPayloadError("cannot delete default project")
+	}
+
+	err = s.projectRepo.Delete(ctx, req.Id)
 	if err != nil {
 		if err == ErrProjectNotFound {
 			return nil, altalune.NewProjectNotFound(req.Id)

@@ -45,6 +45,7 @@ type ProjectQueryResult struct {
 	Description string
 	Timezone    string
 	Environment EnvironmentStatus
+	IsDefault   bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -56,6 +57,7 @@ func (r *ProjectQueryResult) ToProject() *Project {
 		Description: r.Description,
 		Timezone:    r.Timezone,
 		Environment: r.Environment,
+		IsDefault:   r.IsDefault,
 		CreatedAt:   r.CreatedAt,
 		UpdatedAt:   r.UpdatedAt,
 	}
@@ -67,6 +69,7 @@ type Project struct {
 	Description string
 	Timezone    string
 	Environment EnvironmentStatus
+	IsDefault   bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -78,6 +81,7 @@ func (m *Project) ToProjectProto() *altalunev1.Project {
 		Description: m.Description,
 		Timezone:    m.Timezone,
 		Environment: string(m.Environment),
+		IsDefault:   m.IsDefault,
 		CreatedAt:   timestamppb.New(m.CreatedAt),
 		UpdatedAt:   timestamppb.New(m.UpdatedAt),
 	}
@@ -97,6 +101,7 @@ type CreateProjectResult struct {
 	Description string
 	Timezone    string
 	Environment EnvironmentStatus
+	IsDefault   bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -108,6 +113,7 @@ func (r *CreateProjectResult) ToProject() *Project {
 		Description: r.Description,
 		Timezone:    r.Timezone,
 		Environment: r.Environment,
+		IsDefault:   r.IsDefault,
 		CreatedAt:   r.CreatedAt,
 		UpdatedAt:   r.UpdatedAt,
 	}
@@ -128,6 +134,7 @@ type UpdateProjectResult struct {
 	Description string
 	Timezone    string
 	Environment EnvironmentStatus
+	IsDefault   bool
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }
@@ -139,6 +146,7 @@ func (r *UpdateProjectResult) ToProject() *Project {
 		Description: r.Description,
 		Timezone:    r.Timezone,
 		Environment: r.Environment,
+		IsDefault:   r.IsDefault,
 		CreatedAt:   r.CreatedAt,
 		UpdatedAt:   r.UpdatedAt,
 	}

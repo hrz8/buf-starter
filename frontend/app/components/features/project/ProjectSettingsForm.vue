@@ -252,9 +252,26 @@ onMounted(async () => {
           {{ t('features.projects.settings.dangerZone.description') }}
         </p>
       </div>
-      <Button variant="destructive" @click="isDeleteDialogOpen = true">
-        {{ t('features.projects.settings.actions.delete') }}
-      </Button>
+      <div class="flex items-center gap-2">
+        <Button
+          variant="destructive"
+          :disabled="currentProject.isDefault"
+          :class="[
+            currentProject.isDefault
+              ? 'cursor-not-allowed opacity-50'
+              : '',
+          ]"
+          @click="isDeleteDialogOpen = true"
+        >
+          {{ t('features.projects.settings.actions.delete') }}
+        </Button>
+        <span
+          v-if="currentProject.isDefault"
+          class="text-sm text-muted-foreground"
+        >
+          ({{ t('features.projects.labels.defaultProject') }})
+        </span>
+      </div>
     </div>
 
     <!-- Delete Dialog -->
