@@ -108,6 +108,17 @@ export function useNavigationItems() {
       },
     },
     {
+      name: t('nav.iam.oauthClients'),
+      url: '/settings/oauth-client',
+      icon: KeyRound,
+      breadcrumb: {
+        path: '/settings/oauth-client',
+        label: 'nav.iam.oauthClients',
+        i18nKey: 'nav.iam.oauthClients',
+        parent: '/settings',
+      },
+    },
+    {
       name: t('nav.settings.project'),
       url: '/settings/project',
       icon: Cog,

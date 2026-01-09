@@ -4,7 +4,6 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { AlertCircle } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
-import * as z from 'zod';
 
 import { EmployeeStatus } from '~~/gen/altalune/v1/employee_pb';
 
@@ -22,6 +21,7 @@ import {
   FormLabel,
   FormMessage,
 } from '@/components/ui/form';
+
 import { Input } from '@/components/ui/input';
 import {
   Select,
@@ -34,6 +34,9 @@ import {
 } from '@/components/ui/select';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useEmployeeService } from '@/composables/services/useEmployeeService';
+import { DEPARTMENT_OPTIONS, ROLE_OPTIONS } from './constants';
+import { getConnectRPCError, hasConnectRPCError } from './error';
+import { employeeUpdateSchema } from './schema';
 
 const props = defineProps<{
   projectId: string;
@@ -59,16 +62,8 @@ const {
   resetUpdateState,
 } = useEmployeeService();
 
-// Create form schema matching protobuf structure
-const formSchema = toTypedSchema(z.object({
-  projectId: z.string().length(14),
-  employeeId: z.string().min(1),
-  name: z.string().min(2).max(50),
-  email: z.string().email('Must be a valid email address'),
-  role: z.string().min(1),
-  department: z.string().min(1),
-  status: z.number().int().min(0),
-}));
+// Use imported schema
+const formSchema = toTypedSchema(employeeUpdateSchema);
 
 // Initialize form with vee-validate
 const form = useForm({
@@ -144,37 +139,9 @@ const statusOptions = computed(() => [
   },
 ]);
 
-const roleOptions = [
-  'Software Engineer',
-  'Product Manager',
-  'Designer',
-  'Data Analyst',
-  'DevOps Engineer',
-  'QA Engineer',
-  'Team Lead',
-  'Engineering Manager',
-];
-
-const departmentOptions = [
-  'Engineering',
-  'Product',
-  'Design',
-  'Data',
-  'Operations',
-  'Sales',
-  'Marketing',
-  'Human Resources',
-];
-
-// Helper functions for ConnectRPC validation errors (fallback)
-function getConnectRPCError(fieldName: string): string {
-  const errors = updateValidationErrors.value[fieldName] || updateValidationErrors.value[`value.${fieldName}`];
-  return errors?.[0] || '';
-}
-
-function hasConnectRPCError(fieldName: string): boolean {
-  return !!(updateValidationErrors.value[fieldName] || updateValidationErrors.value[`value.${fieldName}`]);
-}
+// Use imported constants
+const roleOptions = ROLE_OPTIONS;
+const departmentOptions = DEPARTMENT_OPTIONS;
 
 // Handle form submission with vee-validate
 const onSubmit = form.handleSubmit(async (values) => {
@@ -280,7 +247,7 @@ onUnmounted(() => {
           <Input
             v-bind="componentField"
             :placeholder="t('features.employees.form.namePlaceholder')"
-            :class="{ 'border-destructive': hasConnectRPCError('name') }"
+            :class="{ 'border-destructive': hasConnectRPCError(updateValidationErrors, 'name') }"
             :disabled="updateLoading"
           />
         </FormControl>
@@ -289,10 +256,10 @@ onUnmounted(() => {
         </FormDescription>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('name')"
+          v-if="hasConnectRPCError(updateValidationErrors, 'name')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('name') }}
+          {{ getConnectRPCError(updateValidationErrors, 'name') }}
         </div>
       </FormItem>
     </FormField>
@@ -308,7 +275,7 @@ onUnmounted(() => {
             v-bind="componentField"
             type="email"
             :placeholder="t('features.employees.form.emailPlaceholder')"
-            :class="{ 'border-destructive': hasConnectRPCError('email') }"
+            :class="{ 'border-destructive': hasConnectRPCError(updateValidationErrors, 'email') }"
             :disabled="updateLoading"
           />
         </FormControl>
@@ -317,10 +284,10 @@ onUnmounted(() => {
         </FormDescription>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('email')"
+          v-if="hasConnectRPCError(updateValidationErrors, 'email')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('email') }}
+          {{ getConnectRPCError(updateValidationErrors, 'email') }}
         </div>
       </FormItem>
     </FormField>
@@ -338,7 +305,9 @@ onUnmounted(() => {
               :disabled="updateLoading"
             >
               <SelectTrigger
-                :class="{ 'border-destructive': hasConnectRPCError('role') }"
+                :class="{
+                  'border-destructive': hasConnectRPCError(updateValidationErrors, 'role'),
+                }"
               >
                 <SelectValue :placeholder="t('features.employees.form.rolePlaceholder')" />
               </SelectTrigger>
@@ -362,10 +331,10 @@ onUnmounted(() => {
         </FormControl>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('role')"
+          v-if="hasConnectRPCError(updateValidationErrors, 'role')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('role') }}
+          {{ getConnectRPCError(updateValidationErrors, 'role') }}
         </div>
       </FormItem>
     </FormField>
@@ -383,7 +352,9 @@ onUnmounted(() => {
               :disabled="updateLoading"
             >
               <SelectTrigger
-                :class="{ 'border-destructive': hasConnectRPCError('department') }"
+                :class="{
+                  'border-destructive': hasConnectRPCError(updateValidationErrors, 'department'),
+                }"
               >
                 <SelectValue :placeholder="t('features.employees.form.departmentPlaceholder')" />
               </SelectTrigger>
@@ -409,10 +380,10 @@ onUnmounted(() => {
         </FormControl>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('department')"
+          v-if="hasConnectRPCError(updateValidationErrors, 'department')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('department') }}
+          {{ getConnectRPCError(updateValidationErrors, 'department') }}
         </div>
       </FormItem>
     </FormField>
@@ -429,7 +400,9 @@ onUnmounted(() => {
             :disabled="updateLoading"
           >
             <SelectTrigger
-              :class="{ 'border-destructive': hasConnectRPCError('status') }"
+              :class="{
+                'border-destructive': hasConnectRPCError(updateValidationErrors, 'status'),
+              }"
             >
               <SelectValue :placeholder="t('features.employees.form.statusPlaceholder')" />
             </SelectTrigger>
@@ -458,10 +431,10 @@ onUnmounted(() => {
         </FormDescription>
         <FormMessage />
         <div
-          v-if="hasConnectRPCError('status')"
+          v-if="hasConnectRPCError(updateValidationErrors, 'status')"
           class="text-sm text-destructive"
         >
-          {{ getConnectRPCError('status') }}
+          {{ getConnectRPCError(updateValidationErrors, 'status') }}
         </div>
       </FormItem>
     </FormField>

@@ -74,6 +74,10 @@
     "60811": "Duplicate provider type (already exists)",
     "60812": "Failed to encrypt client secret",
     "60813": "Failed to decrypt client secret",
+    "60900": "OAuth client not found",
+    "60901": "OAuth client already exists",
+    "60902": "Invalid redirect URI",
+    "60903": "OAuth client secret is invalid",
     "69901": "Server Error"
   },
   "errorPage": {
@@ -652,6 +656,129 @@
         "title": "No OAuth providers found",
         "description": "We couldn't find any OAuth providers. Try adjusting your filters or create a new provider."
       }
+    },
+    "oauth_clients": {
+      "page": {
+        "title": "OAuth Clients",
+        "description": "Manage OAuth 2.0 client applications that can authenticate with your authorization server"
+      },
+      "columns": {
+        "name": "Client Name",
+        "clientId": "Client ID",
+        "redirectUris": "Redirect URIs",
+        "pkceRequired": "PKCE",
+        "createdAt": "Created"
+      },
+      "actions": {
+        "create": "Create Client",
+        "search": "Search clients...",
+        "edit": "Edit",
+        "revealSecret": "Reveal Secret",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "update": "Update Client",
+        "copy": "Copy",
+        "copied": "Copied!",
+        "revealing": "Revealing...",
+        "deleting": "Deleting...",
+        "addRedirectUri": "Add Redirect URI",
+        "closeNow": "Close Now",
+        "saveSecret": "I've Saved the Secret"
+      },
+      "labels": {
+        "default": "Default",
+        "required": "Required",
+        "optional": "Optional",
+        "clientName": "Client Name *",
+        "redirectUris": "Redirect URIs *",
+        "pkceRequired": "PKCE Required"
+      },
+      "placeholders": {
+        "clientName": "My Application",
+        "redirectUri": "https://example.com/callback"
+      },
+      "descriptions": {
+        "clientName": "A friendly name for this OAuth client",
+        "redirectUris": "Valid HTTP/HTTPS URLs. Localhost allowed for development.",
+        "pkceRequired": "Enable for public clients (SPAs, mobile apps)"
+      },
+      "sheets": {
+        "create": {
+          "title": "Create OAuth Client",
+          "description": "Create a new OAuth client for your application. The client secret will only be shown once."
+        },
+        "edit": {
+          "title": "Edit OAuth Client",
+          "description": "Update the OAuth client configuration. Changes will take effect immediately."
+        }
+      },
+      "dialogs": {
+        "delete": {
+          "title": "Delete OAuth Client",
+          "description": "Are you sure you want to delete {name}? This action cannot be undone. All applications using this client will stop working."
+        },
+        "reveal": {
+          "title": "Reveal Client Secret",
+          "warning": "Warning: This will temporarily reveal the client secret for {name}. The secret will be visible for 30 seconds.",
+          "securityNotice": {
+            "title": "Security Notice",
+            "point1": "Only reveal the secret in a secure environment",
+            "point2": "The secret will auto-hide after 30 seconds",
+            "point3": "Make sure no one is watching your screen"
+          },
+          "revealed": {
+            "title": "Secret Revealed ({count}s remaining)"
+          },
+          "remember": {
+            "title": "Remember",
+            "point1": "Store the secret securely if you haven't already",
+            "point2": "Never commit secrets to version control",
+            "point3": "This dialog will close in {count} seconds"
+          }
+        }
+      },
+      "secretDisplay": {
+        "title": "Client Secret Created",
+        "warning": "Important: Save this secret now - it won't be shown again!",
+        "bestPractices": {
+          "title": "Security best practices:",
+          "point1": "Store in a secure location (password manager, vault)",
+          "point2": "Never commit to version control",
+          "point3": "Use environment variables in production"
+        }
+      },
+      "toasts": {
+        "created": "OAuth client created",
+        "createdDesc": "{name} has been created successfully.",
+        "updated": "OAuth client updated",
+        "updatedDesc": "{name} has been updated successfully.",
+        "deleted": "OAuth client deleted",
+        "deletedDesc": "{name} has been deleted permanently.",
+        "secretCopied": "Secret copied",
+        "secretCopiedDesc": "Client secret copied to clipboard",
+        "createFailed": "Failed to create OAuth client",
+        "createFailedDesc": "An unexpected error occurred. Please try again.",
+        "updateFailed": "Update failed",
+        "updateFailedDesc": "Failed to update OAuth client",
+        "deleteFailed": "Delete failed",
+        "deleteFailedDesc": "Failed to delete OAuth client",
+        "loadFailed": "Failed to load client",
+        "loadFailedDesc": "Could not load OAuth client data",
+        "revealFailed": "Failed to reveal secret",
+        "revealFailedDesc": "Could not retrieve client secret",
+        "copyFailed": "Copy failed",
+        "copyFailedDesc": "Failed to copy secret to clipboard",
+        "validationError": "Validation Error",
+        "atLeastOneUri": "At least one redirect URI is required"
+      },
+      "alerts": {
+        "error": "Error"
+      },
+      "loading": "Loading OAuth clients...",
+      "empty": {
+        "title": "No OAuth clients found",
+        "description": "Get started by creating your first OAuth 2.0 client application. OAuth clients allow external applications to authenticate users through your authorization server."
+      }
     }
   },
   "layout": {
@@ -682,7 +809,8 @@
       "users": "Users",
       "roles": "Roles",
       "permissions": "Permissions",
-      "oauthProviders": "OAuth Providers"
+      "oauthProviders": "OAuth Providers",
+      "oauthClients": "OAuth Clients"
     },
     "settings": {
       "apiKeys": "API Keys",

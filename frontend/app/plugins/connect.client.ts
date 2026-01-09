@@ -4,6 +4,7 @@ import { createConnectTransport } from '@connectrpc/connect-web';
 import { ApiKeyService } from '~~/gen/altalune/v1/api_key_pb';
 import { EmployeeService } from '~~/gen/altalune/v1/employee_pb';
 import { IAMMapperService } from '~~/gen/altalune/v1/iam_mapper_pb';
+import { OAuthClientService } from '~~/gen/altalune/v1/oauth_client_pb';
 import { OAuthProviderService } from '~~/gen/altalune/v1/oauth_provider_pb';
 import { PermissionService } from '~~/gen/altalune/v1/permission_pb';
 import { ProjectService } from '~~/gen/altalune/v1/project_pb';
@@ -27,6 +28,7 @@ export default defineNuxtPlugin(() => {
   const roleClient = createClient(RoleService, transport);
   const permissionClient = createClient(PermissionService, transport);
   const iamMapperClient = createClient(IAMMapperService, transport);
+  const oauthClientClient = createClient(OAuthClientService, transport);
   const oauthProviderClient = createClient(OAuthProviderService, transport);
 
   return {
@@ -40,6 +42,7 @@ export default defineNuxtPlugin(() => {
       roleClient,
       permissionClient,
       iamMapperClient,
+      oauthClientClient,
       oauthProviderClient,
     },
   };

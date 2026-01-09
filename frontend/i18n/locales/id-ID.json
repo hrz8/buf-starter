@@ -74,6 +74,10 @@
     "60811": "Tipe penyedia duplikat (sudah ada)",
     "60812": "Gagal mengenkripsi client secret",
     "60813": "Gagal mendekripsi client secret",
+    "60900": "Klien OAuth tidak ditemukan",
+    "60901": "Klien OAuth sudah ada",
+    "60902": "URI redirect tidak valid",
+    "60903": "Client secret OAuth tidak valid",
     "69901": "Kesalahan Server"
   },
   "errorPage": {
@@ -652,6 +656,129 @@
         "title": "Tidak ada penyedia OAuth ditemukan",
         "description": "Kami tidak dapat menemukan penyedia OAuth. Coba sesuaikan filter Anda atau buat penyedia baru."
       }
+    },
+    "oauth_clients": {
+      "page": {
+        "title": "Klien OAuth",
+        "description": "Kelola aplikasi klien OAuth 2.0 yang dapat mengautentikasi dengan server otorisasi Anda"
+      },
+      "columns": {
+        "name": "Nama Klien",
+        "clientId": "Client ID",
+        "redirectUris": "URI Redirect",
+        "pkceRequired": "PKCE",
+        "createdAt": "Dibuat"
+      },
+      "actions": {
+        "create": "Buat Klien",
+        "search": "Cari klien...",
+        "edit": "Edit",
+        "revealSecret": "Tampilkan Secret",
+        "delete": "Hapus",
+        "cancel": "Batal",
+        "update": "Perbarui Klien",
+        "copy": "Salin",
+        "copied": "Tersalin!",
+        "revealing": "Menampilkan...",
+        "deleting": "Menghapus...",
+        "addRedirectUri": "Tambah URI Redirect",
+        "closeNow": "Tutup Sekarang",
+        "saveSecret": "Saya Telah Menyimpan Secret"
+      },
+      "labels": {
+        "default": "Bawaan",
+        "required": "Wajib",
+        "optional": "Opsional",
+        "clientName": "Nama Klien *",
+        "redirectUris": "URI Redirect *",
+        "pkceRequired": "PKCE Wajib"
+      },
+      "placeholders": {
+        "clientName": "Aplikasi Saya",
+        "redirectUri": "https://example.com/callback"
+      },
+      "descriptions": {
+        "clientName": "Nama yang mudah diingat untuk klien OAuth ini",
+        "redirectUris": "URL HTTP/HTTPS yang valid. Localhost diperbolehkan untuk pengembangan.",
+        "pkceRequired": "Aktifkan untuk klien publik (SPA, aplikasi mobile)"
+      },
+      "sheets": {
+        "create": {
+          "title": "Buat Klien OAuth",
+          "description": "Buat klien OAuth baru untuk aplikasi Anda. Client secret hanya akan ditampilkan sekali."
+        },
+        "edit": {
+          "title": "Edit Klien OAuth",
+          "description": "Perbarui konfigurasi klien OAuth. Perubahan akan berlaku segera."
+        }
+      },
+      "dialogs": {
+        "delete": {
+          "title": "Hapus Klien OAuth",
+          "description": "Apakah Anda yakin ingin menghapus {name}? Tindakan ini tidak dapat dibatalkan. Semua aplikasi yang menggunakan klien ini akan berhenti bekerja."
+        },
+        "reveal": {
+          "title": "Tampilkan Client Secret",
+          "warning": "Peringatan: Ini akan menampilkan sementara client secret untuk {name}. Secret akan terlihat selama 30 detik.",
+          "securityNotice": {
+            "title": "Pemberitahuan Keamanan",
+            "point1": "Hanya tampilkan secret di lingkungan yang aman",
+            "point2": "Secret akan otomatis tersembunyi setelah 30 detik",
+            "point3": "Pastikan tidak ada orang yang melihat layar Anda"
+          },
+          "revealed": {
+            "title": "Secret Ditampilkan ({count} detik tersisa)"
+          },
+          "remember": {
+            "title": "Ingat",
+            "point1": "Simpan secret dengan aman jika Anda belum melakukannya",
+            "point2": "Jangan pernah commit secret ke version control",
+            "point3": "Dialog ini akan tertutup dalam {count} detik"
+          }
+        }
+      },
+      "secretDisplay": {
+        "title": "Client Secret Dibuat",
+        "warning": "Penting: Simpan secret ini sekarang - tidak akan ditampilkan lagi!",
+        "bestPractices": {
+          "title": "Praktik keamanan terbaik:",
+          "point1": "Simpan di lokasi yang aman (password manager, vault)",
+          "point2": "Jangan pernah commit ke version control",
+          "point3": "Gunakan environment variables di production"
+        }
+      },
+      "toasts": {
+        "created": "Klien OAuth dibuat",
+        "createdDesc": "{name} telah berhasil dibuat.",
+        "updated": "Klien OAuth diperbarui",
+        "updatedDesc": "{name} telah berhasil diperbarui.",
+        "deleted": "Klien OAuth dihapus",
+        "deletedDesc": "{name} telah dihapus secara permanen.",
+        "secretCopied": "Secret tersalin",
+        "secretCopiedDesc": "Client secret tersalin ke clipboard",
+        "createFailed": "Gagal membuat klien OAuth",
+        "createFailedDesc": "Terjadi kesalahan tak terduga. Silakan coba lagi.",
+        "updateFailed": "Pembaruan gagal",
+        "updateFailedDesc": "Gagal memperbarui klien OAuth",
+        "deleteFailed": "Penghapusan gagal",
+        "deleteFailedDesc": "Gagal menghapus klien OAuth",
+        "loadFailed": "Gagal memuat klien",
+        "loadFailedDesc": "Tidak dapat memuat data klien OAuth",
+        "revealFailed": "Gagal menampilkan secret",
+        "revealFailedDesc": "Tidak dapat mengambil client secret",
+        "copyFailed": "Gagal menyalin",
+        "copyFailedDesc": "Gagal menyalin secret ke clipboard",
+        "validationError": "Error Validasi",
+        "atLeastOneUri": "Setidaknya satu URI redirect diperlukan"
+      },
+      "alerts": {
+        "error": "Error"
+      },
+      "loading": "Memuat klien OAuth...",
+      "empty": {
+        "title": "Tidak ada klien OAuth ditemukan",
+        "description": "Mulai dengan membuat aplikasi klien OAuth 2.0 pertama Anda. Klien OAuth memungkinkan aplikasi eksternal untuk mengautentikasi pengguna melalui server otorisasi Anda."
+      }
     }
   },
   "layout": {
@@ -682,7 +809,8 @@
       "users": "Pengguna",
       "roles": "Peran",
       "permissions": "Izin",
-      "oauthProviders": "Penyedia OAuth"
+      "oauthProviders": "Penyedia OAuth",
+      "oauthClients": "Klien OAuth"
     },
     "settings": {
       "apiKeys": "Kunci API",
