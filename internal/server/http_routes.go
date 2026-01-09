@@ -14,6 +14,7 @@ import (
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
 	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
+	oauth_client_domain "github.com/hrz8/altalune/internal/domain/oauth_client"
 	oauth_provider_domain "github.com/hrz8/altalune/internal/domain/oauth_provider"
 	permission_domain "github.com/hrz8/altalune/internal/domain/permission"
 	project_domain "github.com/hrz8/altalune/internal/domain/project"
@@ -61,6 +62,10 @@ func (s *Server) setupRoutes() *http.ServeMux {
 	oauthProviderHandler := oauth_provider_domain.NewHandler(s.c.GetOAuthProviderService())
 	oauthProviderPath, oauthProviderConnectHandler := altalunev1connect.NewOAuthProviderServiceHandler(oauthProviderHandler)
 	connectrpcMux.Handle(oauthProviderPath, oauthProviderConnectHandler)
+
+	oauthClientHandler := oauth_client_domain.NewHandler(s.c.GetOAuthClientService())
+	oauthClientPath, oauthClientConnectHandler := altalunev1connect.NewOAuthClientServiceHandler(oauthClientHandler)
+	connectrpcMux.Handle(oauthClientPath, oauthClientConnectHandler)
 
 	// main server mux
 	mux := http.NewServeMux()

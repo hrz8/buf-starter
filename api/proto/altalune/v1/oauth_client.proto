@@ -1,0 +1,153 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+import "altalune/v1/common.proto";
+
+// OAuth Client Service - Manage OAuth client applications
+service OAuthClientService {
+  rpc CreateOAuthClient(CreateOAuthClientRequest) returns (CreateOAuthClientResponse) {}
+  rpc QueryOAuthClients(QueryOAuthClientsRequest) returns (QueryOAuthClientsResponse) {}
+  rpc GetOAuthClient(GetOAuthClientRequest) returns (GetOAuthClientResponse) {}
+  rpc UpdateOAuthClient(UpdateOAuthClientRequest) returns (UpdateOAuthClientResponse) {}
+  rpc DeleteOAuthClient(DeleteOAuthClientRequest) returns (DeleteOAuthClientResponse) {}
+  rpc RevealOAuthClientSecret(RevealOAuthClientSecretRequest) returns (RevealOAuthClientSecretResponse) {}
+}
+
+// OAuth Client Message
+message OAuthClient {
+  string id = 1;                          // Public nanoid
+  string project_id = 2;                  // Project public_id
+  string name = 3;
+  string client_id = 4;                   // UUID
+  repeated string redirect_uris = 5;
+  bool pkce_required = 6;
+  bool is_default = 7;
+  bool client_secret_set = 8;             // Boolean flag, NOT actual secret
+  repeated string allowed_scopes = 9;     // Scope names
+  google.protobuf.Timestamp created_at = 98;
+  google.protobuf.Timestamp updated_at = 99;
+}
+
+// Create OAuth Client Request
+message CreateOAuthClientRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 1,
+      max_len: 100,
+      pattern: "^[a-zA-Z0-9\\s\\-_]+$"
+    }
+  ];
+  repeated string redirect_uris = 3 [
+    (buf.validate.field).repeated = {
+      min_items: 1,
+      max_items: 10,
+      items: {
+        string: {uri: true, max_len: 500}
+      }
+    }
+  ];
+  bool pkce_required = 4;
+  repeated string allowed_scopes = 5;     // Optional scope names
+}
+
+message CreateOAuthClientResponse {
+  OAuthClient client = 1;
+  string client_secret = 2;               // ONLY returned during creation
+  string message = 3;
+}
+
+// Query OAuth Clients Request
+message QueryOAuthClientsRequest {
+  QueryRequest query = 1;
+  string project_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+}
+
+message QueryOAuthClientsResponse {
+  repeated OAuthClient clients = 1;
+  QueryMetaResponse meta = 2;
+  string message = 3;
+}
+
+// Get OAuth Client Request
+message GetOAuthClientRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+  string project_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+}
+
+message GetOAuthClientResponse {
+  OAuthClient client = 1;
+  string message = 2;
+}
+
+// Update OAuth Client Request
+message UpdateOAuthClientRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+  string project_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+  optional string name = 3 [(buf.validate.field).string = {min_len: 1, max_len: 100}];
+  repeated string redirect_uris = 4;
+  optional bool pkce_required = 5;
+  repeated string allowed_scopes = 6;
+}
+
+message UpdateOAuthClientResponse {
+  OAuthClient client = 1;
+  string message = 2;
+}
+
+// Delete OAuth Client Request
+message DeleteOAuthClientRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+  string project_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+}
+
+message DeleteOAuthClientResponse {
+  string message = 1;
+}
+
+// Reveal OAuth Client Secret Request
+message RevealOAuthClientSecretRequest {
+  string id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+  string project_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {len: 14}
+  ];
+}
+
+message RevealOAuthClientSecretResponse {
+  string client_secret = 1;
+  string message = 2;
+}

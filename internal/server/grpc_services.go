@@ -24,6 +24,10 @@ func (s *Server) setupGRPCServices() *grpc.Server {
 	altalunev1.RegisterPermissionServiceServer(grpcServer, s.c.GetPermissionService())
 	altalunev1.RegisterIAMMapperServiceServer(grpcServer, s.c.GetIAMMapperService())
 
+	// OAuth Domains
+	altalunev1.RegisterOAuthProviderServiceServer(grpcServer, s.c.GetOAuthProviderService())
+	altalunev1.RegisterOAuthClientServiceServer(grpcServer, s.c.GetOAuthClientService())
+
 	reflection.Register(grpcServer)
 
 	return grpcServer

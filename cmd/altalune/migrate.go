@@ -104,14 +104,8 @@ func runMigration(rootCmd *cobra.Command, action string) func(cmd *cobra.Command
 					return errors.New("database manager not available")
 				}
 
-				// Initialize seeder with config
-				// Type assert to *config.AppConfig
-				appCfg, ok := cfg.(*config.AppConfig)
-				if !ok {
-					return errors.New("failed to type assert config to *config.AppConfig")
-				}
-
-				seeder, err := oauth_seeder.NewSeeder(dbManager.GetDB(), appCfg)
+				// Initialize seeder with config (using interface)
+				seeder, err := oauth_seeder.NewSeeder(dbManager.GetDB(), cfg)
 				if err != nil {
 					return fmt.Errorf("failed to initialize seeder: %w", err)
 				}

@@ -7,7 +7,7 @@ import (
 	"log/slog"
 
 	"github.com/google/uuid"
-	"github.com/hrz8/altalune/internal/config"
+	"github.com/hrz8/altalune"
 	"github.com/hrz8/altalune/internal/shared/nanoid"
 	"github.com/lib/pq"
 )
@@ -15,14 +15,14 @@ import (
 // Seeder handles database seeding operations for OAuth infrastructure
 type Seeder struct {
 	db     *sql.DB
-	config *config.AppConfig
+	config altalune.Config
 	logger *slog.Logger
 }
 
 // NewSeeder creates a new Seeder instance
-func NewSeeder(db *sql.DB, cfg *config.AppConfig) (*Seeder, error) {
-	if cfg.Seeder == nil {
-		return nil, fmt.Errorf("seeder config is required")
+func NewSeeder(db *sql.DB, cfg altalune.Config) (*Seeder, error) {
+	if cfg == nil {
+		return nil, fmt.Errorf("config is required")
 	}
 
 	logger := slog.Default()
@@ -73,7 +73,7 @@ func (s *Seeder) Seed(ctx context.Context) error {
 func (s *Seeder) seedSuperadmin(ctx context.Context, tx *sql.Tx) error {
 	s.logger.Info("Updating superadmin user email...")
 
-	email := s.config.Seeder.Superadmin.Email
+	email := s.config.GetSuperadminEmail()
 
 	// Check if superadmin exists (user_id=1 from SQL migration)
 	var userID int64
@@ -145,7 +145,7 @@ func (s *Seeder) createSuperadminIdentity(ctx context.Context, tx *sql.Tx, userI
 		)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, NULL, NOW(), NOW(), NOW())
 	`, publicID, userID, "system", "superadmin",
-		s.config.Seeder.Superadmin.Email, firstName, lastName)
+		s.config.GetSuperadminEmail(), firstName, lastName)
 
 	if err != nil {
 		return fmt.Errorf("create user identity: %w", err)
@@ -237,8 +237,8 @@ func (s *Seeder) ensureSuperadminMembership(ctx context.Context, tx *sql.Tx, use
 func (s *Seeder) seedDefaultOAuthClient(ctx context.Context, tx *sql.Tx) error {
 	s.logger.Info("Checking default OAuth client...")
 
-	clientCfg := s.config.Seeder.DefaultOAuthClient
-	clientUUID, err := uuid.Parse(clientCfg.ClientID)
+	clientID := s.config.GetDefaultOAuthClientID()
+	clientUUID, err := uuid.Parse(clientID)
 	if err != nil {
 		return fmt.Errorf("parse client UUID: %w", err)
 	}
@@ -250,7 +250,7 @@ func (s *Seeder) seedDefaultOAuthClient(ctx context.Context, tx *sql.Tx) error {
 	`, clientUUID).Scan(&existingID)
 
 	if err == nil {
-		s.logger.Info("Default OAuth client already exists, skipping", "clientId", clientCfg.ClientID)
+		s.logger.Info("Default OAuth client already exists, skipping", "clientId", clientID)
 		return nil
 	}
 
@@ -273,9 +273,15 @@ func (s *Seeder) seedDefaultOAuthClient(ctx context.Context, tx *sql.Tx) error {
 		return fmt.Errorf("get first project: %w", err)
 	}
 
+	// Get client configuration from interface
+	clientName := s.config.GetDefaultOAuthClientName()
+	clientSecret := s.config.GetDefaultOAuthClientSecret()
+	redirectURIs := s.config.GetDefaultOAuthClientRedirectURIs()
+	pkceRequired := s.config.GetDefaultOAuthClientPKCERequired()
+
 	// Hash the client secret
-	s.logger.Info("Creating default OAuth client...", "name", clientCfg.Name)
-	secretHash, err := HashClientSecret(clientCfg.ClientSecret)
+	s.logger.Info("Creating default OAuth client...", "name", clientName)
+	secretHash, err := HashClientSecret(clientSecret)
 	if err != nil {
 		return fmt.Errorf("hash client secret: %w", err)
 	}
@@ -292,17 +298,17 @@ func (s *Seeder) seedDefaultOAuthClient(ctx context.Context, tx *sql.Tx) error {
 			redirect_uris, pkce_required, is_default, created_at, updated_at
 		)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
-	`, projectID, publicID, clientCfg.Name, clientUUID, secretHash,
-		pq.Array(clientCfg.RedirectURIs), clientCfg.PKCERequired, true)
+	`, projectID, publicID, clientName, clientUUID, secretHash,
+		pq.Array(redirectURIs), pkceRequired, true)
 
 	if err != nil {
 		return fmt.Errorf("create OAuth client: %w", err)
 	}
 
 	s.logger.Info("Default OAuth client created successfully",
-		"clientId", clientCfg.ClientID,
-		"name", clientCfg.Name,
-		"pkceRequired", clientCfg.PKCERequired)
+		"clientId", clientID,
+		"name", clientName,
+		"pkceRequired", pkceRequired)
 
 	return nil
 }
@@ -311,7 +317,7 @@ func (s *Seeder) seedDefaultOAuthClient(ctx context.Context, tx *sql.Tx) error {
 func (s *Seeder) seedOAuthProviders(ctx context.Context, tx *sql.Tx) error {
 	s.logger.Info("Seeding OAuth providers...")
 
-	for _, provider := range s.config.Seeder.OAuthProviders {
+	for _, provider := range s.config.GetOAuthProviders() {
 		if !provider.Enabled {
 			s.logger.Info("Skipping disabled OAuth provider", "provider", provider.Provider)
 			continue
@@ -327,7 +333,7 @@ func (s *Seeder) seedOAuthProviders(ctx context.Context, tx *sql.Tx) error {
 }
 
 // seedOAuthProvider creates a single OAuth provider configuration
-func (s *Seeder) seedOAuthProvider(ctx context.Context, tx *sql.Tx, provider config.OAuthProviderConfig) error {
+func (s *Seeder) seedOAuthProvider(ctx context.Context, tx *sql.Tx, provider altalune.OAuthProviderConfig) error {
 	s.logger.Info("Checking OAuth provider...", "provider", provider.Provider)
 
 	// Check if provider already exists
@@ -347,7 +353,7 @@ func (s *Seeder) seedOAuthProvider(ctx context.Context, tx *sql.Tx, provider con
 
 	// Encrypt the provider secret
 	s.logger.Info("Creating OAuth provider...", "provider", provider.Provider)
-	encryptedSecret, err := EncryptProviderSecret(provider.ClientSecret, s.config.Security.IAMEncryptionKey)
+	encryptedSecret, err := EncryptProviderSecret(provider.ClientSecret, s.config.GetIAMEncryptionKey())
 	if err != nil {
 		return fmt.Errorf("encrypt provider secret: %w", err)
 	}

@@ -13,6 +13,7 @@ import (
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
 	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
+	oauth_client_domain "github.com/hrz8/altalune/internal/domain/oauth_client"
 	oauth_provider_domain "github.com/hrz8/altalune/internal/domain/oauth_provider"
 	permission_domain "github.com/hrz8/altalune/internal/domain/permission"
 	project_domain "github.com/hrz8/altalune/internal/domain/project"
@@ -50,6 +51,7 @@ type Container struct {
 	permissionRepo    permission_domain.Repository
 	iamMapperRepo     iam_mapper_domain.Repository
 	oauthProviderRepo oauth_provider_domain.Repository
+	oauthClientRepo   oauth_client_domain.Repositor
 
 	// Example Services
 	greeterService  greeterv1.GreeterServiceServer
@@ -66,6 +68,7 @@ type Container struct {
 	permissionService    altalunev1.PermissionServiceServer
 	iamMapperService     altalunev1.IAMMapperServiceServer
 	oauthProviderService altalunev1.OAuthProviderServiceServer
+	oauthClientService   altalunev1.OAuthClientServiceServer
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling
@@ -115,6 +118,8 @@ func (c *Container) initRepositories() error {
 	c.iamMapperRepo = iam_mapper_domain.NewRepo(c.db)
 	// OAuth Provider Repository with encryption key from config
 	c.oauthProviderRepo = oauth_provider_domain.NewRepo(c.db, c.config.GetIAMEncryptionKey())
+	// OAuth Client Repository
+	c.oauthClientRepo = oauth_client_domain.NewRepo(c.db)
 	return nil
 }
 
@@ -133,6 +138,7 @@ func (c *Container) initServices() error {
 	c.permissionService = permission_domain.NewService(validator, c.logger, c.permissionRepo)
 	c.iamMapperService = iam_mapper_domain.NewService(validator, c.logger, c.iamMapperRepo, c.userRepo, c.roleRepo, c.permissionRepo, c.projectRepo)
 	c.oauthProviderService = oauth_provider_domain.NewService(validator, c.logger, c.oauthProviderRepo)
+	c.oauthClientService = oauth_client_domain.NewService(validator, c.logger, c.projectRepo, c.oauthClientRepo)
 
 	return nil
 }

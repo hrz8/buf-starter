@@ -2,6 +2,17 @@ package altalune
 
 import "time"
 
+// OAuthProviderConfig represents OAuth provider configuration
+// This is a data transfer object used by the seeder
+type OAuthProviderConfig struct {
+	Provider     string
+	ClientID     string
+	ClientSecret string
+	RedirectURL  string
+	Scopes       string
+	Enabled      bool
+}
+
 type Config interface {
 	// Server configuration
 	GetServerHost() string
@@ -27,4 +38,21 @@ type Config interface {
 	// GetIAMEncryptionKey returns the 32-byte encryption key for IAM secrets
 	// This key is used to encrypt/decrypt OAuth client secrets
 	GetIAMEncryptionKey() []byte
+
+	// Auth configuration
+	GetAuthHost() string
+	GetAuthPort() int
+	GetSessionSecret() string
+	GetCodeExpiry() int
+	GetAccessTokenExpiry() int
+	GetRefreshTokenExpiry() int
+
+	// Seeder configuration
+	GetSuperadminEmail() string
+	GetDefaultOAuthClientName() string
+	GetDefaultOAuthClientID() string
+	GetDefaultOAuthClientSecret() string
+	GetDefaultOAuthClientRedirectURIs() []string
+	GetDefaultOAuthClientPKCERequired() bool
+	GetOAuthProviders() []OAuthProviderConfig
 }

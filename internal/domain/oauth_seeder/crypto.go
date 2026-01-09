@@ -1,7 +1,6 @@
 package oauth_seeder
 
 import (
-	"encoding/base64"
 	"fmt"
 
 	"github.com/hrz8/altalune/internal/shared/crypto"
@@ -51,20 +50,14 @@ func VerifyClientSecret(secret, hash string) (bool, error) {
 
 // EncryptProviderSecret encrypts an OAuth provider secret using AES-256-GCM
 // This is used for Google/GitHub client secrets that need to be retrieved during OAuth flows
-func EncryptProviderSecret(secret string, encryptionKey string) (string, error) {
-	// Decode the base64-encoded encryption key
-	keyBytes, err := base64.StdEncoding.DecodeString(encryptionKey)
-	if err != nil {
-		return "", fmt.Errorf("decode encryption key: %w", err)
-	}
-
+func EncryptProviderSecret(secret string, encryptionKey []byte) (string, error) {
 	// Validate key size (must be 32 bytes for AES-256)
-	if len(keyBytes) != 32 {
-		return "", fmt.Errorf("encryption key must be 32 bytes, got %d", len(keyBytes))
+	if len(encryptionKey) != 32 {
+		return "", fmt.Errorf("encryption key must be 32 bytes, got %d", len(encryptionKey))
 	}
 
 	// Encrypt using the shared crypto package
-	encrypted, err := crypto.Encrypt(secret, keyBytes)
+	encrypted, err := crypto.Encrypt(secret, encryptionKey)
 	if err != nil {
 		return "", fmt.Errorf("encrypt secret: %w", err)
 	}

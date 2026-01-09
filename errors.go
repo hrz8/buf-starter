@@ -70,6 +70,12 @@ const (
 	CodeOAuthProviderEncryptionError = "60812"
 	CodeOAuthProviderDecryptionError = "60813"
 
+	// OAuth Client Domain Errors (609XX)
+	CodeOAuthClientNotFound      = "60900"
+	CodeOAuthClientAlreadyExists = "60901"
+	CodeInvalidRedirectURI       = "60902"
+	CodeOAuthClientSecretInvalid = "60903"
+
 	// Internal Errors (699XX)
 	CodeUnexpectedError = "69901"
 )
@@ -688,6 +694,44 @@ func NewOAuthProviderDecryptionError(providerID string) *AppError {
 				Code: code,
 				Meta: map[string]string{
 					"provider_id": providerID,
+				},
+			},
+		},
+	}
+}
+
+// ==================== OAuth Client Domain Errors ====================
+
+// NewOAuthClientNotFoundError creates an error for OAuth client not found
+func NewOAuthClientNotFoundError(clientID string) *AppError {
+	code := CodeOAuthClientNotFound
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("OAuth client with ID '%s' not found", clientID),
+		grpcCode: codes.NotFound,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"client_id": clientID,
+				},
+			},
+		},
+	}
+}
+
+// NewOAuthClientAlreadyExistsError creates an error for duplicate OAuth client name
+func NewOAuthClientAlreadyExistsError(name string) *AppError {
+	code := CodeOAuthClientAlreadyExists
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("OAuth client with name '%s' already exists", name),
+		grpcCode: codes.AlreadyExists,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"name": name,
 				},
 			},
 		},

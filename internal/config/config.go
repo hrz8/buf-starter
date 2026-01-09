@@ -78,3 +78,70 @@ func (c *AppConfig) GetIAMEncryptionKey() []byte {
 	}
 	return key
 }
+
+// Auth configuration
+func (c *AppConfig) GetAuthHost() string {
+	return c.Auth.Host
+}
+
+func (c *AppConfig) GetAuthPort() int {
+	return c.Auth.Port
+}
+
+func (c *AppConfig) GetSessionSecret() string {
+	return c.Auth.SessionSecret
+}
+
+func (c *AppConfig) GetCodeExpiry() int {
+	return c.Auth.CodeExpiry
+}
+
+func (c *AppConfig) GetAccessTokenExpiry() int {
+	return c.Auth.AccessTokenExpiry
+}
+
+func (c *AppConfig) GetRefreshTokenExpiry() int {
+	return c.Auth.RefreshTokenExpiry
+}
+
+// Seeder configuration
+func (c *AppConfig) GetSuperadminEmail() string {
+	return c.Seeder.Superadmin.Email
+}
+
+func (c *AppConfig) GetDefaultOAuthClientName() string {
+	return c.Seeder.DefaultOAuthClient.Name
+}
+
+func (c *AppConfig) GetDefaultOAuthClientID() string {
+	return c.Seeder.DefaultOAuthClient.ClientID
+}
+
+func (c *AppConfig) GetDefaultOAuthClientSecret() string {
+	return c.Seeder.DefaultOAuthClient.ClientSecret
+}
+
+func (c *AppConfig) GetDefaultOAuthClientRedirectURIs() []string {
+	uris := make([]string, len(c.Seeder.DefaultOAuthClient.RedirectURIs))
+	copy(uris, c.Seeder.DefaultOAuthClient.RedirectURIs)
+	return uris
+}
+
+func (c *AppConfig) GetDefaultOAuthClientPKCERequired() bool {
+	return c.Seeder.DefaultOAuthClient.PKCERequired
+}
+
+func (c *AppConfig) GetOAuthProviders() []altalune.OAuthProviderConfig {
+	providers := make([]altalune.OAuthProviderConfig, len(c.Seeder.OAuthProviders))
+	for i, p := range c.Seeder.OAuthProviders {
+		providers[i] = altalune.OAuthProviderConfig{
+			Provider:     p.Provider,
+			ClientID:     p.ClientID,
+			ClientSecret: p.ClientSecret,
+			RedirectURL:  p.RedirectURL,
+			Scopes:       p.Scopes,
+			Enabled:      p.Enabled,
+		}
+	}
+	return providers
+}
