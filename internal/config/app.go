@@ -64,8 +64,11 @@ func (c *DatabaseConfig) setDefaults() {
 }
 
 type SecurityConfig struct {
-	AllowedOrigins   []string `yaml:"allowedOrigins" validate:"required,min=1,dive,required"`
-	IAMEncryptionKey string   `yaml:"iamEncryptionKey" validate:"required,len=44"` // base64-encoded 32-byte key = 44 chars
+	AllowedOrigins    []string `yaml:"allowedOrigins" validate:"required,min=1,dive,required"`
+	IAMEncryptionKey  string   `yaml:"iamEncryptionKey" validate:"required,len=44"` // base64-encoded 32-byte key = 44 chars
+	JWTPrivateKeyPath string   `yaml:"jwtPrivateKeyPath" validate:"required"`
+	JWTPublicKeyPath  string   `yaml:"jwtPublicKeyPath" validate:"required"`
+	JWKSKid           string   `yaml:"jwksKid" validate:"required"`
 }
 
 func (c *SecurityConfig) setDefaults() {
@@ -81,16 +84,73 @@ func (c *SecurityConfig) setDefaults() {
 	}
 }
 
+type AuthConfig struct {
+	Host               string `yaml:"host" validate:"required,hostname|ip"`
+	Port               int    `yaml:"port" validate:"required,gte=1,lte=65535"`
+	SessionSecret      string `yaml:"sessionSecret" validate:"required,min=32"`
+	CodeExpiry         int    `yaml:"codeExpiry" validate:"gte=1"`
+	AccessTokenExpiry  int    `yaml:"accessTokenExpiry" validate:"gte=1"`
+	RefreshTokenExpiry int    `yaml:"refreshTokenExpiry" validate:"gte=1"`
+}
+
+func (c *AuthConfig) setDefaults() {
+	if c.Host == "" {
+		c.Host = "localhost"
+	}
+	if c.Port == 0 {
+		c.Port = 3101
+	}
+	if c.CodeExpiry == 0 {
+		c.CodeExpiry = 600 // 10 minutes
+	}
+	if c.AccessTokenExpiry == 0 {
+		c.AccessTokenExpiry = 3600 // 1 hour
+	}
+	if c.RefreshTokenExpiry == 0 {
+		c.RefreshTokenExpiry = 2592000 // 30 days
+	}
+}
+
+type SuperadminConfig struct {
+	Email string `yaml:"email" validate:"required,email"`
+}
+
+type DefaultOAuthClientConfig struct {
+	Name         string   `yaml:"name" validate:"required"`
+	ClientID     string   `yaml:"clientId" validate:"required,uuid"`
+	ClientSecret string   `yaml:"clientSecret" validate:"required,min=32"`
+	RedirectURIs []string `yaml:"redirectUris" validate:"required,min=1,dive,required,url"`
+	PKCERequired bool     `yaml:"pkceRequired"`
+}
+
+type OAuthProviderConfig struct {
+	Provider     string `yaml:"provider" validate:"required,oneof=google github"`
+	ClientID     string `yaml:"clientId" validate:"required"`
+	ClientSecret string `yaml:"clientSecret" validate:"required"`
+	RedirectURL  string `yaml:"redirectUrl" validate:"required,url"`
+	Scopes       string `yaml:"scopes" validate:"required"`
+	Enabled      bool   `yaml:"enabled"`
+}
+
+type SeederConfig struct {
+	Superadmin         SuperadminConfig         `yaml:"superadmin" validate:"required"`
+	DefaultOAuthClient DefaultOAuthClientConfig `yaml:"defaultOAuthClient" validate:"required"`
+	OAuthProviders     []OAuthProviderConfig    `yaml:"oauthProviders" validate:"dive"`
+}
+
 type AppConfig struct {
 	Server   *ServerConfig   `yaml:"server" validate:"required"`
 	Database *DatabaseConfig `yaml:"database" validate:"required"`
 	Security *SecurityConfig `yaml:"security" validate:"required"`
+	Auth     *AuthConfig     `yaml:"auth" validate:"required"`
+	Seeder   *SeederConfig   `yaml:"seeder" validate:"required"`
 }
 
 func (c *AppConfig) setDefaults() {
 	c.Server.setDefaults()
 	c.Database.setDefaults()
 	c.Security.setDefaults()
+	c.Auth.setDefaults()
 }
 
 func (c *AppConfig) Validate() error {

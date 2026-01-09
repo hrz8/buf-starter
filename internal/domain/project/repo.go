@@ -18,7 +18,9 @@ type Repo struct {
 }
 
 func NewRepo(db postgres.DB) *Repo {
-	return &Repo{db: db}
+	return &Repo{
+		db: db,
+	}
 }
 
 func (r *Repo) GetIDByPublicID(ctx context.Context, publicID string) (int64, error) {
@@ -373,6 +375,12 @@ func (r *Repo) Create(ctx context.Context, input *CreateProjectInput) (*CreatePr
 		fmt.Printf("Warning: failed to create partitions for project %d: %v\n", result.ID, err)
 	}
 
+	// Auto-register superadmin as owner to the new project
+	if err := r.registerSuperadminAsOwner(ctx, result.ID); err != nil {
+		// Log error but don't fail the project creation
+		fmt.Printf("Warning: failed to register superadmin to project %d: %v\n", result.ID, err)
+	}
+
 	return &result, nil
 }
 
@@ -580,6 +588,8 @@ func (r *Repo) Delete(ctx context.Context, publicID string) error {
 var partitionedTables = []string{
 	"altalune_example_employees",
 	"altalune_project_api_keys",
+	"altalune_oauth_clients",
+	"altalune_oauth_client_scopes",
 	// Add future partitioned tables here:
 	// "altalune_project_logs",
 	// "altalune_project_metrics",
@@ -603,5 +613,66 @@ func (r *Repo) createPartitionsForProject(ctx context.Context, projectID int64) 
 		}
 	}
 
+	return nil
+}
+
+// registerSuperadminAsOwner automatically adds the superadmin user as owner to a newly created project
+// This ensures the superadmin has full access to all projects in the system
+// NOTE: Superadmin is always user_id=1 (created by SQL migration 20260105000001_seed_iam_data.sql)
+func (r *Repo) registerSuperadminAsOwner(ctx context.Context, projectID int64) error {
+	// Superadmin is always user_id=1 from SQL migration
+	const superadminID = int64(1)
+
+	// Check if superadmin user exists (might not exist on very first run before migrations)
+	var exists bool
+	err := r.db.QueryRowContext(ctx, `
+		SELECT EXISTS(SELECT 1 FROM altalune_users WHERE id = $1)
+	`, superadminID).Scan(&exists)
+
+	if err != nil {
+		return fmt.Errorf("check superadmin existence: %w", err)
+	}
+
+	if !exists {
+		// Superadmin doesn't exist yet (migrations haven't run)
+		// This is expected on the very first project creation before migrations
+		return nil
+	}
+
+	// Check if membership already exists (idempotent)
+	err = r.db.QueryRowContext(ctx, `
+		SELECT EXISTS(
+			SELECT 1 FROM altalune_project_members
+			WHERE project_id = $1 AND user_id = $2
+		)
+	`, projectID, superadminID).Scan(&exists)
+
+	if err != nil {
+		return fmt.Errorf("check existing membership: %w", err)
+	}
+
+	if exists {
+		// Membership already exists, skip
+		return nil
+	}
+
+	// Generate public_id for the new membership
+	publicID, err := nanoid.GeneratePublicID()
+	if err != nil {
+		return fmt.Errorf("generate public_id for project membership: %w", err)
+	}
+
+	// Create project membership with owner role
+	_, err = r.db.ExecContext(ctx, `
+		INSERT INTO altalune_project_members (
+			public_id, project_id, user_id, role, created_at, updated_at
+		) VALUES ($1, $2, $3, 'owner', NOW(), NOW())
+	`, publicID, projectID, superadminID)
+
+	if err != nil {
+		return fmt.Errorf("create project membership for superadmin: %w", err)
+	}
+
+	fmt.Printf("Info: Successfully registered superadmin (user_id=%d) as owner of project %d\n", superadminID, projectID)
 	return nil
 }

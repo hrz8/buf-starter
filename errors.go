@@ -41,11 +41,11 @@ const (
 	CodeUserCannotDeleteSelf = "60505"
 
 	// Role Domain Errors (606XX)
-	CodeRoleNotFound       = "60600"
-	CodeRoleAlreadyExists  = "60601"
-	CodeRoleInvalidName    = "60602"
-	CodeRoleInUse          = "60603"
-	CodeRoleProtected      = "60604"
+	CodeRoleNotFound      = "60600"
+	CodeRoleAlreadyExists = "60601"
+	CodeRoleInvalidName   = "60602"
+	CodeRoleInUse         = "60603"
+	CodeRoleProtected     = "60604"
 
 	// Permission Domain Errors (607XX)
 	CodePermissionNotFound      = "60700"

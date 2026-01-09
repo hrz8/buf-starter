@@ -7,6 +7,7 @@ import (
 
 	"github.com/hrz8/altalune/internal/config"
 	"github.com/hrz8/altalune/internal/container"
+	"github.com/hrz8/altalune/internal/domain/oauth_seeder"
 	"github.com/spf13/cobra"
 )
 
@@ -27,11 +28,16 @@ func NewMigrateCommand(rootCmd *cobra.Command) *cobra.Command {
 }
 
 func newMigrateUpCommand(rootCmd *cobra.Command) *cobra.Command {
-	return &cobra.Command{
+	cmd := &cobra.Command{
 		Use:   "up",
 		Short: "Run database migrations (upgrade schema)",
 		RunE:  runMigration(rootCmd, "up"),
 	}
+
+	// Add --skip-seed flag for migrate up
+	cmd.Flags().Bool("skip-seed", false, "Skip database seeding after migrations")
+
+	return cmd
 }
 
 func newMigrateDownCommand(rootCmd *cobra.Command) *cobra.Command {
@@ -82,7 +88,46 @@ func runMigration(rootCmd *cobra.Command, action string) func(cmd *cobra.Command
 
 		switch action {
 		case "up":
-			return migrationSvc.MigrateUp(ctx)
+			// Run migrations first
+			if err := migrationSvc.MigrateUp(ctx); err != nil {
+				return err
+			}
+
+			// Check if seeding should be skipped
+			skipSeed, _ := cmd.Flags().GetBool("skip-seed")
+			if !skipSeed {
+				log.Println("Running database seeder...")
+
+				// Get database connection from container
+				dbManager := c.GetDBManager()
+				if dbManager == nil {
+					return errors.New("database manager not available")
+				}
+
+				// Initialize seeder with config
+				// Type assert to *config.AppConfig
+				appCfg, ok := cfg.(*config.AppConfig)
+				if !ok {
+					return errors.New("failed to type assert config to *config.AppConfig")
+				}
+
+				seeder, err := oauth_seeder.NewSeeder(dbManager.GetDB(), appCfg)
+				if err != nil {
+					return fmt.Errorf("failed to initialize seeder: %w", err)
+				}
+
+				// Run seeder
+				if err := seeder.Seed(ctx); err != nil {
+					return fmt.Errorf("seeding failed: %w", err)
+				}
+
+				log.Println("Database seeding completed successfully")
+			} else {
+				log.Println("Skipping database seeding (--skip-seed flag set)")
+			}
+
+			return nil
+
 		case "down":
 			return migrationSvc.MigrateDown(ctx)
 		case "status":
