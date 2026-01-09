@@ -1,0 +1,82 @@
+# altalune configuration
+# This file demonstrates all available configuration options
+# CLI flags take precedence over these values
+
+# Server configuration
+server:
+  host: "localhost"       # Server host (default: localhost)
+  port: 3100              # Server port (default: 3100)
+  logLevel: "info"        # Log level: debug, info, warn, error (default: info)
+  httpLogging: false      # Enable HTTP request/response logging middleware (default: false)
+  enableCORS: true        # Enable CORS headers (default: true)
+  readTimeout: 15         # HTTP read timeout in seconds (default: 15)
+  writeTimeout: 15        # HTTP write timeout in seconds (default: 15)
+  idleTimeout: 60         # HTTP idle timeout in seconds (default: 60)
+  cleanupTimeout: 10      # HTTP cleanup timeout in seconds (default: 10)
+
+# Database configuration
+database:
+  url: "postgres://postgres:toor@localhost:5432/altalune?sslmode=disable"   # PostgreSQL connection string
+  maxConnections: 25                                                        # Maximum database connections (default: 25)
+  maxIdleTime: 300                                                          # Max idle time for connections in seconds (default: 300)
+  connectTimeout: 10                                                        # Database connection timeout in seconds (default: 10)
+
+# Authentication server configuration (serve-auth command)
+auth:
+  host: "localhost"               # Auth server host (default: localhost)
+  port: 3101                       # Auth server port (default: 3101)
+  sessionSecret: "change-me-in-production-min-32-chars-required-for-cookie-encryption"  # Session encryption secret (min 32 chars)
+  codeExpiry: 600                  # Authorization code expiry in seconds (default: 10 minutes)
+  accessTokenExpiry: 3600          # Access token (JWT) expiry in seconds (default: 1 hour)
+  refreshTokenExpiry: 2592000      # Refresh token expiry in seconds (default: 30 days)
+
+# Security configuration
+security:
+  allowedOrigins:   # CORS allowed origins (default: ["*"])
+    - "*"
+  iamEncryptionKey: "rsLNVZTD4n8fQyvu8g8gaOHni7CKo2zweuxg2fuA8RY="  # 32-byte AES-256-GCM encryption key (base64-encoded) / openssl rand -base64 32
+
+  # JWT signing keys for OAuth access tokens
+  jwtPrivateKeyPath: "keys/jwt-private.pem"   # RSA private key path (for signing JWTs)
+  jwtPublicKeyPath: "keys/jwt-public.pem"     # RSA public key path (for JWKS endpoint)
+  jwksKid: "altalune-oauth-2026"              # Key ID for JWKS endpoint (JSON Web Key Set)
+
+# Database seeder configuration (runs after migrations)
+seeder:
+  # Superadmin user (created on first migration)
+  # This user has full access to all projects and owner role
+  superadmin:
+    publicId: "ktbu674z7xqg5q"     # Fixed public_id for deterministic seeding (14 chars nanoid)
+    email: "admin@altalune.com"    # Superadmin email address
+    firstName: "Super"             # First name
+    lastName: "Admin"              # Last name
+
+  # Default OAuth client for Altalune Dashboard
+  defaultOAuthClient:
+    publicId: "rtjgqpenv6kgty"                              # Fixed public_id for deterministic seeding (14 chars nanoid)
+    name: "Altalune Dashboard"                              # OAuth client display name
+    clientId: "e730207a-0fce-495d-bac3-6211963ac423"       # Fixed UUID for dashboard client
+    clientSecret: "change-me-dashboard-secret-min-32-chars-required-strong-random"  # ⚠️ CHANGE IN PRODUCTION
+    redirectUris:                                           # Allowed callback URLs
+      - "http://localhost:3000/auth/callback"              # Local development
+      - "https://dashboard.altalune.com/auth/callback"     # Production
+    pkceRequired: true  # CRITICAL: Must be true for public clients (SPA, mobile apps)
+
+  # OAuth providers for user login (Google, GitHub, etc.)
+  # Secrets are encrypted with iamEncryptionKey before storage
+  oauthProviders:
+    - publicId: "6z7rm3xtzz7a2c"
+      provider: "google"
+      clientId: "your-google-client-id.apps.googleusercontent.com"
+      clientSecret: "your-google-client-secret"
+      redirectUrl: "http://localhost:3101/auth/callback"
+      scopes: "openid,profile,email"
+      enabled: true
+
+    - publicId: "fkq9rfjmzba6j2"
+      provider: "github"
+      clientId: "your-github-client-id"
+      clientSecret: "your-github-client-secret"
+      redirectUrl: "http://localhost:3101/auth/callback"
+      scopes: "read:user,user:email"
+      enabled: true

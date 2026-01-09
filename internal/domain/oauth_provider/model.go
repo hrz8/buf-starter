@@ -47,9 +47,9 @@ func (m *OAuthProvider) ToOAuthProviderProto() *altalunev1.OAuthProvider {
 
 // OAuthProviderQueryResult represents a single OAuth provider query result
 type OAuthProviderQueryResult struct {
-	ID           int64     // Internal ID
-	PublicID     string    // Public nanoid
-	ProviderType string    // OAuth provider type (stored as string in DB)
+	ID           int64  // Internal ID
+	PublicID     string // Public nanoid
+	ProviderType string // OAuth provider type (stored as string in DB)
 	ClientID     string
 	RedirectURL  string
 	Scopes       string

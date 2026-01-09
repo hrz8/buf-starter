@@ -120,7 +120,7 @@ type CreateEmployeeResult struct {
 
 type UpdateEmployeeInput struct {
 	ProjectID  int64
-	PublicID   string  // Employee's public ID
+	PublicID   string // Employee's public ID
 	Name       string
 	Email      string
 	Role       string
@@ -142,5 +142,5 @@ type UpdateEmployeeResult struct {
 
 type DeleteEmployeeInput struct {
 	ProjectID int64
-	PublicID  string  // Employee's public ID
+	PublicID  string // Employee's public ID
 }

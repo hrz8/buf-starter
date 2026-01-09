@@ -66,7 +66,7 @@ type CreateApiKeyResult struct {
 
 type UpdateApiKeyInput struct {
 	ProjectID  int64
-	PublicID   string  // API Key's public ID
+	PublicID   string // API Key's public ID
 	Name       string
 	Expiration time.Time
 }
@@ -83,12 +83,12 @@ type UpdateApiKeyResult struct {
 
 type DeleteApiKeyInput struct {
 	ProjectID int64
-	PublicID  string  // API Key's public ID
+	PublicID  string // API Key's public ID
 }
 
 type ActivateApiKeyInput struct {
 	ProjectID int64
-	PublicID  string  // API Key's public ID
+	PublicID  string // API Key's public ID
 }
 
 type ActivateApiKeyResult struct {
@@ -103,7 +103,7 @@ type ActivateApiKeyResult struct {
 
 type DeactivateApiKeyInput struct {
 	ProjectID int64
-	PublicID  string  // API Key's public ID
+	PublicID  string // API Key's public ID
 }
 
 type DeactivateApiKeyResult struct {

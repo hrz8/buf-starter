@@ -55,7 +55,7 @@ func TestIntegrationWithRealOAuthSecret(t *testing.T) {
 		"8Q~FAKE-MICROSOFT-xxxxxxxxxxxxxxxxxxxxx",                 // Microsoft-like format
 		"fake.apple.secret.xxxxxxxxxxxxxxxxx.0.yyyyyyyyyyyyyyy",   // Apple-like format
 		"test_fake_key_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx", // Generic long format
-		"short-secret",                                            // Short format
+		"short-secret", // Short format
 		"a-very-long-oauth-client-secret-that-spans-many-characters-to-test-encryption-of-lengthy-strings", // Long format
 	}
 

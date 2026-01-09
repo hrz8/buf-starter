@@ -9,11 +9,11 @@ import (
 
 // User represents a system user with OAuth-only authentication
 type User struct {
-	ID        string    // Public nanoid
-	Email     string    // Unique, lowercase
-	FirstName string    // Optional
-	LastName  string    // Optional
-	IsActive  bool      // User activation status
+	ID        string // Public nanoid
+	Email     string // Unique, lowercase
+	FirstName string // Optional
+	LastName  string // Optional
+	IsActive  bool   // User activation status
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
@@ -32,8 +32,8 @@ func (m *User) ToUserProto() *altalunev1.User {
 
 // UserQueryResult represents a single user query result
 type UserQueryResult struct {
-	ID        int64     // Internal ID
-	PublicID  string    // Public nanoid
+	ID        int64  // Internal ID
+	PublicID  string // Public nanoid
 	Email     string
 	FirstName string
 	LastName  string

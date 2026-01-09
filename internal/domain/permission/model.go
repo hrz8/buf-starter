@@ -9,9 +9,9 @@ import (
 
 // Permission represents a permission in the system
 type Permission struct {
-	ID          string    // Public nanoid
-	Name        string    // Machine-readable: "project:read"
-	Description string    // Human-readable (optional)
+	ID          string // Public nanoid
+	Name        string // Machine-readable: "project:read"
+	Description string // Human-readable (optional)
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

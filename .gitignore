@@ -29,6 +29,13 @@ go.work.sum
 # env file
 .env
 
+# config file
+config.yaml
+
 # Error logs output
 air.log
 *.log
+
+# OAuth RSA private keys (NEVER commit these!)
+keys/*.pem
+keys/jwt-*.pem

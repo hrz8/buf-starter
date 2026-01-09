@@ -9,9 +9,9 @@ import (
 
 // Role represents a role in the system
 type Role struct {
-	ID          string    // Public nanoid
-	Name        string    // Unique
-	Description string    // Optional
+	ID          string // Public nanoid
+	Name        string // Unique
+	Description string // Optional
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
 }

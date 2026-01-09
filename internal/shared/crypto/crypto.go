@@ -49,12 +49,13 @@ import (
 // 7. Base64-encodes the result for safe storage
 //
 // Example:
-//   key := make([]byte, 32) // 32-byte encryption key from config
-//   encrypted, err := Encrypt("my-oauth-secret", key)
-//   if err != nil {
-//       log.Fatal(err)
-//   }
-//   // Store encrypted in database
+//
+//	key := make([]byte, 32) // 32-byte encryption key from config
+//	encrypted, err := Encrypt("my-oauth-secret", key)
+//	if err != nil {
+//	    log.Fatal(err)
+//	}
+//	// Store encrypted in database
 func Encrypt(plaintext string, key []byte) (string, error) {
 	// Validate key first
 	if err := ValidateKey(key); err != nil {
@@ -110,12 +111,13 @@ func Encrypt(plaintext string, key []byte) (string, error) {
 // - If the ciphertext is corrupted, decryption will fail
 //
 // Example:
-//   key := make([]byte, 32) // Same 32-byte key used for encryption
-//   plaintext, err := Decrypt(encryptedFromDB, key)
-//   if err != nil {
-//       log.Fatal(err) // Decryption failed
-//   }
-//   // Use plaintext for OAuth provider communication
+//
+//	key := make([]byte, 32) // Same 32-byte key used for encryption
+//	plaintext, err := Decrypt(encryptedFromDB, key)
+//	if err != nil {
+//	    log.Fatal(err) // Decryption failed
+//	}
+//	// Use plaintext for OAuth provider communication
 func Decrypt(ciphertext string, key []byte) (string, error) {
 	// Validate key first
 	if err := ValidateKey(key); err != nil {
@@ -176,10 +178,12 @@ func Decrypt(ciphertext string, key []byte) (string, error) {
 // - Stored securely (never committed to git, never logged)
 //
 // To generate a valid key:
-//   openssl rand -base64 32
+//
+//	openssl rand -base64 32
 //
 // Example output (44 characters when base64-encoded):
-//   vK8s2R7pN4jF9mT3xQ1wL6hY0dC5aE8b2Z9vM4nG7rJ=
+//
+//	vK8s2R7pN4jF9mT3xQ1wL6hY0dC5aE8b2Z9vM4nG7rJ=
 //
 // This 44-character base64 string decodes to exactly 32 bytes.
 func ValidateKey(key []byte) error {
