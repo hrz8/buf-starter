@@ -5,7 +5,10 @@ import (
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
 	migration_domain "github.com/hrz8/altalune/internal/domain/migration"
+	oauth_auth_domain "github.com/hrz8/altalune/internal/domain/oauth_auth"
 	"github.com/hrz8/altalune/internal/postgres"
+	"github.com/hrz8/altalune/internal/session"
+	"github.com/hrz8/altalune/internal/shared/jwt"
 )
 
 // Public getter methods for accessing private components
@@ -86,4 +89,19 @@ func (c *Container) GetOAuthProviderService() altalunev1.OAuthProviderServiceSer
 // GetOAuthClientService returns the OAuth client service
 func (c *Container) GetOAuthClientService() altalunev1.OAuthClientServiceServer {
 	return c.oauthClientService
+}
+
+// GetJWTSigner returns the JWT signer instance, or nil if not configured.
+func (c *Container) GetJWTSigner() *jwt.Signer {
+	return c.jwtSigner
+}
+
+// GetSessionStore returns the session store instance, or nil if not configured.
+func (c *Container) GetSessionStore() *session.Store {
+	return c.sessionStore
+}
+
+// GetOAuthAuthService returns the OAuth auth service, or nil if not configured.
+func (c *Container) GetOAuthAuthService() *oauth_auth_domain.Service {
+	return c.oauthAuthService
 }

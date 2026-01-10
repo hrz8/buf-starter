@@ -39,6 +39,11 @@ type Config interface {
 	// This key is used to encrypt/decrypt OAuth client secrets
 	GetIAMEncryptionKey() []byte
 
+	// JWT configuration
+	GetJWTPrivateKeyPath() string
+	GetJWTPublicKeyPath() string
+	GetJWKSKid() string
+
 	// Auth configuration
 	GetAuthHost() string
 	GetAuthPort() int

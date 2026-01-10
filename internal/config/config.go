@@ -79,6 +79,19 @@ func (c *AppConfig) GetIAMEncryptionKey() []byte {
 	return key
 }
 
+// JWT configuration
+func (c *AppConfig) GetJWTPrivateKeyPath() string {
+	return c.Security.JWTPrivateKeyPath
+}
+
+func (c *AppConfig) GetJWTPublicKeyPath() string {
+	return c.Security.JWTPublicKeyPath
+}
+
+func (c *AppConfig) GetJWKSKid() string {
+	return c.Security.JWKSKid
+}
+
 // Auth configuration
 func (c *AppConfig) GetAuthHost() string {
 	return c.Auth.Host

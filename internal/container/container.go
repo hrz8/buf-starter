@@ -13,6 +13,7 @@ import (
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
 	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
+	oauth_auth_domain "github.com/hrz8/altalune/internal/domain/oauth_auth"
 	oauth_client_domain "github.com/hrz8/altalune/internal/domain/oauth_client"
 	oauth_provider_domain "github.com/hrz8/altalune/internal/domain/oauth_provider"
 	permission_domain "github.com/hrz8/altalune/internal/domain/permission"
@@ -20,6 +21,8 @@ import (
 	role_domain "github.com/hrz8/altalune/internal/domain/role"
 	user_domain "github.com/hrz8/altalune/internal/domain/user"
 	"github.com/hrz8/altalune/internal/postgres"
+	"github.com/hrz8/altalune/internal/session"
+	"github.com/hrz8/altalune/internal/shared/jwt"
 	"github.com/hrz8/altalune/logger"
 
 	migration_domain "github.com/hrz8/altalune/internal/domain/migration"
@@ -33,6 +36,10 @@ type Container struct {
 
 	// Database connection and manager
 	db postgres.DB
+
+	// Auth server components (conditionally initialized)
+	jwtSigner    *jwt.Signer
+	sessionStore *session.Store
 
 	// Migrations
 	migrationRepo    migration_domain.Migrator
@@ -52,6 +59,7 @@ type Container struct {
 	iamMapperRepo     iam_mapper_domain.Repository
 	oauthProviderRepo oauth_provider_domain.Repository
 	oauthClientRepo   oauth_client_domain.Repositor
+	oauthAuthRepo     oauth_auth_domain.Repositor
 
 	// Example Services
 	greeterService  greeterv1.GreeterServiceServer
@@ -69,6 +77,7 @@ type Container struct {
 	iamMapperService     altalunev1.IAMMapperServiceServer
 	oauthProviderService altalunev1.OAuthProviderServiceServer
 	oauthClientService   altalunev1.OAuthClientServiceServer
+	oauthAuthService     *oauth_auth_domain.Service
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling
@@ -116,10 +125,9 @@ func (c *Container) initRepositories() error {
 	c.roleRepo = role_domain.NewRepo(c.db)
 	c.permissionRepo = permission_domain.NewRepo(c.db)
 	c.iamMapperRepo = iam_mapper_domain.NewRepo(c.db)
-	// OAuth Provider Repository with encryption key from config
 	c.oauthProviderRepo = oauth_provider_domain.NewRepo(c.db, c.config.GetIAMEncryptionKey())
-	// OAuth Client Repository
 	c.oauthClientRepo = oauth_client_domain.NewRepo(c.db)
+	c.oauthAuthRepo = oauth_auth_domain.NewRepo(c.db)
 	return nil
 }
 
@@ -139,6 +147,37 @@ func (c *Container) initServices() error {
 	c.iamMapperService = iam_mapper_domain.NewService(validator, c.logger, c.iamMapperRepo, c.userRepo, c.roleRepo, c.permissionRepo, c.projectRepo)
 	c.oauthProviderService = oauth_provider_domain.NewService(validator, c.logger, c.oauthProviderRepo)
 	c.oauthClientService = oauth_client_domain.NewService(validator, c.logger, c.projectRepo, c.oauthClientRepo)
+
+	if err := c.initAuthComponents(); err != nil {
+		return fmt.Errorf("failed to initialize auth components: %w", err)
+	}
+
+	return nil
+}
+
+func (c *Container) initAuthComponents() error {
+	// JWT Signer - only initialize if key paths are configured
+	if c.config.GetJWTPrivateKeyPath() != "" && c.config.GetJWTPublicKeyPath() != "" {
+		signer, err := jwt.NewSigner(
+			c.config.GetJWTPrivateKeyPath(),
+			c.config.GetJWTPublicKeyPath(),
+			c.config.GetJWKSKid(),
+		)
+		if err != nil {
+			return fmt.Errorf("create jwt signer: %w", err)
+		}
+		c.jwtSigner = signer
+	}
+
+	// Session Store - only initialize if session secret is configured
+	if c.config.GetSessionSecret() != "" {
+		c.sessionStore = session.NewStore(c.config.GetSessionSecret(), false, 86400)
+	}
+
+	// OAuth Auth Service - only initialize if JWT signer is available
+	if c.jwtSigner != nil {
+		c.oauthAuthService = oauth_auth_domain.NewService(c.logger, c.oauthAuthRepo, c.jwtSigner, c.config)
+	}
 
 	return nil
 }
