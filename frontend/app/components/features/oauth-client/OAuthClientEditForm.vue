@@ -20,7 +20,6 @@ import { useOAuthClientService } from '@/composables/services/useOAuthClientServ
 import { oauthClientUpdateSchema } from './schema';
 
 const props = defineProps<{
-  projectId: string;
   clientId: string;
 }>();
 
@@ -48,7 +47,6 @@ const form = useForm({
   validationSchema: formSchema,
   initialValues: {
     id: props.clientId,
-    projectId: props.projectId,
     name: '',
     redirectUris: [],
     pkceRequired: false,
@@ -67,7 +65,6 @@ async function fetchClient() {
     resetGetState();
     const fetchedClient = await getOAuthClient({
       id: props.clientId,
-      projectId: props.projectId,
     });
 
     if (fetchedClient) {
@@ -77,7 +74,6 @@ async function fetchClient() {
       // Update form values
       form.setValues({
         id: fetchedClient.id,
-        projectId: props.projectId,
         name: fetchedClient.name,
         redirectUris: [...fetchedClient.redirectUris],
         pkceRequired: fetchedClient.pkceRequired,
@@ -129,7 +125,6 @@ const onSubmit = form.handleSubmit(async (values) => {
 
     const updatedClient = await updateOAuthClient({
       id: values.id,
-      projectId: values.projectId,
       name: values.name,
       redirectUris: filteredUris,
       pkceRequired: values.pkceRequired,

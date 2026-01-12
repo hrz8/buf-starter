@@ -22,7 +22,6 @@ import { Button } from '@/components/ui/button';
 import { useOAuthClientService } from '@/composables/services/useOAuthClientService';
 
 const props = defineProps<{
-  projectId: string;
   client: OAuthClient;
   open?: boolean;
 }>();
@@ -76,7 +75,6 @@ async function handleReveal() {
   try {
     const secret = await revealOAuthClientSecret({
       id: props.client.id,
-      projectId: props.projectId,
     });
 
     if (secret) {

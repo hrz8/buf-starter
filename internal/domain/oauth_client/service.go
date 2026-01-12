@@ -31,6 +31,7 @@ func NewService(v protovalidate.Validator, log altalune.Logger, projectRepo proj
 }
 
 // CreateOAuthClient creates a new OAuth client with generated client_id and secret
+// OAuth clients are GLOBAL entities (not project-scoped)
 func (s *Service) CreateOAuthClient(ctx context.Context, req *altalunev1.CreateOAuthClientRequest) (*altalunev1.CreateOAuthClientResponse, error) {
 	// 1. Validate request with protovalidate
 	if err := s.validator.Validate(req); err != nil {
@@ -47,23 +48,12 @@ func (s *Service) CreateOAuthClient(ctx context.Context, req *altalunev1.CreateO
 		}
 	}
 
-	// 3. Extract and validate project ID
-	projectID, err := s.projectRepo.GetIDByPublicID(ctx, req.ProjectId)
-	if err != nil {
-		if err == project_domain.ErrProjectNotFound {
-			return nil, altalune.NewProjectNotFound(req.ProjectId)
-		}
-		return nil, altalune.NewInvalidPayloadError("invalid project_id")
-	}
-
-	// 4. Create OAuth client with Argon2 hashed secret
+	// 3. Create OAuth client with Argon2 hashed secret
 	input := &CreateOAuthClientInput{
-		ProjectID:       projectID,
-		ProjectPublicID: req.ProjectId,
-		Name:            strings.TrimSpace(req.Name),
-		RedirectURIs:    req.RedirectUris,
-		PKCERequired:    req.PkceRequired,
-		AllowedScopes:   req.AllowedScopes,
+		Name:          strings.TrimSpace(req.Name),
+		RedirectURIs:  req.RedirectUris,
+		PKCERequired:  req.PkceRequired,
+		AllowedScopes: req.AllowedScopes,
 	}
 
 	result, err := s.oauthClientRepo.Create(ctx, input)
@@ -73,21 +63,19 @@ func (s *Service) CreateOAuthClient(ctx context.Context, req *altalunev1.CreateO
 		}
 		s.log.Error("failed to create oauth client",
 			"error", err,
-			"project_id", projectID,
 			"name", req.Name,
 		)
 		return nil, altalune.NewUnexpectedError("failed to create oauth client: %w", err)
 	}
 
-	// 5. Log successful creation
+	// 4. Log successful creation
 	s.log.Info("oauth client created",
-		"project_id", projectID,
 		"client_public_id", result.Client.ID,
 		"client_id", result.Client.ClientID.String(),
 		"name", result.Client.Name,
 	)
 
-	// 6. Return client with PLAINTEXT secret (ONLY time it's returned)
+	// 5. Return client with PLAINTEXT secret (ONLY time it's returned)
 	return &altalunev1.CreateOAuthClientResponse{
 		Client:       result.Client.ToOAuthClientProto(),
 		ClientSecret: result.ClientSecret,
@@ -95,7 +83,7 @@ func (s *Service) CreateOAuthClient(ctx context.Context, req *altalunev1.CreateO
 	}, nil
 }
 
-// QueryOAuthClients returns a paginated list of OAuth clients
+// QueryOAuthClients returns a paginated list of all OAuth clients (global)
 func (s *Service) QueryOAuthClients(ctx context.Context, req *altalunev1.QueryOAuthClientsRequest) (*altalunev1.QueryOAuthClientsResponse, error) {
 	// 1. Validate request
 	if err := s.validator.Validate(req); err != nil {
@@ -107,30 +95,20 @@ func (s *Service) QueryOAuthClients(ctx context.Context, req *altalunev1.QueryOA
 		return nil, altalune.NewInvalidPayloadError("query is required")
 	}
 
-	// 3. Extract and validate project ID
-	projectID, err := s.projectRepo.GetIDByPublicID(ctx, req.ProjectId)
-	if err != nil {
-		if err == project_domain.ErrProjectNotFound {
-			return nil, altalune.NewProjectNotFound(req.ProjectId)
-		}
-		return nil, altalune.NewInvalidPayloadError("invalid project_id")
-	}
-
-	// 4. Convert proto request to domain query params
+	// 3. Convert proto request to domain query params
 	queryParams := query.DefaultQueryParams(req.Query)
 
-	// 5. Query OAuth clients from repository
-	result, err := s.oauthClientRepo.Query(ctx, projectID, queryParams)
+	// 4. Query OAuth clients from repository (global, no project filter)
+	result, err := s.oauthClientRepo.Query(ctx, queryParams)
 	if err != nil {
 		s.log.Error("failed to query oauth clients",
 			"error", err,
-			"project_id", projectID,
 			"keyword", queryParams.Keyword,
 		)
 		return nil, altalune.NewUnexpectedError("failed to query oauth clients: %w", err)
 	}
 
-	// 6. Handle empty results
+	// 5. Handle empty results
 	if result == nil {
 		return &altalunev1.QueryOAuthClientsResponse{
 			Clients: []*altalunev1.OAuthClient{},
@@ -143,13 +121,13 @@ func (s *Service) QueryOAuthClients(ctx context.Context, req *altalunev1.QueryOA
 		}, nil
 	}
 
-	// 7. Convert domain models to proto messages
+	// 6. Convert domain models to proto messages
 	clients := make([]*altalunev1.OAuthClient, 0, len(result.Data))
 	for _, client := range result.Data {
 		clients = append(clients, client.ToOAuthClientProto())
 	}
 
-	// 8. Convert filters to proto format
+	// 7. Convert filters to proto format
 	protoFilters := make(map[string]*altalunev1.FilterValues)
 	for key, values := range result.Filters {
 		protoFilters[key] = &altalunev1.FilterValues{Values: values}
@@ -166,31 +144,21 @@ func (s *Service) QueryOAuthClients(ctx context.Context, req *altalunev1.QueryOA
 	}, nil
 }
 
-// GetOAuthClient retrieves a single OAuth client by public ID
+// GetOAuthClient retrieves a single OAuth client by public ID (global)
 func (s *Service) GetOAuthClient(ctx context.Context, req *altalunev1.GetOAuthClientRequest) (*altalunev1.GetOAuthClientResponse, error) {
 	// 1. Validate request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, altalune.NewInvalidPayloadError(err.Error())
 	}
 
-	// 2. Extract and validate project ID
-	projectID, err := s.projectRepo.GetIDByPublicID(ctx, req.ProjectId)
-	if err != nil {
-		if err == project_domain.ErrProjectNotFound {
-			return nil, altalune.NewProjectNotFound(req.ProjectId)
-		}
-		return nil, altalune.NewInvalidPayloadError("invalid project_id")
-	}
-
-	// 3. Get OAuth client from repository
-	client, err := s.oauthClientRepo.GetByPublicID(ctx, projectID, req.Id)
+	// 2. Get OAuth client from repository (global, no project filter)
+	client, err := s.oauthClientRepo.GetByPublicID(ctx, req.Id)
 	if err != nil {
 		if err == ErrOAuthClientNotFound {
 			return nil, altalune.NewOAuthClientNotFoundError(req.Id)
 		}
 		s.log.Error("failed to get oauth client",
 			"error", err,
-			"project_id", projectID,
 			"client_public_id", req.Id,
 		)
 		return nil, altalune.NewUnexpectedError("failed to get oauth client: %w", err)
@@ -202,24 +170,15 @@ func (s *Service) GetOAuthClient(ctx context.Context, req *altalunev1.GetOAuthCl
 	}, nil
 }
 
-// UpdateOAuthClient updates an existing OAuth client
+// UpdateOAuthClient updates an existing OAuth client (global)
 func (s *Service) UpdateOAuthClient(ctx context.Context, req *altalunev1.UpdateOAuthClientRequest) (*altalunev1.UpdateOAuthClientResponse, error) {
 	// 1. Validate request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, altalune.NewInvalidPayloadError(err.Error())
 	}
 
-	// 2. Extract and validate project ID
-	projectID, err := s.projectRepo.GetIDByPublicID(ctx, req.ProjectId)
-	if err != nil {
-		if err == project_domain.ErrProjectNotFound {
-			return nil, altalune.NewProjectNotFound(req.ProjectId)
-		}
-		return nil, altalune.NewInvalidPayloadError("invalid project_id")
-	}
-
-	// 3. Get existing client to check if default
-	existingClient, err := s.oauthClientRepo.GetByPublicID(ctx, projectID, req.Id)
+	// 2. Get existing client to check if default
+	existingClient, err := s.oauthClientRepo.GetByPublicID(ctx, req.Id)
 	if err != nil {
 		if err == ErrOAuthClientNotFound {
 			return nil, altalune.NewOAuthClientNotFoundError(req.Id)
@@ -227,7 +186,7 @@ func (s *Service) UpdateOAuthClient(ctx context.Context, req *altalunev1.UpdateO
 		return nil, altalune.NewUnexpectedError("failed to get oauth client: %w", err)
 	}
 
-	// 4. Validate redirect URIs if provided
+	// 3. Validate redirect URIs if provided
 	if len(req.RedirectUris) > 0 {
 		for _, uri := range req.RedirectUris {
 			if !isValidRedirectURI(uri) {
@@ -236,15 +195,14 @@ func (s *Service) UpdateOAuthClient(ctx context.Context, req *altalunev1.UpdateO
 		}
 	}
 
-	// 5. Protect default client from disabling PKCE
+	// 4. Protect default client from disabling PKCE
 	if existingClient.IsDefault && req.PkceRequired != nil && !*req.PkceRequired {
 		return nil, altalune.NewInvalidPayloadError("PKCE cannot be disabled for default client")
 	}
 
-	// 6. Build update input
+	// 5. Build update input
 	input := &UpdateOAuthClientInput{
 		PublicID:      req.Id,
-		ProjectID:     projectID,
 		Name:          req.Name,
 		PKCERequired:  req.PkceRequired,
 		AllowedScopes: req.AllowedScopes,
@@ -254,7 +212,7 @@ func (s *Service) UpdateOAuthClient(ctx context.Context, req *altalunev1.UpdateO
 		input.RedirectURIs = req.RedirectUris
 	}
 
-	// 7. Update OAuth client
+	// 6. Update OAuth client
 	updatedClient, err := s.oauthClientRepo.Update(ctx, input)
 	if err != nil {
 		if err == ErrOAuthClientNotFound {
@@ -265,15 +223,13 @@ func (s *Service) UpdateOAuthClient(ctx context.Context, req *altalunev1.UpdateO
 		}
 		s.log.Error("failed to update oauth client",
 			"error", err,
-			"project_id", projectID,
 			"client_public_id", req.Id,
 		)
 		return nil, altalune.NewUnexpectedError("failed to update oauth client: %w", err)
 	}
 
-	// 8. Log successful update
+	// 7. Log successful update
 	s.log.Info("oauth client updated",
-		"project_id", projectID,
 		"client_public_id", updatedClient.ID,
 		"name", updatedClient.Name,
 	)
@@ -284,24 +240,15 @@ func (s *Service) UpdateOAuthClient(ctx context.Context, req *altalunev1.UpdateO
 	}, nil
 }
 
-// DeleteOAuthClient deletes an OAuth client (with default client protection)
+// DeleteOAuthClient deletes an OAuth client (with default client protection, global)
 func (s *Service) DeleteOAuthClient(ctx context.Context, req *altalunev1.DeleteOAuthClientRequest) (*altalunev1.DeleteOAuthClientResponse, error) {
 	// 1. Validate request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, altalune.NewInvalidPayloadError(err.Error())
 	}
 
-	// 2. Extract and validate project ID
-	projectID, err := s.projectRepo.GetIDByPublicID(ctx, req.ProjectId)
-	if err != nil {
-		if err == project_domain.ErrProjectNotFound {
-			return nil, altalune.NewProjectNotFound(req.ProjectId)
-		}
-		return nil, altalune.NewInvalidPayloadError("invalid project_id")
-	}
-
-	// 3. Get client to verify it exists and check if default
-	client, err := s.oauthClientRepo.GetByPublicID(ctx, projectID, req.Id)
+	// 2. Get client to verify it exists and check if default
+	client, err := s.oauthClientRepo.GetByPublicID(ctx, req.Id)
 	if err != nil {
 		if err == ErrOAuthClientNotFound {
 			return nil, altalune.NewOAuthClientNotFoundError(req.Id)
@@ -309,13 +256,13 @@ func (s *Service) DeleteOAuthClient(ctx context.Context, req *altalunev1.DeleteO
 		return nil, altalune.NewUnexpectedError("failed to get oauth client: %w", err)
 	}
 
-	// 4. Protect default client from deletion
+	// 3. Protect default client from deletion
 	if client.IsDefault {
 		return nil, altalune.NewInvalidPayloadError("cannot delete default dashboard client")
 	}
 
-	// 5. Delete OAuth client
-	err = s.oauthClientRepo.Delete(ctx, projectID, req.Id)
+	// 4. Delete OAuth client
+	err = s.oauthClientRepo.Delete(ctx, req.Id)
 	if err != nil {
 		if err == ErrOAuthClientNotFound {
 			return nil, altalune.NewOAuthClientNotFoundError(req.Id)
@@ -325,15 +272,13 @@ func (s *Service) DeleteOAuthClient(ctx context.Context, req *altalunev1.DeleteO
 		}
 		s.log.Error("failed to delete oauth client",
 			"error", err,
-			"project_id", projectID,
 			"client_public_id", req.Id,
 		)
 		return nil, altalune.NewUnexpectedError("failed to delete oauth client: %w", err)
 	}
 
-	// 6. Log successful deletion
+	// 5. Log successful deletion
 	s.log.Info("oauth client deleted",
-		"project_id", projectID,
 		"client_public_id", req.Id,
 		"name", client.Name,
 	)
@@ -343,44 +288,33 @@ func (s *Service) DeleteOAuthClient(ctx context.Context, req *altalunev1.DeleteO
 	}, nil
 }
 
-// RevealOAuthClientSecret reveals the hashed client secret (with audit logging)
+// RevealOAuthClientSecret reveals the hashed client secret (with audit logging, global)
 func (s *Service) RevealOAuthClientSecret(ctx context.Context, req *altalunev1.RevealOAuthClientSecretRequest) (*altalunev1.RevealOAuthClientSecretResponse, error) {
 	// 1. Validate request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, altalune.NewInvalidPayloadError(err.Error())
 	}
 
-	// 2. Extract and validate project ID
-	projectID, err := s.projectRepo.GetIDByPublicID(ctx, req.ProjectId)
-	if err != nil {
-		if err == project_domain.ErrProjectNotFound {
-			return nil, altalune.NewProjectNotFound(req.ProjectId)
-		}
-		return nil, altalune.NewInvalidPayloadError("invalid project_id")
-	}
-
-	// 3. Reveal client secret (hashed) from repository
-	hashedSecret, err := s.oauthClientRepo.RevealClientSecret(ctx, projectID, req.Id)
+	// 2. Reveal client secret (hashed) from repository
+	hashedSecret, err := s.oauthClientRepo.RevealClientSecret(ctx, req.Id)
 	if err != nil {
 		if err == ErrOAuthClientNotFound {
 			return nil, altalune.NewOAuthClientNotFoundError(req.Id)
 		}
 		s.log.Error("failed to reveal client secret",
 			"error", err,
-			"project_id", projectID,
 			"client_public_id", req.Id,
 		)
 		return nil, altalune.NewUnexpectedError("failed to reveal client secret: %w", err)
 	}
 
-	// 4. Log audit event (CRITICAL for security)
+	// 3. Log audit event (CRITICAL for security)
 	s.log.Warn("oauth_client_secret_revealed",
-		"project_id", projectID,
 		"client_public_id", req.Id,
 		// TODO: Add user_id from context when authentication is implemented
 	)
 
-	// 5. Return hashed secret (Argon2id PHC string format)
+	// 4. Return hashed secret (Argon2id PHC string format)
 	// NOTE: This is the HASHED secret, not plaintext
 	// The plaintext secret was only shown during creation
 	return &altalunev1.RevealOAuthClientSecretResponse{

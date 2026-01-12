@@ -2,9 +2,9 @@ import { z } from 'zod';
 
 /**
  * Create OAuth Client Schema
+ * OAuth clients are GLOBAL entities (not project-scoped)
  */
 export const oauthClientCreateSchema = z.object({
-  projectId: z.string().length(14, 'Project ID must be 14 characters'),
   name: z
     .string()
     .min(1, 'Client name is required')
@@ -23,10 +23,10 @@ export type OAuthClientCreateFormData = z.infer<typeof oauthClientCreateSchema>;
 
 /**
  * Update OAuth Client Schema
+ * OAuth clients are GLOBAL entities (not project-scoped)
  */
 export const oauthClientUpdateSchema = z.object({
   id: z.string().length(14, 'Client ID must be 14 characters'),
-  projectId: z.string().length(14, 'Project ID must be 14 characters'),
   name: z
     .string()
     .min(1, 'Client name is required')

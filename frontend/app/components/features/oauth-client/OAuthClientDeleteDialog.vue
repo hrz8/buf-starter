@@ -17,7 +17,6 @@ import {
 import { useOAuthClientService } from '@/composables/services/useOAuthClientService';
 
 const props = defineProps<{
-  projectId: string;
   client: OAuthClient;
   open?: boolean;
 }>();
@@ -39,7 +38,6 @@ async function handleDelete() {
   try {
     const success = await deleteOAuthClient({
       id: props.client.id,
-      projectId: props.projectId,
     });
 
     if (success) {

@@ -593,11 +593,11 @@ func (r *Repo) Delete(ctx context.Context, publicID string) error {
 
 // partitionedTables defines all tables that need partitions created for new projects
 // Add new tables here when they require partitioning by project_id
+// Note: oauth_clients and oauth_client_scopes are GLOBAL (not partitioned)
+// following Keycloak/Auth0 patterns where clients are infrastructure-level entities
 var partitionedTables = []string{
 	"altalune_example_employees",
 	"altalune_project_api_keys",
-	"altalune_oauth_clients",
-	"altalune_oauth_client_scopes",
 	// Add future partitioned tables here:
 	// "altalune_project_logs",
 	// "altalune_project_metrics",

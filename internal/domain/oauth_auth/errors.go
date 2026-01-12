@@ -17,4 +17,17 @@ var (
 	ErrInvalidRefreshToken       = errors.New("invalid refresh token")
 	ErrClientSecretRequired      = errors.New("client_secret required")
 	ErrPKCERequired              = errors.New("PKCE is required for this client")
+
+	ErrMissingClientID            = errors.New("client_id is required")
+	ErrMissingResponseType        = errors.New("response_type is required")
+	ErrMissingRedirectURI         = errors.New("redirect_uri is required")
+	ErrUnsupportedResponseType    = errors.New("unsupported response_type")
+	ErrMissingCodeChallenge       = errors.New("code_challenge is required")
+	ErrInvalidCodeChallengeMethod = errors.New("invalid code_challenge_method")
+	ErrServerError                = errors.New("internal server error")
+
+	ErrRefreshTokenExpired = errors.New("refresh token has expired")
+	ErrRefreshTokenUsed    = errors.New("refresh token has already been used")
+	ErrCodeExpired         = errors.New("authorization code has expired")
+	ErrCodeAlreadyUsed     = errors.New("authorization code has already been used")
 )

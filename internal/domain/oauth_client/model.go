@@ -7,24 +7,23 @@ import (
 )
 
 // OAuthClientQueryResult represents query result with internal database ID
+// OAuth clients are GLOBAL entities (infrastructure-level, like Auth0 Applications)
 type OAuthClientQueryResult struct {
-	ID              int64  // Internal database ID
-	PublicID        string // Public nanoid
-	ProjectID       int64  // Internal project ID
-	ProjectPublicID string // Project public nanoid
-	Name            string
-	ClientID        uuid.UUID // OAuth client_id (UUID)
-	RedirectURIs    []string
-	PKCERequired    bool
-	IsDefault       bool
-	CreatedAt       time.Time
-	UpdatedAt       time.Time
+	ID           int64     // Internal database ID
+	PublicID     string    // Public nanoid
+	Name         string
+	ClientID     uuid.UUID // OAuth client_id (UUID)
+	RedirectURIs []string
+	PKCERequired bool
+	IsDefault    bool
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
 }
 
 // OAuthClient represents the domain model with public IDs only
+// OAuth clients are GLOBAL entities (infrastructure-level, like Auth0 Applications)
 type OAuthClient struct {
-	ID           string // Public nanoid
-	ProjectID    string // Project public nanoid
+	ID           string    // Public nanoid
 	Name         string
 	ClientID     uuid.UUID // OAuth client_id (UUID)
 	RedirectURIs []string
@@ -36,12 +35,10 @@ type OAuthClient struct {
 
 // CreateOAuthClientInput represents input for creating an OAuth client
 type CreateOAuthClientInput struct {
-	ProjectID       int64  // Internal project ID
-	ProjectPublicID string // Project public nanoid (for response)
-	Name            string
-	RedirectURIs    []string
-	PKCERequired    bool
-	AllowedScopes   []string
+	Name          string
+	RedirectURIs  []string
+	PKCERequired  bool
+	AllowedScopes []string
 }
 
 // CreateOAuthClientResult represents the result of creating an OAuth client
@@ -53,7 +50,6 @@ type CreateOAuthClientResult struct {
 // UpdateOAuthClientInput represents input for updating an OAuth client
 type UpdateOAuthClientInput struct {
 	PublicID      string
-	ProjectID     int64
 	Name          *string
 	RedirectURIs  []string
 	PKCERequired  *bool
@@ -64,7 +60,6 @@ type UpdateOAuthClientInput struct {
 func (r *OAuthClientQueryResult) ToOAuthClient() *OAuthClient {
 	return &OAuthClient{
 		ID:           r.PublicID,
-		ProjectID:    r.ProjectPublicID,
 		Name:         r.Name,
 		ClientID:     r.ClientID,
 		RedirectURIs: r.RedirectURIs,

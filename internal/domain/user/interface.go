@@ -16,4 +16,12 @@ type Repository interface {
 	Delete(ctx context.Context, publicID string) error
 	Activate(ctx context.Context, publicID string) (*User, error)
 	Deactivate(ctx context.Context, publicID string) (*User, error)
+
+	// User Identity operations for OAuth authentication
+	GetUserIdentityByProvider(ctx context.Context, provider, providerUserID string) (*UserIdentity, error)
+	CreateUserIdentity(ctx context.Context, input *CreateUserIdentityInput) error
+	UpdateUserIdentityLastLogin(ctx context.Context, userID int64, provider string) error
+
+	// Project membership for OAuth user onboarding
+	AddProjectMember(ctx context.Context, projectID, userID int64, role string) error
 }

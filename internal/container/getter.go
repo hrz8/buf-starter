@@ -6,6 +6,8 @@ import (
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
 	migration_domain "github.com/hrz8/altalune/internal/domain/migration"
 	oauth_auth_domain "github.com/hrz8/altalune/internal/domain/oauth_auth"
+	oauth_provider_domain "github.com/hrz8/altalune/internal/domain/oauth_provider"
+	user_domain "github.com/hrz8/altalune/internal/domain/user"
 	"github.com/hrz8/altalune/internal/postgres"
 	"github.com/hrz8/altalune/internal/session"
 	"github.com/hrz8/altalune/internal/shared/jwt"
@@ -104,4 +106,14 @@ func (c *Container) GetSessionStore() *session.Store {
 // GetOAuthAuthService returns the OAuth auth service, or nil if not configured.
 func (c *Container) GetOAuthAuthService() *oauth_auth_domain.Service {
 	return c.oauthAuthService
+}
+
+// GetOAuthProviderRepo returns the OAuth provider repository.
+func (c *Container) GetOAuthProviderRepo() oauth_provider_domain.Repository {
+	return c.oauthProviderRepo
+}
+
+// GetUserRepo returns the user repository.
+func (c *Container) GetUserRepo() user_domain.Repository {
+	return c.userRepo
 }

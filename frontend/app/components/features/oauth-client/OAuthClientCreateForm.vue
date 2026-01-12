@@ -24,7 +24,6 @@ import OAuthClientSecretDisplay from './OAuthClientSecretDisplay.vue';
 import { oauthClientCreateSchema } from './schema';
 
 const props = defineProps<{
-  projectId: string;
   loading?: boolean;
 }>();
 
@@ -61,7 +60,6 @@ function removeRedirectUri(index: number) {
 
 // Compute initial values
 const initialFormValues = computed(() => ({
-  projectId: props.projectId,
   name: '',
   redirectUris: [''],
   pkceRequired: false,
@@ -78,7 +76,6 @@ const form = useForm({
 const onSubmit = form.handleSubmit(async (values) => {
   try {
     const requestPayload = {
-      projectId: values.projectId,
       name: values.name,
       redirectUris: redirectUris.value.filter(uri => uri.trim() !== ''),
       pkceRequired: values.pkceRequired,
@@ -131,13 +128,6 @@ function handleSecretAcknowledged() {
 watch(redirectUris, (newUris) => {
   form.setFieldValue('redirectUris', newUris);
 }, { deep: true });
-
-// Watch for project ID changes
-watch(() => props.projectId, (newProjectId) => {
-  if (newProjectId) {
-    form.setFieldValue('projectId', newProjectId);
-  }
-});
 
 onUnmounted(() => {
   resetCreateState();

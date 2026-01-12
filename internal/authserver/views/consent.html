@@ -1,0 +1,83 @@
+{{define "consent.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}} - Altalune</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .auth-card {
+            max-width: 480px;
+            width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="auth-card">
+                    <div class="text-center mb-4">
+                        <h1 class="h3 mb-3 fw-bold">Authorize {{.ClientName}}</h1>
+                        <p class="text-muted">This application wants to access your account</p>
+                    </div>
+
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <h2 class="h6 text-uppercase text-secondary fw-bold mb-3">Requested Permissions</h2>
+                            <ul class="list-unstyled">
+                                {{range .Scopes}}
+                                <li class="mb-3 d-flex align-items-start">
+                                    <i class="bi bi-check-circle-fill text-success me-3 mt-1"></i>
+                                    <div>
+                                        <div class="fw-semibold">{{.Name}}</div>
+                                        <small class="text-muted">{{.Description}}</small>
+                                    </div>
+                                </li>
+                                {{end}}
+                            </ul>
+
+                            <hr class="my-4">
+
+                            <form method="POST" action="/oauth/authorize">
+                                <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+                                <input type="hidden" name="client_id" value="{{.ClientID}}">
+                                <input type="hidden" name="redirect_uri" value="{{.RedirectURI}}">
+                                <input type="hidden" name="scope" value="{{.Scope}}">
+                                <input type="hidden" name="state" value="{{.State}}">
+                                {{if .Nonce}}<input type="hidden" name="nonce" value="{{.Nonce}}">{{end}}
+                                {{if .CodeChallenge}}<input type="hidden" name="code_challenge" value="{{.CodeChallenge}}">{{end}}
+                                {{if .CodeChallengeMethod}}<input type="hidden" name="code_challenge_method" value="{{.CodeChallengeMethod}}">{{end}}
+
+                                <div class="d-grid gap-2">
+                                    <button type="submit" name="decision" value="allow" class="btn btn-primary">
+                                        <i class="bi bi-check-lg me-2"></i>Allow
+                                    </button>
+                                    <button type="submit" name="decision" value="deny" class="btn btn-outline-secondary">
+                                        <i class="bi bi-x-lg me-2"></i>Deny
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <p class="text-center text-muted mt-4 small">
+                        <a href="#" class="text-decoration-none">Learn more</a> about OAuth permissions
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{{end}}

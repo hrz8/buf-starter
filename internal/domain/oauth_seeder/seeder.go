@@ -258,22 +258,8 @@ func (s *Seeder) seedDefaultOAuthClient(ctx context.Context, tx *sql.Tx) error {
 		return fmt.Errorf("check OAuth client existence: %w", err)
 	}
 
-	// Get the first project
-	var projectID int64
-	err = tx.QueryRowContext(ctx, `
-		SELECT id FROM altalune_projects ORDER BY id LIMIT 1
-	`).Scan(&projectID)
-
-	if err == sql.ErrNoRows {
-		s.logger.Info("No projects exist yet, skipping OAuth client creation")
-		return nil
-	}
-
-	if err != nil {
-		return fmt.Errorf("get first project: %w", err)
-	}
-
 	// Get client configuration from interface
+	// NOTE: OAuth clients are GLOBAL entities (not project-scoped)
 	clientName := s.config.GetDefaultOAuthClientName()
 	clientSecret := s.config.GetDefaultOAuthClientSecret()
 	redirectURIs := s.config.GetDefaultOAuthClientRedirectURIs()
@@ -294,11 +280,11 @@ func (s *Seeder) seedDefaultOAuthClient(ctx context.Context, tx *sql.Tx) error {
 
 	_, err = tx.ExecContext(ctx, `
 		INSERT INTO altalune_oauth_clients (
-			project_id, public_id, name, client_id, client_secret_hash,
+			public_id, name, client_id, client_secret_hash,
 			redirect_uris, pkce_required, is_default, created_at, updated_at
 		)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
-	`, projectID, publicID, clientName, clientUUID, secretHash,
+		VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+	`, publicID, clientName, clientUUID, secretHash,
 		pq.Array(redirectURIs), pkceRequired, true)
 
 	if err != nil {

@@ -6,10 +6,10 @@ import (
 )
 
 // ToOAuthClientProto converts domain model to protobuf message
+// OAuth clients are GLOBAL entities (not project-scoped)
 func (c *OAuthClient) ToOAuthClientProto() *altalunev1.OAuthClient {
 	return &altalunev1.OAuthClient{
 		Id:              c.ID,
-		ProjectId:       c.ProjectID,
 		Name:            c.Name,
 		ClientId:        c.ClientID.String(),
 		RedirectUris:    c.RedirectURIs,

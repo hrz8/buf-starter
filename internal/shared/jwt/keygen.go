@@ -119,39 +119,40 @@ func SavePublicKeyPEM(key *rsa.PublicKey, filepath string) error {
 }
 
 // LoadPrivateKeyPEM loads an RSA private key from a PEM file.
-// The file must be in PKCS#1 format (RSA PRIVATE KEY).
-//
-// Example:
-//
-//	privateKey, err := LoadPrivateKeyPEM("keys/jwt-private.pem")
-//	if err != nil {
-//	    log.Fatal(err)
-//	}
+// Supports both PKCS#1 (RSA PRIVATE KEY) and PKCS#8 (PRIVATE KEY) formats.
 func LoadPrivateKeyPEM(filepath string) (*rsa.PrivateKey, error) {
-	// Read file
 	data, err := os.ReadFile(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("read private key file: %w", err)
 	}
 
-	// Decode PEM block
 	block, _ := pem.Decode(data)
 	if block == nil {
 		return nil, errors.New("failed to decode PEM block from private key file")
 	}
 
-	// Verify block type
-	if block.Type != "RSA PRIVATE KEY" {
-		return nil, fmt.Errorf("unexpected key type: %s (expected: RSA PRIVATE KEY)", block.Type)
+	var privateKey *rsa.PrivateKey
+
+	switch block.Type {
+	case "RSA PRIVATE KEY":
+		privateKey, err = x509.ParsePKCS1PrivateKey(block.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("parse PKCS#1 private key: %w", err)
+		}
+	case "PRIVATE KEY":
+		key, err := x509.ParsePKCS8PrivateKey(block.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("parse PKCS#8 private key: %w", err)
+		}
+		var ok bool
+		privateKey, ok = key.(*rsa.PrivateKey)
+		if !ok {
+			return nil, errors.New("PKCS#8 key is not an RSA private key")
+		}
+	default:
+		return nil, fmt.Errorf("unexpected key type: %s", block.Type)
 	}
 
-	// Parse PKCS#1 private key
-	privateKey, err := x509.ParsePKCS1PrivateKey(block.Bytes)
-	if err != nil {
-		return nil, fmt.Errorf("parse private key: %w", err)
-	}
-
-	// Validate key
 	if err := privateKey.Validate(); err != nil {
 		return nil, fmt.Errorf("validate private key: %w", err)
 	}
@@ -160,42 +161,38 @@ func LoadPrivateKeyPEM(filepath string) (*rsa.PrivateKey, error) {
 }
 
 // LoadPublicKeyPEM loads an RSA public key from a PEM file.
-// The file must be in PKIX format (RSA PUBLIC KEY).
-//
-// Example:
-//
-//	publicKey, err := LoadPublicKeyPEM("keys/jwt-public.pem")
-//	if err != nil {
-//	    log.Fatal(err)
-//	}
+// Supports both PKIX (PUBLIC KEY) and PKCS#1 (RSA PUBLIC KEY) formats.
 func LoadPublicKeyPEM(filepath string) (*rsa.PublicKey, error) {
-	// Read file
 	data, err := os.ReadFile(filepath)
 	if err != nil {
 		return nil, fmt.Errorf("read public key file: %w", err)
 	}
 
-	// Decode PEM block
 	block, _ := pem.Decode(data)
 	if block == nil {
 		return nil, errors.New("failed to decode PEM block from public key file")
 	}
 
-	// Verify block type
-	if block.Type != "RSA PUBLIC KEY" {
-		return nil, fmt.Errorf("unexpected key type: %s (expected: RSA PUBLIC KEY)", block.Type)
-	}
+	var publicKey *rsa.PublicKey
 
-	// Parse PKIX public key
-	pub, err := x509.ParsePKIXPublicKey(block.Bytes)
-	if err != nil {
-		return nil, fmt.Errorf("parse public key: %w", err)
-	}
-
-	// Type assert to RSA public key
-	publicKey, ok := pub.(*rsa.PublicKey)
-	if !ok {
-		return nil, errors.New("key is not an RSA public key")
+	switch block.Type {
+	case "RSA PUBLIC KEY":
+		publicKey, err = x509.ParsePKCS1PublicKey(block.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("parse PKCS#1 public key: %w", err)
+		}
+	case "PUBLIC KEY":
+		pub, err := x509.ParsePKIXPublicKey(block.Bytes)
+		if err != nil {
+			return nil, fmt.Errorf("parse PKIX public key: %w", err)
+		}
+		var ok bool
+		publicKey, ok = pub.(*rsa.PublicKey)
+		if !ok {
+			return nil, errors.New("PKIX key is not an RSA public key")
+		}
+	default:
+		return nil, fmt.Errorf("unexpected key type: %s", block.Type)
 	}
 
 	return publicKey, nil

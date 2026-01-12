@@ -25,6 +25,7 @@ func NewRepo(db postgres.DB) Repositor {
 }
 
 // Create creates a new OAuth client with generated client_id and hashed secret
+// OAuth clients are GLOBAL entities (not project-scoped)
 func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*CreateOAuthClientResult, error) {
 	// 1. Generate public ID (nanoid)
 	publicID, err := nanoid.GeneratePublicID()
@@ -49,12 +50,12 @@ func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*Crea
 		return nil, fmt.Errorf("hash client secret: %w", err)
 	}
 
-	// 5. Insert into partitioned table
+	// 5. Insert into global table (no partitioning)
 	insertQuery := `
 		INSERT INTO altalune_oauth_clients (
-			project_id, public_id, name, client_id,
+			public_id, name, client_id,
 			client_secret_hash, redirect_uris, pkce_required, is_default
-		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		) VALUES ($1, $2, $3, $4, $5, $6, $7)
 		RETURNING id, created_at, updated_at
 	`
 
@@ -62,7 +63,6 @@ func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*Crea
 	var createdAt, updatedAt sql.NullTime
 
 	err = r.db.QueryRowContext(ctx, insertQuery,
-		input.ProjectID,
 		publicID,
 		input.Name,
 		clientID,
@@ -82,7 +82,6 @@ func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*Crea
 	// 6. Build domain model
 	client := &OAuthClient{
 		ID:           publicID,
-		ProjectID:    input.ProjectPublicID,
 		Name:         input.Name,
 		ClientID:     clientID,
 		RedirectURIs: input.RedirectURIs,
@@ -99,21 +98,20 @@ func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*Crea
 	}, nil
 }
 
-// Query returns a paginated list of OAuth clients for a project
-func (r *repo) Query(ctx context.Context, projectID int64, params *query.QueryParams) (*query.QueryResult[OAuthClient], error) {
+// Query returns a paginated list of all OAuth clients (global)
+func (r *repo) Query(ctx context.Context, params *query.QueryParams) (*query.QueryResult[OAuthClient], error) {
 	// Base query WITHOUT client_secret_hash (security: never expose secret hash)
 	baseQuery := `
 		SELECT id, public_id, name, client_id,
 		       redirect_uris, pkce_required, is_default,
 		       created_at, updated_at
 		FROM altalune_oauth_clients
-		WHERE project_id = $1
+		WHERE 1=1
 	`
 
 	var whereConditions []string
-	var args []interface{}
-	args = append(args, projectID) // $1
-	argCounter := 2
+	var args []any
+	argCounter := 1
 
 	// Handle keyword search (search by name)
 	if params.Keyword != "" {
@@ -213,14 +211,6 @@ func (r *repo) Query(ctx context.Context, projectID int64, params *query.QueryPa
 	}
 	defer rows.Close()
 
-	// Get project public ID for response
-	var projectPublicID string
-	projectQuery := "SELECT public_id FROM altalune_projects WHERE id = $1"
-	err = r.db.QueryRowContext(ctx, projectQuery, projectID).Scan(&projectPublicID)
-	if err != nil {
-		return nil, fmt.Errorf("get project public id: %w", err)
-	}
-
 	// Scan rows
 	data := make([]*OAuthClient, 0)
 	for rows.Next() {
@@ -242,8 +232,6 @@ func (r *repo) Query(ctx context.Context, projectID int64, params *query.QueryPa
 			return nil, fmt.Errorf("scan oauth client: %w", err)
 		}
 
-		result.ProjectID = projectID
-		result.ProjectPublicID = projectPublicID
 		result.RedirectURIs = []string(redirectURIs)
 
 		data = append(data, result.ToOAuthClient())
@@ -267,21 +255,21 @@ func (r *repo) Query(ctx context.Context, projectID int64, params *query.QueryPa
 	}, nil
 }
 
-// GetByPublicID retrieves an OAuth client by its public nanoid
-func (r *repo) GetByPublicID(ctx context.Context, projectID int64, publicID string) (*OAuthClient, error) {
+// GetByPublicID retrieves an OAuth client by its public nanoid (global)
+func (r *repo) GetByPublicID(ctx context.Context, publicID string) (*OAuthClient, error) {
 	// Query WITHOUT client_secret_hash
 	selectQuery := `
 		SELECT id, public_id, name, client_id,
 		       redirect_uris, pkce_required, is_default,
 		       created_at, updated_at
 		FROM altalune_oauth_clients
-		WHERE project_id = $1 AND public_id = $2
+		WHERE public_id = $1
 	`
 
 	var result OAuthClientQueryResult
 	var redirectURIs pq.StringArray
 
-	err := r.db.QueryRowContext(ctx, selectQuery, projectID, publicID).Scan(
+	err := r.db.QueryRowContext(ctx, selectQuery, publicID).Scan(
 		&result.ID,
 		&result.PublicID,
 		&result.Name,
@@ -300,16 +288,6 @@ func (r *repo) GetByPublicID(ctx context.Context, projectID int64, publicID stri
 		return nil, fmt.Errorf("get oauth client: %w", err)
 	}
 
-	// Get project public ID
-	var projectPublicID string
-	projectQuery := "SELECT public_id FROM altalune_projects WHERE id = $1"
-	err = r.db.QueryRowContext(ctx, projectQuery, projectID).Scan(&projectPublicID)
-	if err != nil {
-		return nil, fmt.Errorf("get project public id: %w", err)
-	}
-
-	result.ProjectID = projectID
-	result.ProjectPublicID = projectPublicID
 	result.RedirectURIs = []string(redirectURIs)
 
 	return result.ToOAuthClient(), nil
@@ -325,12 +303,11 @@ func (r *repo) GetByClientID(ctx context.Context, clientID string) (*OAuthClient
 
 	// Query WITHOUT client_secret_hash
 	selectQuery := `
-		SELECT oc.id, oc.public_id, oc.project_id, p.public_id as project_public_id,
-		       oc.name, oc.client_id, oc.redirect_uris, oc.pkce_required,
-		       oc.is_default, oc.created_at, oc.updated_at
-		FROM altalune_oauth_clients oc
-		JOIN altalune_projects p ON oc.project_id = p.id
-		WHERE oc.client_id = $1
+		SELECT id, public_id, name, client_id,
+		       redirect_uris, pkce_required, is_default,
+		       created_at, updated_at
+		FROM altalune_oauth_clients
+		WHERE client_id = $1
 	`
 
 	var result OAuthClientQueryResult
@@ -339,8 +316,6 @@ func (r *repo) GetByClientID(ctx context.Context, clientID string) (*OAuthClient
 	err = r.db.QueryRowContext(ctx, selectQuery, clientUUID).Scan(
 		&result.ID,
 		&result.PublicID,
-		&result.ProjectID,
-		&result.ProjectPublicID,
 		&result.Name,
 		&result.ClientID,
 		&redirectURIs,
@@ -362,12 +337,12 @@ func (r *repo) GetByClientID(ctx context.Context, clientID string) (*OAuthClient
 	return result.ToOAuthClient(), nil
 }
 
-// Update updates an existing OAuth client
+// Update updates an existing OAuth client (global)
 func (r *repo) Update(ctx context.Context, input *UpdateOAuthClientInput) (*OAuthClient, error) {
 	// Build dynamic UPDATE query
 	setClauses := []string{}
-	args := []interface{}{input.ProjectID, input.PublicID} // $1, $2
-	argCounter := 3
+	args := []any{input.PublicID} // $1
+	argCounter := 2
 
 	if input.Name != nil {
 		setClauses = append(setClauses, fmt.Sprintf("name = $%d", argCounter))
@@ -397,7 +372,7 @@ func (r *repo) Update(ctx context.Context, input *UpdateOAuthClientInput) (*OAut
 	updateQuery := fmt.Sprintf(`
 		UPDATE altalune_oauth_clients
 		SET %s
-		WHERE project_id = $1 AND public_id = $2
+		WHERE public_id = $1
 		RETURNING id, public_id, name, client_id,
 		          redirect_uris, pkce_required, is_default,
 		          created_at, updated_at
@@ -428,27 +403,17 @@ func (r *repo) Update(ctx context.Context, input *UpdateOAuthClientInput) (*OAut
 		return nil, fmt.Errorf("update oauth client: %w", err)
 	}
 
-	// Get project public ID
-	var projectPublicID string
-	projectQuery := "SELECT public_id FROM altalune_projects WHERE id = $1"
-	err = r.db.QueryRowContext(ctx, projectQuery, input.ProjectID).Scan(&projectPublicID)
-	if err != nil {
-		return nil, fmt.Errorf("get project public id: %w", err)
-	}
-
-	result.ProjectID = input.ProjectID
-	result.ProjectPublicID = projectPublicID
 	result.RedirectURIs = []string(redirectURIs)
 
 	return result.ToOAuthClient(), nil
 }
 
-// Delete deletes an OAuth client (with default client protection)
-func (r *repo) Delete(ctx context.Context, projectID int64, publicID string) error {
+// Delete deletes an OAuth client (with default client protection, global)
+func (r *repo) Delete(ctx context.Context, publicID string) error {
 	// First check if it's the default client
 	var isDefault bool
-	checkQuery := "SELECT is_default FROM altalune_oauth_clients WHERE project_id = $1 AND public_id = $2"
-	err := r.db.QueryRowContext(ctx, checkQuery, projectID, publicID).Scan(&isDefault)
+	checkQuery := "SELECT is_default FROM altalune_oauth_clients WHERE public_id = $1"
+	err := r.db.QueryRowContext(ctx, checkQuery, publicID).Scan(&isDefault)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return ErrOAuthClientNotFound
@@ -462,8 +427,8 @@ func (r *repo) Delete(ctx context.Context, projectID int64, publicID string) err
 	}
 
 	// Delete client
-	deleteQuery := "DELETE FROM altalune_oauth_clients WHERE project_id = $1 AND public_id = $2"
-	result, err := r.db.ExecContext(ctx, deleteQuery, projectID, publicID)
+	deleteQuery := "DELETE FROM altalune_oauth_clients WHERE public_id = $1"
+	result, err := r.db.ExecContext(ctx, deleteQuery, publicID)
 	if err != nil {
 		return fmt.Errorf("delete oauth client: %w", err)
 	}
@@ -479,21 +444,21 @@ func (r *repo) Delete(ctx context.Context, projectID int64, publicID string) err
 	return nil
 }
 
-// RevealClientSecret retrieves the hashed client secret (with audit logging)
+// RevealClientSecret retrieves the hashed client secret (with audit logging, global)
 // NOTE: Returns the Argon2id hash. In production, you might want to:
 // 1. Add audit logging here
 // 2. Return encrypted secret if you store it encrypted
 // 3. Add rate limiting for this operation
-func (r *repo) RevealClientSecret(ctx context.Context, projectID int64, publicID string) (string, error) {
+func (r *repo) RevealClientSecret(ctx context.Context, publicID string) (string, error) {
 	// Query for client_secret_hash (this is the ONLY method that returns it)
 	selectQuery := `
 		SELECT client_secret_hash
 		FROM altalune_oauth_clients
-		WHERE project_id = $1 AND public_id = $2
+		WHERE public_id = $1
 	`
 
 	var hashedSecret string
-	err := r.db.QueryRowContext(ctx, selectQuery, projectID, publicID).Scan(&hashedSecret)
+	err := r.db.QueryRowContext(ctx, selectQuery, publicID).Scan(&hashedSecret)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", ErrOAuthClientNotFound
@@ -503,7 +468,6 @@ func (r *repo) RevealClientSecret(ctx context.Context, projectID int64, publicID
 
 	// TODO: Add audit logging here
 	// logger.Info("oauth_client_secret_revealed",
-	//     "project_id", projectID,
 	//     "client_public_id", publicID,
 	//     "user_id", userIDFromContext,
 	// )

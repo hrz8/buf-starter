@@ -41,6 +41,7 @@ func registerFlags(cmd *cobra.Command) {
 func registerCommands(cmd *cobra.Command) {
 	cmd.AddCommand(
 		NewServeCommand(cmd),
+		NewServeAuthCommand(cmd),
 		NewMigrateCommand(cmd),
 	)
 }

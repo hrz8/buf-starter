@@ -21,9 +21,8 @@ import { Input } from '@/components/ui/input';
 import { useOAuthClientService } from '@/composables/services/useOAuthClientService';
 import { useQueryRequest } from '@/composables/useQueryRequest';
 
-const props = defineProps<{
-  projectId: string;
-}>();
+// OAuth clients are GLOBAL entities (not project-scoped)
+// Following Keycloak/Auth0 architecture patterns
 
 const { t } = useI18n();
 const { locale } = useI18n();
@@ -55,7 +54,6 @@ const asyncDataKey = computed(() => {
   const { page, pageSize } = pagination!;
   const keys = [
     'oauth-client-table',
-    props.projectId,
     page,
     pageSize,
     keyword,
@@ -72,7 +70,6 @@ const {
 } = useLazyAsyncData(
   asyncDataKey,
   () => query({
-    projectId: props.projectId,
     query: queryRequest.value,
   }),
   {
@@ -199,7 +196,6 @@ const columns = [
     id: 'actions',
     cell: ({ row }) => {
       return h(OAuthClientRowActions, {
-        projectId: props.projectId,
         client: row.original,
         onEdit: () => handleEdit(row),
         onRevealSecret: () => handleRevealSecret(row),
@@ -230,7 +226,6 @@ defineExpose({
       <!-- Create Button -->
       <div class="container mx-auto flex justify-end">
         <OAuthClientCreateSheet
-          :project-id="props.projectId"
           @success="handleClientCreated"
           @cancel="handleSheetClose"
         >
@@ -293,7 +288,6 @@ defineExpose({
               </div>
               <div class="flex space-x-2">
                 <OAuthClientCreateSheet
-                  :project-id="props.projectId"
                   @success="handleClientCreated"
                   @cancel="handleSheetClose"
                 >
@@ -313,7 +307,6 @@ defineExpose({
     <OAuthClientEditSheet
       v-if="selectedClient"
       v-model:open="isEditSheetOpen"
-      :project-id="props.projectId"
       :client="selectedClient"
       @success="handleEditSuccess"
     />
@@ -322,7 +315,6 @@ defineExpose({
     <OAuthClientDeleteDialog
       v-if="selectedClient"
       v-model:open="isDeleteDialogOpen"
-      :project-id="props.projectId"
       :client="selectedClient"
       @success="handleDeleteSuccess"
     />
@@ -331,7 +323,6 @@ defineExpose({
     <OAuthClientRevealDialog
       v-if="selectedClient"
       v-model:open="isRevealDialogOpen"
-      :project-id="props.projectId"
       :client="selectedClient"
     />
   </div>

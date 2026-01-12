@@ -13,7 +13,6 @@ import {
 import OAuthClientCreateForm from './OAuthClientCreateForm.vue';
 
 const props = defineProps<{
-  projectId: string;
   loading?: boolean;
 }>();
 
@@ -50,7 +49,6 @@ function handleSheetClose() {
       </SheetHeader>
       <div class="mt-6 px-6">
         <OAuthClientCreateForm
-          :project-id="props.projectId"
           :loading="props.loading"
           @success="handleClientCreated"
           @cancel="handleSheetClose"

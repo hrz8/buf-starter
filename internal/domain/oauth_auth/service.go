@@ -154,7 +154,7 @@ func (s *Service) GenerateTokenPair(ctx context.Context, userID int64, clientID 
 }
 
 // ValidateAndRefreshToken validates and rotates a refresh token.
-func (s *Service) ValidateAndRefreshToken(ctx context.Context, refreshTokenStr string, clientID uuid.UUID) (*RefreshToken, error) {
+func (s *Service) ValidateAndRefreshToken(ctx context.Context, refreshTokenStr string, clientID uuid.UUID, email, name string) (*TokenPair, error) {
 	tokenUUID, err := uuid.Parse(refreshTokenStr)
 	if err != nil {
 		return nil, ErrInvalidRefreshToken
@@ -169,6 +169,14 @@ func (s *Service) ValidateAndRefreshToken(ctx context.Context, refreshTokenStr s
 		return nil, ErrClientMismatch
 	}
 
+	if time.Now().After(refreshToken.ExpiresAt) {
+		return nil, ErrRefreshTokenExpired
+	}
+
+	if refreshToken.ExchangeAt != nil {
+		return nil, ErrRefreshTokenUsed
+	}
+
 	if err := s.repo.MarkRefreshTokenExchanged(ctx, tokenUUID); err != nil {
 		s.log.Error("failed to mark refresh token exchanged",
 			"error", err,
@@ -177,7 +185,7 @@ func (s *Service) ValidateAndRefreshToken(ctx context.Context, refreshTokenStr s
 		return nil, err
 	}
 
-	return refreshToken, nil
+	return s.GenerateTokenPair(ctx, refreshToken.UserID, clientID, refreshToken.Scope, email, name)
 }
 
 // CheckUserConsent checks if a user has granted consent for the requested scopes.
@@ -269,4 +277,89 @@ func (s *Service) GetOAuthClient(ctx context.Context, clientIDStr string) (*OAut
 // ValidateRedirectURI checks if a redirect URI is registered for the client.
 func (s *Service) ValidateRedirectURI(client *OAuthClientInfo, redirectURI string) bool {
 	return slices.Contains(client.RedirectURIs, redirectURI)
+}
+
+// RevokeToken revokes a refresh token or access token.
+func (s *Service) RevokeToken(ctx context.Context, token, tokenTypeHint string) error {
+	tokenUUID, err := uuid.Parse(token)
+	if err != nil {
+		return nil
+	}
+
+	if tokenTypeHint == "access_token" {
+		return nil
+	}
+
+	refreshToken, err := s.repo.GetRefreshTokenByToken(ctx, tokenUUID)
+	if err != nil {
+		return nil
+	}
+
+	if refreshToken.ExchangeAt != nil {
+		return nil
+	}
+
+	if err := s.repo.MarkRefreshTokenExchanged(ctx, tokenUUID); err != nil {
+		s.log.Error("failed to revoke refresh token", "error", err, "token", tokenUUID)
+		return err
+	}
+
+	return nil
+}
+
+// IntrospectToken inspects a token and returns its metadata.
+func (s *Service) IntrospectToken(ctx context.Context, token string, clientID uuid.UUID) (map[string]interface{}, error) {
+	claims, err := s.jwtSigner.ValidateAccessToken(token)
+	if err == nil {
+		aud := ""
+		if len(claims.Audience) > 0 {
+			aud = claims.Audience[0]
+		}
+
+		if aud != clientID.String() {
+			return map[string]interface{}{"active": false}, nil
+		}
+
+		return map[string]interface{}{
+			"active":     true,
+			"scope":      claims.Scope,
+			"client_id":  aud,
+			"username":   claims.Subject,
+			"token_type": "Bearer",
+			"exp":        claims.ExpiresAt.Unix(),
+			"iat":        claims.IssuedAt.Unix(),
+			"sub":        claims.Subject,
+			"iss":        claims.Issuer,
+		}, nil
+	}
+
+	tokenUUID, err := uuid.Parse(token)
+	if err != nil {
+		return map[string]interface{}{"active": false}, nil
+	}
+
+	refreshToken, err := s.repo.GetRefreshTokenByToken(ctx, tokenUUID)
+	if err != nil {
+		return map[string]interface{}{"active": false}, nil
+	}
+
+	if refreshToken.ClientID != clientID {
+		return map[string]interface{}{"active": false}, nil
+	}
+
+	if time.Now().After(refreshToken.ExpiresAt) {
+		return map[string]interface{}{"active": false}, nil
+	}
+
+	if refreshToken.ExchangeAt != nil {
+		return map[string]interface{}{"active": false}, nil
+	}
+
+	return map[string]interface{}{
+		"active":     true,
+		"scope":      refreshToken.Scope,
+		"client_id":  refreshToken.ClientID.String(),
+		"token_type": "refresh_token",
+		"exp":        refreshToken.ExpiresAt.Unix(),
+	}, nil
 }

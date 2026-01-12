@@ -19,27 +19,24 @@ service OAuthClientService {
 }
 
 // OAuth Client Message
+// OAuth clients are GLOBAL entities (infrastructure-level, like Auth0 Applications)
+// not project-scoped business data. This follows Keycloak/Auth0 patterns.
 message OAuthClient {
   string id = 1;                          // Public nanoid
-  string project_id = 2;                  // Project public_id
-  string name = 3;
-  string client_id = 4;                   // UUID
-  repeated string redirect_uris = 5;
-  bool pkce_required = 6;
-  bool is_default = 7;
-  bool client_secret_set = 8;             // Boolean flag, NOT actual secret
-  repeated string allowed_scopes = 9;     // Scope names
+  string name = 2;
+  string client_id = 3;                   // UUID
+  repeated string redirect_uris = 4;
+  bool pkce_required = 5;
+  bool is_default = 6;
+  bool client_secret_set = 7;             // Boolean flag, NOT actual secret
+  repeated string allowed_scopes = 8;     // Scope names
   google.protobuf.Timestamp created_at = 98;
   google.protobuf.Timestamp updated_at = 99;
 }
 
-// Create OAuth Client Request
+// Create OAuth Client Request (Global - no project_id needed)
 message CreateOAuthClientRequest {
-  string project_id = 1 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {len: 14}
-  ];
-  string name = 2 [
+  string name = 1 [
     (buf.validate.field).required = true,
     (buf.validate.field).string = {
       min_len: 1,
@@ -47,7 +44,7 @@ message CreateOAuthClientRequest {
       pattern: "^[a-zA-Z0-9\\s\\-_]+$"
     }
   ];
-  repeated string redirect_uris = 3 [
+  repeated string redirect_uris = 2 [
     (buf.validate.field).repeated = {
       min_items: 1,
       max_items: 10,
@@ -56,8 +53,8 @@ message CreateOAuthClientRequest {
       }
     }
   ];
-  bool pkce_required = 4;
-  repeated string allowed_scopes = 5;     // Optional scope names
+  bool pkce_required = 3;
+  repeated string allowed_scopes = 4;     // Optional scope names
 }
 
 message CreateOAuthClientResponse {
@@ -66,13 +63,9 @@ message CreateOAuthClientResponse {
   string message = 3;
 }
 
-// Query OAuth Clients Request
+// Query OAuth Clients Request (Global - no project_id needed)
 message QueryOAuthClientsRequest {
   QueryRequest query = 1;
-  string project_id = 2 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {len: 14}
-  ];
 }
 
 message QueryOAuthClientsResponse {
@@ -81,13 +74,9 @@ message QueryOAuthClientsResponse {
   string message = 3;
 }
 
-// Get OAuth Client Request
+// Get OAuth Client Request (Global - no project_id needed)
 message GetOAuthClientRequest {
   string id = 1 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {len: 14}
-  ];
-  string project_id = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string = {len: 14}
   ];
@@ -98,20 +87,16 @@ message GetOAuthClientResponse {
   string message = 2;
 }
 
-// Update OAuth Client Request
+// Update OAuth Client Request (Global - no project_id needed)
 message UpdateOAuthClientRequest {
   string id = 1 [
     (buf.validate.field).required = true,
     (buf.validate.field).string = {len: 14}
   ];
-  string project_id = 2 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {len: 14}
-  ];
-  optional string name = 3 [(buf.validate.field).string = {min_len: 1, max_len: 100}];
-  repeated string redirect_uris = 4;
-  optional bool pkce_required = 5;
-  repeated string allowed_scopes = 6;
+  optional string name = 2 [(buf.validate.field).string = {min_len: 1, max_len: 100}];
+  repeated string redirect_uris = 3;
+  optional bool pkce_required = 4;
+  repeated string allowed_scopes = 5;
 }
 
 message UpdateOAuthClientResponse {
@@ -119,13 +104,9 @@ message UpdateOAuthClientResponse {
   string message = 2;
 }
 
-// Delete OAuth Client Request
+// Delete OAuth Client Request (Global - no project_id needed)
 message DeleteOAuthClientRequest {
   string id = 1 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {len: 14}
-  ];
-  string project_id = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string = {len: 14}
   ];
@@ -135,13 +116,9 @@ message DeleteOAuthClientResponse {
   string message = 1;
 }
 
-// Reveal OAuth Client Secret Request
+// Reveal OAuth Client Secret Request (Global - no project_id needed)
 message RevealOAuthClientSecretRequest {
   string id = 1 [
-    (buf.validate.field).required = true,
-    (buf.validate.field).string = {len: 14}
-  ];
-  string project_id = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string = {len: 14}
   ];

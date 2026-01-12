@@ -11,7 +11,6 @@ import {
 } from '@/components/ui/dropdown-menu';
 
 defineProps<{
-  projectId: string;
   client: OAuthClient;
 }>();
 

@@ -15,10 +15,12 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file altalune/v1/oauth_client.proto.
  */
 export const file_altalune_v1_oauth_client: GenFile = /*@__PURE__*/
-  fileDesc("Ch5hbHRhbHVuZS92MS9vYXV0aF9jbGllbnQucHJvdG8SC2FsdGFsdW5lLnYxIqMCCgtPQXV0aENsaWVudBIKCgJpZBgBIAEoCRISCgpwcm9qZWN0X2lkGAIgASgJEgwKBG5hbWUYAyABKAkSEQoJY2xpZW50X2lkGAQgASgJEhUKDXJlZGlyZWN0X3VyaXMYBSADKAkSFQoNcGtjZV9yZXF1aXJlZBgGIAEoCBISCgppc19kZWZhdWx0GAcgASgIEhkKEWNsaWVudF9zZWNyZXRfc2V0GAggASgIEhYKDmFsbG93ZWRfc2NvcGVzGAkgAygJEi4KCmNyZWF0ZWRfYXQYYiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYYyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wIsgBChhDcmVhdGVPQXV0aENsaWVudFJlcXVlc3QSHwoKcHJvamVjdF9pZBgBIAEoCUILukgIyAEBcgOYAQ4SLwoEbmFtZRgCIAEoCUIhukgeyAEBchkQARhkMhNeW2EtekEtWjAtOVxzXC1fXSskEisKDXJlZGlyZWN0X3VyaXMYAyADKAlCFLpIEZIBDggBEAoiCHIGGPQDiAEBEhUKDXBrY2VfcmVxdWlyZWQYBCABKAgSFgoOYWxsb3dlZF9zY29wZXMYBSADKAkibQoZQ3JlYXRlT0F1dGhDbGllbnRSZXNwb25zZRIoCgZjbGllbnQYASABKAsyGC5hbHRhbHVuZS52MS5PQXV0aENsaWVudBIVCg1jbGllbnRfc2VjcmV0GAIgASgJEg8KB21lc3NhZ2UYAyABKAkiZQoYUXVlcnlPQXV0aENsaWVudHNSZXF1ZXN0EigKBXF1ZXJ5GAEgASgLMhkuYWx0YWx1bmUudjEuUXVlcnlSZXF1ZXN0Eh8KCnByb2plY3RfaWQYAiABKAlCC7pICMgBAXIDmAEOIoUBChlRdWVyeU9BdXRoQ2xpZW50c1Jlc3BvbnNlEikKB2NsaWVudHMYASADKAsyGC5hbHRhbHVuZS52MS5PQXV0aENsaWVudBIsCgRtZXRhGAIgASgLMh4uYWx0YWx1bmUudjEuUXVlcnlNZXRhUmVzcG9uc2USDwoHbWVzc2FnZRgDIAEoCSJRChVHZXRPQXV0aENsaWVudFJlcXVlc3QSFwoCaWQYASABKAlCC7pICMgBAXIDmAEOEh8KCnByb2plY3RfaWQYAiABKAlCC7pICMgBAXIDmAEOIlMKFkdldE9BdXRoQ2xpZW50UmVzcG9uc2USKAoGY2xpZW50GAEgASgLMhguYWx0YWx1bmUudjEuT0F1dGhDbGllbnQSDwoHbWVzc2FnZRgCIAEoCSLYAQoYVXBkYXRlT0F1dGhDbGllbnRSZXF1ZXN0EhcKAmlkGAEgASgJQgu6SAjIAQFyA5gBDhIfCgpwcm9qZWN0X2lkGAIgASgJQgu6SAjIAQFyA5gBDhIcCgRuYW1lGAMgASgJQgm6SAZyBBABGGRIAIgBARIVCg1yZWRpcmVjdF91cmlzGAQgAygJEhoKDXBrY2VfcmVxdWlyZWQYBSABKAhIAYgBARIWCg5hbGxvd2VkX3Njb3BlcxgGIAMoCUIHCgVfbmFtZUIQCg5fcGtjZV9yZXF1aXJlZCJWChlVcGRhdGVPQXV0aENsaWVudFJlc3BvbnNlEigKBmNsaWVudBgBIAEoCzIYLmFsdGFsdW5lLnYxLk9BdXRoQ2xpZW50Eg8KB21lc3NhZ2UYAiABKAkiVAoYRGVsZXRlT0F1dGhDbGllbnRSZXF1ZXN0EhcKAmlkGAEgASgJQgu6SAjIAQFyA5gBDhIfCgpwcm9qZWN0X2lkGAIgASgJQgu6SAjIAQFyA5gBDiIsChlEZWxldGVPQXV0aENsaWVudFJlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiWgoeUmV2ZWFsT0F1dGhDbGllbnRTZWNyZXRSZXF1ZXN0EhcKAmlkGAEgASgJQgu6SAjIAQFyA5gBDhIfCgpwcm9qZWN0X2lkGAIgASgJQgu6SAjIAQFyA5gBDiJJCh9SZXZlYWxPQXV0aENsaWVudFNlY3JldFJlc3BvbnNlEhUKDWNsaWVudF9zZWNyZXQYASABKAkSDwoHbWVzc2FnZRgCIAEoCTKBBQoST0F1dGhDbGllbnRTZXJ2aWNlEmQKEUNyZWF0ZU9BdXRoQ2xpZW50EiUuYWx0YWx1bmUudjEuQ3JlYXRlT0F1dGhDbGllbnRSZXF1ZXN0GiYuYWx0YWx1bmUudjEuQ3JlYXRlT0F1dGhDbGllbnRSZXNwb25zZSIAEmQKEVF1ZXJ5T0F1dGhDbGllbnRzEiUuYWx0YWx1bmUudjEuUXVlcnlPQXV0aENsaWVudHNSZXF1ZXN0GiYuYWx0YWx1bmUudjEuUXVlcnlPQXV0aENsaWVudHNSZXNwb25zZSIAElsKDkdldE9BdXRoQ2xpZW50EiIuYWx0YWx1bmUudjEuR2V0T0F1dGhDbGllbnRSZXF1ZXN0GiMuYWx0YWx1bmUudjEuR2V0T0F1dGhDbGllbnRSZXNwb25zZSIAEmQKEVVwZGF0ZU9BdXRoQ2xpZW50EiUuYWx0YWx1bmUudjEuVXBkYXRlT0F1dGhDbGllbnRSZXF1ZXN0GiYuYWx0YWx1bmUudjEuVXBkYXRlT0F1dGhDbGllbnRSZXNwb25zZSIAEmQKEURlbGV0ZU9BdXRoQ2xpZW50EiUuYWx0YWx1bmUudjEuRGVsZXRlT0F1dGhDbGllbnRSZXF1ZXN0GiYuYWx0YWx1bmUudjEuRGVsZXRlT0F1dGhDbGllbnRSZXNwb25zZSIAEnYKF1JldmVhbE9BdXRoQ2xpZW50U2VjcmV0EisuYWx0YWx1bmUudjEuUmV2ZWFsT0F1dGhDbGllbnRTZWNyZXRSZXF1ZXN0GiwuYWx0YWx1bmUudjEuUmV2ZWFsT0F1dGhDbGllbnRTZWNyZXRSZXNwb25zZSIAQqUBCg9jb20uYWx0YWx1bmUudjFCEE9hdXRoQ2xpZW50UHJvdG9QAVozZ2l0aHViLmNvbS9ocno4L2FsdGFsdW5lL2dlbi9hbHRhbHVuZS92MTthbHRhbHVuZXYxogIDQVhYqgILQWx0YWx1bmUuVjHKAgtBbHRhbHVuZVxWMeICF0FsdGFsdW5lXFYxXEdQQk1ldGFkYXRh6gIMQWx0YWx1bmU6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
+  fileDesc("Ch5hbHRhbHVuZS92MS9vYXV0aF9jbGllbnQucHJvdG8SC2FsdGFsdW5lLnYxIo8CCgtPQXV0aENsaWVudBIKCgJpZBgBIAEoCRIMCgRuYW1lGAIgASgJEhEKCWNsaWVudF9pZBgDIAEoCRIVCg1yZWRpcmVjdF91cmlzGAQgAygJEhUKDXBrY2VfcmVxdWlyZWQYBSABKAgSEgoKaXNfZGVmYXVsdBgGIAEoCBIZChFjbGllbnRfc2VjcmV0X3NldBgHIAEoCBIWCg5hbGxvd2VkX3Njb3BlcxgIIAMoCRIuCgpjcmVhdGVkX2F0GGIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GGMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcCKnAQoYQ3JlYXRlT0F1dGhDbGllbnRSZXF1ZXN0Ei8KBG5hbWUYASABKAlCIbpIHsgBAXIZEAEYZDITXlthLXpBLVowLTlcc1wtX10rJBIrCg1yZWRpcmVjdF91cmlzGAIgAygJQhS6SBGSAQ4IARAKIghyBhj0A4gBARIVCg1wa2NlX3JlcXVpcmVkGAMgASgIEhYKDmFsbG93ZWRfc2NvcGVzGAQgAygJIm0KGUNyZWF0ZU9BdXRoQ2xpZW50UmVzcG9uc2USKAoGY2xpZW50GAEgASgLMhguYWx0YWx1bmUudjEuT0F1dGhDbGllbnQSFQoNY2xpZW50X3NlY3JldBgCIAEoCRIPCgdtZXNzYWdlGAMgASgJIkQKGFF1ZXJ5T0F1dGhDbGllbnRzUmVxdWVzdBIoCgVxdWVyeRgBIAEoCzIZLmFsdGFsdW5lLnYxLlF1ZXJ5UmVxdWVzdCKFAQoZUXVlcnlPQXV0aENsaWVudHNSZXNwb25zZRIpCgdjbGllbnRzGAEgAygLMhguYWx0YWx1bmUudjEuT0F1dGhDbGllbnQSLAoEbWV0YRgCIAEoCzIeLmFsdGFsdW5lLnYxLlF1ZXJ5TWV0YVJlc3BvbnNlEg8KB21lc3NhZ2UYAyABKAkiMAoVR2V0T0F1dGhDbGllbnRSZXF1ZXN0EhcKAmlkGAEgASgJQgu6SAjIAQFyA5gBDiJTChZHZXRPQXV0aENsaWVudFJlc3BvbnNlEigKBmNsaWVudBgBIAEoCzIYLmFsdGFsdW5lLnYxLk9BdXRoQ2xpZW50Eg8KB21lc3NhZ2UYAiABKAkitwEKGFVwZGF0ZU9BdXRoQ2xpZW50UmVxdWVzdBIXCgJpZBgBIAEoCUILukgIyAEBcgOYAQ4SHAoEbmFtZRgCIAEoCUIJukgGcgQQARhkSACIAQESFQoNcmVkaXJlY3RfdXJpcxgDIAMoCRIaCg1wa2NlX3JlcXVpcmVkGAQgASgISAGIAQESFgoOYWxsb3dlZF9zY29wZXMYBSADKAlCBwoFX25hbWVCEAoOX3BrY2VfcmVxdWlyZWQiVgoZVXBkYXRlT0F1dGhDbGllbnRSZXNwb25zZRIoCgZjbGllbnQYASABKAsyGC5hbHRhbHVuZS52MS5PQXV0aENsaWVudBIPCgdtZXNzYWdlGAIgASgJIjMKGERlbGV0ZU9BdXRoQ2xpZW50UmVxdWVzdBIXCgJpZBgBIAEoCUILukgIyAEBcgOYAQ4iLAoZRGVsZXRlT0F1dGhDbGllbnRSZXNwb25zZRIPCgdtZXNzYWdlGAEgASgJIjkKHlJldmVhbE9BdXRoQ2xpZW50U2VjcmV0UmVxdWVzdBIXCgJpZBgBIAEoCUILukgIyAEBcgOYAQ4iSQofUmV2ZWFsT0F1dGhDbGllbnRTZWNyZXRSZXNwb25zZRIVCg1jbGllbnRfc2VjcmV0GAEgASgJEg8KB21lc3NhZ2UYAiABKAkygQUKEk9BdXRoQ2xpZW50U2VydmljZRJkChFDcmVhdGVPQXV0aENsaWVudBIlLmFsdGFsdW5lLnYxLkNyZWF0ZU9BdXRoQ2xpZW50UmVxdWVzdBomLmFsdGFsdW5lLnYxLkNyZWF0ZU9BdXRoQ2xpZW50UmVzcG9uc2UiABJkChFRdWVyeU9BdXRoQ2xpZW50cxIlLmFsdGFsdW5lLnYxLlF1ZXJ5T0F1dGhDbGllbnRzUmVxdWVzdBomLmFsdGFsdW5lLnYxLlF1ZXJ5T0F1dGhDbGllbnRzUmVzcG9uc2UiABJbCg5HZXRPQXV0aENsaWVudBIiLmFsdGFsdW5lLnYxLkdldE9BdXRoQ2xpZW50UmVxdWVzdBojLmFsdGFsdW5lLnYxLkdldE9BdXRoQ2xpZW50UmVzcG9uc2UiABJkChFVcGRhdGVPQXV0aENsaWVudBIlLmFsdGFsdW5lLnYxLlVwZGF0ZU9BdXRoQ2xpZW50UmVxdWVzdBomLmFsdGFsdW5lLnYxLlVwZGF0ZU9BdXRoQ2xpZW50UmVzcG9uc2UiABJkChFEZWxldGVPQXV0aENsaWVudBIlLmFsdGFsdW5lLnYxLkRlbGV0ZU9BdXRoQ2xpZW50UmVxdWVzdBomLmFsdGFsdW5lLnYxLkRlbGV0ZU9BdXRoQ2xpZW50UmVzcG9uc2UiABJ2ChdSZXZlYWxPQXV0aENsaWVudFNlY3JldBIrLmFsdGFsdW5lLnYxLlJldmVhbE9BdXRoQ2xpZW50U2VjcmV0UmVxdWVzdBosLmFsdGFsdW5lLnYxLlJldmVhbE9BdXRoQ2xpZW50U2VjcmV0UmVzcG9uc2UiAEKlAQoPY29tLmFsdGFsdW5lLnYxQhBPYXV0aENsaWVudFByb3RvUAFaM2dpdGh1Yi5jb20vaHJ6OC9hbHRhbHVuZS9nZW4vYWx0YWx1bmUvdjE7YWx0YWx1bmV2MaICA0FYWKoCC0FsdGFsdW5lLlYxygILQWx0YWx1bmVcVjHiAhdBbHRhbHVuZVxWMVxHUEJNZXRhZGF0YeoCDEFsdGFsdW5lOjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
 
 /**
  * OAuth Client Message
+ * OAuth clients are GLOBAL entities (infrastructure-level, like Auth0 Applications)
+ * not project-scoped business data. This follows Keycloak/Auth0 patterns.
  *
  * @generated from message altalune.v1.OAuthClient
  */
@@ -31,50 +33,43 @@ export type OAuthClient = Message<"altalune.v1.OAuthClient"> & {
   id: string;
 
   /**
-   * Project public_id
-   *
-   * @generated from field: string project_id = 2;
-   */
-  projectId: string;
-
-  /**
-   * @generated from field: string name = 3;
+   * @generated from field: string name = 2;
    */
   name: string;
 
   /**
    * UUID
    *
-   * @generated from field: string client_id = 4;
+   * @generated from field: string client_id = 3;
    */
   clientId: string;
 
   /**
-   * @generated from field: repeated string redirect_uris = 5;
+   * @generated from field: repeated string redirect_uris = 4;
    */
   redirectUris: string[];
 
   /**
-   * @generated from field: bool pkce_required = 6;
+   * @generated from field: bool pkce_required = 5;
    */
   pkceRequired: boolean;
 
   /**
-   * @generated from field: bool is_default = 7;
+   * @generated from field: bool is_default = 6;
    */
   isDefault: boolean;
 
   /**
    * Boolean flag, NOT actual secret
    *
-   * @generated from field: bool client_secret_set = 8;
+   * @generated from field: bool client_secret_set = 7;
    */
   clientSecretSet: boolean;
 
   /**
    * Scope names
    *
-   * @generated from field: repeated string allowed_scopes = 9;
+   * @generated from field: repeated string allowed_scopes = 8;
    */
   allowedScopes: string[];
 
@@ -97,35 +92,30 @@ export const OAuthClientSchema: GenMessage<OAuthClient> = /*@__PURE__*/
   messageDesc(file_altalune_v1_oauth_client, 0);
 
 /**
- * Create OAuth Client Request
+ * Create OAuth Client Request (Global - no project_id needed)
  *
  * @generated from message altalune.v1.CreateOAuthClientRequest
  */
 export type CreateOAuthClientRequest = Message<"altalune.v1.CreateOAuthClientRequest"> & {
   /**
-   * @generated from field: string project_id = 1;
-   */
-  projectId: string;
-
-  /**
-   * @generated from field: string name = 2;
+   * @generated from field: string name = 1;
    */
   name: string;
 
   /**
-   * @generated from field: repeated string redirect_uris = 3;
+   * @generated from field: repeated string redirect_uris = 2;
    */
   redirectUris: string[];
 
   /**
-   * @generated from field: bool pkce_required = 4;
+   * @generated from field: bool pkce_required = 3;
    */
   pkceRequired: boolean;
 
   /**
    * Optional scope names
    *
-   * @generated from field: repeated string allowed_scopes = 5;
+   * @generated from field: repeated string allowed_scopes = 4;
    */
   allowedScopes: string[];
 };
@@ -167,7 +157,7 @@ export const CreateOAuthClientResponseSchema: GenMessage<CreateOAuthClientRespon
   messageDesc(file_altalune_v1_oauth_client, 2);
 
 /**
- * Query OAuth Clients Request
+ * Query OAuth Clients Request (Global - no project_id needed)
  *
  * @generated from message altalune.v1.QueryOAuthClientsRequest
  */
@@ -176,11 +166,6 @@ export type QueryOAuthClientsRequest = Message<"altalune.v1.QueryOAuthClientsReq
    * @generated from field: altalune.v1.QueryRequest query = 1;
    */
   query?: QueryRequest;
-
-  /**
-   * @generated from field: string project_id = 2;
-   */
-  projectId: string;
 };
 
 /**
@@ -218,7 +203,7 @@ export const QueryOAuthClientsResponseSchema: GenMessage<QueryOAuthClientsRespon
   messageDesc(file_altalune_v1_oauth_client, 4);
 
 /**
- * Get OAuth Client Request
+ * Get OAuth Client Request (Global - no project_id needed)
  *
  * @generated from message altalune.v1.GetOAuthClientRequest
  */
@@ -227,11 +212,6 @@ export type GetOAuthClientRequest = Message<"altalune.v1.GetOAuthClientRequest">
    * @generated from field: string id = 1;
    */
   id: string;
-
-  /**
-   * @generated from field: string project_id = 2;
-   */
-  projectId: string;
 };
 
 /**
@@ -264,7 +244,7 @@ export const GetOAuthClientResponseSchema: GenMessage<GetOAuthClientResponse> = 
   messageDesc(file_altalune_v1_oauth_client, 6);
 
 /**
- * Update OAuth Client Request
+ * Update OAuth Client Request (Global - no project_id needed)
  *
  * @generated from message altalune.v1.UpdateOAuthClientRequest
  */
@@ -275,27 +255,22 @@ export type UpdateOAuthClientRequest = Message<"altalune.v1.UpdateOAuthClientReq
   id: string;
 
   /**
-   * @generated from field: string project_id = 2;
-   */
-  projectId: string;
-
-  /**
-   * @generated from field: optional string name = 3;
+   * @generated from field: optional string name = 2;
    */
   name?: string;
 
   /**
-   * @generated from field: repeated string redirect_uris = 4;
+   * @generated from field: repeated string redirect_uris = 3;
    */
   redirectUris: string[];
 
   /**
-   * @generated from field: optional bool pkce_required = 5;
+   * @generated from field: optional bool pkce_required = 4;
    */
   pkceRequired?: boolean;
 
   /**
-   * @generated from field: repeated string allowed_scopes = 6;
+   * @generated from field: repeated string allowed_scopes = 5;
    */
   allowedScopes: string[];
 };
@@ -330,7 +305,7 @@ export const UpdateOAuthClientResponseSchema: GenMessage<UpdateOAuthClientRespon
   messageDesc(file_altalune_v1_oauth_client, 8);
 
 /**
- * Delete OAuth Client Request
+ * Delete OAuth Client Request (Global - no project_id needed)
  *
  * @generated from message altalune.v1.DeleteOAuthClientRequest
  */
@@ -339,11 +314,6 @@ export type DeleteOAuthClientRequest = Message<"altalune.v1.DeleteOAuthClientReq
    * @generated from field: string id = 1;
    */
   id: string;
-
-  /**
-   * @generated from field: string project_id = 2;
-   */
-  projectId: string;
 };
 
 /**
@@ -371,7 +341,7 @@ export const DeleteOAuthClientResponseSchema: GenMessage<DeleteOAuthClientRespon
   messageDesc(file_altalune_v1_oauth_client, 10);
 
 /**
- * Reveal OAuth Client Secret Request
+ * Reveal OAuth Client Secret Request (Global - no project_id needed)
  *
  * @generated from message altalune.v1.RevealOAuthClientSecretRequest
  */
@@ -380,11 +350,6 @@ export type RevealOAuthClientSecretRequest = Message<"altalune.v1.RevealOAuthCli
    * @generated from field: string id = 1;
    */
   id: string;
-
-  /**
-   * @generated from field: string project_id = 2;
-   */
-  projectId: string;
 };
 
 /**

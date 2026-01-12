@@ -24,17 +24,18 @@ const (
 )
 
 // OAuth Client Message
+// OAuth clients are GLOBAL entities (infrastructure-level, like Auth0 Applications)
+// not project-scoped business data. This follows Keycloak/Auth0 patterns.
 type OAuthClient struct {
 	state           protoimpl.MessageState `protogen:"open.v1"`
-	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                // Public nanoid
-	ProjectId       string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"` // Project public_id
-	Name            string                 `protobuf:"bytes,3,opt,name=name,proto3" json:"name,omitempty"`
-	ClientId        string                 `protobuf:"bytes,4,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"` // UUID
-	RedirectUris    []string               `protobuf:"bytes,5,rep,name=redirect_uris,json=redirectUris,proto3" json:"redirect_uris,omitempty"`
-	PkceRequired    bool                   `protobuf:"varint,6,opt,name=pkce_required,json=pkceRequired,proto3" json:"pkce_required,omitempty"`
-	IsDefault       bool                   `protobuf:"varint,7,opt,name=is_default,json=isDefault,proto3" json:"is_default,omitempty"`
-	ClientSecretSet bool                   `protobuf:"varint,8,opt,name=client_secret_set,json=clientSecretSet,proto3" json:"client_secret_set,omitempty"` // Boolean flag, NOT actual secret
-	AllowedScopes   []string               `protobuf:"bytes,9,rep,name=allowed_scopes,json=allowedScopes,proto3" json:"allowed_scopes,omitempty"`          // Scope names
+	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"` // Public nanoid
+	Name            string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	ClientId        string                 `protobuf:"bytes,3,opt,name=client_id,json=clientId,proto3" json:"client_id,omitempty"` // UUID
+	RedirectUris    []string               `protobuf:"bytes,4,rep,name=redirect_uris,json=redirectUris,proto3" json:"redirect_uris,omitempty"`
+	PkceRequired    bool                   `protobuf:"varint,5,opt,name=pkce_required,json=pkceRequired,proto3" json:"pkce_required,omitempty"`
+	IsDefault       bool                   `protobuf:"varint,6,opt,name=is_default,json=isDefault,proto3" json:"is_default,omitempty"`
+	ClientSecretSet bool                   `protobuf:"varint,7,opt,name=client_secret_set,json=clientSecretSet,proto3" json:"client_secret_set,omitempty"` // Boolean flag, NOT actual secret
+	AllowedScopes   []string               `protobuf:"bytes,8,rep,name=allowed_scopes,json=allowedScopes,proto3" json:"allowed_scopes,omitempty"`          // Scope names
 	CreatedAt       *timestamppb.Timestamp `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt       *timestamppb.Timestamp `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields   protoimpl.UnknownFields
@@ -74,13 +75,6 @@ func (*OAuthClient) Descriptor() ([]byte, []int) {
 func (x *OAuthClient) GetId() string {
 	if x != nil {
 		return x.Id
-	}
-	return ""
-}
-
-func (x *OAuthClient) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
 	}
 	return ""
 }
@@ -148,14 +142,13 @@ func (x *OAuthClient) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
-// Create OAuth Client Request
+// Create OAuth Client Request (Global - no project_id needed)
 type CreateOAuthClientRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	ProjectId     string                 `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	RedirectUris  []string               `protobuf:"bytes,3,rep,name=redirect_uris,json=redirectUris,proto3" json:"redirect_uris,omitempty"`
-	PkceRequired  bool                   `protobuf:"varint,4,opt,name=pkce_required,json=pkceRequired,proto3" json:"pkce_required,omitempty"`
-	AllowedScopes []string               `protobuf:"bytes,5,rep,name=allowed_scopes,json=allowedScopes,proto3" json:"allowed_scopes,omitempty"` // Optional scope names
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	RedirectUris  []string               `protobuf:"bytes,2,rep,name=redirect_uris,json=redirectUris,proto3" json:"redirect_uris,omitempty"`
+	PkceRequired  bool                   `protobuf:"varint,3,opt,name=pkce_required,json=pkceRequired,proto3" json:"pkce_required,omitempty"`
+	AllowedScopes []string               `protobuf:"bytes,4,rep,name=allowed_scopes,json=allowedScopes,proto3" json:"allowed_scopes,omitempty"` // Optional scope names
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -188,13 +181,6 @@ func (x *CreateOAuthClientRequest) ProtoReflect() protoreflect.Message {
 // Deprecated: Use CreateOAuthClientRequest.ProtoReflect.Descriptor instead.
 func (*CreateOAuthClientRequest) Descriptor() ([]byte, []int) {
 	return file_altalune_v1_oauth_client_proto_rawDescGZIP(), []int{1}
-}
-
-func (x *CreateOAuthClientRequest) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
-	}
-	return ""
 }
 
 func (x *CreateOAuthClientRequest) GetName() string {
@@ -285,11 +271,10 @@ func (x *CreateOAuthClientResponse) GetMessage() string {
 	return ""
 }
 
-// Query OAuth Clients Request
+// Query OAuth Clients Request (Global - no project_id needed)
 type QueryOAuthClientsRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Query         *QueryRequest          `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
-	ProjectId     string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -329,13 +314,6 @@ func (x *QueryOAuthClientsRequest) GetQuery() *QueryRequest {
 		return x.Query
 	}
 	return nil
-}
-
-func (x *QueryOAuthClientsRequest) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
-	}
-	return ""
 }
 
 type QueryOAuthClientsResponse struct {
@@ -398,11 +376,10 @@ func (x *QueryOAuthClientsResponse) GetMessage() string {
 	return ""
 }
 
-// Get OAuth Client Request
+// Get OAuth Client Request (Global - no project_id needed)
 type GetOAuthClientRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId     string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -440,13 +417,6 @@ func (*GetOAuthClientRequest) Descriptor() ([]byte, []int) {
 func (x *GetOAuthClientRequest) GetId() string {
 	if x != nil {
 		return x.Id
-	}
-	return ""
-}
-
-func (x *GetOAuthClientRequest) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
 	}
 	return ""
 }
@@ -503,15 +473,14 @@ func (x *GetOAuthClientResponse) GetMessage() string {
 	return ""
 }
 
-// Update OAuth Client Request
+// Update OAuth Client Request (Global - no project_id needed)
 type UpdateOAuthClientRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId     string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
-	Name          *string                `protobuf:"bytes,3,opt,name=name,proto3,oneof" json:"name,omitempty"`
-	RedirectUris  []string               `protobuf:"bytes,4,rep,name=redirect_uris,json=redirectUris,proto3" json:"redirect_uris,omitempty"`
-	PkceRequired  *bool                  `protobuf:"varint,5,opt,name=pkce_required,json=pkceRequired,proto3,oneof" json:"pkce_required,omitempty"`
-	AllowedScopes []string               `protobuf:"bytes,6,rep,name=allowed_scopes,json=allowedScopes,proto3" json:"allowed_scopes,omitempty"`
+	Name          *string                `protobuf:"bytes,2,opt,name=name,proto3,oneof" json:"name,omitempty"`
+	RedirectUris  []string               `protobuf:"bytes,3,rep,name=redirect_uris,json=redirectUris,proto3" json:"redirect_uris,omitempty"`
+	PkceRequired  *bool                  `protobuf:"varint,4,opt,name=pkce_required,json=pkceRequired,proto3,oneof" json:"pkce_required,omitempty"`
+	AllowedScopes []string               `protobuf:"bytes,5,rep,name=allowed_scopes,json=allowedScopes,proto3" json:"allowed_scopes,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -549,13 +518,6 @@ func (*UpdateOAuthClientRequest) Descriptor() ([]byte, []int) {
 func (x *UpdateOAuthClientRequest) GetId() string {
 	if x != nil {
 		return x.Id
-	}
-	return ""
-}
-
-func (x *UpdateOAuthClientRequest) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
 	}
 	return ""
 }
@@ -640,11 +602,10 @@ func (x *UpdateOAuthClientResponse) GetMessage() string {
 	return ""
 }
 
-// Delete OAuth Client Request
+// Delete OAuth Client Request (Global - no project_id needed)
 type DeleteOAuthClientRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId     string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -682,13 +643,6 @@ func (*DeleteOAuthClientRequest) Descriptor() ([]byte, []int) {
 func (x *DeleteOAuthClientRequest) GetId() string {
 	if x != nil {
 		return x.Id
-	}
-	return ""
-}
-
-func (x *DeleteOAuthClientRequest) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
 	}
 	return ""
 }
@@ -737,11 +691,10 @@ func (x *DeleteOAuthClientResponse) GetMessage() string {
 	return ""
 }
 
-// Reveal OAuth Client Secret Request
+// Reveal OAuth Client Secret Request (Global - no project_id needed)
 type RevealOAuthClientSecretRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
-	ProjectId     string                 `protobuf:"bytes,2,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -779,13 +732,6 @@ func (*RevealOAuthClientSecretRequest) Descriptor() ([]byte, []int) {
 func (x *RevealOAuthClientSecretRequest) GetId() string {
 	if x != nil {
 		return x.Id
-	}
-	return ""
-}
-
-func (x *RevealOAuthClientSecretRequest) GetProjectId() string {
-	if x != nil {
-		return x.ProjectId
 	}
 	return ""
 }
@@ -846,73 +792,59 @@ var File_altalune_v1_oauth_client_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_oauth_client_proto_rawDesc = "" +
 	"\n" +
-	"\x1ealtalune/v1/oauth_client.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\x9f\x03\n" +
+	"\x1ealtalune/v1/oauth_client.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\x80\x03\n" +
 	"\vOAuthClient\x12\x0e\n" +
-	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
+	"\tclient_id\x18\x03 \x01(\tR\bclientId\x12#\n" +
+	"\rredirect_uris\x18\x04 \x03(\tR\fredirectUris\x12#\n" +
+	"\rpkce_required\x18\x05 \x01(\bR\fpkceRequired\x12\x1d\n" +
 	"\n" +
-	"project_id\x18\x02 \x01(\tR\tprojectId\x12\x12\n" +
-	"\x04name\x18\x03 \x01(\tR\x04name\x12\x1b\n" +
-	"\tclient_id\x18\x04 \x01(\tR\bclientId\x12#\n" +
-	"\rredirect_uris\x18\x05 \x03(\tR\fredirectUris\x12#\n" +
-	"\rpkce_required\x18\x06 \x01(\bR\fpkceRequired\x12\x1d\n" +
-	"\n" +
-	"is_default\x18\a \x01(\bR\tisDefault\x12*\n" +
-	"\x11client_secret_set\x18\b \x01(\bR\x0fclientSecretSet\x12%\n" +
-	"\x0eallowed_scopes\x18\t \x03(\tR\rallowedScopes\x129\n" +
+	"is_default\x18\x06 \x01(\bR\tisDefault\x12*\n" +
+	"\x11client_secret_set\x18\a \x01(\bR\x0fclientSecretSet\x12%\n" +
+	"\x0eallowed_scopes\x18\b \x03(\tR\rallowedScopes\x129\n" +
 	"\n" +
 	"created_at\x18b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18c \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\x84\x02\n" +
-	"\x18CreateOAuthClientRequest\x12*\n" +
-	"\n" +
-	"project_id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\x125\n" +
-	"\x04name\x18\x02 \x01(\tB!\xbaH\x1e\xc8\x01\x01r\x19\x10\x01\x18d2\x13^[a-zA-Z0-9\\s\\-_]+$R\x04name\x129\n" +
-	"\rredirect_uris\x18\x03 \x03(\tB\x14\xbaH\x11\x92\x01\x0e\b\x01\x10\n" +
+	"updated_at\x18c \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xd8\x01\n" +
+	"\x18CreateOAuthClientRequest\x125\n" +
+	"\x04name\x18\x01 \x01(\tB!\xbaH\x1e\xc8\x01\x01r\x19\x10\x01\x18d2\x13^[a-zA-Z0-9\\s\\-_]+$R\x04name\x129\n" +
+	"\rredirect_uris\x18\x02 \x03(\tB\x14\xbaH\x11\x92\x01\x0e\b\x01\x10\n" +
 	"\"\br\x06\x18\xf4\x03\x88\x01\x01R\fredirectUris\x12#\n" +
-	"\rpkce_required\x18\x04 \x01(\bR\fpkceRequired\x12%\n" +
-	"\x0eallowed_scopes\x18\x05 \x03(\tR\rallowedScopes\"\x8c\x01\n" +
+	"\rpkce_required\x18\x03 \x01(\bR\fpkceRequired\x12%\n" +
+	"\x0eallowed_scopes\x18\x04 \x03(\tR\rallowedScopes\"\x8c\x01\n" +
 	"\x19CreateOAuthClientResponse\x120\n" +
 	"\x06client\x18\x01 \x01(\v2\x18.altalune.v1.OAuthClientR\x06client\x12#\n" +
 	"\rclient_secret\x18\x02 \x01(\tR\fclientSecret\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\"w\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\"K\n" +
 	"\x18QueryOAuthClientsRequest\x12/\n" +
-	"\x05query\x18\x01 \x01(\v2\x19.altalune.v1.QueryRequestR\x05query\x12*\n" +
-	"\n" +
-	"project_id\x18\x02 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\"\x9d\x01\n" +
+	"\x05query\x18\x01 \x01(\v2\x19.altalune.v1.QueryRequestR\x05query\"\x9d\x01\n" +
 	"\x19QueryOAuthClientsResponse\x122\n" +
 	"\aclients\x18\x01 \x03(\v2\x18.altalune.v1.OAuthClientR\aclients\x122\n" +
 	"\x04meta\x18\x02 \x01(\v2\x1e.altalune.v1.QueryMetaResponseR\x04meta\x12\x18\n" +
-	"\amessage\x18\x03 \x01(\tR\amessage\"`\n" +
+	"\amessage\x18\x03 \x01(\tR\amessage\"4\n" +
 	"\x15GetOAuthClientRequest\x12\x1b\n" +
-	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\x12*\n" +
-	"\n" +
-	"project_id\x18\x02 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\"d\n" +
+	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\"d\n" +
 	"\x16GetOAuthClientResponse\x120\n" +
 	"\x06client\x18\x01 \x01(\v2\x18.altalune.v1.OAuthClientR\x06client\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"\x98\x02\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"\xec\x01\n" +
 	"\x18UpdateOAuthClientRequest\x12\x1b\n" +
-	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\x12*\n" +
-	"\n" +
-	"project_id\x18\x02 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\x12\"\n" +
-	"\x04name\x18\x03 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18dH\x00R\x04name\x88\x01\x01\x12#\n" +
-	"\rredirect_uris\x18\x04 \x03(\tR\fredirectUris\x12(\n" +
-	"\rpkce_required\x18\x05 \x01(\bH\x01R\fpkceRequired\x88\x01\x01\x12%\n" +
-	"\x0eallowed_scopes\x18\x06 \x03(\tR\rallowedScopesB\a\n" +
+	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\x12\"\n" +
+	"\x04name\x18\x02 \x01(\tB\t\xbaH\x06r\x04\x10\x01\x18dH\x00R\x04name\x88\x01\x01\x12#\n" +
+	"\rredirect_uris\x18\x03 \x03(\tR\fredirectUris\x12(\n" +
+	"\rpkce_required\x18\x04 \x01(\bH\x01R\fpkceRequired\x88\x01\x01\x12%\n" +
+	"\x0eallowed_scopes\x18\x05 \x03(\tR\rallowedScopesB\a\n" +
 	"\x05_nameB\x10\n" +
 	"\x0e_pkce_required\"g\n" +
 	"\x19UpdateOAuthClientResponse\x120\n" +
 	"\x06client\x18\x01 \x01(\v2\x18.altalune.v1.OAuthClientR\x06client\x12\x18\n" +
-	"\amessage\x18\x02 \x01(\tR\amessage\"c\n" +
+	"\amessage\x18\x02 \x01(\tR\amessage\"7\n" +
 	"\x18DeleteOAuthClientRequest\x12\x1b\n" +
-	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\x12*\n" +
-	"\n" +
-	"project_id\x18\x02 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\"5\n" +
+	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\"5\n" +
 	"\x19DeleteOAuthClientResponse\x12\x18\n" +
-	"\amessage\x18\x01 \x01(\tR\amessage\"i\n" +
+	"\amessage\x18\x01 \x01(\tR\amessage\"=\n" +
 	"\x1eRevealOAuthClientSecretRequest\x12\x1b\n" +
-	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\x12*\n" +
-	"\n" +
-	"project_id\x18\x02 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\tprojectId\"`\n" +
+	"\x02id\x18\x01 \x01(\tB\v\xbaH\b\xc8\x01\x01r\x03\x98\x01\x0eR\x02id\"`\n" +
 	"\x1fRevealOAuthClientSecretResponse\x12#\n" +
 	"\rclient_secret\x18\x01 \x01(\tR\fclientSecret\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage2\x81\x05\n" +

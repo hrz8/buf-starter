@@ -13,7 +13,6 @@ import {
 import OAuthClientEditForm from './OAuthClientEditForm.vue';
 
 const props = defineProps<{
-  projectId: string;
   client: OAuthClient;
   open?: boolean;
 }>();
@@ -59,7 +58,6 @@ function handleSheetClose() {
       </SheetHeader>
       <div class="mt-6 px-6">
         <OAuthClientEditForm
-          :project-id="props.projectId"
           :client-id="props.client.id"
           @success="handleClientUpdated"
           @cancel="handleSheetClose"
