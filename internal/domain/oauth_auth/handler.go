@@ -286,12 +286,12 @@ func (h *Handler) HandleAuthorize(w http.ResponseWriter, r *http.Request) {
 
 	params, err := parseAuthorizationParams(r)
 	if err != nil {
-		h.renderAuthError(w, "", "", err)
+		h.renderAuthError(w, r, "", "", err)
 		return
 	}
 
 	if params.ResponseType != "code" {
-		h.renderAuthError(w, params.RedirectURI, params.State, ErrUnsupportedResponseType)
+		h.renderAuthError(w, r, params.RedirectURI, params.State, ErrUnsupportedResponseType)
 		return
 	}
 
@@ -308,18 +308,18 @@ func (h *Handler) HandleAuthorize(w http.ResponseWriter, r *http.Request) {
 
 	if client.PKCERequired {
 		if params.CodeChallenge == nil || *params.CodeChallenge == "" {
-			h.renderAuthError(w, params.RedirectURI, params.State, ErrMissingCodeChallenge)
+			h.renderAuthError(w, r, params.RedirectURI, params.State, ErrMissingCodeChallenge)
 			return
 		}
 		if params.CodeChallengeMethod != nil && *params.CodeChallengeMethod != "S256" && *params.CodeChallengeMethod != "plain" {
-			h.renderAuthError(w, params.RedirectURI, params.State, ErrInvalidCodeChallengeMethod)
+			h.renderAuthError(w, r, params.RedirectURI, params.State, ErrInvalidCodeChallengeMethod)
 			return
 		}
 	}
 
 	hasConsent, err := h.svc.CheckUserConsent(r.Context(), sessionData.UserID, params.ClientID, params.Scope)
 	if err != nil {
-		h.renderAuthError(w, params.RedirectURI, params.State, ErrServerError)
+		h.renderAuthError(w, r, params.RedirectURI, params.State, ErrServerError)
 		return
 	}
 
@@ -334,7 +334,7 @@ func (h *Handler) HandleAuthorize(w http.ResponseWriter, r *http.Request) {
 			CodeChallengeMethod: params.CodeChallengeMethod,
 		})
 		if err != nil {
-			h.renderAuthError(w, params.RedirectURI, params.State, ErrServerError)
+			h.renderAuthError(w, r, params.RedirectURI, params.State, ErrServerError)
 			return
 		}
 
@@ -403,7 +403,7 @@ func (h *Handler) HandleAuthorizeProcess(w http.ResponseWriter, r *http.Request)
 		CodeChallengeMethod: params.CodeChallengeMethod,
 	})
 	if err != nil {
-		h.renderAuthError(w, params.RedirectURI, params.State, ErrServerError)
+		h.renderAuthError(w, r, params.RedirectURI, params.State, ErrServerError)
 		return
 	}
 
@@ -880,7 +880,7 @@ func stringPtr(s string) *string {
 	return &s
 }
 
-func (h *Handler) renderAuthError(w http.ResponseWriter, redirectURI, state string, err error) {
+func (h *Handler) renderAuthError(w http.ResponseWriter, r *http.Request, redirectURI, state string, err error) {
 	if redirectURI != "" {
 		errorCode := "server_error"
 		errorDesc := err.Error()
@@ -896,7 +896,7 @@ func (h *Handler) renderAuthError(w http.ResponseWriter, redirectURI, state stri
 			errorDesc = "code_challenge_method must be S256 or plain"
 		}
 
-		redirectWithError(w, nil, redirectURI, errorCode, errorDesc, state)
+		redirectWithError(w, r, redirectURI, errorCode, errorDesc, state)
 		return
 	}
 

@@ -1,5 +1,5 @@
 import type { MessageInitShape } from '@bufbuild/protobuf';
-import type { User } from '~~/gen/altalune/v1/user_pb';
+import type { GetUserResponse, User } from '~~/gen/altalune/v1/user_pb';
 import { userRepository } from '#shared/repository/user';
 import { create } from '@bufbuild/protobuf';
 import {
@@ -137,7 +137,7 @@ export function useUserService() {
 
   async function getUser(
     req: MessageInitShape<typeof GetUserRequestSchema>,
-  ): Promise<User | null> {
+  ): Promise<GetUserResponse | null> {
     getState.loading = true;
     getState.error = '';
     getState.success = false;
@@ -153,7 +153,7 @@ export function useUserService() {
       const message = create(GetUserRequestSchema, req);
       const result = await user.getUser(message);
       getState.success = true;
-      return result.user || null;
+      return result;
     }
     catch (err) {
       getState.error = parseError(err);

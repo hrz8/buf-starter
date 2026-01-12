@@ -379,9 +379,16 @@
         "editTitle": "Ubah Pengguna"
       },
       "tabs": {
+        "details": "Detail",
+        "identities": "Identitas",
         "permissions": "Izin",
         "profile": "Profil",
         "roles": "Peran"
+      },
+      "identities": {
+        "empty": "Tidak ada identitas terkait untuk pengguna ini",
+        "info": "Identitas pengguna dibuat saat pengguna melakukan autentikasi melalui penyedia OAuth.",
+        "neverLoggedIn": "Belum pernah login"
       },
       "status": {
         "unknown": "Tidak Diketahui"

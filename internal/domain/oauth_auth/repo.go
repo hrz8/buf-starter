@@ -326,7 +326,7 @@ func (r *repo) CreateOrUpdateUserConsent(ctx context.Context, input *UserConsent
 // GetOAuthClientByClientID retrieves an OAuth client by its client_id.
 func (r *repo) GetOAuthClientByClientID(ctx context.Context, clientID uuid.UUID) (*OAuthClientInfo, error) {
 	query := `
-		SELECT id, client_id, project_id, name, client_secret_hash,
+		SELECT id, client_id, name, client_secret_hash,
 		       redirect_uris, pkce_required, is_default
 		FROM altalune_oauth_clients
 		WHERE client_id = $1
@@ -338,7 +338,6 @@ func (r *repo) GetOAuthClientByClientID(ctx context.Context, clientID uuid.UUID)
 	err := r.db.QueryRowContext(ctx, query, clientID).Scan(
 		&oc.ID,
 		&oc.ClientID,
-		&oc.ProjectID,
 		&oc.Name,
 		&oc.SecretHash,
 		&redirectURIs,

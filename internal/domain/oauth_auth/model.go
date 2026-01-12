@@ -105,7 +105,6 @@ type GenerateAuthCodeInput struct {
 type OAuthClientInfo struct {
 	ID           int64
 	ClientID     uuid.UUID
-	ProjectID    int64
 	Name         string
 	RedirectURIs []string
 	PKCERequired bool

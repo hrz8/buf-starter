@@ -71,6 +71,79 @@ func (r *Repo) GetUserIdentityByProvider(ctx context.Context, provider, provider
 	return &identity, nil
 }
 
+// GetUserIdentities retrieves all identities for a user
+func (r *Repo) GetUserIdentities(ctx context.Context, userID int64) ([]*UserIdentity, error) {
+	query := `
+		SELECT
+			id, public_id, user_id, provider, provider_user_id,
+			email, first_name, last_name, oauth_client_id, origin_oauth_client_name, last_login_at,
+			created_at, updated_at
+		FROM altalune_user_identities
+		WHERE user_id = $1
+		ORDER BY created_at DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("query user identities: %w", err)
+	}
+	defer rows.Close()
+
+	var identities []*UserIdentity
+	for rows.Next() {
+		var identity UserIdentity
+		var email, firstName, lastName, oauthClientID, originOAuthClientName sql.NullString
+		var lastLoginAt sql.NullTime
+
+		err := rows.Scan(
+			&identity.ID,
+			&identity.PublicID,
+			&identity.UserID,
+			&identity.Provider,
+			&identity.ProviderUserID,
+			&email,
+			&firstName,
+			&lastName,
+			&oauthClientID,
+			&originOAuthClientName,
+			&lastLoginAt,
+			&identity.CreatedAt,
+			&identity.UpdatedAt,
+		)
+
+		if err != nil {
+			return nil, fmt.Errorf("scan user identity: %w", err)
+		}
+
+		if email.Valid {
+			identity.Email = email.String
+		}
+		if firstName.Valid {
+			identity.FirstName = firstName.String
+		}
+		if lastName.Valid {
+			identity.LastName = lastName.String
+		}
+		if oauthClientID.Valid {
+			identity.OAuthClientID = &oauthClientID.String
+		}
+		if originOAuthClientName.Valid {
+			identity.OriginOAuthClientName = &originOAuthClientName.String
+		}
+		if lastLoginAt.Valid {
+			identity.LastLoginAt = &lastLoginAt.Time
+		}
+
+		identities = append(identities, &identity)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate user identities: %w", err)
+	}
+
+	return identities, nil
+}
+
 // CreateUserIdentity creates a new user identity record
 func (r *Repo) CreateUserIdentity(ctx context.Context, input *CreateUserIdentityInput) error {
 	publicID, _ := nanoid.GeneratePublicID()

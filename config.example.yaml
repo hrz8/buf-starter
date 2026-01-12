@@ -54,7 +54,7 @@ seeder:
     clientId: "e730207a-0fce-495d-bac3-6211963ac423"  # Fixed UUID for dashboard client
     clientSecret: "0cMw4XzRZcRI4YDEqoY9AYWui3y4eZTQ"  # Dashboard client secret (min 32 chars)
     redirectUris:                                     # Allowed callback URLs
-      - "http://localhost:3000/auth/callback"
+      - "http://localhost:8180/auth/callback"
       - "https://dashboard.altalune.id/auth/callback"
     pkceRequired: true                                # Suggested: Must be true for public clients (SPA, mobile apps)
 

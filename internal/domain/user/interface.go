@@ -19,6 +19,7 @@ type Repository interface {
 
 	// User Identity operations for OAuth authentication
 	GetUserIdentityByProvider(ctx context.Context, provider, providerUserID string) (*UserIdentity, error)
+	GetUserIdentities(ctx context.Context, userID int64) ([]*UserIdentity, error)
 	CreateUserIdentity(ctx context.Context, input *CreateUserIdentityInput) error
 	UpdateUserIdentityLastLogin(ctx context.Context, userID int64, provider string) error
 

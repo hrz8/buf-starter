@@ -379,9 +379,16 @@
         "editTitle": "Edit User"
       },
       "tabs": {
+        "details": "Details",
+        "identities": "Identities",
         "permissions": "Permissions",
         "profile": "Profile",
         "roles": "Roles"
+      },
+      "identities": {
+        "empty": "No linked identities found for this user",
+        "info": "User identities are created when users authenticate via OAuth providers.",
+        "neverLoggedIn": "Never logged in"
       },
       "status": {
         "unknown": "Unknown"

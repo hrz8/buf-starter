@@ -2,6 +2,7 @@ package server
 
 import (
 	"net/http"
+	"runtime/debug"
 	"time"
 
 	"github.com/hrz8/altalune"
@@ -102,6 +103,7 @@ func RecoveryMiddleware(next http.Handler, log altalune.Logger) http.Handler {
 					"method", r.Method,
 					"path", r.URL.Path,
 					"remote_addr", r.RemoteAddr,
+					"stack", string(debug.Stack()),
 				)
 
 				w.Header().Set("Content-Type", "application/json")

@@ -116,6 +116,131 @@ func (x *User) GetUpdatedAt() *timestamppb.Timestamp {
 	return nil
 }
 
+// UserIdentity represents an OAuth provider identity linked to a user
+type UserIdentity struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	PublicId              string                 `protobuf:"bytes,1,opt,name=public_id,json=publicId,proto3" json:"public_id,omitempty"`                                                  // Public nanoid
+	Provider              string                 `protobuf:"bytes,2,opt,name=provider,proto3" json:"provider,omitempty"`                                                                  // Provider type (google, github, system)
+	ProviderUserId        string                 `protobuf:"bytes,3,opt,name=provider_user_id,json=providerUserId,proto3" json:"provider_user_id,omitempty"`                              // Provider's user ID
+	Email                 string                 `protobuf:"bytes,4,opt,name=email,proto3" json:"email,omitempty"`                                                                        // Email from provider
+	FirstName             string                 `protobuf:"bytes,5,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`                                               // First name from provider
+	LastName              string                 `protobuf:"bytes,6,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`                                                  // Last name from provider
+	OauthClientId         *string                `protobuf:"bytes,7,opt,name=oauth_client_id,json=oauthClientId,proto3,oneof" json:"oauth_client_id,omitempty"`                           // UUID of OAuth client
+	OriginOauthClientName *string                `protobuf:"bytes,8,opt,name=origin_oauth_client_name,json=originOauthClientName,proto3,oneof" json:"origin_oauth_client_name,omitempty"` // Client name at signup
+	LastLoginAt           *timestamppb.Timestamp `protobuf:"bytes,9,opt,name=last_login_at,json=lastLoginAt,proto3,oneof" json:"last_login_at,omitempty"`
+	CreatedAt             *timestamppb.Timestamp `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt             *timestamppb.Timestamp `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *UserIdentity) Reset() {
+	*x = UserIdentity{}
+	mi := &file_altalune_v1_user_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UserIdentity) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserIdentity) ProtoMessage() {}
+
+func (x *UserIdentity) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_user_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserIdentity.ProtoReflect.Descriptor instead.
+func (*UserIdentity) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *UserIdentity) GetPublicId() string {
+	if x != nil {
+		return x.PublicId
+	}
+	return ""
+}
+
+func (x *UserIdentity) GetProvider() string {
+	if x != nil {
+		return x.Provider
+	}
+	return ""
+}
+
+func (x *UserIdentity) GetProviderUserId() string {
+	if x != nil {
+		return x.ProviderUserId
+	}
+	return ""
+}
+
+func (x *UserIdentity) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *UserIdentity) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *UserIdentity) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *UserIdentity) GetOauthClientId() string {
+	if x != nil && x.OauthClientId != nil {
+		return *x.OauthClientId
+	}
+	return ""
+}
+
+func (x *UserIdentity) GetOriginOauthClientName() string {
+	if x != nil && x.OriginOauthClientName != nil {
+		return *x.OriginOauthClientName
+	}
+	return ""
+}
+
+func (x *UserIdentity) GetLastLoginAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.LastLoginAt
+	}
+	return nil
+}
+
+func (x *UserIdentity) GetCreatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return nil
+}
+
+func (x *UserIdentity) GetUpdatedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return nil
+}
+
 // QueryUsersRequest for listing/searching users
 type QueryUsersRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -126,7 +251,7 @@ type QueryUsersRequest struct {
 
 func (x *QueryUsersRequest) Reset() {
 	*x = QueryUsersRequest{}
-	mi := &file_altalune_v1_user_proto_msgTypes[1]
+	mi := &file_altalune_v1_user_proto_msgTypes[2]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -138,7 +263,7 @@ func (x *QueryUsersRequest) String() string {
 func (*QueryUsersRequest) ProtoMessage() {}
 
 func (x *QueryUsersRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[1]
+	mi := &file_altalune_v1_user_proto_msgTypes[2]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -151,7 +276,7 @@ func (x *QueryUsersRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryUsersRequest.ProtoReflect.Descriptor instead.
 func (*QueryUsersRequest) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{1}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *QueryUsersRequest) GetQuery() *QueryRequest {
@@ -172,7 +297,7 @@ type QueryUsersResponse struct {
 
 func (x *QueryUsersResponse) Reset() {
 	*x = QueryUsersResponse{}
-	mi := &file_altalune_v1_user_proto_msgTypes[2]
+	mi := &file_altalune_v1_user_proto_msgTypes[3]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -184,7 +309,7 @@ func (x *QueryUsersResponse) String() string {
 func (*QueryUsersResponse) ProtoMessage() {}
 
 func (x *QueryUsersResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[2]
+	mi := &file_altalune_v1_user_proto_msgTypes[3]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -197,7 +322,7 @@ func (x *QueryUsersResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use QueryUsersResponse.ProtoReflect.Descriptor instead.
 func (*QueryUsersResponse) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{2}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *QueryUsersResponse) GetData() []*User {
@@ -226,7 +351,7 @@ type CreateUserRequest struct {
 
 func (x *CreateUserRequest) Reset() {
 	*x = CreateUserRequest{}
-	mi := &file_altalune_v1_user_proto_msgTypes[3]
+	mi := &file_altalune_v1_user_proto_msgTypes[4]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -238,7 +363,7 @@ func (x *CreateUserRequest) String() string {
 func (*CreateUserRequest) ProtoMessage() {}
 
 func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[3]
+	mi := &file_altalune_v1_user_proto_msgTypes[4]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -251,7 +376,7 @@ func (x *CreateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateUserRequest.ProtoReflect.Descriptor instead.
 func (*CreateUserRequest) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{3}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{4}
 }
 
 func (x *CreateUserRequest) GetEmail() string {
@@ -286,7 +411,7 @@ type CreateUserResponse struct {
 
 func (x *CreateUserResponse) Reset() {
 	*x = CreateUserResponse{}
-	mi := &file_altalune_v1_user_proto_msgTypes[4]
+	mi := &file_altalune_v1_user_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -298,7 +423,7 @@ func (x *CreateUserResponse) String() string {
 func (*CreateUserResponse) ProtoMessage() {}
 
 func (x *CreateUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[4]
+	mi := &file_altalune_v1_user_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -311,7 +436,7 @@ func (x *CreateUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateUserResponse.ProtoReflect.Descriptor instead.
 func (*CreateUserResponse) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{4}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *CreateUserResponse) GetUser() *User {
@@ -338,7 +463,7 @@ type GetUserRequest struct {
 
 func (x *GetUserRequest) Reset() {
 	*x = GetUserRequest{}
-	mi := &file_altalune_v1_user_proto_msgTypes[5]
+	mi := &file_altalune_v1_user_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -350,7 +475,7 @@ func (x *GetUserRequest) String() string {
 func (*GetUserRequest) ProtoMessage() {}
 
 func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[5]
+	mi := &file_altalune_v1_user_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -363,7 +488,7 @@ func (x *GetUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserRequest.ProtoReflect.Descriptor instead.
 func (*GetUserRequest) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{5}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *GetUserRequest) GetId() string {
@@ -373,17 +498,18 @@ func (x *GetUserRequest) GetId() string {
 	return ""
 }
 
-// GetUserResponse with user data
+// GetUserResponse with user data and linked identities
 type GetUserResponse struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
 	User          *User                  `protobuf:"bytes,1,opt,name=user,proto3" json:"user,omitempty"`
+	Identities    []*UserIdentity        `protobuf:"bytes,2,rep,name=identities,proto3" json:"identities,omitempty"`
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
 
 func (x *GetUserResponse) Reset() {
 	*x = GetUserResponse{}
-	mi := &file_altalune_v1_user_proto_msgTypes[6]
+	mi := &file_altalune_v1_user_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -395,7 +521,7 @@ func (x *GetUserResponse) String() string {
 func (*GetUserResponse) ProtoMessage() {}
 
 func (x *GetUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[6]
+	mi := &file_altalune_v1_user_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -408,12 +534,19 @@ func (x *GetUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetUserResponse.ProtoReflect.Descriptor instead.
 func (*GetUserResponse) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{6}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetUserResponse) GetUser() *User {
 	if x != nil {
 		return x.User
+	}
+	return nil
+}
+
+func (x *GetUserResponse) GetIdentities() []*UserIdentity {
+	if x != nil {
+		return x.Identities
 	}
 	return nil
 }
@@ -431,7 +564,7 @@ type UpdateUserRequest struct {
 
 func (x *UpdateUserRequest) Reset() {
 	*x = UpdateUserRequest{}
-	mi := &file_altalune_v1_user_proto_msgTypes[7]
+	mi := &file_altalune_v1_user_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -443,7 +576,7 @@ func (x *UpdateUserRequest) String() string {
 func (*UpdateUserRequest) ProtoMessage() {}
 
 func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[7]
+	mi := &file_altalune_v1_user_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -456,7 +589,7 @@ func (x *UpdateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateUserRequest.ProtoReflect.Descriptor instead.
 func (*UpdateUserRequest) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{7}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UpdateUserRequest) GetId() string {
@@ -498,7 +631,7 @@ type UpdateUserResponse struct {
 
 func (x *UpdateUserResponse) Reset() {
 	*x = UpdateUserResponse{}
-	mi := &file_altalune_v1_user_proto_msgTypes[8]
+	mi := &file_altalune_v1_user_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -510,7 +643,7 @@ func (x *UpdateUserResponse) String() string {
 func (*UpdateUserResponse) ProtoMessage() {}
 
 func (x *UpdateUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[8]
+	mi := &file_altalune_v1_user_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -523,7 +656,7 @@ func (x *UpdateUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateUserResponse.ProtoReflect.Descriptor instead.
 func (*UpdateUserResponse) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{8}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UpdateUserResponse) GetUser() *User {
@@ -550,7 +683,7 @@ type DeleteUserRequest struct {
 
 func (x *DeleteUserRequest) Reset() {
 	*x = DeleteUserRequest{}
-	mi := &file_altalune_v1_user_proto_msgTypes[9]
+	mi := &file_altalune_v1_user_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -562,7 +695,7 @@ func (x *DeleteUserRequest) String() string {
 func (*DeleteUserRequest) ProtoMessage() {}
 
 func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[9]
+	mi := &file_altalune_v1_user_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -575,7 +708,7 @@ func (x *DeleteUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserRequest.ProtoReflect.Descriptor instead.
 func (*DeleteUserRequest) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{9}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DeleteUserRequest) GetId() string {
@@ -595,7 +728,7 @@ type DeleteUserResponse struct {
 
 func (x *DeleteUserResponse) Reset() {
 	*x = DeleteUserResponse{}
-	mi := &file_altalune_v1_user_proto_msgTypes[10]
+	mi := &file_altalune_v1_user_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -607,7 +740,7 @@ func (x *DeleteUserResponse) String() string {
 func (*DeleteUserResponse) ProtoMessage() {}
 
 func (x *DeleteUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[10]
+	mi := &file_altalune_v1_user_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -620,7 +753,7 @@ func (x *DeleteUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteUserResponse.ProtoReflect.Descriptor instead.
 func (*DeleteUserResponse) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{10}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DeleteUserResponse) GetMessage() string {
@@ -640,7 +773,7 @@ type ActivateUserRequest struct {
 
 func (x *ActivateUserRequest) Reset() {
 	*x = ActivateUserRequest{}
-	mi := &file_altalune_v1_user_proto_msgTypes[11]
+	mi := &file_altalune_v1_user_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -652,7 +785,7 @@ func (x *ActivateUserRequest) String() string {
 func (*ActivateUserRequest) ProtoMessage() {}
 
 func (x *ActivateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[11]
+	mi := &file_altalune_v1_user_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -665,7 +798,7 @@ func (x *ActivateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActivateUserRequest.ProtoReflect.Descriptor instead.
 func (*ActivateUserRequest) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{11}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *ActivateUserRequest) GetId() string {
@@ -686,7 +819,7 @@ type ActivateUserResponse struct {
 
 func (x *ActivateUserResponse) Reset() {
 	*x = ActivateUserResponse{}
-	mi := &file_altalune_v1_user_proto_msgTypes[12]
+	mi := &file_altalune_v1_user_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -698,7 +831,7 @@ func (x *ActivateUserResponse) String() string {
 func (*ActivateUserResponse) ProtoMessage() {}
 
 func (x *ActivateUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[12]
+	mi := &file_altalune_v1_user_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -711,7 +844,7 @@ func (x *ActivateUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ActivateUserResponse.ProtoReflect.Descriptor instead.
 func (*ActivateUserResponse) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{12}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *ActivateUserResponse) GetUser() *User {
@@ -738,7 +871,7 @@ type DeactivateUserRequest struct {
 
 func (x *DeactivateUserRequest) Reset() {
 	*x = DeactivateUserRequest{}
-	mi := &file_altalune_v1_user_proto_msgTypes[13]
+	mi := &file_altalune_v1_user_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -750,7 +883,7 @@ func (x *DeactivateUserRequest) String() string {
 func (*DeactivateUserRequest) ProtoMessage() {}
 
 func (x *DeactivateUserRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[13]
+	mi := &file_altalune_v1_user_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -763,7 +896,7 @@ func (x *DeactivateUserRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeactivateUserRequest.ProtoReflect.Descriptor instead.
 func (*DeactivateUserRequest) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{13}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *DeactivateUserRequest) GetId() string {
@@ -784,7 +917,7 @@ type DeactivateUserResponse struct {
 
 func (x *DeactivateUserResponse) Reset() {
 	*x = DeactivateUserResponse{}
-	mi := &file_altalune_v1_user_proto_msgTypes[14]
+	mi := &file_altalune_v1_user_proto_msgTypes[15]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -796,7 +929,7 @@ func (x *DeactivateUserResponse) String() string {
 func (*DeactivateUserResponse) ProtoMessage() {}
 
 func (x *DeactivateUserResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_altalune_v1_user_proto_msgTypes[14]
+	mi := &file_altalune_v1_user_proto_msgTypes[15]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -809,7 +942,7 @@ func (x *DeactivateUserResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeactivateUserResponse.ProtoReflect.Descriptor instead.
 func (*DeactivateUserResponse) Descriptor() ([]byte, []int) {
-	return file_altalune_v1_user_proto_rawDescGZIP(), []int{14}
+	return file_altalune_v1_user_proto_rawDescGZIP(), []int{15}
 }
 
 func (x *DeactivateUserResponse) GetUser() *User {
@@ -841,7 +974,25 @@ const file_altalune_v1_user_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18c \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"D\n" +
+	"updated_at\x18c \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xac\x04\n" +
+	"\fUserIdentity\x12\x1b\n" +
+	"\tpublic_id\x18\x01 \x01(\tR\bpublicId\x12\x1a\n" +
+	"\bprovider\x18\x02 \x01(\tR\bprovider\x12(\n" +
+	"\x10provider_user_id\x18\x03 \x01(\tR\x0eproviderUserId\x12\x14\n" +
+	"\x05email\x18\x04 \x01(\tR\x05email\x12\x1d\n" +
+	"\n" +
+	"first_name\x18\x05 \x01(\tR\tfirstName\x12\x1b\n" +
+	"\tlast_name\x18\x06 \x01(\tR\blastName\x12+\n" +
+	"\x0foauth_client_id\x18\a \x01(\tH\x00R\roauthClientId\x88\x01\x01\x12<\n" +
+	"\x18origin_oauth_client_name\x18\b \x01(\tH\x01R\x15originOauthClientName\x88\x01\x01\x12C\n" +
+	"\rlast_login_at\x18\t \x01(\v2\x1a.google.protobuf.TimestampH\x02R\vlastLoginAt\x88\x01\x01\x129\n" +
+	"\n" +
+	"created_at\x18b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
+	"\n" +
+	"updated_at\x18c \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAtB\x12\n" +
+	"\x10_oauth_client_idB\x1b\n" +
+	"\x19_origin_oauth_client_nameB\x10\n" +
+	"\x0e_last_login_at\"D\n" +
 	"\x11QueryUsersRequest\x12/\n" +
 	"\x05query\x18\x01 \x01(\v2\x19.altalune.v1.QueryRequestR\x05query\"o\n" +
 	"\x12QueryUsersResponse\x12%\n" +
@@ -857,9 +1008,12 @@ const file_altalune_v1_user_proto_rawDesc = "" +
 	"\x04user\x18\x01 \x01(\v2\x11.altalune.v1.UserR\x04user\x12\x18\n" +
 	"\amessage\x18\x02 \x01(\tR\amessage\".\n" +
 	"\x0eGetUserRequest\x12\x1c\n" +
-	"\x02id\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x14R\x02id\"8\n" +
+	"\x02id\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x14R\x02id\"s\n" +
 	"\x0fGetUserResponse\x12%\n" +
-	"\x04user\x18\x01 \x01(\v2\x11.altalune.v1.UserR\x04user\"\xa8\x01\n" +
+	"\x04user\x18\x01 \x01(\v2\x11.altalune.v1.UserR\x04user\x129\n" +
+	"\n" +
+	"identities\x18\x02 \x03(\v2\x19.altalune.v1.UserIdentityR\n" +
+	"identities\"\xa8\x01\n" +
 	"\x11UpdateUserRequest\x12\x1c\n" +
 	"\x02id\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x14R\x02id\x12#\n" +
 	"\x05email\x18\x02 \x01(\tB\r\xbaH\n" +
@@ -910,57 +1064,62 @@ func file_altalune_v1_user_proto_rawDescGZIP() []byte {
 	return file_altalune_v1_user_proto_rawDescData
 }
 
-var file_altalune_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 15)
+var file_altalune_v1_user_proto_msgTypes = make([]protoimpl.MessageInfo, 16)
 var file_altalune_v1_user_proto_goTypes = []any{
 	(*User)(nil),                   // 0: altalune.v1.User
-	(*QueryUsersRequest)(nil),      // 1: altalune.v1.QueryUsersRequest
-	(*QueryUsersResponse)(nil),     // 2: altalune.v1.QueryUsersResponse
-	(*CreateUserRequest)(nil),      // 3: altalune.v1.CreateUserRequest
-	(*CreateUserResponse)(nil),     // 4: altalune.v1.CreateUserResponse
-	(*GetUserRequest)(nil),         // 5: altalune.v1.GetUserRequest
-	(*GetUserResponse)(nil),        // 6: altalune.v1.GetUserResponse
-	(*UpdateUserRequest)(nil),      // 7: altalune.v1.UpdateUserRequest
-	(*UpdateUserResponse)(nil),     // 8: altalune.v1.UpdateUserResponse
-	(*DeleteUserRequest)(nil),      // 9: altalune.v1.DeleteUserRequest
-	(*DeleteUserResponse)(nil),     // 10: altalune.v1.DeleteUserResponse
-	(*ActivateUserRequest)(nil),    // 11: altalune.v1.ActivateUserRequest
-	(*ActivateUserResponse)(nil),   // 12: altalune.v1.ActivateUserResponse
-	(*DeactivateUserRequest)(nil),  // 13: altalune.v1.DeactivateUserRequest
-	(*DeactivateUserResponse)(nil), // 14: altalune.v1.DeactivateUserResponse
-	(*timestamppb.Timestamp)(nil),  // 15: google.protobuf.Timestamp
-	(*QueryRequest)(nil),           // 16: altalune.v1.QueryRequest
-	(*QueryMetaResponse)(nil),      // 17: altalune.v1.QueryMetaResponse
+	(*UserIdentity)(nil),           // 1: altalune.v1.UserIdentity
+	(*QueryUsersRequest)(nil),      // 2: altalune.v1.QueryUsersRequest
+	(*QueryUsersResponse)(nil),     // 3: altalune.v1.QueryUsersResponse
+	(*CreateUserRequest)(nil),      // 4: altalune.v1.CreateUserRequest
+	(*CreateUserResponse)(nil),     // 5: altalune.v1.CreateUserResponse
+	(*GetUserRequest)(nil),         // 6: altalune.v1.GetUserRequest
+	(*GetUserResponse)(nil),        // 7: altalune.v1.GetUserResponse
+	(*UpdateUserRequest)(nil),      // 8: altalune.v1.UpdateUserRequest
+	(*UpdateUserResponse)(nil),     // 9: altalune.v1.UpdateUserResponse
+	(*DeleteUserRequest)(nil),      // 10: altalune.v1.DeleteUserRequest
+	(*DeleteUserResponse)(nil),     // 11: altalune.v1.DeleteUserResponse
+	(*ActivateUserRequest)(nil),    // 12: altalune.v1.ActivateUserRequest
+	(*ActivateUserResponse)(nil),   // 13: altalune.v1.ActivateUserResponse
+	(*DeactivateUserRequest)(nil),  // 14: altalune.v1.DeactivateUserRequest
+	(*DeactivateUserResponse)(nil), // 15: altalune.v1.DeactivateUserResponse
+	(*timestamppb.Timestamp)(nil),  // 16: google.protobuf.Timestamp
+	(*QueryRequest)(nil),           // 17: altalune.v1.QueryRequest
+	(*QueryMetaResponse)(nil),      // 18: altalune.v1.QueryMetaResponse
 }
 var file_altalune_v1_user_proto_depIdxs = []int32{
-	15, // 0: altalune.v1.User.created_at:type_name -> google.protobuf.Timestamp
-	15, // 1: altalune.v1.User.updated_at:type_name -> google.protobuf.Timestamp
-	16, // 2: altalune.v1.QueryUsersRequest.query:type_name -> altalune.v1.QueryRequest
-	0,  // 3: altalune.v1.QueryUsersResponse.data:type_name -> altalune.v1.User
-	17, // 4: altalune.v1.QueryUsersResponse.meta:type_name -> altalune.v1.QueryMetaResponse
-	0,  // 5: altalune.v1.CreateUserResponse.user:type_name -> altalune.v1.User
-	0,  // 6: altalune.v1.GetUserResponse.user:type_name -> altalune.v1.User
-	0,  // 7: altalune.v1.UpdateUserResponse.user:type_name -> altalune.v1.User
-	0,  // 8: altalune.v1.ActivateUserResponse.user:type_name -> altalune.v1.User
-	0,  // 9: altalune.v1.DeactivateUserResponse.user:type_name -> altalune.v1.User
-	1,  // 10: altalune.v1.UserService.QueryUsers:input_type -> altalune.v1.QueryUsersRequest
-	3,  // 11: altalune.v1.UserService.CreateUser:input_type -> altalune.v1.CreateUserRequest
-	5,  // 12: altalune.v1.UserService.GetUser:input_type -> altalune.v1.GetUserRequest
-	7,  // 13: altalune.v1.UserService.UpdateUser:input_type -> altalune.v1.UpdateUserRequest
-	9,  // 14: altalune.v1.UserService.DeleteUser:input_type -> altalune.v1.DeleteUserRequest
-	11, // 15: altalune.v1.UserService.ActivateUser:input_type -> altalune.v1.ActivateUserRequest
-	13, // 16: altalune.v1.UserService.DeactivateUser:input_type -> altalune.v1.DeactivateUserRequest
-	2,  // 17: altalune.v1.UserService.QueryUsers:output_type -> altalune.v1.QueryUsersResponse
-	4,  // 18: altalune.v1.UserService.CreateUser:output_type -> altalune.v1.CreateUserResponse
-	6,  // 19: altalune.v1.UserService.GetUser:output_type -> altalune.v1.GetUserResponse
-	8,  // 20: altalune.v1.UserService.UpdateUser:output_type -> altalune.v1.UpdateUserResponse
-	10, // 21: altalune.v1.UserService.DeleteUser:output_type -> altalune.v1.DeleteUserResponse
-	12, // 22: altalune.v1.UserService.ActivateUser:output_type -> altalune.v1.ActivateUserResponse
-	14, // 23: altalune.v1.UserService.DeactivateUser:output_type -> altalune.v1.DeactivateUserResponse
-	17, // [17:24] is the sub-list for method output_type
-	10, // [10:17] is the sub-list for method input_type
-	10, // [10:10] is the sub-list for extension type_name
-	10, // [10:10] is the sub-list for extension extendee
-	0,  // [0:10] is the sub-list for field type_name
+	16, // 0: altalune.v1.User.created_at:type_name -> google.protobuf.Timestamp
+	16, // 1: altalune.v1.User.updated_at:type_name -> google.protobuf.Timestamp
+	16, // 2: altalune.v1.UserIdentity.last_login_at:type_name -> google.protobuf.Timestamp
+	16, // 3: altalune.v1.UserIdentity.created_at:type_name -> google.protobuf.Timestamp
+	16, // 4: altalune.v1.UserIdentity.updated_at:type_name -> google.protobuf.Timestamp
+	17, // 5: altalune.v1.QueryUsersRequest.query:type_name -> altalune.v1.QueryRequest
+	0,  // 6: altalune.v1.QueryUsersResponse.data:type_name -> altalune.v1.User
+	18, // 7: altalune.v1.QueryUsersResponse.meta:type_name -> altalune.v1.QueryMetaResponse
+	0,  // 8: altalune.v1.CreateUserResponse.user:type_name -> altalune.v1.User
+	0,  // 9: altalune.v1.GetUserResponse.user:type_name -> altalune.v1.User
+	1,  // 10: altalune.v1.GetUserResponse.identities:type_name -> altalune.v1.UserIdentity
+	0,  // 11: altalune.v1.UpdateUserResponse.user:type_name -> altalune.v1.User
+	0,  // 12: altalune.v1.ActivateUserResponse.user:type_name -> altalune.v1.User
+	0,  // 13: altalune.v1.DeactivateUserResponse.user:type_name -> altalune.v1.User
+	2,  // 14: altalune.v1.UserService.QueryUsers:input_type -> altalune.v1.QueryUsersRequest
+	4,  // 15: altalune.v1.UserService.CreateUser:input_type -> altalune.v1.CreateUserRequest
+	6,  // 16: altalune.v1.UserService.GetUser:input_type -> altalune.v1.GetUserRequest
+	8,  // 17: altalune.v1.UserService.UpdateUser:input_type -> altalune.v1.UpdateUserRequest
+	10, // 18: altalune.v1.UserService.DeleteUser:input_type -> altalune.v1.DeleteUserRequest
+	12, // 19: altalune.v1.UserService.ActivateUser:input_type -> altalune.v1.ActivateUserRequest
+	14, // 20: altalune.v1.UserService.DeactivateUser:input_type -> altalune.v1.DeactivateUserRequest
+	3,  // 21: altalune.v1.UserService.QueryUsers:output_type -> altalune.v1.QueryUsersResponse
+	5,  // 22: altalune.v1.UserService.CreateUser:output_type -> altalune.v1.CreateUserResponse
+	7,  // 23: altalune.v1.UserService.GetUser:output_type -> altalune.v1.GetUserResponse
+	9,  // 24: altalune.v1.UserService.UpdateUser:output_type -> altalune.v1.UpdateUserResponse
+	11, // 25: altalune.v1.UserService.DeleteUser:output_type -> altalune.v1.DeleteUserResponse
+	13, // 26: altalune.v1.UserService.ActivateUser:output_type -> altalune.v1.ActivateUserResponse
+	15, // 27: altalune.v1.UserService.DeactivateUser:output_type -> altalune.v1.DeactivateUserResponse
+	21, // [21:28] is the sub-list for method output_type
+	14, // [14:21] is the sub-list for method input_type
+	14, // [14:14] is the sub-list for extension type_name
+	14, // [14:14] is the sub-list for extension extendee
+	0,  // [0:14] is the sub-list for field type_name
 }
 
 func init() { file_altalune_v1_user_proto_init() }
@@ -969,13 +1128,14 @@ func file_altalune_v1_user_proto_init() {
 		return
 	}
 	file_altalune_v1_common_proto_init()
+	file_altalune_v1_user_proto_msgTypes[1].OneofWrappers = []any{}
 	type x struct{}
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_altalune_v1_user_proto_rawDesc), len(file_altalune_v1_user_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   15,
+			NumMessages:   16,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

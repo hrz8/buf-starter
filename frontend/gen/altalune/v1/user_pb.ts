@@ -15,7 +15,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file altalune/v1/user.proto.
  */
 export const file_altalune_v1_user: GenFile = /*@__PURE__*/
-  fileDesc("ChZhbHRhbHVuZS92MS91c2VyLnByb3RvEgthbHRhbHVuZS52MSK7AQoEVXNlchIKCgJpZBgBIAEoCRINCgVlbWFpbBgCIAEoCRISCgpmaXJzdF9uYW1lGAMgASgJEhEKCWxhc3RfbmFtZRgEIAEoCRIRCglpc19hY3RpdmUYBSABKAgSLgoKY3JlYXRlZF9hdBhiIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBhjIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiPQoRUXVlcnlVc2Vyc1JlcXVlc3QSKAoFcXVlcnkYASABKAsyGS5hbHRhbHVuZS52MS5RdWVyeVJlcXVlc3QiYwoSUXVlcnlVc2Vyc1Jlc3BvbnNlEh8KBGRhdGEYASADKAsyES5hbHRhbHVuZS52MS5Vc2VyEiwKBG1ldGEYAiABKAsyHi5hbHRhbHVuZS52MS5RdWVyeU1ldGFSZXNwb25zZSJuChFDcmVhdGVVc2VyUmVxdWVzdBIcCgVlbWFpbBgBIAEoCUINukgKyAEBcgUY/wFgARIdCgpmaXJzdF9uYW1lGAIgASgJQgm6SAZyBBABGGQSHAoJbGFzdF9uYW1lGAMgASgJQgm6SAZyBBABGGQiRgoSQ3JlYXRlVXNlclJlc3BvbnNlEh8KBHVzZXIYASABKAsyES5hbHRhbHVuZS52MS5Vc2VyEg8KB21lc3NhZ2UYAiABKAkiKgoOR2V0VXNlclJlcXVlc3QSGAoCaWQYASABKAlCDLpICcgBAXIEEA4YFCIyCg9HZXRVc2VyUmVzcG9uc2USHwoEdXNlchgBIAEoCzIRLmFsdGFsdW5lLnYxLlVzZXIiiAEKEVVwZGF0ZVVzZXJSZXF1ZXN0EhgKAmlkGAEgASgJQgy6SAnIAQFyBBAOGBQSHAoFZW1haWwYAiABKAlCDbpICsgBAXIFGP8BYAESHQoKZmlyc3RfbmFtZRgDIAEoCUIJukgGcgQQARhkEhwKCWxhc3RfbmFtZRgEIAEoCUIJukgGcgQQARhkIkYKElVwZGF0ZVVzZXJSZXNwb25zZRIfCgR1c2VyGAEgASgLMhEuYWx0YWx1bmUudjEuVXNlchIPCgdtZXNzYWdlGAIgASgJIi0KEURlbGV0ZVVzZXJSZXF1ZXN0EhgKAmlkGAEgASgJQgy6SAnIAQFyBBAOGBQiJQoSRGVsZXRlVXNlclJlc3BvbnNlEg8KB21lc3NhZ2UYASABKAkiLwoTQWN0aXZhdGVVc2VyUmVxdWVzdBIYCgJpZBgBIAEoCUIMukgJyAEBcgQQDhgUIkgKFEFjdGl2YXRlVXNlclJlc3BvbnNlEh8KBHVzZXIYASABKAsyES5hbHRhbHVuZS52MS5Vc2VyEg8KB21lc3NhZ2UYAiABKAkiMQoVRGVhY3RpdmF0ZVVzZXJSZXF1ZXN0EhgKAmlkGAEgASgJQgy6SAnIAQFyBBAOGBQiSgoWRGVhY3RpdmF0ZVVzZXJSZXNwb25zZRIfCgR1c2VyGAEgASgLMhEuYWx0YWx1bmUudjEuVXNlchIPCgdtZXNzYWdlGAIgASgJMs0ECgtVc2VyU2VydmljZRJPCgpRdWVyeVVzZXJzEh4uYWx0YWx1bmUudjEuUXVlcnlVc2Vyc1JlcXVlc3QaHy5hbHRhbHVuZS52MS5RdWVyeVVzZXJzUmVzcG9uc2UiABJPCgpDcmVhdGVVc2VyEh4uYWx0YWx1bmUudjEuQ3JlYXRlVXNlclJlcXVlc3QaHy5hbHRhbHVuZS52MS5DcmVhdGVVc2VyUmVzcG9uc2UiABJGCgdHZXRVc2VyEhsuYWx0YWx1bmUudjEuR2V0VXNlclJlcXVlc3QaHC5hbHRhbHVuZS52MS5HZXRVc2VyUmVzcG9uc2UiABJPCgpVcGRhdGVVc2VyEh4uYWx0YWx1bmUudjEuVXBkYXRlVXNlclJlcXVlc3QaHy5hbHRhbHVuZS52MS5VcGRhdGVVc2VyUmVzcG9uc2UiABJPCgpEZWxldGVVc2VyEh4uYWx0YWx1bmUudjEuRGVsZXRlVXNlclJlcXVlc3QaHy5hbHRhbHVuZS52MS5EZWxldGVVc2VyUmVzcG9uc2UiABJVCgxBY3RpdmF0ZVVzZXISIC5hbHRhbHVuZS52MS5BY3RpdmF0ZVVzZXJSZXF1ZXN0GiEuYWx0YWx1bmUudjEuQWN0aXZhdGVVc2VyUmVzcG9uc2UiABJbCg5EZWFjdGl2YXRlVXNlchIiLmFsdGFsdW5lLnYxLkRlYWN0aXZhdGVVc2VyUmVxdWVzdBojLmFsdGFsdW5lLnYxLkRlYWN0aXZhdGVVc2VyUmVzcG9uc2UiAEKeAQoPY29tLmFsdGFsdW5lLnYxQglVc2VyUHJvdG9QAVozZ2l0aHViLmNvbS9ocno4L2FsdGFsdW5lL2dlbi9hbHRhbHVuZS92MTthbHRhbHVuZXYxogIDQVhYqgILQWx0YWx1bmUuVjHKAgtBbHRhbHVuZVxWMeICF0FsdGFsdW5lXFYxXEdQQk1ldGFkYXRh6gIMQWx0YWx1bmU6OlYxYgZwcm90bzM", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
+  fileDesc("ChZhbHRhbHVuZS92MS91c2VyLnByb3RvEgthbHRhbHVuZS52MSK7AQoEVXNlchIKCgJpZBgBIAEoCRINCgVlbWFpbBgCIAEoCRISCgpmaXJzdF9uYW1lGAMgASgJEhEKCWxhc3RfbmFtZRgEIAEoCRIRCglpc19hY3RpdmUYBSABKAgSLgoKY3JlYXRlZF9hdBhiIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXASLgoKdXBkYXRlZF9hdBhjIAEoCzIaLmdvb2dsZS5wcm90b2J1Zi5UaW1lc3RhbXAiowMKDFVzZXJJZGVudGl0eRIRCglwdWJsaWNfaWQYASABKAkSEAoIcHJvdmlkZXIYAiABKAkSGAoQcHJvdmlkZXJfdXNlcl9pZBgDIAEoCRINCgVlbWFpbBgEIAEoCRISCgpmaXJzdF9uYW1lGAUgASgJEhEKCWxhc3RfbmFtZRgGIAEoCRIcCg9vYXV0aF9jbGllbnRfaWQYByABKAlIAIgBARIlChhvcmlnaW5fb2F1dGhfY2xpZW50X25hbWUYCCABKAlIAYgBARI2Cg1sYXN0X2xvZ2luX2F0GAkgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEgCiAEBEi4KCmNyZWF0ZWRfYXQYYiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYYyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wQhIKEF9vYXV0aF9jbGllbnRfaWRCGwoZX29yaWdpbl9vYXV0aF9jbGllbnRfbmFtZUIQCg5fbGFzdF9sb2dpbl9hdCI9ChFRdWVyeVVzZXJzUmVxdWVzdBIoCgVxdWVyeRgBIAEoCzIZLmFsdGFsdW5lLnYxLlF1ZXJ5UmVxdWVzdCJjChJRdWVyeVVzZXJzUmVzcG9uc2USHwoEZGF0YRgBIAMoCzIRLmFsdGFsdW5lLnYxLlVzZXISLAoEbWV0YRgCIAEoCzIeLmFsdGFsdW5lLnYxLlF1ZXJ5TWV0YVJlc3BvbnNlIm4KEUNyZWF0ZVVzZXJSZXF1ZXN0EhwKBWVtYWlsGAEgASgJQg26SArIAQFyBRj/AWABEh0KCmZpcnN0X25hbWUYAiABKAlCCbpIBnIEEAEYZBIcCglsYXN0X25hbWUYAyABKAlCCbpIBnIEEAEYZCJGChJDcmVhdGVVc2VyUmVzcG9uc2USHwoEdXNlchgBIAEoCzIRLmFsdGFsdW5lLnYxLlVzZXISDwoHbWVzc2FnZRgCIAEoCSIqCg5HZXRVc2VyUmVxdWVzdBIYCgJpZBgBIAEoCUIMukgJyAEBcgQQDhgUImEKD0dldFVzZXJSZXNwb25zZRIfCgR1c2VyGAEgASgLMhEuYWx0YWx1bmUudjEuVXNlchItCgppZGVudGl0aWVzGAIgAygLMhkuYWx0YWx1bmUudjEuVXNlcklkZW50aXR5IogBChFVcGRhdGVVc2VyUmVxdWVzdBIYCgJpZBgBIAEoCUIMukgJyAEBcgQQDhgUEhwKBWVtYWlsGAIgASgJQg26SArIAQFyBRj/AWABEh0KCmZpcnN0X25hbWUYAyABKAlCCbpIBnIEEAEYZBIcCglsYXN0X25hbWUYBCABKAlCCbpIBnIEEAEYZCJGChJVcGRhdGVVc2VyUmVzcG9uc2USHwoEdXNlchgBIAEoCzIRLmFsdGFsdW5lLnYxLlVzZXISDwoHbWVzc2FnZRgCIAEoCSItChFEZWxldGVVc2VyUmVxdWVzdBIYCgJpZBgBIAEoCUIMukgJyAEBcgQQDhgUIiUKEkRlbGV0ZVVzZXJSZXNwb25zZRIPCgdtZXNzYWdlGAEgASgJIi8KE0FjdGl2YXRlVXNlclJlcXVlc3QSGAoCaWQYASABKAlCDLpICcgBAXIEEA4YFCJIChRBY3RpdmF0ZVVzZXJSZXNwb25zZRIfCgR1c2VyGAEgASgLMhEuYWx0YWx1bmUudjEuVXNlchIPCgdtZXNzYWdlGAIgASgJIjEKFURlYWN0aXZhdGVVc2VyUmVxdWVzdBIYCgJpZBgBIAEoCUIMukgJyAEBcgQQDhgUIkoKFkRlYWN0aXZhdGVVc2VyUmVzcG9uc2USHwoEdXNlchgBIAEoCzIRLmFsdGFsdW5lLnYxLlVzZXISDwoHbWVzc2FnZRgCIAEoCTLNBAoLVXNlclNlcnZpY2USTwoKUXVlcnlVc2VycxIeLmFsdGFsdW5lLnYxLlF1ZXJ5VXNlcnNSZXF1ZXN0Gh8uYWx0YWx1bmUudjEuUXVlcnlVc2Vyc1Jlc3BvbnNlIgASTwoKQ3JlYXRlVXNlchIeLmFsdGFsdW5lLnYxLkNyZWF0ZVVzZXJSZXF1ZXN0Gh8uYWx0YWx1bmUudjEuQ3JlYXRlVXNlclJlc3BvbnNlIgASRgoHR2V0VXNlchIbLmFsdGFsdW5lLnYxLkdldFVzZXJSZXF1ZXN0GhwuYWx0YWx1bmUudjEuR2V0VXNlclJlc3BvbnNlIgASTwoKVXBkYXRlVXNlchIeLmFsdGFsdW5lLnYxLlVwZGF0ZVVzZXJSZXF1ZXN0Gh8uYWx0YWx1bmUudjEuVXBkYXRlVXNlclJlc3BvbnNlIgASTwoKRGVsZXRlVXNlchIeLmFsdGFsdW5lLnYxLkRlbGV0ZVVzZXJSZXF1ZXN0Gh8uYWx0YWx1bmUudjEuRGVsZXRlVXNlclJlc3BvbnNlIgASVQoMQWN0aXZhdGVVc2VyEiAuYWx0YWx1bmUudjEuQWN0aXZhdGVVc2VyUmVxdWVzdBohLmFsdGFsdW5lLnYxLkFjdGl2YXRlVXNlclJlc3BvbnNlIgASWwoORGVhY3RpdmF0ZVVzZXISIi5hbHRhbHVuZS52MS5EZWFjdGl2YXRlVXNlclJlcXVlc3QaIy5hbHRhbHVuZS52MS5EZWFjdGl2YXRlVXNlclJlc3BvbnNlIgBCngEKD2NvbS5hbHRhbHVuZS52MUIJVXNlclByb3RvUAFaM2dpdGh1Yi5jb20vaHJ6OC9hbHRhbHVuZS9nZW4vYWx0YWx1bmUvdjE7YWx0YWx1bmV2MaICA0FYWKoCC0FsdGFsdW5lLlYxygILQWx0YWx1bmVcVjHiAhdBbHRhbHVuZVxWMVxHUEJNZXRhZGF0YeoCDEFsdGFsdW5lOjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp, file_buf_validate_validate, file_altalune_v1_common]);
 
 /**
  * User represents a global system user with OAuth-only authentication
@@ -77,6 +77,91 @@ export const UserSchema: GenMessage<User> = /*@__PURE__*/
   messageDesc(file_altalune_v1_user, 0);
 
 /**
+ * UserIdentity represents an OAuth provider identity linked to a user
+ *
+ * @generated from message altalune.v1.UserIdentity
+ */
+export type UserIdentity = Message<"altalune.v1.UserIdentity"> & {
+  /**
+   * Public nanoid
+   *
+   * @generated from field: string public_id = 1;
+   */
+  publicId: string;
+
+  /**
+   * Provider type (google, github, system)
+   *
+   * @generated from field: string provider = 2;
+   */
+  provider: string;
+
+  /**
+   * Provider's user ID
+   *
+   * @generated from field: string provider_user_id = 3;
+   */
+  providerUserId: string;
+
+  /**
+   * Email from provider
+   *
+   * @generated from field: string email = 4;
+   */
+  email: string;
+
+  /**
+   * First name from provider
+   *
+   * @generated from field: string first_name = 5;
+   */
+  firstName: string;
+
+  /**
+   * Last name from provider
+   *
+   * @generated from field: string last_name = 6;
+   */
+  lastName: string;
+
+  /**
+   * UUID of OAuth client
+   *
+   * @generated from field: optional string oauth_client_id = 7;
+   */
+  oauthClientId?: string;
+
+  /**
+   * Client name at signup
+   *
+   * @generated from field: optional string origin_oauth_client_name = 8;
+   */
+  originOauthClientName?: string;
+
+  /**
+   * @generated from field: optional google.protobuf.Timestamp last_login_at = 9;
+   */
+  lastLoginAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp created_at = 98;
+   */
+  createdAt?: Timestamp;
+
+  /**
+   * @generated from field: google.protobuf.Timestamp updated_at = 99;
+   */
+  updatedAt?: Timestamp;
+};
+
+/**
+ * Describes the message altalune.v1.UserIdentity.
+ * Use `create(UserIdentitySchema)` to create a new message.
+ */
+export const UserIdentitySchema: GenMessage<UserIdentity> = /*@__PURE__*/
+  messageDesc(file_altalune_v1_user, 1);
+
+/**
  * QueryUsersRequest for listing/searching users
  *
  * @generated from message altalune.v1.QueryUsersRequest
@@ -93,7 +178,7 @@ export type QueryUsersRequest = Message<"altalune.v1.QueryUsersRequest"> & {
  * Use `create(QueryUsersRequestSchema)` to create a new message.
  */
 export const QueryUsersRequestSchema: GenMessage<QueryUsersRequest> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 1);
+  messageDesc(file_altalune_v1_user, 2);
 
 /**
  * QueryUsersResponse with user list and metadata
@@ -117,7 +202,7 @@ export type QueryUsersResponse = Message<"altalune.v1.QueryUsersResponse"> & {
  * Use `create(QueryUsersResponseSchema)` to create a new message.
  */
 export const QueryUsersResponseSchema: GenMessage<QueryUsersResponse> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 2);
+  messageDesc(file_altalune_v1_user, 3);
 
 /**
  * CreateUserRequest for creating a new user
@@ -146,7 +231,7 @@ export type CreateUserRequest = Message<"altalune.v1.CreateUserRequest"> & {
  * Use `create(CreateUserRequestSchema)` to create a new message.
  */
 export const CreateUserRequestSchema: GenMessage<CreateUserRequest> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 3);
+  messageDesc(file_altalune_v1_user, 4);
 
 /**
  * CreateUserResponse with created user
@@ -170,7 +255,7 @@ export type CreateUserResponse = Message<"altalune.v1.CreateUserResponse"> & {
  * Use `create(CreateUserResponseSchema)` to create a new message.
  */
 export const CreateUserResponseSchema: GenMessage<CreateUserResponse> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 4);
+  messageDesc(file_altalune_v1_user, 5);
 
 /**
  * GetUserRequest for retrieving a single user
@@ -189,10 +274,10 @@ export type GetUserRequest = Message<"altalune.v1.GetUserRequest"> & {
  * Use `create(GetUserRequestSchema)` to create a new message.
  */
 export const GetUserRequestSchema: GenMessage<GetUserRequest> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 5);
+  messageDesc(file_altalune_v1_user, 6);
 
 /**
- * GetUserResponse with user data
+ * GetUserResponse with user data and linked identities
  *
  * @generated from message altalune.v1.GetUserResponse
  */
@@ -201,6 +286,11 @@ export type GetUserResponse = Message<"altalune.v1.GetUserResponse"> & {
    * @generated from field: altalune.v1.User user = 1;
    */
   user?: User;
+
+  /**
+   * @generated from field: repeated altalune.v1.UserIdentity identities = 2;
+   */
+  identities: UserIdentity[];
 };
 
 /**
@@ -208,7 +298,7 @@ export type GetUserResponse = Message<"altalune.v1.GetUserResponse"> & {
  * Use `create(GetUserResponseSchema)` to create a new message.
  */
 export const GetUserResponseSchema: GenMessage<GetUserResponse> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 6);
+  messageDesc(file_altalune_v1_user, 7);
 
 /**
  * UpdateUserRequest for updating user profile
@@ -242,7 +332,7 @@ export type UpdateUserRequest = Message<"altalune.v1.UpdateUserRequest"> & {
  * Use `create(UpdateUserRequestSchema)` to create a new message.
  */
 export const UpdateUserRequestSchema: GenMessage<UpdateUserRequest> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 7);
+  messageDesc(file_altalune_v1_user, 8);
 
 /**
  * UpdateUserResponse with updated user
@@ -266,7 +356,7 @@ export type UpdateUserResponse = Message<"altalune.v1.UpdateUserResponse"> & {
  * Use `create(UpdateUserResponseSchema)` to create a new message.
  */
 export const UpdateUserResponseSchema: GenMessage<UpdateUserResponse> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 8);
+  messageDesc(file_altalune_v1_user, 9);
 
 /**
  * DeleteUserRequest for deleting a user
@@ -285,7 +375,7 @@ export type DeleteUserRequest = Message<"altalune.v1.DeleteUserRequest"> & {
  * Use `create(DeleteUserRequestSchema)` to create a new message.
  */
 export const DeleteUserRequestSchema: GenMessage<DeleteUserRequest> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 9);
+  messageDesc(file_altalune_v1_user, 10);
 
 /**
  * DeleteUserResponse with confirmation message
@@ -304,7 +394,7 @@ export type DeleteUserResponse = Message<"altalune.v1.DeleteUserResponse"> & {
  * Use `create(DeleteUserResponseSchema)` to create a new message.
  */
 export const DeleteUserResponseSchema: GenMessage<DeleteUserResponse> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 10);
+  messageDesc(file_altalune_v1_user, 11);
 
 /**
  * ActivateUserRequest for activating a user account
@@ -323,7 +413,7 @@ export type ActivateUserRequest = Message<"altalune.v1.ActivateUserRequest"> & {
  * Use `create(ActivateUserRequestSchema)` to create a new message.
  */
 export const ActivateUserRequestSchema: GenMessage<ActivateUserRequest> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 11);
+  messageDesc(file_altalune_v1_user, 12);
 
 /**
  * ActivateUserResponse with updated user
@@ -347,7 +437,7 @@ export type ActivateUserResponse = Message<"altalune.v1.ActivateUserResponse"> &
  * Use `create(ActivateUserResponseSchema)` to create a new message.
  */
 export const ActivateUserResponseSchema: GenMessage<ActivateUserResponse> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 12);
+  messageDesc(file_altalune_v1_user, 13);
 
 /**
  * DeactivateUserRequest for deactivating a user account
@@ -366,7 +456,7 @@ export type DeactivateUserRequest = Message<"altalune.v1.DeactivateUserRequest">
  * Use `create(DeactivateUserRequestSchema)` to create a new message.
  */
 export const DeactivateUserRequestSchema: GenMessage<DeactivateUserRequest> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 13);
+  messageDesc(file_altalune_v1_user, 14);
 
 /**
  * DeactivateUserResponse with updated user
@@ -390,7 +480,7 @@ export type DeactivateUserResponse = Message<"altalune.v1.DeactivateUserResponse
  * Use `create(DeactivateUserResponseSchema)` to create a new message.
  */
 export const DeactivateUserResponseSchema: GenMessage<DeactivateUserResponse> = /*@__PURE__*/
-  messageDesc(file_altalune_v1_user, 14);
+  messageDesc(file_altalune_v1_user, 15);
 
 /**
  * UserService provides CRUD operations for user management

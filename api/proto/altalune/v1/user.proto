@@ -19,6 +19,21 @@ message User {
   google.protobuf.Timestamp updated_at = 99;
 }
 
+// UserIdentity represents an OAuth provider identity linked to a user
+message UserIdentity {
+  string public_id = 1;                             // Public nanoid
+  string provider = 2;                              // Provider type (google, github, system)
+  string provider_user_id = 3;                      // Provider's user ID
+  string email = 4;                                 // Email from provider
+  string first_name = 5;                            // First name from provider
+  string last_name = 6;                             // Last name from provider
+  optional string oauth_client_id = 7;              // UUID of OAuth client
+  optional string origin_oauth_client_name = 8;     // Client name at signup
+  optional google.protobuf.Timestamp last_login_at = 9;
+  google.protobuf.Timestamp created_at = 98;
+  google.protobuf.Timestamp updated_at = 99;
+}
+
 // QueryUsersRequest for listing/searching users
 message QueryUsersRequest {
   QueryRequest query = 1;
@@ -72,9 +87,10 @@ message GetUserRequest {
   ];
 }
 
-// GetUserResponse with user data
+// GetUserResponse with user data and linked identities
 message GetUserResponse {
   User user = 1;
+  repeated UserIdentity identities = 2;
 }
 
 // UpdateUserRequest for updating user profile

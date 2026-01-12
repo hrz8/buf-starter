@@ -144,8 +144,47 @@ func (s *Service) GetUser(ctx context.Context, req *altalunev1.GetUserRequest) (
 		return nil, altalune.NewUnexpectedError("failed to get user", err)
 	}
 
+	internalID, err := s.userRepo.GetIDByPublicID(ctx, req.Id)
+	if err != nil {
+		s.log.Error("failed to get user internal ID", "error", err, "user_id", req.Id)
+		return nil, altalune.NewUnexpectedError("failed to get user internal ID", err)
+	}
+
+	identities, err := s.userRepo.GetUserIdentities(ctx, internalID)
+	if err != nil {
+		s.log.Error("failed to get user identities", "error", err, "user_id", req.Id)
+		return nil, altalune.NewUnexpectedError("failed to get user identities", err)
+	}
+
+	protoIdentities := make([]*altalunev1.UserIdentity, 0, len(identities))
+	for _, identity := range identities {
+		protoIdentity := &altalunev1.UserIdentity{
+			PublicId:        identity.PublicID,
+			Provider:        identity.Provider,
+			ProviderUserId:  identity.ProviderUserID,
+			Email:           identity.Email,
+			FirstName:       identity.FirstName,
+			LastName:        identity.LastName,
+			CreatedAt:       timestamppb.New(identity.CreatedAt),
+			UpdatedAt:       timestamppb.New(identity.UpdatedAt),
+		}
+
+		if identity.OAuthClientID != nil {
+			protoIdentity.OauthClientId = identity.OAuthClientID
+		}
+		if identity.OriginOAuthClientName != nil {
+			protoIdentity.OriginOauthClientName = identity.OriginOAuthClientName
+		}
+		if identity.LastLoginAt != nil {
+			protoIdentity.LastLoginAt = timestamppb.New(*identity.LastLoginAt)
+		}
+
+		protoIdentities = append(protoIdentities, protoIdentity)
+	}
+
 	return &altalunev1.GetUserResponse{
-		User: user.ToUserProto(),
+		User:       user.ToUserProto(),
+		Identities: protoIdentities,
 	}, nil
 }
 
