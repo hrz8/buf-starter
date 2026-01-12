@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
 	"time"
 
@@ -317,6 +318,15 @@ func (h *Handler) HandleAuthorize(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
+	// Handle prompt=consent: always show consent page regardless of existing consent
+	if params.Prompt == "consent" {
+		csrfToken := generateCSRFToken()
+		sessionData.CSRFToken = csrfToken
+		h.sessionStore.SetData(r, w, sessionData)
+		h.renderConsentPage(w, client, params, csrfToken)
+		return
+	}
+
 	hasConsent, err := h.svc.CheckUserConsent(r.Context(), sessionData.UserID, params.ClientID, params.Scope)
 	if err != nil {
 		h.renderAuthError(w, r, params.RedirectURI, params.State, ErrServerError)
@@ -488,7 +498,7 @@ func (h *Handler) handleAuthorizationCodeGrant(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	user, err := h.userRepo.GetByID(r.Context(), fmt.Sprintf("%d", result.UserID))
+	user, err := h.userRepo.GetByInternalID(r.Context(), result.UserID)
 	if err != nil {
 		h.log.Error("failed to get user", "error", err, "user_id", result.UserID)
 		writeTokenError(w, "server_error", "Failed to get user info", http.StatusInternalServerError)
@@ -577,9 +587,16 @@ func (h *Handler) HandleUserInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	user, err := h.userRepo.GetByID(r.Context(), claims.Subject)
+	userID, err := strconv.ParseInt(claims.Subject, 10, 64)
 	if err != nil {
-		h.log.Error("failed to get user", "error", err, "user_id", claims.Subject)
+		h.log.Error("invalid subject claim", "error", err, "subject", claims.Subject)
+		writeJSONError(w, "invalid_token", "Invalid token subject", http.StatusUnauthorized)
+		return
+	}
+
+	user, err := h.userRepo.GetByInternalID(r.Context(), userID)
+	if err != nil {
+		h.log.Error("failed to get user", "error", err, "user_id", userID)
 		writeJSONError(w, "server_error", "Failed to retrieve user info", http.StatusInternalServerError)
 		return
 	}
@@ -755,6 +772,7 @@ type AuthorizationParams struct {
 	Nonce               *string
 	CodeChallenge       *string
 	CodeChallengeMethod *string
+	Prompt              string
 }
 
 func parseAuthorizationParams(r *http.Request) (*AuthorizationParams, error) {
@@ -763,6 +781,7 @@ func parseAuthorizationParams(r *http.Request) (*AuthorizationParams, error) {
 		RedirectURI:  r.URL.Query().Get("redirect_uri"),
 		Scope:        r.URL.Query().Get("scope"),
 		State:        r.URL.Query().Get("state"),
+		Prompt:       r.URL.Query().Get("prompt"),
 	}
 
 	nonce := r.URL.Query().Get("nonce")
@@ -1025,4 +1044,87 @@ func writeJSONError(w http.ResponseWriter, errorCode, description string, status
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(statusCode)
 	json.NewEncoder(w).Encode(response)
+}
+
+// HandleProfile displays the user's profile page with authorized applications.
+func (h *Handler) HandleProfile(w http.ResponseWriter, r *http.Request) {
+	sessionData, err := h.sessionStore.GetData(r)
+	if err != nil || sessionData.UserID == 0 {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	user, err := h.userRepo.GetByInternalID(r.Context(), sessionData.UserID)
+	if err != nil {
+		h.log.Error("failed to get user", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	userIdentities, err := h.userRepo.GetUserIdentities(r.Context(), sessionData.UserID)
+	if err != nil {
+		h.log.Error("failed to get user identities", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	consents, err := h.svc.GetUserConsents(r.Context(), sessionData.UserID)
+	if err != nil {
+		h.log.Error("failed to get user consents", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	data := views.ProfileData{
+		BaseData: views.BaseData{
+			Title: "Your Profile",
+		},
+		User:       user,
+		Identities: userIdentities,
+		Consents:   consents,
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := views.Render(w, "profile.html", data); err != nil {
+		h.log.Error("failed to render profile page", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
+}
+
+// HandleRevokeConsent revokes a user's consent for a specific OAuth client.
+func (h *Handler) HandleRevokeConsent(w http.ResponseWriter, r *http.Request) {
+	sessionData, err := h.sessionStore.GetData(r)
+	if err != nil || sessionData.UserID == 0 {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+
+	clientIDStr := r.FormValue("client_id")
+	if clientIDStr == "" {
+		http.Error(w, "Missing client_id", http.StatusBadRequest)
+		return
+	}
+
+	clientID, err := uuid.Parse(clientIDStr)
+	if err != nil {
+		http.Error(w, "Invalid client_id", http.StatusBadRequest)
+		return
+	}
+
+	if err := h.svc.RevokeUserConsent(r.Context(), sessionData.UserID, clientID); err != nil {
+		if err == ErrUserConsentNotFound {
+			http.Error(w, "Consent not found", http.StatusNotFound)
+			return
+		}
+		h.log.Error("failed to revoke consent", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	http.Redirect(w, r, "/profile", http.StatusFound)
 }

@@ -12,6 +12,7 @@ type Repository interface {
 	Create(ctx context.Context, input *CreateUserInput) (*CreateUserResult, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)
 	GetByID(ctx context.Context, publicID string) (*User, error)
+	GetByInternalID(ctx context.Context, internalID int64) (*User, error)
 	Update(ctx context.Context, input *UpdateUserInput) (*UpdateUserResult, error)
 	Delete(ctx context.Context, publicID string) error
 	Activate(ctx context.Context, publicID string) (*User, error)

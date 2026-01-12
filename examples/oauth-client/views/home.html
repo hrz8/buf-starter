@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>OAuth Example Client</title>
+	<style>
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+			max-width: 900px;
+			margin: 50px auto;
+			padding: 20px;
+			background: #f5f5f5;
+		}
+		.nav {
+			background: #333;
+			padding: 15px 30px;
+			border-radius: 8px;
+			margin-bottom: 20px;
+			display: flex;
+			align-items: center;
+			gap: 10px;
+		}
+		.nav a {
+			color: white;
+			text-decoration: none;
+			padding: 8px 12px;
+			border-radius: 4px;
+			white-space: nowrap;
+		}
+		.nav a:hover { background: #555; }
+		.nav-spacer {
+			flex-grow: 1;
+		}
+		.card {
+			background: white;
+			border-radius: 8px;
+			padding: 30px;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+		}
+		h1 { color: #333; margin-top: 0; }
+		.btn {
+			display: inline-block;
+			padding: 12px 24px;
+			background: #0066cc;
+			color: white;
+			text-decoration: none;
+			border-radius: 6px;
+			border: none;
+			cursor: pointer;
+			font-size: 16px;
+			margin-right: 10px;
+			margin-top: 10px;
+		}
+		.btn:hover { background: #0052a3; }
+		.btn-secondary {
+			background: #6c757d;
+		}
+		.btn-secondary:hover { background: #5a6268; }
+		.info {
+			background: #e7f3ff;
+			padding: 15px;
+			border-radius: 4px;
+			margin: 20px 0;
+		}
+		pre {
+			background: #f8f9fa;
+			padding: 15px;
+			border-radius: 4px;
+			overflow-x: auto;
+		}
+		.status { margin: 20px 0; }
+		.page-grid {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+			gap: 15px;
+			margin: 20px 0;
+		}
+		.page-link {
+			padding: 20px;
+			background: #f8f9fa;
+			border-radius: 6px;
+			text-decoration: none;
+			color: #333;
+			border: 2px solid #dee2e6;
+		}
+		.page-link:hover {
+			border-color: #0066cc;
+			background: #e7f3ff;
+		}
+		.page-link.locked {
+			opacity: 0.6;
+			cursor: not-allowed;
+		}
+	</style>
+</head>
+<body>
+	<div class="nav">
+		<a href="/">Home</a>
+		<a href="/public">Public Page</a>
+		{{if .Authenticated}}
+		<a href="/private/dashboard">Dashboard</a>
+		<a href="/private/profile">Profile</a>
+		<a href="/private/settings">Settings</a>
+		<div class="nav-spacer"></div>
+		<a href="/logout">Logout</a>
+		{{else}}
+		<div class="nav-spacer"></div>
+		<a href="/login">Login</a>
+		{{end}}
+	</div>
+
+	<div class="card">
+		<h1>OAuth 2.0 Example Client</h1>
+		{{if .Authenticated}}
+		<div class="status">
+			<p><strong>✓ You are logged in</strong></p>
+			<p>Access Token: <code>{{.AccessToken}}</code></p>
+			{{if .UserInfo}}
+			<div class="info">
+				<h3>User Information (JWT Claims):</h3>
+				<pre>{{.UserInfo}}</pre>
+			</div>
+			{{end}}
+		</div>
+
+		<h2>Available Pages</h2>
+		<div class="page-grid">
+			<a href="/public" class="page-link">
+				<strong>📄 Public Page</strong><br>
+				<small>Accessible to everyone</small>
+			</a>
+			<a href="/private/dashboard" class="page-link">
+				<strong>📊 Dashboard</strong><br>
+				<small>Private - Your overview</small>
+			</a>
+			<a href="/private/profile" class="page-link">
+				<strong>👤 Profile</strong><br>
+				<small>Private - Your user profile</small>
+			</a>
+			<a href="/private/settings" class="page-link">
+				<strong>⚙️ Settings</strong><br>
+				<small>Private - Account settings</small>
+			</a>
+		</div>
+		{{else}}
+		<div class="info">
+			<p>This is an example OAuth 2.0 client application demonstrating the Authorization Code flow with PKCE.</p>
+			<p><strong>Features:</strong></p>
+			<ul>
+				<li>OAuth 2.0 Authorization Code flow</li>
+				<li>PKCE (Proof Key for Code Exchange)</li>
+				<li>JWT token validation</li>
+				<li>Public and Private pages</li>
+				<li>Protected routes with authentication</li>
+			</ul>
+		</div>
+
+		<h2>Try It Out</h2>
+		<div class="page-grid">
+			<a href="/public" class="page-link">
+				<strong>📄 Public Page</strong><br>
+				<small>✓ Accessible without login</small>
+			</a>
+			<a href="/private/dashboard" class="page-link locked">
+				<strong>🔒 Dashboard</strong><br>
+				<small>Requires authentication</small>
+			</a>
+			<a href="/private/profile" class="page-link locked">
+				<strong>🔒 Profile</strong><br>
+				<small>Requires authentication</small>
+			</a>
+			<a href="/private/settings" class="page-link locked">
+				<strong>🔒 Settings</strong><br>
+				<small>Requires authentication</small>
+			</a>
+		</div>
+
+		<a href="/login" class="btn">Login with Altalune</a>
+		{{end}}
+	</div>
+</body>
+</html>

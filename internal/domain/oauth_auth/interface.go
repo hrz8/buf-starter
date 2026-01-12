@@ -17,7 +17,9 @@ type Repositor interface {
 	MarkRefreshTokenExchanged(ctx context.Context, token uuid.UUID) error
 
 	GetUserConsent(ctx context.Context, userID int64, clientID uuid.UUID) (*UserConsent, error)
+	GetUserConsents(ctx context.Context, userID int64) ([]*UserConsentWithClient, error)
 	CreateOrUpdateUserConsent(ctx context.Context, input *UserConsentInput) (*UserConsent, error)
+	RevokeUserConsent(ctx context.Context, userID int64, clientID uuid.UUID) error
 
 	GetOAuthClientByClientID(ctx context.Context, clientID uuid.UUID) (*OAuthClientInfo, error)
 }

@@ -100,11 +100,11 @@ function formatDate(timestamp: any): string {
 }
 
 // Mask client ID
-function maskClientId(clientId: string): string {
-  if (!clientId || clientId.length < 4)
-    return '****';
-  return `****-****-****-${clientId.slice(-4)}`;
-}
+// function maskClientId(clientId: string): string {
+//   if (!clientId || clientId.length < 4)
+//     return '****';
+//   return `****-****-****-${clientId.slice(-4)}`;
+// }
 
 // Sheet/Dialog state
 const selectedClient = ref<OAuthClient | null>(null);
@@ -174,7 +174,7 @@ const columns = [
   }),
   columnHelper.accessor('clientId', {
     header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Client ID' }),
-    cell: ({ row }) => h('code', { class: 'text-sm text-muted-foreground' }, maskClientId(row.original.clientId)),
+    cell: ({ row }) => h('code', { class: 'text-sm text-muted-foreground' }, row.original.clientId),
   }),
   columnHelper.accessor('redirectUris', {
     header: ({ column }) => h(DataTableColumnHeader, { column, title: 'Redirect URIs' }),

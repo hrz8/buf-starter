@@ -4,7 +4,9 @@ import (
 	"embed"
 	"html/template"
 	"io"
+	"strings"
 	"sync"
+	"time"
 )
 
 //go:embed *.html
@@ -21,6 +23,25 @@ func Load() error {
 		funcMap := template.FuncMap{
 			"safeHTML": func(s string) template.HTML {
 				return template.HTML(s)
+			},
+			"substr": func(s string, start, length int) string {
+				if start >= len(s) {
+					return ""
+				}
+				end := start + length
+				if end > len(s) {
+					end = len(s)
+				}
+				return strings.ToUpper(s[start:end])
+			},
+			"split": func(s, sep string) []string {
+				if s == "" {
+					return []string{}
+				}
+				return strings.Split(s, sep)
+			},
+			"formatTime": func(t time.Time) string {
+				return t.Format("Jan 2, 2006 at 3:04 PM")
 			},
 		}
 		templates, loadErr = template.New("").Funcs(funcMap).ParseFS(templateFS, "*.html")

@@ -46,6 +46,18 @@ type UserConsent struct {
 	CreatedAt time.Time
 }
 
+// UserConsentWithClient represents a user's consent with OAuth client details.
+type UserConsentWithClient struct {
+	ID         int64
+	UserID     int64
+	ClientID   uuid.UUID
+	ClientName string
+	Scope      string
+	GrantedAt  time.Time
+	RevokedAt  *time.Time
+	CreatedAt  time.Time
+}
+
 // CreateAuthCodeInput holds parameters for creating an authorization code.
 type CreateAuthCodeInput struct {
 	ClientID            uuid.UUID

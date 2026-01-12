@@ -323,6 +323,87 @@ func (r *repo) CreateOrUpdateUserConsent(ctx context.Context, input *UserConsent
 	return &uc, nil
 }
 
+// GetUserConsents retrieves all consents for a user with client details.
+func (r *repo) GetUserConsents(ctx context.Context, userID int64) ([]*UserConsentWithClient, error) {
+	query := `
+		SELECT
+			uc.id,
+			uc.user_id,
+			uc.client_id,
+			c.name as client_name,
+			uc.scope,
+			uc.granted_at,
+			uc.revoked_at,
+			uc.created_at
+		FROM altalune_oauth_user_consents uc
+		INNER JOIN altalune_oauth_clients c ON uc.client_id = c.client_id
+		WHERE uc.user_id = $1 AND uc.revoked_at IS NULL
+		ORDER BY uc.granted_at DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("get user consents: %w", err)
+	}
+	defer rows.Close()
+
+	var consents []*UserConsentWithClient
+	for rows.Next() {
+		var uc UserConsentWithClient
+		var revokedAt sql.NullTime
+
+		if err := rows.Scan(
+			&uc.ID,
+			&uc.UserID,
+			&uc.ClientID,
+			&uc.ClientName,
+			&uc.Scope,
+			&uc.GrantedAt,
+			&revokedAt,
+			&uc.CreatedAt,
+		); err != nil {
+			return nil, fmt.Errorf("scan user consent: %w", err)
+		}
+
+		if revokedAt.Valid {
+			uc.RevokedAt = &revokedAt.Time
+		}
+
+		consents = append(consents, &uc)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("iterate user consents: %w", err)
+	}
+
+	return consents, nil
+}
+
+// RevokeUserConsent revokes a user's consent for a specific client.
+func (r *repo) RevokeUserConsent(ctx context.Context, userID int64, clientID uuid.UUID) error {
+	query := `
+		UPDATE altalune_oauth_user_consents
+		SET revoked_at = NOW(), updated_at = NOW()
+		WHERE user_id = $1 AND client_id = $2 AND revoked_at IS NULL
+	`
+
+	result, err := r.db.ExecContext(ctx, query, userID, clientID)
+	if err != nil {
+		return fmt.Errorf("revoke user consent: %w", err)
+	}
+
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return fmt.Errorf("check rows affected: %w", err)
+	}
+
+	if rows == 0 {
+		return ErrUserConsentNotFound
+	}
+
+	return nil
+}
+
 // GetOAuthClientByClientID retrieves an OAuth client by its client_id.
 func (r *repo) GetOAuthClientByClientID(ctx context.Context, clientID uuid.UUID) (*OAuthClientInfo, error) {
 	query := `

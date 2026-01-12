@@ -416,6 +416,51 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*User, error) {
 	return &usr, nil
 }
 
+// GetByInternalID retrieves a user by internal database ID
+func (r *Repo) GetByInternalID(ctx context.Context, internalID int64) (*User, error) {
+	sqlQuery := `
+		SELECT
+			public_id,
+			email,
+			first_name,
+			last_name,
+			is_active,
+			created_at,
+			updated_at
+		FROM altalune_users
+		WHERE id = $1
+	`
+
+	var usr User
+	var firstName, lastName sql.NullString
+
+	err := r.db.QueryRowContext(ctx, sqlQuery, internalID).Scan(
+		&usr.ID,
+		&usr.Email,
+		&firstName,
+		&lastName,
+		&usr.IsActive,
+		&usr.CreatedAt,
+		&usr.UpdatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		return nil, fmt.Errorf("failed to get user by internal id: %w", err)
+	}
+
+	if firstName.Valid {
+		usr.FirstName = firstName.String
+	}
+	if lastName.Valid {
+		usr.LastName = lastName.String
+	}
+
+	return &usr, nil
+}
+
 // Update updates a user in the database
 func (r *Repo) Update(ctx context.Context, input *UpdateUserInput) (*UpdateUserResult, error) {
 	// Email is already lowercased by service layer, but ensure it here too

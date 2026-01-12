@@ -232,6 +232,16 @@ func (s *Service) SaveUserConsent(ctx context.Context, userID int64, clientID uu
 	return nil
 }
 
+// GetUserConsents retrieves all consents for a user.
+func (s *Service) GetUserConsents(ctx context.Context, userID int64) ([]*UserConsentWithClient, error) {
+	return s.repo.GetUserConsents(ctx, userID)
+}
+
+// RevokeUserConsent revokes a user's consent for a specific client.
+func (s *Service) RevokeUserConsent(ctx context.Context, userID int64, clientID uuid.UUID) error {
+	return s.repo.RevokeUserConsent(ctx, userID, clientID)
+}
+
 // AuthenticateClient verifies client credentials using client_id and client_secret.
 func (s *Service) AuthenticateClient(ctx context.Context, clientIDStr, clientSecret string) (*OAuthClientInfo, error) {
 	clientUUID, err := uuid.Parse(clientIDStr)

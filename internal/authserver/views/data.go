@@ -42,3 +42,10 @@ type ErrorPageData struct {
 	ErrorDescription string
 	ShowBackToLogin  bool
 }
+
+type ProfileData struct {
+	BaseData
+	User       any
+	Identities any
+	Consents   any
+}
