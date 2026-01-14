@@ -235,6 +235,11 @@ func (s *Seeder) ensureSuperadminMembership(ctx context.Context, tx *sql.Tx, use
 
 // seedDefaultOAuthClient creates the default OAuth client for the dashboard
 func (s *Seeder) seedDefaultOAuthClient(ctx context.Context, tx *sql.Tx) error {
+	if s.config.IsDashboardOAuthExternalServer() {
+		s.logger.Info("External OAuth server configured, skipping default OAuth client seeding")
+		return nil
+	}
+
 	s.logger.Info("Checking default OAuth client...")
 
 	clientID := s.config.GetDefaultOAuthClientID()

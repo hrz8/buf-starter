@@ -54,10 +54,14 @@ type Config interface {
 
 	// Seeder configuration
 	GetSuperadminEmail() string
+	GetOAuthProviders() []OAuthProviderConfig
+
+	// Dashboard OAuth configuration (from dashboardOauth config section)
+	IsDashboardOAuthExternalServer() bool
+	GetDashboardOAuthServerURL() string
 	GetDefaultOAuthClientName() string
 	GetDefaultOAuthClientID() string
 	GetDefaultOAuthClientSecret() string
 	GetDefaultOAuthClientRedirectURIs() []string
 	GetDefaultOAuthClientPKCERequired() bool
-	GetOAuthProviders() []OAuthProviderConfig
 }

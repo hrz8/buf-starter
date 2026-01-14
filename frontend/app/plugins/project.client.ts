@@ -7,6 +7,10 @@ export default defineNuxtPlugin(() => {
   const projectStore = useProjectStore();
 
   router.beforeEach((to) => {
+    if (to.path.startsWith('/auth/')) {
+      return;
+    }
+
     const currentPId = (route.query.pId as string) ?? projectStore.activeProjectId;
     const toHasPId = 'pId' in to.query;
 

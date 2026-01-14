@@ -792,6 +792,37 @@
       }
     }
   },
+  "auth": {
+    "loggingOut": "Logging out...",
+    "login": {
+      "title": "Welcome to Altalune",
+      "subtitle": "Sign in to access your dashboard",
+      "mockFormInfo": "Username/password login is for visualization only. Please use OAuth login below.",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "Enter your username",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "usernameLoginButton": "Login with Username (Coming Soon)",
+      "oauthButton": "Login with Altalune",
+      "or": "Or",
+      "redirecting": "Redirecting..."
+    },
+    "callback": {
+      "processing": "Signing you in...",
+      "pleaseWait": "Please wait while we complete authentication",
+      "errorTitle": "Authentication Failed",
+      "errorSubtitle": "There was a problem signing you in",
+      "tryAgain": "Try Again",
+      "missingParams": "Missing authorization code or state parameter",
+      "exchangeFailed": "Failed to exchange authorization code",
+      "unknownError": "An unknown error occurred"
+    },
+    "errors": {
+      "invalidState": "Invalid state parameter. Please try logging in again.",
+      "missingCodeVerifier": "Session expired. Please try logging in again.",
+      "accessDenied": "Access was denied. Please try again."
+    }
+  },
   "layout": {
     "header": {
       "theme": {

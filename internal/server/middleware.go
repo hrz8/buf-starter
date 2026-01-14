@@ -37,14 +37,15 @@ func CORSMiddleware(next http.Handler, allowedOrigins []string) http.Handler {
 		origin := r.Header.Get("Origin")
 
 		if allowAll || originMap[origin] {
-			if allowAll {
-				w.Header().Set("Access-Control-Allow-Origin", "*")
-			} else {
+			if origin != "" {
 				w.Header().Set("Access-Control-Allow-Origin", origin)
+			} else if allowAll {
+				w.Header().Set("Access-Control-Allow-Origin", "*")
 			}
 			w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
 			w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization, Connect-Protocol-Version, Connect-Timeout-Ms")
 			w.Header().Set("Access-Control-Expose-Headers", "Connect-Protocol-Version, Connect-Timeout-Ms")
+			w.Header().Set("Access-Control-Allow-Credentials", "true")
 			w.Header().Set("Vary", "Origin")
 		}
 

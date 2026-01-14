@@ -115,14 +115,6 @@ type SuperadminConfig struct {
 	Email string `yaml:"email" validate:"required,email"`
 }
 
-type DefaultOAuthClientConfig struct {
-	Name         string   `yaml:"name" validate:"required"`
-	ClientID     string   `yaml:"clientId" validate:"required,uuid"`
-	ClientSecret string   `yaml:"clientSecret" validate:"required,min=32"`
-	RedirectURIs []string `yaml:"redirectUris" validate:"required,min=1,dive,required,url"`
-	PKCERequired bool     `yaml:"pkceRequired"`
-}
-
 type OAuthProviderConfig struct {
 	Provider     string `yaml:"provider" validate:"required,oneof=google github"`
 	ClientID     string `yaml:"clientId" validate:"required"`
@@ -133,17 +125,28 @@ type OAuthProviderConfig struct {
 }
 
 type SeederConfig struct {
-	Superadmin         SuperadminConfig         `yaml:"superadmin" validate:"required"`
-	DefaultOAuthClient DefaultOAuthClientConfig `yaml:"defaultOAuthClient" validate:"required"`
-	OAuthProviders     []OAuthProviderConfig    `yaml:"oauthProviders" validate:"dive"`
+	Superadmin     SuperadminConfig      `yaml:"superadmin" validate:"required"`
+	OAuthProviders []OAuthProviderConfig `yaml:"oauthProviders" validate:"dive"`
+}
+
+// DashboardOAuthConfig contains OAuth configuration for the Default Dashboard client
+type DashboardOAuthConfig struct {
+	ExternalServer bool     `yaml:"externalServer"`
+	Server         string   `yaml:"server" validate:"required,url"`
+	Name           string   `yaml:"name" validate:"required"`
+	ClientID       string   `yaml:"clientId" validate:"required,uuid"`
+	ClientSecret   string   `yaml:"clientSecret" validate:"required,min=32"`
+	RedirectURIs   []string `yaml:"redirectUris" validate:"required,min=1,dive,required,url"`
+	PKCERequired   bool     `yaml:"pkceRequired"`
 }
 
 type AppConfig struct {
-	Server   *ServerConfig   `yaml:"server" validate:"required"`
-	Database *DatabaseConfig `yaml:"database" validate:"required"`
-	Security *SecurityConfig `yaml:"security" validate:"required"`
-	Auth     *AuthConfig     `yaml:"auth" validate:"required"`
-	Seeder   *SeederConfig   `yaml:"seeder" validate:"required"`
+	Server         *ServerConfig         `yaml:"server" validate:"required"`
+	Database       *DatabaseConfig       `yaml:"database" validate:"required"`
+	Security       *SecurityConfig       `yaml:"security" validate:"required"`
+	Auth           *AuthConfig           `yaml:"auth" validate:"required"`
+	Seeder         *SeederConfig         `yaml:"seeder" validate:"required"`
+	DashboardOAuth *DashboardOAuthConfig `yaml:"dashboardOauth" validate:"required"`
 }
 
 func (c *AppConfig) setDefaults() {

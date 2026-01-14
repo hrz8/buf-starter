@@ -38,6 +38,10 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiUrl: '',
+      authServerUrl: '', // OAuth authorization server URL (for /oauth/authorize)
+      oauthBackendUrl: '', // Backend BFF URL for OAuth endpoints (/oauth/exchange, /oauth/me, etc.)
+      oauthClientId: '', // Dashboard OAuth client ID
+      oauthRedirectUri: '', // OAuth callback URL
     },
   },
   css: ['~/assets/css/style.css'],

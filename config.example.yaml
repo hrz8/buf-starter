@@ -48,16 +48,6 @@ seeder:
   superadmin:
     email: "admin@altalune.id"    # Superadmin email address
 
-  # Default OAuth client for Altalune Dashboard
-  defaultOAuthClient:
-    name: "Altalune Dashboard"                        # OAuth client display name
-    clientId: "e730207a-0fce-495d-bac3-6211963ac423"  # Fixed UUID for dashboard client
-    clientSecret: "0cMw4XzRZcRI4YDEqoY9AYWui3y4eZTQ"  # Dashboard client secret (min 32 chars)
-    redirectUris:                                     # Allowed callback URLs
-      - "http://localhost:8180/auth/callback"
-      - "https://dashboard.altalune.id/auth/callback"
-    pkceRequired: true                                # Suggested: Must be true for public clients (SPA, mobile apps)
-
   # OAuth providers for user login (Google, GitHub, etc.)
   # Secrets are encrypted with iamEncryptionKey before storage
   oauthProviders:
@@ -74,3 +64,15 @@ seeder:
       redirectUrl: "http://localhost:3300/auth/callback"
       scopes: "read:user,user:email"
       enabled: true
+
+# Dashboard OAuth client configuration
+dashboardOauth:
+  externalServer: false                               # Set to true if using external OAuth server (skips seeding)
+  server: "http://localhost:3300"                     # OAuth authorization server URL
+  name: "Altalune Dashboard"                          # OAuth client display name
+  clientId: "e730207a-0fce-495d-bac3-6211963ac423"    # Fixed UUID for dashboard client
+  clientSecret: "0cMw4XzRZcRI4YDEqoY9AYWui3y4eZTQ"    # Dashboard client secret (min 32 chars)
+  redirectUris:                                       # Allowed callback URLs
+    - "http://localhost:8180/auth/callback"
+    - "https://dashboard.altalune.id/auth/callback"
+  pkceRequired: true                                  # Must be true for public clients (SPA, mobile apps)

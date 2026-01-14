@@ -28,6 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { useAuthService } from '@/composables/useAuthService';
 
 const props = defineProps<{
   user: {
@@ -38,8 +39,23 @@ const props = defineProps<{
 }>();
 
 const { t } = useI18n();
-
 const { isMobile } = useSidebar();
+const authService = useAuthService();
+
+const isLoggingOut = ref(false);
+
+async function handleLogout() {
+  if (isLoggingOut.value) {
+    return;
+  }
+  isLoggingOut.value = true;
+  try {
+    await authService.logout();
+  }
+  finally {
+    isLoggingOut.value = false;
+  }
+}
 </script>
 
 <template>
@@ -116,9 +132,13 @@ const { isMobile } = useSidebar();
             </DropdownMenuItem>
           </DropdownMenuGroup>
           <DropdownMenuSeparator />
-          <DropdownMenuItem>
-            <LogOut />
-            {{ t('nav.user.logOut') }}
+          <DropdownMenuItem
+            class="text-destructive focus:text-destructive focus:bg-destructive/10"
+            :disabled="isLoggingOut"
+            @click="handleLogout"
+          >
+            <LogOut class="text-destructive" />
+            {{ isLoggingOut ? t('auth.loggingOut') : t('nav.user.logOut') }}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -123,25 +123,34 @@ func (c *AppConfig) GetSuperadminEmail() string {
 }
 
 func (c *AppConfig) GetDefaultOAuthClientName() string {
-	return c.Seeder.DefaultOAuthClient.Name
+	return c.DashboardOAuth.Name
 }
 
 func (c *AppConfig) GetDefaultOAuthClientID() string {
-	return c.Seeder.DefaultOAuthClient.ClientID
+	return c.DashboardOAuth.ClientID
 }
 
 func (c *AppConfig) GetDefaultOAuthClientSecret() string {
-	return c.Seeder.DefaultOAuthClient.ClientSecret
+	return c.DashboardOAuth.ClientSecret
 }
 
 func (c *AppConfig) GetDefaultOAuthClientRedirectURIs() []string {
-	uris := make([]string, len(c.Seeder.DefaultOAuthClient.RedirectURIs))
-	copy(uris, c.Seeder.DefaultOAuthClient.RedirectURIs)
+	uris := make([]string, len(c.DashboardOAuth.RedirectURIs))
+	copy(uris, c.DashboardOAuth.RedirectURIs)
 	return uris
 }
 
 func (c *AppConfig) GetDefaultOAuthClientPKCERequired() bool {
-	return c.Seeder.DefaultOAuthClient.PKCERequired
+	return c.DashboardOAuth.PKCERequired
+}
+
+// Dashboard OAuth configuration (for token exchange proxy)
+func (c *AppConfig) IsDashboardOAuthExternalServer() bool {
+	return c.DashboardOAuth.ExternalServer
+}
+
+func (c *AppConfig) GetDashboardOAuthServerURL() string {
+	return c.DashboardOAuth.Server
 }
 
 func (c *AppConfig) GetOAuthProviders() []altalune.OAuthProviderConfig {

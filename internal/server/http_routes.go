@@ -4,9 +4,12 @@ import (
 	"encoding/json"
 	"io/fs"
 	"net/http"
+	"net/url"
 	"path"
 	"strings"
+	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	"github.com/hrz8/altalune"
 	"github.com/hrz8/altalune/gen/altalune/v1/altalunev1connect"
 	"github.com/hrz8/altalune/gen/greeter/v1/greeterv1connect"
@@ -70,6 +73,12 @@ func (s *Server) setupRoutes() *http.ServeMux {
 	// main server mux
 	mux := http.NewServeMux()
 
+	// OAuth BFF endpoints (keeps tokens secure on backend via httpOnly cookies)
+	mux.HandleFunc("/oauth/exchange", s.handleAuthExchange)
+	mux.HandleFunc("/oauth/logout", s.handleAuthLogout)
+	mux.HandleFunc("/oauth/refresh", s.handleAuthRefresh)
+	mux.HandleFunc("/oauth/me", s.handleAuthMe)
+
 	mux.Handle("/api/", http.StripPrefix("/api", connectrpcMux))
 	mux.HandleFunc("/healthz", func(w http.ResponseWriter, r *http.Request) {
 		health := map[string]any{
@@ -88,7 +97,8 @@ func (s *Server) setupRoutes() *http.ServeMux {
 	// serve frontend
 	websiteFS, _ := fs.Sub(altalune.FrontendEmbeddedFiles, "frontend/.output/public")
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if strings.HasPrefix(r.URL.Path, "/api/") {
+		// Exclude API and OAuth endpoints from SPA serving
+		if strings.HasPrefix(r.URL.Path, "/api/") || strings.HasPrefix(r.URL.Path, "/oauth/") {
 			http.NotFound(w, r)
 			return
 		}
@@ -113,4 +123,365 @@ func (s *Server) setupRoutes() *http.ServeMux {
 	})
 
 	return mux
+}
+
+// AuthExchangeRequest is the request body for token exchange
+type AuthExchangeRequest struct {
+	Code         string `json:"code"`
+	CodeVerifier string `json:"code_verifier"`
+	RedirectURI  string `json:"redirect_uri"`
+}
+
+// TokenResponse is the response from the auth server token endpoint
+type TokenResponse struct {
+	AccessToken  string `json:"access_token"`
+	TokenType    string `json:"token_type"`
+	ExpiresIn    int    `json:"expires_in"`
+	RefreshToken string `json:"refresh_token,omitempty"`
+}
+
+// AuthUserInfo represents user information extracted from JWT
+type AuthUserInfo struct {
+	Sub   string `json:"sub"`
+	Email string `json:"email,omitempty"`
+	Name  string `json:"name,omitempty"`
+}
+
+// AuthExchangeSuccessResponse is the success response from token exchange
+type AuthExchangeSuccessResponse struct {
+	User      AuthUserInfo `json:"user"`
+	ExpiresIn int          `json:"expires_in"`
+}
+
+// AuthErrorResponse is the error response for auth endpoints
+type AuthErrorResponse struct {
+	Error            string `json:"error"`
+	ErrorDescription string `json:"error_description,omitempty"`
+}
+
+// handleAuthExchange proxies OAuth token exchange requests to the auth server.
+// Sets httpOnly cookies for tokens and returns user info in response body.
+//
+// POST /oauth/exchange
+// Request:  { "code": "...", "code_verifier": "...", "redirect_uri": "..." }
+// Response: { "user": { "sub": "...", "email": "...", "name": "..." }, "expires_in": 3600 }
+// Cookies:  access_token (httpOnly), refresh_token (httpOnly)
+func (s *Server) handleAuthExchange(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		s.writeAuthError(w, http.StatusMethodNotAllowed, "method_not_allowed", "Only POST method is allowed")
+		return
+	}
+
+	var req AuthExchangeRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		s.writeAuthError(w, http.StatusBadRequest, "invalid_request", "Invalid request body")
+		return
+	}
+
+	if req.Code == "" {
+		s.writeAuthError(w, http.StatusBadRequest, "invalid_request", "Missing required field: code")
+		return
+	}
+	if req.CodeVerifier == "" {
+		s.writeAuthError(w, http.StatusBadRequest, "invalid_request", "Missing required field: code_verifier")
+		return
+	}
+	if req.RedirectURI == "" {
+		s.writeAuthError(w, http.StatusBadRequest, "invalid_request", "Missing required field: redirect_uri")
+		return
+	}
+
+	// Exchange code for tokens with auth server
+	tokenResp, err := s.exchangeCodeForTokens(req.Code, req.CodeVerifier, req.RedirectURI)
+	if err != nil {
+		s.log.Error("Token exchange failed", "error", err)
+		s.writeAuthError(w, http.StatusBadGateway, "server_error", "Token exchange failed")
+		return
+	}
+
+	// Set httpOnly cookies for tokens
+	s.setAuthCookies(w, tokenResp)
+
+	// Extract user info from JWT and return
+	userInfo := extractUserInfoFromJWT(tokenResp.AccessToken)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(AuthExchangeSuccessResponse{
+		User:      userInfo,
+		ExpiresIn: tokenResp.ExpiresIn,
+	})
+}
+
+// handleAuthLogout clears auth cookies.
+//
+// POST /oauth/logout
+func (s *Server) handleAuthLogout(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		s.writeAuthError(w, http.StatusMethodNotAllowed, "method_not_allowed", "Only POST method is allowed")
+		return
+	}
+
+	s.clearAuthCookies(w)
+	w.WriteHeader(http.StatusOK)
+}
+
+// handleAuthRefresh refreshes tokens using the refresh_token cookie.
+//
+// POST /oauth/refresh
+// Response: { "user": { "sub": "...", "email": "...", "name": "..." }, "expires_in": 3600 }
+func (s *Server) handleAuthRefresh(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		s.writeAuthError(w, http.StatusMethodNotAllowed, "method_not_allowed", "Only POST method is allowed")
+		return
+	}
+
+	refreshCookie, err := r.Cookie("refresh_token")
+	if err != nil {
+		s.writeAuthError(w, http.StatusUnauthorized, "unauthorized", "No refresh token")
+		return
+	}
+
+	tokenResp, err := s.refreshTokens(refreshCookie.Value)
+	if err != nil {
+		s.log.Error("Token refresh failed", "error", err)
+		s.clearAuthCookies(w)
+		s.writeAuthError(w, http.StatusUnauthorized, "unauthorized", "Token refresh failed")
+		return
+	}
+
+	s.setAuthCookies(w, tokenResp)
+
+	userInfo := extractUserInfoFromJWT(tokenResp.AccessToken)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(AuthExchangeSuccessResponse{
+		User:      userInfo,
+		ExpiresIn: tokenResp.ExpiresIn,
+	})
+}
+
+// handleAuthMe returns current user info from the access_token cookie.
+//
+// GET /oauth/me
+// Response: { "user": { "sub": "...", "email": "...", "name": "..." }, "expires_in": 3600 }
+func (s *Server) handleAuthMe(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		s.writeAuthError(w, http.StatusMethodNotAllowed, "method_not_allowed", "Only GET method is allowed")
+		return
+	}
+
+	accessCookie, err := r.Cookie("access_token")
+	if err != nil {
+		s.writeAuthError(w, http.StatusUnauthorized, "unauthorized", "Not authenticated")
+		return
+	}
+
+	userInfo := extractUserInfoFromJWT(accessCookie.Value)
+	if userInfo.Sub == "" {
+		s.writeAuthError(w, http.StatusUnauthorized, "unauthorized", "Invalid token")
+		return
+	}
+
+	// Calculate remaining expiry from JWT
+	expiresIn := getTokenExpirySeconds(accessCookie.Value)
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(AuthExchangeSuccessResponse{
+		User:      userInfo,
+		ExpiresIn: expiresIn,
+	})
+}
+
+// exchangeCodeForTokens exchanges an authorization code for tokens with the auth server
+func (s *Server) exchangeCodeForTokens(code, codeVerifier, redirectURI string) (*TokenResponse, error) {
+	authServerURL := s.cfg.GetDashboardOAuthServerURL()
+	clientID := s.cfg.GetDefaultOAuthClientID()
+	clientSecret := s.cfg.GetDefaultOAuthClientSecret()
+
+	data := url.Values{
+		"grant_type":    {"authorization_code"},
+		"code":          {code},
+		"redirect_uri":  {redirectURI},
+		"code_verifier": {codeVerifier},
+	}
+
+	tokenURL := authServerURL + "/oauth/token"
+	req, err := http.NewRequest("POST", tokenURL, strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.SetBasicAuth(clientID, clientSecret)
+
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, &AuthServerError{StatusCode: resp.StatusCode}
+	}
+
+	var tokenResp TokenResponse
+	if err := json.NewDecoder(resp.Body).Decode(&tokenResp); err != nil {
+		return nil, err
+	}
+
+	return &tokenResp, nil
+}
+
+// refreshTokens exchanges a refresh token for new tokens with the auth server
+func (s *Server) refreshTokens(refreshToken string) (*TokenResponse, error) {
+	authServerURL := s.cfg.GetDashboardOAuthServerURL()
+	clientID := s.cfg.GetDefaultOAuthClientID()
+	clientSecret := s.cfg.GetDefaultOAuthClientSecret()
+
+	data := url.Values{
+		"grant_type":    {"refresh_token"},
+		"refresh_token": {refreshToken},
+	}
+
+	tokenURL := authServerURL + "/oauth/token"
+	req, err := http.NewRequest("POST", tokenURL, strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.SetBasicAuth(clientID, clientSecret)
+
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, &AuthServerError{StatusCode: resp.StatusCode}
+	}
+
+	var tokenResp TokenResponse
+	if err := json.NewDecoder(resp.Body).Decode(&tokenResp); err != nil {
+		return nil, err
+	}
+
+	return &tokenResp, nil
+}
+
+// setAuthCookies sets httpOnly cookies for access and refresh tokens
+func (s *Server) setAuthCookies(w http.ResponseWriter, tokenResp *TokenResponse) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "access_token",
+		Value:    tokenResp.AccessToken,
+		Path:     "/",
+		HttpOnly: true,
+		Secure:   false, // TODO: true in production with HTTPS
+		SameSite: http.SameSiteLaxMode,
+		MaxAge:   tokenResp.ExpiresIn,
+	})
+
+	if tokenResp.RefreshToken != "" {
+		http.SetCookie(w, &http.Cookie{
+			Name:     "refresh_token",
+			Value:    tokenResp.RefreshToken,
+			Path:     "/oauth",
+			HttpOnly: true,
+			Secure:   false, // TODO: true in production with HTTPS
+			SameSite: http.SameSiteLaxMode,
+			MaxAge:   86400 * 7, // 7 days
+		})
+	}
+}
+
+// clearAuthCookies clears auth cookies by setting MaxAge to -1
+func (s *Server) clearAuthCookies(w http.ResponseWriter) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "access_token",
+		Value:    "",
+		Path:     "/",
+		HttpOnly: true,
+		MaxAge:   -1,
+	})
+	http.SetCookie(w, &http.Cookie{
+		Name:     "refresh_token",
+		Value:    "",
+		Path:     "/oauth",
+		HttpOnly: true,
+		MaxAge:   -1,
+	})
+}
+
+// extractUserInfoFromJWT extracts user info from a JWT without validation
+// (we trust the auth server response)
+func extractUserInfoFromJWT(accessToken string) AuthUserInfo {
+	token, _, _ := new(jwt.Parser).ParseUnverified(accessToken, jwt.MapClaims{})
+	if token == nil {
+		return AuthUserInfo{}
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return AuthUserInfo{}
+	}
+
+	var userInfo AuthUserInfo
+	if sub, ok := claims["sub"].(string); ok {
+		userInfo.Sub = sub
+	}
+	if email, ok := claims["email"].(string); ok {
+		userInfo.Email = email
+	}
+	if name, ok := claims["name"].(string); ok {
+		userInfo.Name = name
+	}
+
+	return userInfo
+}
+
+// getTokenExpirySeconds returns remaining seconds until token expires
+func getTokenExpirySeconds(accessToken string) int {
+	token, _, _ := new(jwt.Parser).ParseUnverified(accessToken, jwt.MapClaims{})
+	if token == nil {
+		return 0
+	}
+
+	claims, ok := token.Claims.(jwt.MapClaims)
+	if !ok {
+		return 0
+	}
+
+	exp, ok := claims["exp"].(float64)
+	if !ok {
+		return 0
+	}
+
+	remaining := int(exp) - int(time.Now().Unix())
+	if remaining < 0 {
+		return 0
+	}
+	return remaining
+}
+
+// AuthServerError represents an error from the auth server
+type AuthServerError struct {
+	StatusCode int
+}
+
+func (e *AuthServerError) Error() string {
+	return "auth server returned status " + http.StatusText(e.StatusCode)
+}
+
+// writeAuthError writes an OAuth-style error response
+func (s *Server) writeAuthError(w http.ResponseWriter, statusCode int, errorCode, errorDescription string) {
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(statusCode)
+
+	json.NewEncoder(w).Encode(AuthErrorResponse{
+		Error:            errorCode,
+		ErrorDescription: errorDescription,
+	})
 }

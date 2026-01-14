@@ -792,6 +792,37 @@
       }
     }
   },
+  "auth": {
+    "loggingOut": "Sedang keluar...",
+    "login": {
+      "title": "Selamat Datang di Altalune",
+      "subtitle": "Masuk untuk mengakses dasbor Anda",
+      "mockFormInfo": "Login username/password hanya untuk visualisasi. Silakan gunakan login OAuth di bawah.",
+      "usernameLabel": "Nama Pengguna",
+      "usernamePlaceholder": "Masukkan nama pengguna",
+      "passwordLabel": "Kata Sandi",
+      "passwordPlaceholder": "Masukkan kata sandi",
+      "usernameLoginButton": "Login dengan Username (Segera Hadir)",
+      "oauthButton": "Login dengan Altalune",
+      "or": "Atau",
+      "redirecting": "Mengalihkan..."
+    },
+    "callback": {
+      "processing": "Sedang masuk...",
+      "pleaseWait": "Mohon tunggu sementara kami menyelesaikan autentikasi",
+      "errorTitle": "Autentikasi Gagal",
+      "errorSubtitle": "Terjadi masalah saat proses masuk",
+      "tryAgain": "Coba Lagi",
+      "missingParams": "Kode otorisasi atau parameter state tidak ditemukan",
+      "exchangeFailed": "Gagal menukar kode otorisasi",
+      "unknownError": "Terjadi kesalahan yang tidak diketahui"
+    },
+    "errors": {
+      "invalidState": "Parameter state tidak valid. Silakan coba masuk lagi.",
+      "missingCodeVerifier": "Sesi berakhir. Silakan coba masuk lagi.",
+      "accessDenied": "Akses ditolak. Silakan coba lagi."
+    }
+  },
   "layout": {
     "header": {
       "theme": {
