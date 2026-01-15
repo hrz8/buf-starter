@@ -311,21 +311,72 @@ func requireAuth(next http.HandlerFunc) http.HandlerFunc {
 		sessionID := getSessionID(r)
 		session := sessionStore.Get(sessionID)
 
-		if session == nil || session.IsExpired() {
-			// Store the original URL to redirect back after login
+		// No session at all
+		if session == nil {
+			redirectToLogin(w, r)
+			return
+		}
+
+		// Session expired or about to expire - attempt refresh
+		if session.IsExpired() || session.IsAboutToExpire() {
+			if session.RefreshToken == "" {
+				log.Printf("[Auth] No refresh token available, redirecting to login")
+				sessionStore.Delete(sessionID)
+				redirectToLogin(w, r)
+				return
+			}
+
+			log.Printf("[Auth] Token expired/expiring, attempting refresh...")
+			tokens, oauthErr := refreshAccessToken(session.RefreshToken)
+			if oauthErr != nil {
+				log.Printf("[Auth] Token refresh failed: %s - %s", oauthErr.Error, oauthErr.Description)
+
+				// If refresh token is invalid/expired, clear session and redirect to login
+				if oauthErr.Error == "invalid_grant" {
+					log.Printf("[Auth] Refresh token invalid, clearing session")
+					sessionStore.Delete(sessionID)
+					// Clear session cookie
+					http.SetCookie(w, &http.Cookie{
+						Name:     "example_oauthclient_session_id",
+						Value:    "",
+						Path:     "/",
+						HttpOnly: true,
+						MaxAge:   -1,
+					})
+				}
+				redirectToLogin(w, r)
+				return
+			}
+
+			// Update session with new tokens
+			sessionStore.UpdateTokens(sessionID, tokens)
+
+			// Update session cookie expiry
 			http.SetCookie(w, &http.Cookie{
-				Name:     "return_to",
-				Value:    r.URL.Path,
+				Name:     "example_oauthclient_session_id",
+				Value:    sessionID,
 				Path:     "/",
 				HttpOnly: true,
-				MaxAge:   300, // 5 minutes
+				MaxAge:   tokens.ExpiresIn,
 			})
-			http.Redirect(w, r, "/login", http.StatusFound)
-			return
+
+			log.Printf("[Auth] Session refreshed, continuing to protected route")
 		}
 
 		next(w, r)
 	}
+}
+
+// redirectToLogin stores return URL and redirects to login page
+func redirectToLogin(w http.ResponseWriter, r *http.Request) {
+	http.SetCookie(w, &http.Cookie{
+		Name:     "return_to",
+		Value:    r.URL.Path,
+		Path:     "/",
+		HttpOnly: true,
+		MaxAge:   300, // 5 minutes
+	})
+	http.Redirect(w, r, "/login", http.StatusFound)
 }
 
 func handlePublic(w http.ResponseWriter, r *http.Request) {
@@ -628,4 +679,67 @@ func (s *SessionStore) Delete(id string) {
 // Session methods
 func (s *Session) IsExpired() bool {
 	return time.Now().After(s.ExpiresAt)
+}
+
+// IsAboutToExpire checks if token expires within the buffer time (1 minute)
+func (s *Session) IsAboutToExpire() bool {
+	return time.Now().After(s.ExpiresAt.Add(-60 * time.Second))
+}
+
+// UpdateTokens updates the session with new tokens from refresh
+func (s *SessionStore) UpdateTokens(id string, tokens *TokenResponse) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	if session, ok := s.sessions[id]; ok {
+		session.AccessToken = tokens.AccessToken
+		if tokens.RefreshToken != "" {
+			session.RefreshToken = tokens.RefreshToken
+		}
+		session.ExpiresAt = time.Now().Add(time.Duration(tokens.ExpiresIn) * time.Second)
+		// Update user info from new token
+		session.UserInfo = extractUserInfo(tokens.AccessToken)
+	}
+}
+
+// refreshAccessToken exchanges a refresh token for new access token
+func refreshAccessToken(refreshToken string) (*TokenResponse, *OAuthError) {
+	data := url.Values{
+		"grant_type":    {"refresh_token"},
+		"refresh_token": {refreshToken},
+	}
+
+	req, err := http.NewRequest("POST", config.AuthServerURL+"/oauth/token", strings.NewReader(data.Encode()))
+	if err != nil {
+		return nil, &OAuthError{Error: "request_error", Description: err.Error()}
+	}
+
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.SetBasicAuth(config.ClientID, config.ClientSecret)
+
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, &OAuthError{Error: "network_error", Description: err.Error()}
+	}
+	defer resp.Body.Close()
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		return nil, &OAuthError{Error: "read_error", Description: err.Error()}
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		var oauthErr OAuthError
+		if err := json.Unmarshal(body, &oauthErr); err != nil {
+			return nil, &OAuthError{Error: "unknown_error", Description: string(body)}
+		}
+		return nil, &oauthErr
+	}
+
+	var tokens TokenResponse
+	if err := json.Unmarshal(body, &tokens); err != nil {
+		return nil, &OAuthError{Error: "parse_error", Description: err.Error()}
+	}
+
+	log.Printf("[Auth] Token refreshed successfully")
+	return &tokens, nil
 }

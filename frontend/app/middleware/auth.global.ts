@@ -9,18 +9,10 @@ export default defineNuxtRouteMiddleware(async (to) => {
     return;
   }
 
+  // If authenticated, check if token needs refresh
   if (authStore.isAuthenticated) {
-    const expiresAt = authStore.expiresAt;
-    if (expiresAt && Date.now() > expiresAt - 60000) {
-      try {
-        await authService.refreshTokens();
-        return;
-      }
-      catch {
-        // Refresh failed, will redirect to login below
-      }
-    }
-    else {
+    const hasValidAuth = await authService.checkAndRefreshIfNeeded();
+    if (hasValidAuth) {
       return;
     }
   }
@@ -45,6 +37,5 @@ export default defineNuxtRouteMiddleware(async (to) => {
   authStore.setReturnUrl(nextUrl || null);
 
   const loginPath = nextUrl ? `/auth/login?next=${encodeURIComponent(nextUrl)}` : '/auth/login';
-
   return navigateTo(loginPath);
 });

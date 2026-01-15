@@ -2,6 +2,13 @@ import type { AuthExchangeResponse } from '~~/shared/repository/auth';
 import { authRepository } from '~~/shared/repository/auth';
 import { useAuthStore } from '@/stores/auth';
 
+// Module-level state for refresh deduplication (shared across all instances)
+let refreshPromise: Promise<AuthExchangeResponse> | null = null;
+
+// Minimum interval between refresh attempts (prevent rapid retries)
+const MIN_REFRESH_INTERVAL_MS = 10 * 1000;
+let lastRefreshAttempt = 0;
+
 export function useAuthService() {
   const { $api } = useNuxtApp();
   const config = useRuntimeConfig();
@@ -42,9 +49,78 @@ export function useAuthService() {
   }
 
   async function refreshTokens(): Promise<AuthExchangeResponse> {
-    const result = await repo.refresh();
-    authStore.setUser(result.user, result.expires_in);
-    return result;
+    // Deduplicate concurrent refresh calls
+    if (refreshPromise) {
+      return refreshPromise;
+    }
+
+    // Prevent rapid refresh attempts
+    const now = Date.now();
+    if (now - lastRefreshAttempt < MIN_REFRESH_INTERVAL_MS) {
+      throw new AuthError('refresh_throttled', 'Refresh attempted too recently');
+    }
+    lastRefreshAttempt = now;
+
+    refreshPromise = (async () => {
+      try {
+        const result = await repo.refresh();
+        authStore.setUser(result.user, result.expires_in);
+        return result;
+      }
+      catch (error) {
+        console.error('[Auth] Token refresh failed:', error);
+        throw error;
+      }
+      finally {
+        refreshPromise = null;
+      }
+    })();
+
+    return refreshPromise;
+  }
+
+  /**
+   * Check if token is expired or about to expire (within 1 minute)
+   */
+  function isTokenExpired(): boolean {
+    const expiresAt = authStore.expiresAt;
+    if (!expiresAt) {
+      return true;
+    }
+    // Consider expired if within 1 minute of expiration
+    return Date.now() >= expiresAt - 60 * 1000;
+  }
+
+  /**
+   * Check token expiration and refresh if needed.
+   * Call this before accessing protected resources.
+   * Returns true if we have valid auth, false otherwise.
+   */
+  async function checkAndRefreshIfNeeded(): Promise<boolean> {
+    // If not authenticated at all, return false
+    if (!authStore.isAuthenticated) {
+      return false;
+    }
+
+    // Token still valid
+    if (!isTokenExpired()) {
+      return true;
+    }
+
+    // Token expired, attempt refresh
+    try {
+      await refreshTokens();
+      return true;
+    }
+    catch (error) {
+      const err = error as { code?: string; status?: number };
+      // If refresh failed due to invalid grant, clear auth
+      if (err.code === 'invalid_grant' || err.status === 401) {
+        console.warn('[Auth] Refresh token invalid, clearing auth');
+        authStore.clearAuth();
+      }
+      return false;
+    }
   }
 
   async function fetchCurrentUser(): Promise<AuthExchangeResponse | null> {
@@ -76,6 +152,8 @@ export function useAuthService() {
     refreshTokens,
     fetchCurrentUser,
     logout,
+    isTokenExpired,
+    checkAndRefreshIfNeeded,
   };
 }
 
