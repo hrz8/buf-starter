@@ -17,8 +17,9 @@ import (
 	"sync"
 	"time"
 
+	"examples/oauth-client-ssr/views"
+
 	"github.com/golang-jwt/jwt/v5"
-	"github.com/hrz8/buf-starter/examples/oauth-client/views"
 	"github.com/lestrrat-go/jwx/v2/jwk"
 )
 

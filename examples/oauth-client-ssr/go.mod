@@ -1,4 +1,4 @@
-module github.com/hrz8/buf-starter/examples/oauth-client
+module examples/oauth-client-ssr
 
 go 1.23
 
