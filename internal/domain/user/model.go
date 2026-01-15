@@ -138,8 +138,8 @@ type UserIdentity struct {
 	Email                 string
 	FirstName             string
 	LastName              string
-	OAuthClientID         *string    // UUID of OAuth client (nullable)
-	OriginOAuthClientName *string    // Client name at signup time (historical snapshot, nullable)
+	OAuthClientID         *string // UUID of OAuth client (nullable)
+	OriginOAuthClientName *string // Client name at signup time (historical snapshot, nullable)
 	LastLoginAt           *time.Time
 	CreatedAt             time.Time
 	UpdatedAt             time.Time
@@ -147,12 +147,12 @@ type UserIdentity struct {
 
 // CreateUserIdentityInput contains data for creating a user identity
 type CreateUserIdentityInput struct {
-	UserID                 int64
-	Provider               string
-	ProviderUserID         string
-	Email                  string
-	FirstName              string
-	LastName               string
-	OAuthClientID          *string // UUID of OAuth client (nullable)
-	OriginOAuthClientName  *string // Client name at signup time (historical snapshot, nullable)
+	UserID                int64
+	Provider              string
+	ProviderUserID        string
+	Email                 string
+	FirstName             string
+	LastName              string
+	OAuthClientID         *string // UUID of OAuth client (nullable)
+	OriginOAuthClientName *string // Client name at signup time (historical snapshot, nullable)
 }

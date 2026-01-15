@@ -242,7 +242,9 @@ func (s *Service) RevokeUserConsent(ctx context.Context, userID int64, clientID 
 	return s.repo.RevokeUserConsent(ctx, userID, clientID)
 }
 
-// AuthenticateClient verifies client credentials using client_id and client_secret.
+// AuthenticateClient verifies client credentials.
+// Public clients: only validates client_id exists (no secret required)
+// Confidential clients: validates client_id and client_secret
 func (s *Service) AuthenticateClient(ctx context.Context, clientIDStr, clientSecret string) (*OAuthClientInfo, error) {
 	clientUUID, err := uuid.Parse(clientIDStr)
 	if err != nil {
@@ -257,11 +259,23 @@ func (s *Service) AuthenticateClient(ctx context.Context, clientIDStr, clientSec
 		return nil, err
 	}
 
+	// Public clients: no secret required
+	if !client.Confidential {
+		s.log.Info("public client authenticated", "client_id", clientIDStr, "client_name", client.Name)
+		return client, nil
+	}
+
+	// Confidential clients: secret required
 	if clientSecret == "" {
 		return nil, ErrClientSecretRequired
 	}
 
-	valid, err := password.VerifyPassword(clientSecret, client.SecretHash)
+	if client.SecretHash == nil {
+		s.log.Error("confidential client missing secret hash", "client_id", clientIDStr)
+		return nil, ErrInvalidClientSecret
+	}
+
+	valid, err := password.VerifyPassword(clientSecret, *client.SecretHash)
 	if err != nil || !valid {
 		return nil, ErrInvalidClientSecret
 	}

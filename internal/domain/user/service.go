@@ -159,14 +159,14 @@ func (s *Service) GetUser(ctx context.Context, req *altalunev1.GetUserRequest) (
 	protoIdentities := make([]*altalunev1.UserIdentity, 0, len(identities))
 	for _, identity := range identities {
 		protoIdentity := &altalunev1.UserIdentity{
-			PublicId:        identity.PublicID,
-			Provider:        identity.Provider,
-			ProviderUserId:  identity.ProviderUserID,
-			Email:           identity.Email,
-			FirstName:       identity.FirstName,
-			LastName:        identity.LastName,
-			CreatedAt:       timestamppb.New(identity.CreatedAt),
-			UpdatedAt:       timestamppb.New(identity.UpdatedAt),
+			PublicId:       identity.PublicID,
+			Provider:       identity.Provider,
+			ProviderUserId: identity.ProviderUserID,
+			Email:          identity.Email,
+			FirstName:      identity.FirstName,
+			LastName:       identity.LastName,
+			CreatedAt:      timestamppb.New(identity.CreatedAt),
+			UpdatedAt:      timestamppb.New(identity.UpdatedAt),
 		}
 
 		if identity.OAuthClientID != nil {

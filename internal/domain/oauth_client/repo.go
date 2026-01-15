@@ -26,6 +26,7 @@ func NewRepo(db postgres.DB) Repositor {
 
 // Create creates a new OAuth client with generated client_id and hashed secret
 // OAuth clients are GLOBAL entities (not project-scoped)
+// For public clients (Confidential=false), no secret is generated
 func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*CreateOAuthClientResult, error) {
 	// 1. Generate public ID (nanoid)
 	publicID, err := nanoid.GeneratePublicID()
@@ -36,26 +37,34 @@ func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*Crea
 	// 2. Generate UUID client_id for OAuth flow
 	clientID := uuid.New()
 
-	// 3. Generate secure random client secret (minimum 32 characters)
-	clientSecret := generateSecureRandom(32)
+	// 3. Generate secret ONLY for confidential clients
+	var clientSecret string
+	var hashedSecret *string // Nullable for public clients
 
-	// 4. Hash secret with Argon2id (using production parameters from T19/oauth_seeder)
-	hashedSecret, err := password.HashPassword(clientSecret, password.HashOption{
-		Iterations: 2,         // Time cost
-		Memory:     64 * 1024, // 64MB
-		Threads:    4,         // Parallelism
-		Len:        32,        // Hash length
-	})
-	if err != nil {
-		return nil, fmt.Errorf("hash client secret: %w", err)
+	if input.Confidential {
+		// Confidential client: generate and hash secret
+		clientSecret = generateSecureRandom(32)
+
+		// Hash secret with Argon2id (using production parameters from T19/oauth_seeder)
+		hash, err := password.HashPassword(clientSecret, password.HashOption{
+			Iterations: 2,         // Time cost
+			Memory:     64 * 1024, // 64MB
+			Threads:    4,         // Parallelism
+			Len:        32,        // Hash length
+		})
+		if err != nil {
+			return nil, fmt.Errorf("hash client secret: %w", err)
+		}
+		hashedSecret = &hash
 	}
+	// Public clients: no secret generated (hashedSecret remains nil)
 
-	// 5. Insert into global table (no partitioning)
+	// 4. Insert into global table (no partitioning)
 	insertQuery := `
 		INSERT INTO altalune_oauth_clients (
 			public_id, name, client_id,
-			client_secret_hash, redirect_uris, pkce_required, is_default
-		) VALUES ($1, $2, $3, $4, $5, $6, $7)
+			client_secret_hash, redirect_uris, pkce_required, is_default, confidential
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING id, created_at, updated_at
 	`
 
@@ -66,10 +75,11 @@ func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*Crea
 		publicID,
 		input.Name,
 		clientID,
-		hashedSecret,
+		hashedSecret, // NULL for public clients
 		pq.Array(input.RedirectURIs),
 		input.PKCERequired,
-		false, // is_default (always false for user-created clients)
+		false,              // is_default (always false for user-created clients)
+		input.Confidential, // true = confidential, false = public/SPA
 	).Scan(&id, &createdAt, &updatedAt)
 
 	if err != nil {
@@ -79,7 +89,7 @@ func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*Crea
 		return nil, fmt.Errorf("insert oauth client: %w", err)
 	}
 
-	// 6. Build domain model
+	// 5. Build domain model
 	client := &OAuthClient{
 		ID:           publicID,
 		Name:         input.Name,
@@ -87,11 +97,13 @@ func (r *repo) Create(ctx context.Context, input *CreateOAuthClientInput) (*Crea
 		RedirectURIs: input.RedirectURIs,
 		PKCERequired: input.PKCERequired,
 		IsDefault:    false,
+		Confidential: input.Confidential,
 		CreatedAt:    createdAt.Time,
 		UpdatedAt:    updatedAt.Time,
 	}
 
-	// 7. Return client with PLAINTEXT secret (ONLY time it's returned)
+	// 6. Return client with PLAINTEXT secret (ONLY time it's returned)
+	// For public clients, ClientSecret will be empty string
 	return &CreateOAuthClientResult{
 		Client:       client,
 		ClientSecret: clientSecret,
@@ -103,7 +115,7 @@ func (r *repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 	// Base query WITHOUT client_secret_hash (security: never expose secret hash)
 	baseQuery := `
 		SELECT id, public_id, name, client_id,
-		       redirect_uris, pkce_required, is_default,
+		       redirect_uris, pkce_required, is_default, confidential,
 		       created_at, updated_at
 		FROM altalune_oauth_clients
 		WHERE 1=1
@@ -148,6 +160,16 @@ func (r *repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 				for _, value := range values {
 					if value == "true" || value == "false" {
 						whereConditions = append(whereConditions, fmt.Sprintf("is_default = $%d", argCounter))
+						args = append(args, value == "true")
+						argCounter++
+					}
+				}
+				continue
+			case "confidential":
+				// Handle boolean filter for client type
+				for _, value := range values {
+					if value == "true" || value == "false" {
+						whereConditions = append(whereConditions, fmt.Sprintf("confidential = $%d", argCounter))
 						args = append(args, value == "true")
 						argCounter++
 					}
@@ -225,6 +247,7 @@ func (r *repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 			&redirectURIs,
 			&result.PKCERequired,
 			&result.IsDefault,
+			&result.Confidential,
 			&result.CreatedAt,
 			&result.UpdatedAt,
 		)
@@ -260,7 +283,7 @@ func (r *repo) GetByPublicID(ctx context.Context, publicID string) (*OAuthClient
 	// Query WITHOUT client_secret_hash
 	selectQuery := `
 		SELECT id, public_id, name, client_id,
-		       redirect_uris, pkce_required, is_default,
+		       redirect_uris, pkce_required, is_default, confidential,
 		       created_at, updated_at
 		FROM altalune_oauth_clients
 		WHERE public_id = $1
@@ -277,6 +300,7 @@ func (r *repo) GetByPublicID(ctx context.Context, publicID string) (*OAuthClient
 		&redirectURIs,
 		&result.PKCERequired,
 		&result.IsDefault,
+		&result.Confidential,
 		&result.CreatedAt,
 		&result.UpdatedAt,
 	)
@@ -304,7 +328,7 @@ func (r *repo) GetByClientID(ctx context.Context, clientID string) (*OAuthClient
 	// Query WITHOUT client_secret_hash
 	selectQuery := `
 		SELECT id, public_id, name, client_id,
-		       redirect_uris, pkce_required, is_default,
+		       redirect_uris, pkce_required, is_default, confidential,
 		       created_at, updated_at
 		FROM altalune_oauth_clients
 		WHERE client_id = $1
@@ -321,6 +345,7 @@ func (r *repo) GetByClientID(ctx context.Context, clientID string) (*OAuthClient
 		&redirectURIs,
 		&result.PKCERequired,
 		&result.IsDefault,
+		&result.Confidential,
 		&result.CreatedAt,
 		&result.UpdatedAt,
 	)
@@ -374,7 +399,7 @@ func (r *repo) Update(ctx context.Context, input *UpdateOAuthClientInput) (*OAut
 		SET %s
 		WHERE public_id = $1
 		RETURNING id, public_id, name, client_id,
-		          redirect_uris, pkce_required, is_default,
+		          redirect_uris, pkce_required, is_default, confidential,
 		          created_at, updated_at
 	`, strings.Join(setClauses, ", "))
 
@@ -389,6 +414,7 @@ func (r *repo) Update(ctx context.Context, input *UpdateOAuthClientInput) (*OAut
 		&redirectURIs,
 		&result.PKCERequired,
 		&result.IsDefault,
+		&result.Confidential,
 		&result.CreatedAt,
 		&result.UpdatedAt,
 	)
@@ -449,21 +475,28 @@ func (r *repo) Delete(ctx context.Context, publicID string) error {
 // 1. Add audit logging here
 // 2. Return encrypted secret if you store it encrypted
 // 3. Add rate limiting for this operation
+// For public clients, returns empty string (they have no secret)
 func (r *repo) RevealClientSecret(ctx context.Context, publicID string) (string, error) {
-	// Query for client_secret_hash (this is the ONLY method that returns it)
+	// Query for client_secret_hash and confidential flag
 	selectQuery := `
-		SELECT client_secret_hash
+		SELECT client_secret_hash, confidential
 		FROM altalune_oauth_clients
 		WHERE public_id = $1
 	`
 
-	var hashedSecret string
-	err := r.db.QueryRowContext(ctx, selectQuery, publicID).Scan(&hashedSecret)
+	var hashedSecret sql.NullString
+	var confidential bool
+	err := r.db.QueryRowContext(ctx, selectQuery, publicID).Scan(&hashedSecret, &confidential)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return "", ErrOAuthClientNotFound
 		}
 		return "", fmt.Errorf("reveal client secret: %w", err)
+	}
+
+	// Public clients don't have secrets
+	if !confidential {
+		return "", ErrPublicClientNoSecret
 	}
 
 	// TODO: Add audit logging here
@@ -474,7 +507,10 @@ func (r *repo) RevealClientSecret(ctx context.Context, publicID string) (string,
 
 	// Return hashed secret (Argon2id PHC string format)
 	// Frontend will display this as-is (no way to recover plaintext after creation)
-	return hashedSecret, nil
+	if !hashedSecret.Valid {
+		return "", fmt.Errorf("client secret hash is null")
+	}
+	return hashedSecret.String, nil
 }
 
 // generateSecureRandom generates a cryptographically secure random string

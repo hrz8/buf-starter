@@ -43,11 +43,11 @@ func (c *GoogleClient) ExchangeCodeForUserInfo(ctx context.Context, code string)
 	defer resp.Body.Close()
 
 	var googleUser struct {
-		ID        string `json:"id"`
-		Email     string `json:"email"`
-		GivenName string `json:"given_name"`
+		ID         string `json:"id"`
+		Email      string `json:"email"`
+		GivenName  string `json:"given_name"`
 		FamilyName string `json:"family_name"`
-		Picture   string `json:"picture"`
+		Picture    string `json:"picture"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&googleUser); err != nil {

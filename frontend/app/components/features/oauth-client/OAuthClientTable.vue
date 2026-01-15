@@ -168,8 +168,16 @@ const columns = [
       const client = row.original;
       return h('div', { class: 'flex items-center gap-2' }, [
         h('span', { class: 'font-medium' }, client.name),
-        client.isDefault && h(Badge, { variant: 'secondary', class: 'text-xs' }, 'Default'),
+        client.isDefault && h(Badge, { variant: 'secondary', class: 'text-xs' }, () => 'Default'),
       ]);
+    },
+  }),
+  columnHelper.accessor('confidential', {
+    header: ({ column }) => h(DataTableColumnHeader, { column, title: t('features.oauth_clients.columns.type') }),
+    cell: ({ row }) => {
+      return row.original.confidential
+        ? h(Badge, { variant: 'default', class: 'text-xs' }, () => t('features.oauth_clients.types.confidential'))
+        : h(Badge, { variant: 'secondary', class: 'text-xs' }, () => t('features.oauth_clients.types.public'));
     },
   }),
   columnHelper.accessor('clientId', {

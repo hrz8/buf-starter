@@ -678,7 +678,12 @@
         "clientId": "Client ID",
         "redirectUris": "URI Redirect",
         "pkceRequired": "PKCE",
-        "createdAt": "Dibuat"
+        "createdAt": "Dibuat",
+        "type": "Tipe"
+      },
+      "types": {
+        "confidential": "Konfidensial",
+        "public": "Publik"
       },
       "actions": {
         "create": "Buat Klien",
@@ -694,7 +699,8 @@
         "deleting": "Menghapus...",
         "addRedirectUri": "Tambah URI Redirect",
         "closeNow": "Tutup Sekarang",
-        "saveSecret": "Saya Telah Menyimpan Secret"
+        "saveSecret": "Saya Telah Menyimpan Secret",
+        "done": "Selesai"
       },
       "labels": {
         "default": "Bawaan",
@@ -702,7 +708,8 @@
         "optional": "Opsional",
         "clientName": "Nama Klien *",
         "redirectUris": "URI Redirect *",
-        "pkceRequired": "PKCE Wajib"
+        "pkceRequired": "PKCE Wajib",
+        "clientType": "Tipe Klien"
       },
       "placeholders": {
         "clientName": "Aplikasi Saya",
@@ -711,7 +718,11 @@
       "descriptions": {
         "clientName": "Nama yang mudah diingat untuk klien OAuth ini",
         "redirectUris": "URL HTTP/HTTPS yang valid. Localhost diperbolehkan untuk pengembangan.",
-        "pkceRequired": "Aktifkan untuk klien publik (SPA, aplikasi mobile)"
+        "pkceRequired": "Aktifkan untuk klien publik (SPA, aplikasi mobile)",
+        "pkceRequiredPublic": "PKCE selalu diperlukan untuk klien publik",
+        "confidentialType": "Aplikasi server-side dengan penyimpanan secret yang aman",
+        "publicType": "SPA, aplikasi mobile (PKCE wajib, tanpa secret)",
+        "clientTypeImmutable": "Tipe klien tidak dapat diubah setelah pembuatan"
       },
       "sheets": {
         "create": {
@@ -783,7 +794,19 @@
         "atLeastOneUri": "Setidaknya satu URI redirect diperlukan"
       },
       "alerts": {
-        "error": "Error"
+        "error": "Error",
+        "publicClientTitle": "Klien Publik",
+        "publicClientInfo": "Tidak memerlukan client secret. PKCE diperlukan untuk semua alur otorisasi."
+      },
+      "credentialsDisplay": {
+        "title": "Klien OAuth Dibuat",
+        "clientIdLabel": "Client ID",
+        "secretWarning": "Client Secret - Simpan sekarang, tidak akan ditampilkan lagi!",
+        "publicClientInfo": {
+          "title": "Pengaturan Klien Publik",
+          "point1": "Tidak perlu client secret - gunakan PKCE untuk keamanan",
+          "point2": "Sertakan client_id dalam permintaan token melalui form body"
+        }
       },
       "loading": "Memuat klien OAuth...",
       "empty": {

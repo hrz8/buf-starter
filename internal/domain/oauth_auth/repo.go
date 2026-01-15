@@ -408,22 +408,24 @@ func (r *repo) RevokeUserConsent(ctx context.Context, userID int64, clientID uui
 func (r *repo) GetOAuthClientByClientID(ctx context.Context, clientID uuid.UUID) (*OAuthClientInfo, error) {
 	query := `
 		SELECT id, client_id, name, client_secret_hash,
-		       redirect_uris, pkce_required, is_default
+		       redirect_uris, pkce_required, is_default, confidential
 		FROM altalune_oauth_clients
 		WHERE client_id = $1
 	`
 
 	var oc OAuthClientInfo
 	var redirectURIs pq.StringArray
+	var secretHash sql.NullString
 
 	err := r.db.QueryRowContext(ctx, query, clientID).Scan(
 		&oc.ID,
 		&oc.ClientID,
 		&oc.Name,
-		&oc.SecretHash,
+		&secretHash,
 		&redirectURIs,
 		&oc.PKCERequired,
 		&oc.IsDefault,
+		&oc.Confidential,
 	)
 
 	if err != nil {
@@ -433,6 +435,9 @@ func (r *repo) GetOAuthClientByClientID(ctx context.Context, clientID uuid.UUID)
 		return nil, fmt.Errorf("get oauth client: %w", err)
 	}
 
+	if secretHash.Valid {
+		oc.SecretHash = &secretHash.String
+	}
 	oc.RedirectURIs = []string(redirectURIs)
 
 	return &oc, nil

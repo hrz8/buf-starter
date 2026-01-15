@@ -30,6 +30,7 @@ message OAuthClient {
   bool is_default = 6;
   bool client_secret_set = 7;             // Boolean flag, NOT actual secret
   repeated string allowed_scopes = 8;     // Scope names
+  bool confidential = 9;                  // true = requires secret (confidential), false = public/SPA
   google.protobuf.Timestamp created_at = 98;
   google.protobuf.Timestamp updated_at = 99;
 }
@@ -55,6 +56,7 @@ message CreateOAuthClientRequest {
   ];
   bool pkce_required = 3;
   repeated string allowed_scopes = 4;     // Optional scope names
+  bool confidential = 5;                  // Client type: true = confidential (default), false = public
 }
 
 message CreateOAuthClientResponse {

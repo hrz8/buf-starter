@@ -17,9 +17,16 @@ export const oauthClientCreateSchema = z.object({
     .min(1, 'At least one redirect URI is required'),
   pkceRequired: z.boolean(),
   allowedScopes: z.array(z.string()),
+  confidential: z.boolean(),
 });
 
 export type OAuthClientCreateFormData = z.infer<typeof oauthClientCreateSchema>;
+
+/** Client type options for UI radio selection */
+export const CLIENT_TYPE_OPTIONS = [
+  { value: true, labelKey: 'confidential', descriptionKey: 'confidentialType' },
+  { value: false, labelKey: 'public', descriptionKey: 'publicType' },
+] as const;
 
 /**
  * Update OAuth Client Schema

@@ -121,5 +121,6 @@ type OAuthClientInfo struct {
 	RedirectURIs []string
 	PKCERequired bool
 	IsDefault    bool
-	SecretHash   string
+	SecretHash   *string // Nullable for public clients
+	Confidential bool
 }

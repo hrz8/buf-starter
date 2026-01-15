@@ -9,13 +9,14 @@ import (
 // OAuthClientQueryResult represents query result with internal database ID
 // OAuth clients are GLOBAL entities (infrastructure-level, like Auth0 Applications)
 type OAuthClientQueryResult struct {
-	ID           int64     // Internal database ID
-	PublicID     string    // Public nanoid
+	ID           int64  // Internal database ID
+	PublicID     string // Public nanoid
 	Name         string
 	ClientID     uuid.UUID // OAuth client_id (UUID)
 	RedirectURIs []string
 	PKCERequired bool
 	IsDefault    bool
+	Confidential bool // true = requires secret (confidential), false = public/SPA
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
@@ -23,12 +24,13 @@ type OAuthClientQueryResult struct {
 // OAuthClient represents the domain model with public IDs only
 // OAuth clients are GLOBAL entities (infrastructure-level, like Auth0 Applications)
 type OAuthClient struct {
-	ID           string    // Public nanoid
+	ID           string // Public nanoid
 	Name         string
 	ClientID     uuid.UUID // OAuth client_id (UUID)
 	RedirectURIs []string
 	PKCERequired bool
 	IsDefault    bool
+	Confidential bool // true = requires secret (confidential), false = public/SPA
 	CreatedAt    time.Time
 	UpdatedAt    time.Time
 }
@@ -39,6 +41,7 @@ type CreateOAuthClientInput struct {
 	RedirectURIs  []string
 	PKCERequired  bool
 	AllowedScopes []string
+	Confidential  bool // true = requires secret (confidential), false = public/SPA
 }
 
 // CreateOAuthClientResult represents the result of creating an OAuth client
@@ -65,6 +68,7 @@ func (r *OAuthClientQueryResult) ToOAuthClient() *OAuthClient {
 		RedirectURIs: r.RedirectURIs,
 		PKCERequired: r.PKCERequired,
 		IsDefault:    r.IsDefault,
+		Confidential: r.Confidential,
 		CreatedAt:    r.CreatedAt,
 		UpdatedAt:    r.UpdatedAt,
 	}

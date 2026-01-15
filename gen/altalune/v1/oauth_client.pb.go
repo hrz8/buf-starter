@@ -36,6 +36,7 @@ type OAuthClient struct {
 	IsDefault       bool                   `protobuf:"varint,6,opt,name=is_default,json=isDefault,proto3" json:"is_default,omitempty"`
 	ClientSecretSet bool                   `protobuf:"varint,7,opt,name=client_secret_set,json=clientSecretSet,proto3" json:"client_secret_set,omitempty"` // Boolean flag, NOT actual secret
 	AllowedScopes   []string               `protobuf:"bytes,8,rep,name=allowed_scopes,json=allowedScopes,proto3" json:"allowed_scopes,omitempty"`          // Scope names
+	Confidential    bool                   `protobuf:"varint,9,opt,name=confidential,proto3" json:"confidential,omitempty"`                                // true = requires secret (confidential), false = public/SPA
 	CreatedAt       *timestamppb.Timestamp `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt       *timestamppb.Timestamp `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields   protoimpl.UnknownFields
@@ -128,6 +129,13 @@ func (x *OAuthClient) GetAllowedScopes() []string {
 	return nil
 }
 
+func (x *OAuthClient) GetConfidential() bool {
+	if x != nil {
+		return x.Confidential
+	}
+	return false
+}
+
 func (x *OAuthClient) GetCreatedAt() *timestamppb.Timestamp {
 	if x != nil {
 		return x.CreatedAt
@@ -149,6 +157,7 @@ type CreateOAuthClientRequest struct {
 	RedirectUris  []string               `protobuf:"bytes,2,rep,name=redirect_uris,json=redirectUris,proto3" json:"redirect_uris,omitempty"`
 	PkceRequired  bool                   `protobuf:"varint,3,opt,name=pkce_required,json=pkceRequired,proto3" json:"pkce_required,omitempty"`
 	AllowedScopes []string               `protobuf:"bytes,4,rep,name=allowed_scopes,json=allowedScopes,proto3" json:"allowed_scopes,omitempty"` // Optional scope names
+	Confidential  bool                   `protobuf:"varint,5,opt,name=confidential,proto3" json:"confidential,omitempty"`                       // Client type: true = confidential (default), false = public
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -209,6 +218,13 @@ func (x *CreateOAuthClientRequest) GetAllowedScopes() []string {
 		return x.AllowedScopes
 	}
 	return nil
+}
+
+func (x *CreateOAuthClientRequest) GetConfidential() bool {
+	if x != nil {
+		return x.Confidential
+	}
+	return false
 }
 
 type CreateOAuthClientResponse struct {
@@ -792,7 +808,7 @@ var File_altalune_v1_oauth_client_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_oauth_client_proto_rawDesc = "" +
 	"\n" +
-	"\x1ealtalune/v1/oauth_client.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\x80\x03\n" +
+	"\x1ealtalune/v1/oauth_client.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\xa4\x03\n" +
 	"\vOAuthClient\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1b\n" +
@@ -802,17 +818,19 @@ const file_altalune_v1_oauth_client_proto_rawDesc = "" +
 	"\n" +
 	"is_default\x18\x06 \x01(\bR\tisDefault\x12*\n" +
 	"\x11client_secret_set\x18\a \x01(\bR\x0fclientSecretSet\x12%\n" +
-	"\x0eallowed_scopes\x18\b \x03(\tR\rallowedScopes\x129\n" +
+	"\x0eallowed_scopes\x18\b \x03(\tR\rallowedScopes\x12\"\n" +
+	"\fconfidential\x18\t \x01(\bR\fconfidential\x129\n" +
 	"\n" +
 	"created_at\x18b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +
-	"updated_at\x18c \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xd8\x01\n" +
+	"updated_at\x18c \x01(\v2\x1a.google.protobuf.TimestampR\tupdatedAt\"\xfc\x01\n" +
 	"\x18CreateOAuthClientRequest\x125\n" +
 	"\x04name\x18\x01 \x01(\tB!\xbaH\x1e\xc8\x01\x01r\x19\x10\x01\x18d2\x13^[a-zA-Z0-9\\s\\-_]+$R\x04name\x129\n" +
 	"\rredirect_uris\x18\x02 \x03(\tB\x14\xbaH\x11\x92\x01\x0e\b\x01\x10\n" +
 	"\"\br\x06\x18\xf4\x03\x88\x01\x01R\fredirectUris\x12#\n" +
 	"\rpkce_required\x18\x03 \x01(\bR\fpkceRequired\x12%\n" +
-	"\x0eallowed_scopes\x18\x04 \x03(\tR\rallowedScopes\"\x8c\x01\n" +
+	"\x0eallowed_scopes\x18\x04 \x03(\tR\rallowedScopes\x12\"\n" +
+	"\fconfidential\x18\x05 \x01(\bR\fconfidential\"\x8c\x01\n" +
 	"\x19CreateOAuthClientResponse\x120\n" +
 	"\x06client\x18\x01 \x01(\v2\x18.altalune.v1.OAuthClientR\x06client\x12#\n" +
 	"\rclient_secret\x18\x02 \x01(\tR\fclientSecret\x12\x18\n" +

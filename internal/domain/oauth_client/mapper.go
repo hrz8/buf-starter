@@ -15,8 +15,9 @@ func (c *OAuthClient) ToOAuthClientProto() *altalunev1.OAuthClient {
 		RedirectUris:    c.RedirectURIs,
 		PkceRequired:    c.PKCERequired,
 		IsDefault:       c.IsDefault,
-		ClientSecretSet: true,       // Always true (never expose actual secret)
-		AllowedScopes:   []string{}, // TODO: Implement scope assignment
+		ClientSecretSet: c.Confidential, // Only confidential clients have secrets
+		AllowedScopes:   []string{},     // TODO: Implement scope assignment
+		Confidential:    c.Confidential,
 		CreatedAt:       timestamppb.New(c.CreatedAt),
 		UpdatedAt:       timestamppb.New(c.UpdatedAt),
 	}

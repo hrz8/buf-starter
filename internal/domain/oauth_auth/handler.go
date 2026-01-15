@@ -430,16 +430,34 @@ func (h *Handler) HandleToken(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	clientID, clientSecret, ok := r.BasicAuth()
-	if !ok {
-		w.Header().Set("WWW-Authenticate", `Basic realm="OAuth"`)
-		writeTokenError(w, "invalid_client", "Client authentication required", http.StatusUnauthorized)
+	// Try Basic Auth first (confidential clients)
+	clientID, clientSecret, hasBasicAuth := r.BasicAuth()
+
+	// If no Basic Auth, try form body (public clients)
+	if !hasBasicAuth {
+		clientID = r.FormValue("client_id")
+		clientSecret = ""
+	}
+
+	if clientID == "" {
+		writeTokenError(w, "invalid_client", "client_id is required", http.StatusBadRequest)
 		return
 	}
 
 	client, err := h.svc.AuthenticateClient(r.Context(), clientID, clientSecret)
 	if err != nil {
-		writeTokenError(w, "invalid_client", "Client authentication failed", http.StatusUnauthorized)
+		switch err {
+		case ErrClientSecretRequired:
+			w.Header().Set("WWW-Authenticate", `Basic realm="OAuth"`)
+			writeTokenError(w, "invalid_client", "Client authentication required", http.StatusUnauthorized)
+		case ErrInvalidClientID:
+			writeTokenError(w, "invalid_client", "Unknown client", http.StatusUnauthorized)
+		case ErrInvalidClientSecret:
+			writeTokenError(w, "invalid_client", "Client authentication failed", http.StatusUnauthorized)
+		default:
+			h.log.Error("client authentication error", "error", err)
+			writeTokenError(w, "invalid_client", "Client authentication failed", http.StatusUnauthorized)
+		}
 		return
 	}
 
@@ -466,6 +484,12 @@ func (h *Handler) handleAuthorizationCodeGrant(w http.ResponseWriter, r *http.Re
 	}
 	if redirectURI == "" {
 		writeTokenError(w, "invalid_request", "Missing redirect_uri parameter", http.StatusBadRequest)
+		return
+	}
+
+	// Public clients MUST provide code_verifier (PKCE)
+	if !client.Confidential && codeVerifier == "" {
+		writeTokenError(w, "invalid_request", "PKCE code_verifier required for public clients", http.StatusBadRequest)
 		return
 	}
 
@@ -737,6 +761,7 @@ func (h *Handler) HandleOpenIDConfiguration(w http.ResponseWriter, r *http.Reque
 		},
 		"token_endpoint_auth_methods_supported": []string{
 			"client_secret_basic",
+			"none",
 		},
 		"code_challenge_methods_supported": []string{
 			"S256",

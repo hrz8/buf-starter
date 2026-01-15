@@ -48,12 +48,20 @@ func (s *Service) CreateOAuthClient(ctx context.Context, req *altalunev1.CreateO
 		}
 	}
 
-	// 3. Create OAuth client with Argon2 hashed secret
+	// 3. Public clients MUST have PKCE enabled (enforce RFC 7636)
+	pkceRequired := req.PkceRequired
+	if !req.Confidential {
+		// Force PKCE for public clients
+		pkceRequired = true
+	}
+
+	// 4. Create OAuth client with Argon2 hashed secret (only for confidential clients)
 	input := &CreateOAuthClientInput{
 		Name:          strings.TrimSpace(req.Name),
 		RedirectURIs:  req.RedirectUris,
-		PKCERequired:  req.PkceRequired,
+		PKCERequired:  pkceRequired,
 		AllowedScopes: req.AllowedScopes,
+		Confidential:  req.Confidential,
 	}
 
 	result, err := s.oauthClientRepo.Create(ctx, input)
@@ -68,14 +76,16 @@ func (s *Service) CreateOAuthClient(ctx context.Context, req *altalunev1.CreateO
 		return nil, altalune.NewUnexpectedError("failed to create oauth client: %w", err)
 	}
 
-	// 4. Log successful creation
+	// 5. Log successful creation
 	s.log.Info("oauth client created",
 		"client_public_id", result.Client.ID,
 		"client_id", result.Client.ClientID.String(),
 		"name", result.Client.Name,
+		"confidential", result.Client.Confidential,
 	)
 
-	// 5. Return client with PLAINTEXT secret (ONLY time it's returned)
+	// 6. Return client with PLAINTEXT secret (ONLY time it's returned)
+	// For public clients, ClientSecret will be empty string
 	return &altalunev1.CreateOAuthClientResponse{
 		Client:       result.Client.ToOAuthClientProto(),
 		ClientSecret: result.ClientSecret,
@@ -200,7 +210,12 @@ func (s *Service) UpdateOAuthClient(ctx context.Context, req *altalunev1.UpdateO
 		return nil, altalune.NewInvalidPayloadError("PKCE cannot be disabled for default client")
 	}
 
-	// 5. Build update input
+	// 5. Protect public clients from disabling PKCE (RFC 7636 compliance)
+	if !existingClient.Confidential && req.PkceRequired != nil && !*req.PkceRequired {
+		return nil, altalune.NewInvalidPayloadError("PKCE cannot be disabled for public clients")
+	}
+
+	// 6. Build update input
 	input := &UpdateOAuthClientInput{
 		PublicID:      req.Id,
 		Name:          req.Name,
@@ -212,7 +227,7 @@ func (s *Service) UpdateOAuthClient(ctx context.Context, req *altalunev1.UpdateO
 		input.RedirectURIs = req.RedirectUris
 	}
 
-	// 6. Update OAuth client
+	// 7. Update OAuth client
 	updatedClient, err := s.oauthClientRepo.Update(ctx, input)
 	if err != nil {
 		if err == ErrOAuthClientNotFound {
@@ -228,7 +243,7 @@ func (s *Service) UpdateOAuthClient(ctx context.Context, req *altalunev1.UpdateO
 		return nil, altalune.NewUnexpectedError("failed to update oauth client: %w", err)
 	}
 
-	// 7. Log successful update
+	// 8. Log successful update
 	s.log.Info("oauth client updated",
 		"client_public_id", updatedClient.ID,
 		"name", updatedClient.Name,
@@ -300,6 +315,9 @@ func (s *Service) RevealOAuthClientSecret(ctx context.Context, req *altalunev1.R
 	if err != nil {
 		if err == ErrOAuthClientNotFound {
 			return nil, altalune.NewOAuthClientNotFoundError(req.Id)
+		}
+		if err == ErrPublicClientNoSecret {
+			return nil, altalune.NewInvalidPayloadError("public clients do not have a client secret")
 		}
 		s.log.Error("failed to reveal client secret",
 			"error", err,

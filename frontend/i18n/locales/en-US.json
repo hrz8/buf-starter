@@ -678,7 +678,12 @@
         "clientId": "Client ID",
         "redirectUris": "Redirect URIs",
         "pkceRequired": "PKCE",
-        "createdAt": "Created"
+        "createdAt": "Created",
+        "type": "Type"
+      },
+      "types": {
+        "confidential": "Confidential",
+        "public": "Public"
       },
       "actions": {
         "create": "Create Client",
@@ -694,7 +699,8 @@
         "deleting": "Deleting...",
         "addRedirectUri": "Add Redirect URI",
         "closeNow": "Close Now",
-        "saveSecret": "I've Saved the Secret"
+        "saveSecret": "I've Saved the Secret",
+        "done": "Done"
       },
       "labels": {
         "default": "Default",
@@ -702,7 +708,8 @@
         "optional": "Optional",
         "clientName": "Client Name *",
         "redirectUris": "Redirect URIs *",
-        "pkceRequired": "PKCE Required"
+        "pkceRequired": "PKCE Required",
+        "clientType": "Client Type"
       },
       "placeholders": {
         "clientName": "My Application",
@@ -711,7 +718,11 @@
       "descriptions": {
         "clientName": "A friendly name for this OAuth client",
         "redirectUris": "Valid HTTP/HTTPS URLs. Localhost allowed for development.",
-        "pkceRequired": "Enable for public clients (SPAs, mobile apps)"
+        "pkceRequired": "Enable for public clients (SPAs, mobile apps)",
+        "pkceRequiredPublic": "PKCE is always required for public clients",
+        "confidentialType": "Server-side applications with secure secret storage",
+        "publicType": "SPAs, mobile apps (PKCE required, no secret)",
+        "clientTypeImmutable": "Client type cannot be changed after creation"
       },
       "sheets": {
         "create": {
@@ -783,7 +794,19 @@
         "atLeastOneUri": "At least one redirect URI is required"
       },
       "alerts": {
-        "error": "Error"
+        "error": "Error",
+        "publicClientTitle": "Public Client",
+        "publicClientInfo": "No client secret required. PKCE is required for all authorization flows."
+      },
+      "credentialsDisplay": {
+        "title": "OAuth Client Created",
+        "clientIdLabel": "Client ID",
+        "secretWarning": "Client Secret - Save this now, it won't be shown again!",
+        "publicClientInfo": {
+          "title": "Public Client Setup",
+          "point1": "No client secret required - use PKCE for security",
+          "point2": "Include client_id in token requests via form body"
+        }
       },
       "loading": "Loading OAuth clients...",
       "empty": {

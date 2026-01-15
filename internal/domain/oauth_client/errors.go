@@ -10,4 +10,6 @@ var (
 	ErrDefaultClientCannotBeDeleted = errors.New("default dashboard client cannot be deleted")
 	ErrClientBelongsToOtherProject  = errors.New("oauth client belongs to another project")
 	ErrPKCECannotBeDisabled         = errors.New("PKCE cannot be disabled for default client")
+	ErrPublicClientNoSecret         = errors.New("public clients do not have a client secret")
+	ErrPublicClientPKCERequired     = errors.New("public clients require PKCE to be enabled")
 )

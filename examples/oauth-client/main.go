@@ -574,7 +574,7 @@ func renderLoadingPage(w http.ResponseWriter, message, redirectURL string) {
 		"Message":     message,
 		"RedirectURL": redirectURL,
 	}
-	
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := views.Render(w, "loading.html", data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -586,7 +586,7 @@ func renderSuccessPage(w http.ResponseWriter, message, redirectURL string) {
 		"Message":     message,
 		"RedirectURL": redirectURL,
 	}
-	
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := views.Render(w, "success.html", data); err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -597,7 +597,7 @@ func renderError(w http.ResponseWriter, message string) {
 	data := map[string]any{
 		"Message": message,
 	}
-	
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusBadRequest)
 	if err := views.Render(w, "error.html", data); err != nil {

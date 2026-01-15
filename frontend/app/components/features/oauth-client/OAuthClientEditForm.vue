@@ -4,6 +4,7 @@ import { toTypedSchema } from '@vee-validate/zod';
 import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import {
   FormControl,
@@ -14,6 +15,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { useOAuthClientService } from '@/composables/services/useOAuthClientService';
@@ -171,6 +173,21 @@ function handleCancel() {
 
     <!-- Form -->
     <form v-if="!isLoading" class="space-y-4" @submit="onSubmit">
+      <!-- Client Type (Read-only Badge) -->
+      <div class="flex items-center justify-between rounded-lg border p-4">
+        <div class="space-y-0.5">
+          <Label>{{ t('features.oauth_clients.labels.clientType') }}</Label>
+          <p class="text-sm text-muted-foreground">
+            {{ t('features.oauth_clients.descriptions.clientTypeImmutable') }}
+          </p>
+        </div>
+        <Badge :variant="client?.confidential ? 'default' : 'secondary'">
+          {{ client?.confidential
+            ? t('features.oauth_clients.types.confidential')
+            : t('features.oauth_clients.types.public') }}
+        </Badge>
+      </div>
+
       <!-- Name Field -->
       <FormField v-slot="{ componentField }" name="name">
         <FormItem>
@@ -238,12 +255,15 @@ function handleCancel() {
           <div class="space-y-0.5">
             <FormLabel>{{ t('features.oauth_clients.labels.pkceRequired') }}</FormLabel>
             <FormDescription>
-              {{ t('features.oauth_clients.descriptions.pkceRequired') }}
+              {{ !client?.confidential
+                ? t('features.oauth_clients.descriptions.pkceRequiredPublic')
+                : t('features.oauth_clients.descriptions.pkceRequired') }}
             </FormDescription>
           </div>
           <FormControl>
             <Switch
               :model-value="value"
+              :disabled="!client?.confidential"
               @update:model-value="handleChange"
             />
           </FormControl>

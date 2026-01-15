@@ -20,8 +20,8 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Switch } from '@/components/ui/switch';
 import { useOAuthClientService } from '@/composables/services/useOAuthClientService';
 import { getConnectRPCError, hasConnectRPCError } from './error';
-import OAuthClientSecretDisplay from './OAuthClientSecretDisplay.vue';
-import { oauthClientCreateSchema } from './schema';
+import OAuthClientCredentialsDisplay from './OAuthClientCredentialsDisplay.vue';
+import { CLIENT_TYPE_OPTIONS, oauthClientCreateSchema } from './schema';
 
 const props = defineProps<{
   loading?: boolean;
@@ -64,12 +64,24 @@ const initialFormValues = computed(() => ({
   redirectUris: [''],
   pkceRequired: false,
   allowedScopes: [],
+  confidential: true,
 }));
+
+// Track created client for credentials display
+const createdClientId = ref<string | null>(null);
+const createdConfidential = ref<boolean>(true);
 
 // Initialize form
 const form = useForm({
   validationSchema: formSchema,
   initialValues: initialFormValues.value,
+});
+
+// Force PKCE to true when public client is selected (backend enforces this anyway)
+watch(() => form.values.confidential, (isConfidential) => {
+  if (isConfidential === false) {
+    form.setFieldValue('pkceRequired', true);
+  }
 });
 
 // Handle form submission
@@ -80,17 +92,17 @@ const onSubmit = form.handleSubmit(async (values) => {
       redirectUris: redirectUris.value.filter(uri => uri.trim() !== ''),
       pkceRequired: values.pkceRequired,
       allowedScopes: values.allowedScopes || [],
+      confidential: values.confidential,
     };
 
     const result = await createOAuthClient(requestPayload);
 
     if (result.client) {
+      createdClientId.value = result.client.clientId;
+      createdConfidential.value = result.client.confidential;
       toast.success(t('features.oauth_clients.toasts.created'), {
         description: t('features.oauth_clients.toasts.createdDesc', { name: values.name }),
       });
-
-      // Don't close immediately - show secret display
-      // emit('success', result);
     }
   }
   catch (error) {
@@ -111,13 +123,15 @@ function resetForm() {
     values: initialFormValues.value,
   });
   redirectUris.value = [''];
+  createdClientId.value = null;
+  createdConfidential.value = true;
   resetCreateState();
 }
 
-// After user acknowledges secret
-function handleSecretAcknowledged() {
+// After user acknowledges credentials
+function handleCredentialsAcknowledged() {
   const result = {
-    client: null, // We don't have the client object here but that's OK
+    client: null,
     clientSecret: clientSecret.value,
   };
   emit('success', result);
@@ -135,11 +149,13 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <!-- Show secret display after successful creation -->
-  <OAuthClientSecretDisplay
-    v-if="clientSecret"
-    :client-secret="clientSecret"
-    @acknowledged="handleSecretAcknowledged"
+  <!-- Show credentials display after successful creation -->
+  <OAuthClientCredentialsDisplay
+    v-if="createdClientId && (clientSecret || !createdConfidential)"
+    :client-id="createdClientId"
+    :client-secret="clientSecret || undefined"
+    :confidential="createdConfidential"
+    @acknowledged="handleCredentialsAcknowledged"
   />
 
   <!-- Loading skeleton -->
@@ -173,6 +189,36 @@ onUnmounted(() => {
         {{ createError }}
       </AlertDescription>
     </Alert>
+
+    <!-- Client Type Selection -->
+    <FormField v-slot="{ componentField }" name="confidential">
+      <FormItem>
+        <FormLabel>{{ t('features.oauth_clients.labels.clientType') }}</FormLabel>
+        <FormControl>
+          <div class="grid grid-cols-2 gap-4">
+            <div
+              v-for="option in CLIENT_TYPE_OPTIONS"
+              :key="String(option.value)"
+              class="relative flex cursor-pointer rounded-lg border p-4 focus:outline-none"
+              :class="componentField.modelValue === option.value
+                ? 'border-primary bg-primary/5'
+                : 'border-muted'"
+              @click="componentField['onUpdate:modelValue']?.(option.value)"
+            >
+              <div class="flex flex-col">
+                <span class="font-medium">
+                  {{ t(`features.oauth_clients.types.${option.labelKey}`) }}
+                </span>
+                <span class="text-sm text-muted-foreground">
+                  {{ t(`features.oauth_clients.descriptions.${option.descriptionKey}`) }}
+                </span>
+              </div>
+            </div>
+          </div>
+        </FormControl>
+        <FormMessage />
+      </FormItem>
+    </FormField>
 
     <!-- Client Name -->
     <FormField v-slot="{ componentField }" name="name">
@@ -249,23 +295,44 @@ onUnmounted(() => {
     </div>
 
     <!-- PKCE Required -->
-    <FormField v-slot="{ componentField }" name="pkceRequired">
+    <FormField v-slot="{ value, handleChange }" name="pkceRequired">
       <FormItem class="flex items-center justify-between rounded-lg border p-4">
         <div class="space-y-0.5">
           <FormLabel>{{ t('features.oauth_clients.labels.pkceRequired') }}</FormLabel>
           <FormDescription>
-            {{ t('features.oauth_clients.descriptions.pkceRequired') }}
+            {{ form.values.confidential === false
+              ? t('features.oauth_clients.descriptions.pkceRequiredPublic')
+              : t('features.oauth_clients.descriptions.pkceRequired') }}
           </FormDescription>
         </div>
         <FormControl>
           <Switch
-            :checked="componentField.modelValue"
-            :disabled="createLoading"
-            @update:checked="componentField['onUpdate:modelValue']"
+            :model-value="form.values.confidential === false ? true : value"
+            :disabled="createLoading || form.values.confidential === false"
+            @update:model-value="handleChange"
           />
         </FormControl>
       </FormItem>
     </FormField>
+
+    <!-- Info banner for public clients -->
+    <div
+      v-if="form.values.confidential === false"
+      class="
+        flex gap-3 rounded-lg border border-blue-200
+        bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950
+      "
+    >
+      <Icon name="lucide:info" class="h-4 w-4 mt-0.5 shrink-0 text-blue-600 dark:text-blue-400" />
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-blue-800 dark:text-blue-200">
+          {{ t('features.oauth_clients.alerts.publicClientTitle') }}
+        </p>
+        <p class="text-sm text-blue-700 dark:text-blue-300">
+          {{ t('features.oauth_clients.alerts.publicClientInfo') }}
+        </p>
+      </div>
+    </div>
 
     <!-- Actions -->
     <div class="flex justify-end gap-2 pt-4">
