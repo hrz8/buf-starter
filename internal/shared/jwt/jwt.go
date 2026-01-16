@@ -3,10 +3,10 @@ package jwt
 import (
 	"crypto/rsa"
 	"fmt"
-	"strconv"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 // Issuer is the JWT issuer claim value.
@@ -50,12 +50,13 @@ func (s *Signer) GetKID() string {
 
 // GenerateTokenParams holds parameters for access token generation.
 type GenerateTokenParams struct {
-	UserID   int64
-	ClientID string
-	Scope    string
-	Email    string
-	Name     string
-	Expiry   time.Duration
+	UserPublicID string        // User's public_id (nanoid) - used as JWT subject
+	ClientID     string        // OAuth client ID (UUID string)
+	Scope        string        // Space-separated OAuth scopes
+	Email        string        // User email (if scope includes "email")
+	Name         string        // User full name (if scope includes "profile")
+	Perms        []string      // User permissions for stateless authorization
+	Expiry       time.Duration // Token validity duration
 }
 
 // GenerateAccessToken creates a signed RS256 JWT access token.
@@ -65,14 +66,17 @@ func (s *Signer) GenerateAccessToken(params GenerateTokenParams) (string, error)
 	claims := AccessTokenClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
 			Issuer:    Issuer,
-			Subject:   strconv.FormatInt(params.UserID, 10),
+			Subject:   params.UserPublicID,
 			Audience:  jwt.ClaimStrings{params.ClientID},
 			ExpiresAt: jwt.NewNumericDate(now.Add(params.Expiry)),
 			IssuedAt:  jwt.NewNumericDate(now),
+			NotBefore: jwt.NewNumericDate(now),
+			ID:        uuid.New().String(),
 		},
 		Scope: params.Scope,
 		Email: params.Email,
 		Name:  params.Name,
+		Perms: params.Perms,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)

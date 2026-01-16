@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"time"
 
@@ -529,16 +528,28 @@ func (h *Handler) handleAuthorizationCodeGrant(w http.ResponseWriter, r *http.Re
 		return
 	}
 
-	email := ""
-	name := ""
-	if strings.Contains(result.Scope, "email") {
-		email = user.Email
-	}
-	if strings.Contains(result.Scope, "profile") {
-		name = user.FirstName + " " + user.LastName
+	scopeClaims, err := h.svc.BuildUserInfoClaims(r.Context(), result.Scope, &ScopeUser{
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+	})
+	if err != nil {
+		h.log.Error("failed to build scope claims", "error", err)
+		writeTokenError(w, "server_error", "Failed to process scopes", http.StatusInternalServerError)
+		return
 	}
 
-	tokenPair, err := h.svc.GenerateTokenPair(r.Context(), result.UserID, client.ClientID, result.Scope, email, name)
+	email, _ := scopeClaims["email"].(string)
+	name, _ := scopeClaims["name"].(string)
+
+	tokenPair, err := h.svc.GenerateTokenPair(r.Context(), &GenerateTokenPairParams{
+		UserID:       result.UserID,
+		UserPublicID: user.ID,
+		ClientID:     client.ClientID,
+		Scope:        result.Scope,
+		Email:        email,
+		Name:         name,
+	})
 	if err != nil {
 		h.log.Error("failed to generate tokens", "error", err)
 		writeTokenError(w, "server_error", "Failed to generate tokens", http.StatusInternalServerError)
@@ -555,7 +566,7 @@ func (h *Handler) handleRefreshTokenGrant(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	tokenPair, err := h.svc.ValidateAndRefreshToken(r.Context(), refreshToken, client.ClientID, "", "")
+	result, err := h.svc.ValidateRefreshToken(r.Context(), refreshToken, client.ClientID)
 	if err != nil {
 		switch err {
 		case ErrInvalidRefreshToken:
@@ -570,6 +581,42 @@ func (h *Handler) handleRefreshTokenGrant(w http.ResponseWriter, r *http.Request
 			h.log.Error("refresh token error", "error", err)
 			writeTokenError(w, "server_error", "Internal server error", http.StatusInternalServerError)
 		}
+		return
+	}
+
+	user, err := h.userRepo.GetByInternalID(r.Context(), result.UserID)
+	if err != nil {
+		h.log.Error("failed to get user for refresh token", "error", err, "user_id", result.UserID)
+		writeTokenError(w, "server_error", "Failed to get user info", http.StatusInternalServerError)
+		return
+	}
+
+	scopeUser := &ScopeUser{
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+	}
+	scopeClaims, err := h.svc.BuildUserInfoClaims(r.Context(), result.Scope, scopeUser)
+	if err != nil {
+		h.log.Error("failed to build scope claims", "error", err)
+		writeTokenError(w, "server_error", "Failed to process scopes", http.StatusInternalServerError)
+		return
+	}
+
+	email, _ := scopeClaims["email"].(string)
+	name, _ := scopeClaims["name"].(string)
+
+	tokenPair, err := h.svc.GenerateTokenPair(r.Context(), &GenerateTokenPairParams{
+		UserID:       result.UserID,
+		UserPublicID: user.ID,
+		ClientID:     client.ClientID,
+		Scope:        result.Scope,
+		Email:        email,
+		Name:         name,
+	})
+	if err != nil {
+		h.log.Error("failed to generate tokens", "error", err)
+		writeTokenError(w, "server_error", "Failed to generate tokens", http.StatusInternalServerError)
 		return
 	}
 
@@ -611,41 +658,40 @@ func (h *Handler) HandleUserInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userID, err := strconv.ParseInt(claims.Subject, 10, 64)
-	if err != nil {
-		h.log.Error("invalid subject claim", "error", err, "subject", claims.Subject)
-		writeJSONError(w, "invalid_token", "Invalid token subject", http.StatusUnauthorized)
-		return
-	}
+	// Subject is now user's public_id (nanoid), not internal ID
+	userPublicID := claims.Subject
 
-	user, err := h.userRepo.GetByInternalID(r.Context(), userID)
+	user, err := h.userRepo.GetByID(r.Context(), userPublicID)
 	if err != nil {
-		h.log.Error("failed to get user", "error", err, "user_id", userID)
+		h.log.Error("failed to get user", "error", err, "public_id", userPublicID)
 		writeJSONError(w, "server_error", "Failed to retrieve user info", http.StatusInternalServerError)
 		return
 	}
 
 	scope := claims.Scope
 
+	// Build userinfo response using scope handler registry
+	// Sub is always included per OIDC spec
 	userInfo := map[string]interface{}{
-		"sub": user.ID,
+		"sub": user.ID, // Return public_id as sub
 	}
 
-	if strings.Contains(scope, "profile") {
-		if user.FirstName != "" {
-			userInfo["given_name"] = user.FirstName
-		}
-		if user.LastName != "" {
-			userInfo["family_name"] = user.LastName
-		}
-		if user.FirstName != "" || user.LastName != "" {
-			userInfo["name"] = strings.TrimSpace(user.FirstName + " " + user.LastName)
-		}
+	// Use scope handler registry to build claims based on requested scopes
+	scopeUser := &ScopeUser{
+		Email:     user.Email,
+		FirstName: user.FirstName,
+		LastName:  user.LastName,
+	}
+	scopeClaims, err := h.svc.BuildUserInfoClaims(r.Context(), scope, scopeUser)
+	if err != nil {
+		h.log.Error("failed to build userinfo claims", "error", err)
+		writeJSONError(w, "server_error", "Failed to build user info", http.StatusInternalServerError)
+		return
 	}
 
-	if strings.Contains(scope, "email") {
-		userInfo["email"] = user.Email
-		userInfo["email_verified"] = true
+	// Merge scope-based claims into userInfo
+	for k, v := range scopeClaims {
+		userInfo[k] = v
 	}
 
 	w.Header().Set("Content-Type", "application/json")

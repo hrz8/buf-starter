@@ -176,7 +176,17 @@ func (c *Container) initAuthComponents() error {
 
 	// OAuth Auth Service - only initialize if JWT signer is available
 	if c.jwtSigner != nil {
-		c.oauthAuthService = oauth_auth_domain.NewService(c.logger, c.oauthAuthRepo, c.jwtSigner, c.config)
+		permissionProvider := oauth_auth_domain.NewPermissionService(c.iamMapperRepo)
+		scopeHandlerRegistry := oauth_auth_domain.NewScopeHandlerRegistry()
+
+		c.oauthAuthService = oauth_auth_domain.NewService(
+			c.logger,
+			c.oauthAuthRepo,
+			c.jwtSigner,
+			c.config,
+			permissionProvider,
+			scopeHandlerRegistry,
+		)
 	}
 
 	return nil

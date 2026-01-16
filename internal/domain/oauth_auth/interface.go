@@ -4,7 +4,18 @@ import (
 	"context"
 
 	"github.com/google/uuid"
+	"github.com/hrz8/altalune/internal/domain/permission"
 )
+
+// UserPermissionProvider defines the interface for fetching user permissions.
+type UserPermissionProvider interface {
+	GetUserPermissions(ctx context.Context, userID int64) ([]string, error)
+}
+
+// IAMMapperRepositor defines the interface for fetching user permissions.
+type IAMMapperRepositor interface {
+	GetUserPermissions(ctx context.Context, userID int64) ([]*permission.Permission, error)
+}
 
 // Repositor defines the interface for OAuth auth repository operations.
 type Repositor interface {

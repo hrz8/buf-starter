@@ -15,19 +15,30 @@ import (
 
 // Service handles OAuth authorization code and token operations.
 type Service struct {
-	repo      Repositor
-	jwtSigner *jwt.Signer
-	cfg       altalune.Config
-	log       altalune.Logger
+	repo                 Repositor
+	jwtSigner            *jwt.Signer
+	cfg                  altalune.Config
+	log                  altalune.Logger
+	permissionProvider   UserPermissionProvider
+	scopeHandlerRegistry *ScopeHandlerRegistry
 }
 
 // NewService creates a new OAuth auth service.
-func NewService(log altalune.Logger, repo Repositor, jwtSigner *jwt.Signer, cfg altalune.Config) *Service {
+func NewService(
+	log altalune.Logger,
+	repo Repositor,
+	jwtSigner *jwt.Signer,
+	cfg altalune.Config,
+	permissionFetcher UserPermissionProvider,
+	scopeHandlerRegistry *ScopeHandlerRegistry,
+) *Service {
 	return &Service{
-		repo:      repo,
-		jwtSigner: jwtSigner,
-		cfg:       cfg,
-		log:       log,
+		repo:                 repo,
+		jwtSigner:            jwtSigner,
+		cfg:                  cfg,
+		log:                  log,
+		permissionProvider:   permissionFetcher,
+		scopeHandlerRegistry: scopeHandlerRegistry,
 	}
 }
 
@@ -107,39 +118,64 @@ func (s *Service) ValidateAndExchangeCode(ctx context.Context, codeStr string, c
 	}, nil
 }
 
+// GenerateTokenPairParams holds parameters for token pair generation.
+type GenerateTokenPairParams struct {
+	UserID       int64     // Internal user ID (for DB operations and permission fetching)
+	UserPublicID string    // Public user ID (nanoid) for JWT subject
+	ClientID     uuid.UUID // OAuth client ID
+	Scope        string    // Space-separated OAuth scopes
+	Email        string    // User email
+	Name         string    // User full name
+}
+
 // GenerateTokenPair creates an access token and refresh token pair.
-func (s *Service) GenerateTokenPair(ctx context.Context, userID int64, clientID uuid.UUID, scope, email, name string) (*TokenPair, error) {
+func (s *Service) GenerateTokenPair(ctx context.Context, params *GenerateTokenPairParams) (*TokenPair, error) {
 	accessTokenExpiry := time.Duration(s.cfg.GetAccessTokenExpiry()) * time.Second
 	refreshTokenExpiry := time.Duration(s.cfg.GetRefreshTokenExpiry()) * time.Second
 
+	// Fetch user permissions (graceful degradation - log warning but continue on error)
+	perms := []string{}
+	if s.permissionProvider != nil {
+		fetchedPerms, err := s.permissionProvider.GetUserPermissions(ctx, params.UserID)
+		if err != nil {
+			s.log.Warn("failed to fetch user permissions, continuing with empty permissions",
+				"error", err,
+				"user_id", params.UserID,
+			)
+		} else if fetchedPerms != nil {
+			perms = fetchedPerms
+		}
+	}
+
 	accessToken, err := s.jwtSigner.GenerateAccessToken(jwt.GenerateTokenParams{
-		UserID:   userID,
-		ClientID: clientID.String(),
-		Scope:    scope,
-		Email:    email,
-		Name:     name,
-		Expiry:   accessTokenExpiry,
+		UserPublicID: params.UserPublicID,
+		ClientID:     params.ClientID.String(),
+		Scope:        params.Scope,
+		Email:        params.Email,
+		Name:         params.Name,
+		Perms:        perms,
+		Expiry:       accessTokenExpiry,
 	})
 	if err != nil {
 		s.log.Error("failed to generate access token",
 			"error", err,
-			"user_id", userID,
-			"client_id", clientID,
+			"user_id", params.UserID,
+			"client_id", params.ClientID,
 		)
 		return nil, err
 	}
 
 	refreshToken, err := s.repo.CreateRefreshToken(ctx, &CreateRefreshTokenInput{
-		ClientID:  clientID,
-		UserID:    userID,
-		Scope:     scope,
+		ClientID:  params.ClientID,
+		UserID:    params.UserID,
+		Scope:     params.Scope,
 		ExpiresAt: time.Now().Add(refreshTokenExpiry),
 	})
 	if err != nil {
 		s.log.Error("failed to create refresh token",
 			"error", err,
-			"user_id", userID,
-			"client_id", clientID,
+			"user_id", params.UserID,
+			"client_id", params.ClientID,
 		)
 		return nil, err
 	}
@@ -149,12 +185,26 @@ func (s *Service) GenerateTokenPair(ctx context.Context, userID int64, clientID 
 		RefreshToken: refreshToken.Token.String(),
 		TokenType:    "Bearer",
 		ExpiresIn:    s.cfg.GetAccessTokenExpiry(),
-		Scope:        scope,
+		Scope:        params.Scope,
 	}, nil
 }
 
-// ValidateAndRefreshToken validates and rotates a refresh token.
-func (s *Service) ValidateAndRefreshToken(ctx context.Context, refreshTokenStr string, clientID uuid.UUID, email, name string) (*TokenPair, error) {
+// BuildUserInfoClaims uses the scope handler registry to build claims for userinfo endpoint.
+func (s *Service) BuildUserInfoClaims(ctx context.Context, scope string, user *ScopeUser) (map[string]interface{}, error) {
+	if s.scopeHandlerRegistry == nil {
+		return make(map[string]any), nil
+	}
+	return s.scopeHandlerRegistry.ProcessScopes(ctx, scope, user)
+}
+
+// RefreshTokenResult contains data from a validated refresh token.
+type RefreshTokenResult struct {
+	UserID int64
+	Scope  string
+}
+
+// ValidateRefreshToken validates a refresh token and returns user info for token generation.
+func (s *Service) ValidateRefreshToken(ctx context.Context, refreshTokenStr string, clientID uuid.UUID) (*RefreshTokenResult, error) {
 	tokenUUID, err := uuid.Parse(refreshTokenStr)
 	if err != nil {
 		return nil, ErrInvalidRefreshToken
@@ -185,7 +235,10 @@ func (s *Service) ValidateAndRefreshToken(ctx context.Context, refreshTokenStr s
 		return nil, err
 	}
 
-	return s.GenerateTokenPair(ctx, refreshToken.UserID, clientID, refreshToken.Scope, email, name)
+	return &RefreshTokenResult{
+		UserID: refreshToken.UserID,
+		Scope:  refreshToken.Scope,
+	}, nil
 }
 
 // CheckUserConsent checks if a user has granted consent for the requested scopes.
@@ -344,7 +397,7 @@ func (s *Service) IntrospectToken(ctx context.Context, token string, clientID uu
 			return map[string]interface{}{"active": false}, nil
 		}
 
-		return map[string]interface{}{
+		result := map[string]interface{}{
 			"active":     true,
 			"scope":      claims.Scope,
 			"client_id":  aud,
@@ -354,7 +407,19 @@ func (s *Service) IntrospectToken(ctx context.Context, token string, clientID uu
 			"iat":        claims.IssuedAt.Unix(),
 			"sub":        claims.Subject,
 			"iss":        claims.Issuer,
-		}, nil
+		}
+
+		if claims.ID != "" {
+			result["jti"] = claims.ID
+		}
+		if claims.NotBefore != nil {
+			result["nbf"] = claims.NotBefore.Unix()
+		}
+		if len(claims.Perms) > 0 {
+			result["perms"] = claims.Perms
+		}
+
+		return result, nil
 	}
 
 	tokenUUID, err := uuid.Parse(token)

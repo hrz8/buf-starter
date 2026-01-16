@@ -9,7 +9,10 @@ export interface AuthExchangeRequest {
 export interface AuthUserInfo {
   sub: string;
   email?: string;
+  email_verified?: boolean;
   name?: string;
+  given_name?: string;
+  family_name?: string;
 }
 
 export interface AuthExchangeResponse {

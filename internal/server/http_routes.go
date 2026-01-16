@@ -140,11 +140,14 @@ type TokenResponse struct {
 	RefreshToken string `json:"refresh_token,omitempty"`
 }
 
-// AuthUserInfo represents user information extracted from JWT
+// AuthUserInfo represents user information from OIDC /userinfo endpoint
 type AuthUserInfo struct {
-	Sub   string `json:"sub"`
-	Email string `json:"email,omitempty"`
-	Name  string `json:"name,omitempty"`
+	Sub           string `json:"sub"`
+	Email         string `json:"email,omitempty"`
+	EmailVerified bool   `json:"email_verified,omitempty"`
+	Name          string `json:"name,omitempty"`
+	GivenName     string `json:"given_name,omitempty"`
+	FamilyName    string `json:"family_name,omitempty"`
 }
 
 // AuthExchangeSuccessResponse is the success response from token exchange
@@ -202,12 +205,18 @@ func (s *Server) handleAuthExchange(w http.ResponseWriter, r *http.Request) {
 	// Set httpOnly cookies for tokens
 	s.setAuthCookies(w, tokenResp)
 
-	// Extract user info from JWT and return
-	userInfo := extractUserInfoFromJWT(tokenResp.AccessToken)
+	// Fetch user info from /userinfo endpoint (proper OIDC pattern)
+	userInfo, err := s.fetchUserInfo(tokenResp.AccessToken)
+	if err != nil {
+		s.log.Warn("Failed to fetch userinfo, falling back to JWT", "error", err)
+		// Fallback to JWT extraction if /userinfo fails
+		jwtUserInfo := extractUserInfoFromJWT(tokenResp.AccessToken)
+		userInfo = &jwtUserInfo
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(AuthExchangeSuccessResponse{
-		User:      userInfo,
+		User:      *userInfo,
 		ExpiresIn: tokenResp.ExpiresIn,
 	})
 }
@@ -251,11 +260,17 @@ func (s *Server) handleAuthRefresh(w http.ResponseWriter, r *http.Request) {
 
 	s.setAuthCookies(w, tokenResp)
 
-	userInfo := extractUserInfoFromJWT(tokenResp.AccessToken)
+	// Fetch user info from /userinfo endpoint (proper OIDC pattern)
+	userInfo, err := s.fetchUserInfo(tokenResp.AccessToken)
+	if err != nil {
+		s.log.Warn("Failed to fetch userinfo, falling back to JWT", "error", err)
+		jwtUserInfo := extractUserInfoFromJWT(tokenResp.AccessToken)
+		userInfo = &jwtUserInfo
+	}
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(AuthExchangeSuccessResponse{
-		User:      userInfo,
+		User:      *userInfo,
 		ExpiresIn: tokenResp.ExpiresIn,
 	})
 }
@@ -263,7 +278,7 @@ func (s *Server) handleAuthRefresh(w http.ResponseWriter, r *http.Request) {
 // handleAuthMe returns current user info from the access_token cookie.
 //
 // GET /oauth/me
-// Response: { "user": { "sub": "...", "email": "...", "name": "..." }, "expires_in": 3600 }
+// Response: { "user": { "sub": "...", "email": "...", "name": "...", "given_name": "...", ... }, "expires_in": 3600 }
 func (s *Server) handleAuthMe(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		s.writeAuthError(w, http.StatusMethodNotAllowed, "method_not_allowed", "Only GET method is allowed")
@@ -276,10 +291,16 @@ func (s *Server) handleAuthMe(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	userInfo := extractUserInfoFromJWT(accessCookie.Value)
-	if userInfo.Sub == "" {
-		s.writeAuthError(w, http.StatusUnauthorized, "unauthorized", "Invalid token")
-		return
+	// Fetch user info from /userinfo endpoint (proper OIDC pattern)
+	userInfo, err := s.fetchUserInfo(accessCookie.Value)
+	if err != nil {
+		s.log.Warn("Failed to fetch userinfo, falling back to JWT", "error", err)
+		jwtUserInfo := extractUserInfoFromJWT(accessCookie.Value)
+		if jwtUserInfo.Sub == "" {
+			s.writeAuthError(w, http.StatusUnauthorized, "unauthorized", "Invalid token")
+			return
+		}
+		userInfo = &jwtUserInfo
 	}
 
 	// Calculate remaining expiry from JWT
@@ -287,7 +308,7 @@ func (s *Server) handleAuthMe(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(AuthExchangeSuccessResponse{
-		User:      userInfo,
+		User:      *userInfo,
 		ExpiresIn: expiresIn,
 	})
 }
@@ -370,6 +391,37 @@ func (s *Server) refreshTokens(refreshToken string) (*TokenResponse, error) {
 	}
 
 	return &tokenResp, nil
+}
+
+// fetchUserInfo calls the OAuth server's /userinfo endpoint to get user profile
+func (s *Server) fetchUserInfo(accessToken string) (*AuthUserInfo, error) {
+	authServerURL := s.cfg.GetDashboardOAuthServerURL()
+	userInfoURL := authServerURL + "/oauth/userinfo"
+
+	req, err := http.NewRequest("GET", userInfoURL, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	req.Header.Set("Authorization", "Bearer "+accessToken)
+
+	client := &http.Client{Timeout: 30 * time.Second}
+	resp, err := client.Do(req)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, &AuthServerError{StatusCode: resp.StatusCode}
+	}
+
+	var userInfo AuthUserInfo
+	if err := json.NewDecoder(resp.Body).Decode(&userInfo); err != nil {
+		return nil, err
+	}
+
+	return &userInfo, nil
 }
 
 // setAuthCookies sets httpOnly cookies for access and refresh tokens
