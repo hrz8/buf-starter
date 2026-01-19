@@ -1,0 +1,57 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.WidgetConfig.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "WidgetConfig defines the embeddable chat widget configuration.\n Controls CORS settings for cross-origin embedding.",
+      "properties": {
+        "cors": {
+          "$ref": "#/$defs/chatbot.modules.v1.WidgetCors.jsonschema.strict.json",
+          "description": "CORS (Cross-Origin Resource Sharing) configuration"
+        },
+        "enabled": {
+          "description": "Whether the Widget module is enabled",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "Widget Config",
+      "type": "object"
+    },
+    "chatbot.modules.v1.WidgetCors.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "WidgetCors defines CORS settings for the chat widget.",
+      "properties": {
+        "allowedHeaders": {
+          "description": "HTTP headers allowed in requests",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "allowedOrigins": {
+          "description": "List of allowed origin domains for the widget",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "credentials": {
+          "description": "Whether to allow credentials (cookies, authorization headers)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "credentials"
+      ],
+      "title": "Widget Cors",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.WidgetConfig.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.WidgetConfig.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package chatbot.modules.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/chatbot/modules/v1;chatbotmodulesv1";
+
+import "buf/validate/validate.proto";
+
+// LlmConfig defines the configuration for the LLM module.
+// Controls model selection and inference parameters.
+message LlmConfig {
+  // Whether the LLM module is enabled
+  bool enabled = 1;
+
+  // Model identifier (e.g., gpt-4, claude-3-opus)
+  string model = 2 [(buf.validate.field).string.max_len = 200];
+
+  // Temperature for response randomness (0 = deterministic, 2 = very random)
+  double temperature = 3 [(buf.validate.field).double = {gte: 0, lte: 2}];
+
+  // Maximum number of tool calls per conversation turn
+  int32 max_tool_calls = 4 [(buf.validate.field).int32 = {gte: 1, lte: 20}];
+}

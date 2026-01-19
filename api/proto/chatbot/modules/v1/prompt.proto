@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package chatbot.modules.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/chatbot/modules/v1;chatbotmodulesv1";
+
+import "buf/validate/validate.proto";
+
+// PromptConfig defines the system prompt configuration.
+// Controls the chatbot's behavior and personality.
+message PromptConfig {
+  // Whether the Prompt module is enabled
+  bool enabled = 1;
+
+  // The system prompt that defines the chatbot's behavior and personality
+  string system_prompt = 2 [(buf.validate.field).string.max_len = 10000];
+}

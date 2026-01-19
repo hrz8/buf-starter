@@ -1,0 +1,86 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.StructuredOutput.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "StructuredOutput defines configuration for extracting structured data from tool responses.",
+      "properties": {
+        "inputType": {
+          "description": "The format of the input data: \"string\" or \"json\"",
+          "type": "string"
+        },
+        "model": {
+          "description": "The model to use for structured output extraction",
+          "maxLength": 200,
+          "type": "string"
+        },
+        "outputSchema": {
+          "description": "JSON schema defining the structure of the output",
+          "type": "string"
+        },
+        "prompt": {
+          "description": "Instructions for extracting structured output",
+          "maxLength": 10000,
+          "type": "string"
+        },
+        "target": {
+          "description": "The target in format: mcpservername__toolname",
+          "maxLength": 200,
+          "type": "string"
+        },
+        "ui": {
+          "$ref": "#/$defs/chatbot.modules.v1.StructuredOutputUi.jsonschema.strict.json",
+          "description": "UI configuration for rendering structured output"
+        }
+      },
+      "required": [
+        "target",
+        "model",
+        "prompt",
+        "inputType",
+        "outputSchema"
+      ],
+      "title": "Structured Output",
+      "type": "object"
+    },
+    "chatbot.modules.v1.StructuredOutputUi.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "StructuredOutputUi defines UI rendering configuration for structured outputs.",
+      "properties": {
+        "component": {
+          "description": "The UI component type: \"carousel\" or \"card\"",
+          "type": "string"
+        },
+        "dataPath": {
+          "description": "Path to the data in the output (e.g., \"flights\")",
+          "type": "string"
+        },
+        "enabled": {
+          "description": "Whether to render output as interactive UI components",
+          "type": "boolean"
+        },
+        "isArray": {
+          "description": "Whether the data contains multiple items",
+          "type": "boolean"
+        },
+        "itemConfig": {
+          "description": "JSON configuration for rendering each item",
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "component",
+        "isArray",
+        "dataPath",
+        "itemConfig"
+      ],
+      "title": "Structured Output Ui",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.StructuredOutput.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.StructuredOutput.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

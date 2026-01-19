@@ -9,6 +9,7 @@
     },
     "label": {
       "active": "Active",
+      "enabled": "On",
       "error": "Error",
       "inactive": "Inactive"
     },
@@ -107,6 +108,36 @@
     "submitBtnProgress": "Sending..."
   },
   "features": {
+    "chatbot": {
+      "page": {
+        "title": "Module Configuration",
+        "description": "Configure chatbot modules for your project",
+        "noProjectSelected": "Please select a project to configure chatbot modules.",
+        "invalidModuleTitle": "Invalid Module",
+        "invalidModuleDesc": "The module \"{name}\" does not exist.",
+        "unknownModule": "Unknown Module"
+      },
+      "form": {
+        "save": "Save Configuration",
+        "saving": "Saving..."
+      },
+      "messages": {
+        "saveSuccess": "Configuration saved successfully",
+        "saveError": "Failed to save configuration",
+        "loadError": "Failed to load chatbot configuration",
+        "moduleEnabled": "Module enabled",
+        "moduleDisabled": "Module disabled",
+        "toggleError": "Failed to toggle module"
+      },
+      "toggle": {
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+      },
+      "array": {
+        "addItem": "Add Item",
+        "removeItem": "Remove"
+      }
+    },
     "api_keys": {
       "actions": {
         "activate": "Activate API Key",
@@ -857,6 +888,13 @@
     }
   },
   "nav": {
+    "chatbot": {
+      "title": "Chatbot",
+      "llm": "LLM",
+      "prompt": "Prompt",
+      "mcpServer": "MCP Server",
+      "widget": "Widget"
+    },
     "dashboard": "Dashboard",
     "devices": {
       "chat": "Chat",

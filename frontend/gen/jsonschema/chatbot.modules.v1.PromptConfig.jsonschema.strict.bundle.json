@@ -1,0 +1,29 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.PromptConfig.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "PromptConfig defines the system prompt configuration.\n Controls the chatbot's behavior and personality.",
+      "properties": {
+        "enabled": {
+          "description": "Whether the Prompt module is enabled",
+          "type": "boolean"
+        },
+        "systemPrompt": {
+          "description": "The system prompt that defines the chatbot's behavior and personality",
+          "maxLength": 10000,
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "systemPrompt"
+      ],
+      "title": "Prompt Config",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.PromptConfig.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.PromptConfig.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

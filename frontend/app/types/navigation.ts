@@ -45,6 +45,14 @@ export interface NavSubItem {
   icon?: LucideIcon;
   match?: string | RegExp | ((route: RouteLocationNormalizedLoaded) => boolean);
   breadcrumb?: BreadcrumbConfig;
+  /**
+   * Optional badge to display (e.g., "Enabled", "3", etc.)
+   */
+  badge?: string;
+  /**
+   * Badge variant for styling
+   */
+  badgeVariant?: 'default' | 'secondary' | 'destructive' | 'outline';
 }
 
 /**

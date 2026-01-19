@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package chatbot.modules.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/chatbot/modules/v1;chatbotmodulesv1";
+
+// WidgetConfig defines the embeddable chat widget configuration.
+// Controls CORS settings for cross-origin embedding.
+message WidgetConfig {
+  // Whether the Widget module is enabled
+  bool enabled = 1;
+
+  // CORS (Cross-Origin Resource Sharing) configuration
+  WidgetCors cors = 2;
+}
+
+// WidgetCors defines CORS settings for the chat widget.
+message WidgetCors {
+  // List of allowed origin domains for the widget
+  repeated string allowed_origins = 1;
+
+  // HTTP headers allowed in requests
+  repeated string allowed_headers = 2;
+
+  // Whether to allow credentials (cookies, authorization headers)
+  bool credentials = 3;
+}

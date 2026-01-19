@@ -1,0 +1,43 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.StructuredOutputUi.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "StructuredOutputUi defines UI rendering configuration for structured outputs.",
+      "properties": {
+        "component": {
+          "description": "The UI component type: \"carousel\" or \"card\"",
+          "type": "string"
+        },
+        "dataPath": {
+          "description": "Path to the data in the output (e.g., \"flights\")",
+          "type": "string"
+        },
+        "enabled": {
+          "description": "Whether to render output as interactive UI components",
+          "type": "boolean"
+        },
+        "isArray": {
+          "description": "Whether the data contains multiple items",
+          "type": "boolean"
+        },
+        "itemConfig": {
+          "description": "JSON configuration for rendering each item",
+          "type": "string"
+        }
+      },
+      "required": [
+        "enabled",
+        "component",
+        "isArray",
+        "dataPath",
+        "itemConfig"
+      ],
+      "title": "Structured Output Ui",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.StructuredOutputUi.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.StructuredOutputUi.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

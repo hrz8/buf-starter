@@ -1,0 +1,71 @@
+syntax = "proto3";
+
+package chatbot.modules.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/chatbot/modules/v1;chatbotmodulesv1";
+
+import "buf/validate/validate.proto";
+
+// McpServerConfig defines the MCP (Model Context Protocol) server configuration.
+// Controls connections to external tool servers.
+message McpServerConfig {
+  // Whether the MCP Server module is enabled
+  bool enabled = 1;
+
+  // List of MCP servers to connect to
+  repeated McpServerUrl urls = 2;
+
+  // Structured output configurations for tool responses
+  repeated StructuredOutput structured_outputs = 3;
+}
+
+// McpServerUrl defines a single MCP server connection.
+message McpServerUrl {
+  // A friendly name to identify this MCP server
+  string name = 1 [(buf.validate.field).string.max_len = 100];
+
+  // The MCP server endpoint URL
+  string url = 2 [(buf.validate.field).string.uri = true];
+
+  // Optional API key for authentication
+  string api_key = 3;
+}
+
+// StructuredOutput defines configuration for extracting structured data from tool responses.
+message StructuredOutput {
+  // The target in format: mcpservername__toolname
+  string target = 1 [(buf.validate.field).string.max_len = 200];
+
+  // The model to use for structured output extraction
+  string model = 2 [(buf.validate.field).string.max_len = 200];
+
+  // Instructions for extracting structured output
+  string prompt = 3 [(buf.validate.field).string.max_len = 10000];
+
+  // The format of the input data: "string" or "json"
+  string input_type = 4;
+
+  // JSON schema defining the structure of the output
+  string output_schema = 5;
+
+  // UI configuration for rendering structured output
+  StructuredOutputUi ui = 6;
+}
+
+// StructuredOutputUi defines UI rendering configuration for structured outputs.
+message StructuredOutputUi {
+  // Whether to render output as interactive UI components
+  bool enabled = 1;
+
+  // The UI component type: "carousel" or "card"
+  string component = 2;
+
+  // Whether the data contains multiple items
+  bool is_array = 3;
+
+  // Path to the data in the output (e.g., "flights")
+  string data_path = 4;
+
+  // JSON configuration for rendering each item
+  string item_config = 5;
+}

@@ -22,7 +22,7 @@ plugins:
     out: gen
     opt:
       - paths=source_relative
-  # Connect ecosystem for TypeScript
+  # TypeScript types generation
   - remote: buf.build/bufbuild/es:v2.6.3
     out: frontend/gen
     opt:
@@ -31,3 +31,5 @@ plugins:
     include_imports: true
 inputs:
   - directory: api/proto
+    exclude_paths:
+      - api/proto/chatbot

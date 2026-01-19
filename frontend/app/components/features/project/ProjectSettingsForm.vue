@@ -137,7 +137,7 @@ onMounted(async () => {
   </Alert>
 
   <!-- Form -->
-  <div v-else-if="currentProject" class="space-y-6">
+  <div v-else-if="currentProject" class="max-w-xl w-full pl-4 sm:pl-6 space-y-6">
     <div>
       <h2 class="text-2xl font-bold">
         {{ t('features.projects.settings.title') }}

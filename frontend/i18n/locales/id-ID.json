@@ -9,6 +9,7 @@
     },
     "label": {
       "active": "Aktif",
+      "enabled": "Aktif",
       "error": "Error",
       "inactive": "Tidak Aktif"
     },
@@ -107,6 +108,36 @@
     "submitBtnProgress": "Mengirim..."
   },
   "features": {
+    "chatbot": {
+      "page": {
+        "title": "Konfigurasi Modul",
+        "description": "Konfigurasi modul chatbot untuk proyek Anda",
+        "noProjectSelected": "Silakan pilih proyek untuk mengkonfigurasi modul chatbot.",
+        "invalidModuleTitle": "Modul Tidak Valid",
+        "invalidModuleDesc": "Modul \"{name}\" tidak ada.",
+        "unknownModule": "Modul Tidak Dikenal"
+      },
+      "form": {
+        "save": "Simpan Konfigurasi",
+        "saving": "Menyimpan..."
+      },
+      "messages": {
+        "saveSuccess": "Konfigurasi berhasil disimpan",
+        "saveError": "Gagal menyimpan konfigurasi",
+        "loadError": "Gagal memuat konfigurasi chatbot",
+        "moduleEnabled": "Modul diaktifkan",
+        "moduleDisabled": "Modul dinonaktifkan",
+        "toggleError": "Gagal mengubah status modul"
+      },
+      "toggle": {
+        "enabled": "Aktif",
+        "disabled": "Nonaktif"
+      },
+      "array": {
+        "addItem": "Tambah Item",
+        "removeItem": "Hapus"
+      }
+    },
     "api_keys": {
       "actions": {
         "activate": "Aktifkan Kunci API",
@@ -857,6 +888,13 @@
     }
   },
   "nav": {
+    "chatbot": {
+      "title": "Chatbot",
+      "llm": "LLM",
+      "prompt": "Prompt",
+      "mcpServer": "MCP Server",
+      "widget": "Widget"
+    },
     "dashboard": "Dasbor",
     "devices": {
       "chat": "Obrolan",

@@ -10,6 +10,7 @@ import (
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
 
 	api_key_domain "github.com/hrz8/altalune/internal/domain/api_key"
+	chatbot_domain "github.com/hrz8/altalune/internal/domain/chatbot"
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
 	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
@@ -52,6 +53,9 @@ type Container struct {
 	// API Key Repository
 	apiKeyRepo api_key_domain.Repositor
 
+	// Chatbot Repository
+	chatbotRepo chatbot_domain.Repositor
+
 	// IAM Repositories
 	userRepo          user_domain.Repository
 	roleRepo          role_domain.Repository
@@ -71,6 +75,7 @@ type Container struct {
 	// Services
 	projectService       altalunev1.ProjectServiceServer
 	apiKeyService        altalunev1.ApiKeyServiceServer
+	chatbotService       altalunev1.ChatbotServiceServer
 	userService          altalunev1.UserServiceServer
 	roleService          altalunev1.RoleServiceServer
 	permissionService    altalunev1.PermissionServiceServer
@@ -121,6 +126,7 @@ func (c *Container) initRepositories() error {
 	c.employeeRepo = employee_domain.NewRepo(c.db)
 	c.projectRepo = project_domain.NewRepo(c.db)
 	c.apiKeyRepo = api_key_domain.NewRepo(c.db)
+	c.chatbotRepo = chatbot_domain.NewRepo(c.db)
 	c.userRepo = user_domain.NewRepo(c.db)
 	c.roleRepo = role_domain.NewRepo(c.db)
 	c.permissionRepo = permission_domain.NewRepo(c.db)
@@ -141,6 +147,7 @@ func (c *Container) initServices() error {
 	c.employeeService = employee_domain.NewService(validator, c.logger, c.projectRepo, c.employeeRepo)
 	c.projectService = project_domain.NewService(validator, c.logger, c.projectRepo)
 	c.apiKeyService = api_key_domain.NewService(validator, c.logger, c.projectRepo, c.apiKeyRepo)
+	c.chatbotService = chatbot_domain.NewService(validator, c.logger, c.projectRepo, c.chatbotRepo)
 	c.userService = user_domain.NewService(validator, c.logger, c.userRepo)
 	c.roleService = role_domain.NewService(validator, c.logger, c.roleRepo)
 	c.permissionService = permission_domain.NewService(validator, c.logger, c.permissionRepo)

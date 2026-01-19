@@ -384,6 +384,12 @@ func (r *Repo) Create(ctx context.Context, input *CreateProjectInput) (*CreatePr
 		fmt.Printf("Warning: failed to register superadmin to project %d: %v\n", result.ID, err)
 	}
 
+	// Create default chatbot config for the new project
+	if err := r.createDefaultChatbotConfig(ctx, result.ID); err != nil {
+		// Log error but don't fail the project creation
+		fmt.Printf("Warning: failed to create default chatbot config for project %d: %v\n", result.ID, err)
+	}
+
 	return &result, nil
 }
 
@@ -598,6 +604,7 @@ func (r *Repo) Delete(ctx context.Context, publicID string) error {
 var partitionedTables = []string{
 	"altalune_example_employees",
 	"altalune_project_api_keys",
+	"altalune_chatbot_configs",
 	// Add future partitioned tables here:
 	// "altalune_project_logs",
 	// "altalune_project_metrics",
@@ -682,5 +689,52 @@ func (r *Repo) registerSuperadminAsOwner(ctx context.Context, projectID int64) e
 	}
 
 	fmt.Printf("Info: Successfully registered superadmin (user_id=%d) as owner of project %d\n", superadminID, projectID)
+	return nil
+}
+
+// defaultChatbotModulesConfig is the default JSONB configuration for new chatbot configs.
+// We store an empty object - the frontend handles all defaults and schema-driven merging.
+// This makes the backend agnostic to module structure.
+const defaultChatbotModulesConfig = `{}`
+
+// createDefaultChatbotConfig creates a default chatbot config for a new project
+// This ensures every project has a chatbot config ready to use
+func (r *Repo) createDefaultChatbotConfig(ctx context.Context, projectID int64) error {
+	// Check if config already exists (idempotent)
+	var exists bool
+	err := r.db.QueryRowContext(ctx, `
+		SELECT EXISTS(
+			SELECT 1 FROM altalune_chatbot_configs
+			WHERE project_id = $1
+		)
+	`, projectID).Scan(&exists)
+
+	if err != nil {
+		return fmt.Errorf("check existing chatbot config: %w", err)
+	}
+
+	if exists {
+		// Config already exists, skip
+		return nil
+	}
+
+	// Generate public_id for the new config
+	publicID, err := nanoid.GeneratePublicID()
+	if err != nil {
+		return fmt.Errorf("generate public_id for chatbot config: %w", err)
+	}
+
+	// Create default chatbot config
+	_, err = r.db.ExecContext(ctx, `
+		INSERT INTO altalune_chatbot_configs (
+			public_id, project_id, modules_config, created_at, updated_at
+		) VALUES ($1, $2, $3::jsonb, NOW(), NOW())
+	`, publicID, projectID, defaultChatbotModulesConfig)
+
+	if err != nil {
+		return fmt.Errorf("create default chatbot config: %w", err)
+	}
+
+	fmt.Printf("Info: Successfully created default chatbot config for project %d\n", projectID)
 	return nil
 }

@@ -1,3 +1,9 @@
+generate:
+	@echo "Generating code from proto files..."
+	@buf generate
+	@buf generate --template buf.gen.chatbot.yaml
+	@echo "✓ Proto code generation complete"
+
 format:
 	gofmt -s -w .
 

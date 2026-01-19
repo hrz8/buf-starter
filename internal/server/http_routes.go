@@ -14,6 +14,7 @@ import (
 	"github.com/hrz8/altalune/gen/altalune/v1/altalunev1connect"
 	"github.com/hrz8/altalune/gen/greeter/v1/greeterv1connect"
 	api_key_domain "github.com/hrz8/altalune/internal/domain/api_key"
+	chatbot_domain "github.com/hrz8/altalune/internal/domain/chatbot"
 	employee_domain "github.com/hrz8/altalune/internal/domain/employee"
 	greeter_domain "github.com/hrz8/altalune/internal/domain/greeter"
 	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
@@ -44,6 +45,10 @@ func (s *Server) setupRoutes() *http.ServeMux {
 	apiKeyHandler := api_key_domain.NewHandler(s.c.GetApiKeyService())
 	apiKeyPath, apiKeyConnectHandler := altalunev1connect.NewApiKeyServiceHandler(apiKeyHandler)
 	connectrpcMux.Handle(apiKeyPath, apiKeyConnectHandler)
+
+	chatbotHandler := chatbot_domain.NewHandler(s.c.GetChatbotService())
+	chatbotPath, chatbotConnectHandler := altalunev1connect.NewChatbotServiceHandler(chatbotHandler)
+	connectrpcMux.Handle(chatbotPath, chatbotConnectHandler)
 
 	// IAM Domains
 	userHandler := user_domain.NewHandler(s.c.GetUserService())

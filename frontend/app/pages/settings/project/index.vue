@@ -8,7 +8,7 @@ const projectId = computed(() => projectStore.activeProjectId);
 </script>
 
 <template>
-  <div class="container mx-auto p-6">
+  <div class="container mx-auto px-2 py-3">
     <div v-if="!projectId" class="text-center py-8">
       <p class="text-muted-foreground">
         {{ t('features.projects.settings.messages.noProjectSelected') }}

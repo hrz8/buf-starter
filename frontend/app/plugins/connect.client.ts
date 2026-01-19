@@ -3,6 +3,7 @@ import { createValidator } from '@bufbuild/protovalidate';
 import { Code, ConnectError, createClient } from '@connectrpc/connect';
 import { createConnectTransport } from '@connectrpc/connect-web';
 import { ApiKeyService } from '~~/gen/altalune/v1/api_key_pb';
+import { ChatbotService } from '~~/gen/altalune/v1/chatbot_pb';
 import { EmployeeService } from '~~/gen/altalune/v1/employee_pb';
 import { IAMMapperService } from '~~/gen/altalune/v1/iam_mapper_pb';
 import { OAuthClientService } from '~~/gen/altalune/v1/oauth_client_pb';
@@ -56,6 +57,7 @@ export default defineNuxtPlugin(() => {
 
   const validator = createValidator();
   const apiKeyClient = createClient(ApiKeyService, transport);
+  const chatbotClient = createClient(ChatbotService, transport);
   const greeterClient = createClient(GreeterService, transport);
   const employeeClient = createClient(EmployeeService, transport);
   const projectClient = createClient(ProjectService, transport);
@@ -70,6 +72,7 @@ export default defineNuxtPlugin(() => {
     provide: {
       validator,
       apiKeyClient,
+      chatbotClient,
       greeterClient,
       employeeClient,
       projectClient,

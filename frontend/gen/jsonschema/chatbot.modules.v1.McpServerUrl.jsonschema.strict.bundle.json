@@ -1,0 +1,35 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.McpServerUrl.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "McpServerUrl defines a single MCP server connection.",
+      "properties": {
+        "apiKey": {
+          "description": "Optional API key for authentication",
+          "type": "string"
+        },
+        "name": {
+          "description": "A friendly name to identify this MCP server",
+          "maxLength": 100,
+          "type": "string"
+        },
+        "url": {
+          "description": "The MCP server endpoint URL",
+          "pattern": "^(?:(?:[a-zA-Z][a-zA-Z\\d+\\-.]*):)?(?://(?:[A-Za-z0-9\\-\\.]+(?::\\d+)?))?(/[^\\?#]*)?(?:\\?([^\\#]*))?(?:\\#(.*))?$",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "url",
+        "apiKey"
+      ],
+      "title": "Mcp Server Url",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.McpServerUrl.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.McpServerUrl.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

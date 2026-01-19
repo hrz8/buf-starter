@@ -3,6 +3,7 @@ import type { NavItem } from '@/composables/navigation/useNavigation';
 
 import { ChevronRight } from 'lucide-vue-next';
 
+import { Badge } from '@/components/ui/badge';
 import {
   Collapsible,
   CollapsibleContent,
@@ -123,13 +124,23 @@ function handleToggle(item: NavItem) {
                     <NuxtLink
                       :to="subItem.to"
                       prefetch
+                      class="flex items-center justify-between w-full"
                     >
-                      <component
-                        :is="subItem.icon"
-                        v-if="subItem.icon"
-                        class="h-4 w-4"
-                      />
-                      <span>{{ subItem.title }}</span>
+                      <span class="flex items-center gap-2">
+                        <component
+                          :is="subItem.icon"
+                          v-if="subItem.icon"
+                          class="h-4 w-4"
+                        />
+                        <span>{{ subItem.title }}</span>
+                      </span>
+                      <Badge
+                        v-if="subItem.badge"
+                        :variant="subItem.badgeVariant || 'secondary'"
+                        class="ml-auto text-[10px] px-1.5 py-0"
+                      >
+                        {{ subItem.badge }}
+                      </Badge>
                     </NuxtLink>
                   </SidebarMenuSubButton>
                 </SidebarMenuSubItem>

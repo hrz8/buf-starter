@@ -63,6 +63,11 @@ func (c *Container) GetApiKeyService() altalunev1.ApiKeyServiceServer {
 	return c.apiKeyService
 }
 
+// GetChatbotService returns the chatbot service
+func (c *Container) GetChatbotService() altalunev1.ChatbotServiceServer {
+	return c.chatbotService
+}
+
 // GetUserService returns the user service
 func (c *Container) GetUserService() altalunev1.UserServiceServer {
 	return c.userService

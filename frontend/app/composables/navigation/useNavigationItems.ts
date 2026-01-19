@@ -1,14 +1,30 @@
-import type { NavItem, SettingsItem } from '~/types/navigation';
+import type { LucideIcon } from 'lucide-vue-next';
+import type { NavItem, NavSubItem, SettingsItem } from '~/types/navigation';
 import {
+  Bot,
+  Brain,
   Cog,
+  FileText,
   Key,
   KeyRound,
   LucideHome,
+  MessageSquare,
   Puzzle,
+  Server,
   ShieldCheck,
   Smartphone,
   Users,
 } from 'lucide-vue-next';
+import { MODULE_SCHEMAS } from '@/lib/chatbot-modules';
+import { useChatbotStore } from '~/stores/chatbot';
+
+const ICON_MAP: Record<string, LucideIcon> = {
+  Brain,
+  FileText,
+  Server,
+  MessageSquare,
+  Bot,
+};
 
 /**
  * Composable for translatable navigation items
@@ -19,6 +35,31 @@ import {
  */
 export function useNavigationItems() {
   const { t } = useI18n();
+  const chatbotStore = useChatbotStore();
+
+  /**
+   * Generate chatbot module nav items with enabled badges
+   * Reactive to chatbot store changes
+   */
+  const chatbotModuleItems = computed<NavSubItem[]>(() => {
+    return Object.values(MODULE_SCHEMAS).map((schema) => {
+      const isEnabled = chatbotStore.isModuleEnabled(schema.key);
+
+      return {
+        title: schema.title,
+        to: `/platform/modules/${schema.key}`,
+        icon: ICON_MAP[schema.icon] || Bot,
+        breadcrumb: {
+          path: `/platform/modules/${schema.key}`,
+          label: schema.title,
+          parent: '/platform/modules',
+        },
+        // Show badge only for enabled modules
+        badge: isEnabled ? t('common.label.enabled') : undefined,
+        badgeVariant: 'default' as const,
+      };
+    });
+  });
 
   /**
    * Main navigation items with translations
@@ -89,6 +130,19 @@ export function useNavigationItems() {
           },
         },
       ],
+    },
+    {
+      title: t('nav.chatbot.title'),
+      to: '/platform/modules',
+      match: '/platform/modules',
+      icon: Bot,
+      breadcrumb: {
+        path: '/platform/modules',
+        label: 'nav.chatbot.title',
+        i18nKey: 'nav.chatbot.title',
+      },
+      // Reactive chatbot module items with enabled badges
+      items: chatbotModuleItems.value,
     },
   ]);
 

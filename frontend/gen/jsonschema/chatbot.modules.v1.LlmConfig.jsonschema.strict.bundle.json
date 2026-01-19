@@ -1,0 +1,43 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.LlmConfig.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "LlmConfig defines the configuration for the LLM module.\n Controls model selection and inference parameters.",
+      "properties": {
+        "enabled": {
+          "description": "Whether the LLM module is enabled",
+          "type": "boolean"
+        },
+        "maxToolCalls": {
+          "description": "Maximum number of tool calls per conversation turn",
+          "maximum": 20,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "model": {
+          "description": "Model identifier (e.g., gpt-4, claude-3-opus)",
+          "maxLength": 200,
+          "type": "string"
+        },
+        "temperature": {
+          "description": "Temperature for response randomness (0 = deterministic, 2 = very random)",
+          "maximum": 2,
+          "minimum": 0,
+          "type": "number"
+        }
+      },
+      "required": [
+        "enabled",
+        "model",
+        "temperature",
+        "maxToolCalls"
+      ],
+      "title": "Llm Config",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.LlmConfig.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.LlmConfig.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
