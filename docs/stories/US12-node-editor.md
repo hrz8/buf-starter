@@ -1,0 +1,260 @@
+# User Story US12: Node Editor
+
+## Story Overview
+
+**As a** project administrator using Altalune
+**I want** to create and manage FAQ/predefined response nodes for my chatbot
+**So that** I can configure automatic responses for common questions without AI processing
+
+## Key Architecture Decisions
+
+### 1. Node Naming with Language
+- **Stored separately**: `name` column + `lang` column
+- **Display format**: `{name}_{lang}` (e.g., `greeting_en`, `faq_pricing_id`)
+- **Supports formats**: `en`, `id`, `en-US`, `id-ID` (normalized for display)
+
+### 2. Hybrid Database Design
+- Searchable columns: `name`, `lang`, `tags[]`, `enabled`
+- JSONB columns: `triggers[]`, `messages[]`
+
+### 3. Dynamic Sidebar
+- "Node" parent menu shows all nodes as child items
+- Sorted alphabetically ascending
+- Button to create new node within sidebar or on dedicated page
+
+## Acceptance Criteria
+
+### Core CRUD Operations
+
+#### Create Node
+- **Given** I am on the Node management page or sidebar
+- **When** I click "Create Node" button
+- **Then** I should see a form/sheet to create a new node
+- **And** I can provide: name (lowercase_snake_case), language, tags
+- **And** upon successful creation, the node appears in the sidebar menu
+- **And** I am navigated to the node edit page to configure triggers/messages
+
+#### List/View Nodes in Sidebar
+- **Given** nodes exist for the current project
+- **When** the sidebar loads
+- **Then** I should see "Node" as a parent menu item under Platform group
+- **And** each node appears as a child menu item formatted as `{name}_{lang}`
+- **And** nodes are sorted alphabetically ascending (e.g., `faq_en`, `greeting_en`, `start_conversation_en`)
+- **And** clicking a node navigates to `/platform/node/{public_id}`
+
+#### Edit Node
+- **Given** I am on a node edit page (`/platform/node/{id}`)
+- **When** the page loads
+- **Then** I can edit: name, tags, enabled status
+- **And** I can manage triggers (add/edit/remove)
+- **And** I can manage messages (add/edit/remove)
+- **And** language cannot be changed (read-only display)
+- **And** upon save, changes are persisted
+
+#### Delete Node
+- **Given** I am on a node edit page
+- **When** I click "Delete" button
+- **Then** I should see a confirmation dialog
+- **And** when I confirm, the node is permanently deleted
+- **And** I am navigated back to Node list or another node
+- **And** the node is removed from the sidebar menu
+
+### Trigger Configuration
+
+#### Trigger Types
+- **keyword**: Match exact word or phrase
+- **contains**: Match if message contains text (case-insensitive)
+- **regex**: Match using regular expression pattern
+- **equals**: Exact match (case-sensitive)
+
+#### Trigger Structure (JSONB)
+```json
+[
+  { "type": "keyword", "value": "hello" },
+  { "type": "contains", "value": "pricing" },
+  { "type": "regex", "value": "^(hi|hello|hey).*" },
+  { "type": "equals", "value": "start" }
+]
+```
+- At least one trigger required per node
+- Any matching trigger activates the node response
+
+### Message Configuration (OpenAI Standard Format)
+
+#### Message Structure (JSONB)
+```json
+[
+  { "role": "assistant", "content": "Hello! Welcome to our service." },
+  { "role": "assistant", "content": "How can I help you today?" }
+]
+```
+- Follows OpenAI/AI provider standard message format
+- At least one message required per node
+- Messages sent in sequence
+
+### Default Node
+
+#### Auto-Create start_conversation_en
+- **Given** a new project is being created
+- **When** the project creation completes
+- **Then** a `start_conversation` node with `lang=en` is automatically created
+- **And** the node has default trigger: `{ "type": "equals", "value": "start" }`
+- **And** the node has default message: `{ "role": "assistant", "content": "Hello! How can I help you today?" }`
+- **And** the node appears in the sidebar menu
+
+### Dynamic Sidebar Menu
+
+#### Node Menu Customization
+- **Given** the sidebar component is mounted
+- **When** it renders the "Node" section
+- **Then** it fetches all nodes for the current project via API
+- **And** renders each node as a menu item: `{name}_{lang}`
+- **And** includes a "Create Node" button (+ icon) in the section header
+- **And** updates when nodes are created/deleted (via refetch or event)
+
+### Data Validation
+
+#### Node Name
+- Required, 2-100 characters
+- Must be lowercase_snake_case format: `^[a-z][a-z0-9_]*$`
+- Must be unique per project + language combination
+
+#### Language
+- Required, valid locale code
+- Supported: `en`, `id`, `en-US`, `en-GB`, `id-ID` (extensible)
+- Default: `en`
+
+#### Tags
+- Optional array of strings
+- Each tag: 1-50 characters, alphanumeric with hyphens
+
+#### Triggers
+- At least one trigger required
+- Regex must be valid regular expression (validated on save)
+- Value max length: 500 characters
+
+#### Messages
+- At least one message required
+- Content max length: 5000 characters per message
+
+## Technical Requirements
+
+### Backend Architecture
+
+#### Database Schema
+```sql
+CREATE TABLE altalune_chatbot_nodes (
+  id BIGINT GENERATED BY DEFAULT AS IDENTITY,
+  public_id VARCHAR(20) NOT NULL,
+  project_id BIGINT NOT NULL,
+  name VARCHAR(100) NOT NULL,
+  lang VARCHAR(10) NOT NULL DEFAULT 'en',
+  tags TEXT[] NOT NULL DEFAULT '{}',
+  enabled BOOLEAN NOT NULL DEFAULT true,
+  triggers JSONB NOT NULL DEFAULT '[]',
+  messages JSONB NOT NULL DEFAULT '[]',
+  created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (project_id, id),
+  FOREIGN KEY (project_id) REFERENCES altalune_projects (id) ON DELETE CASCADE
+) PARTITION BY LIST (project_id);
+
+-- Indexes
+CREATE UNIQUE INDEX ON altalune_chatbot_nodes (project_id, public_id);
+CREATE UNIQUE INDEX ON altalune_chatbot_nodes (project_id, name, lang);
+CREATE INDEX ON altalune_chatbot_nodes (project_id, enabled);
+CREATE INDEX ON altalune_chatbot_nodes USING GIN (tags);
+```
+
+- Follow 7-file domain pattern
+- Partitioned by project_id (add to `partitionedTables`)
+
+#### gRPC Service Design
+- `ListNodes(project_id)` - List all nodes (for sidebar)
+- `CreateNode(project_id, name, lang, tags)` - Create node
+- `GetNode(project_id, node_id)` - Get single node with full data
+- `UpdateNode(project_id, node_id, name, tags, enabled, triggers, messages)` - Update
+- `DeleteNode(project_id, node_id)` - Delete
+
+### Frontend Architecture
+
+#### Directory Structure
+```
+frontend/app/
+├── components/features/chatbot-node/
+│   ├── schema.ts              # Zod validation schemas
+│   ├── error.ts               # Error utilities
+│   ├── constants.ts           # Trigger types, language options
+│   ├── NodeCreateSheet.vue    # Create node sheet/dialog
+│   ├── NodeEditForm.vue       # Main edit form
+│   ├── NodeDeleteDialog.vue   # Delete confirmation
+│   ├── TriggerEditor.vue      # Trigger array editor
+│   ├── MessageEditor.vue      # Message array editor
+│   └── index.ts
+├── components/custom/sidebar/
+│   └── SidebarNodeMenu.vue    # Custom dynamic node menu component
+├── composables/services/
+│   └── useNodeService.ts
+├── pages/platform/node/
+│   └── [id].vue               # Node edit page
+└── shared/repository/
+    └── chatbot-node.ts
+```
+
+#### SidebarNodeMenu.vue
+- Custom sidebar section for dynamic node list
+- Fetches nodes on mount and on project change
+- Renders create button + node list
+- Handles navigation to node edit page
+
+#### TriggerEditor.vue
+- Array editor for triggers
+- Add/remove trigger items
+- Select trigger type (keyword, contains, regex, equals)
+- Input for trigger value
+- Regex validation preview
+
+#### MessageEditor.vue
+- Array editor for messages
+- Add/remove message items
+- Textarea for message content
+- Reorder messages (drag or up/down buttons)
+
+## Out of Scope
+
+- Node connection/flow logic (decision trees)
+- Visual node editor (drag-and-drop canvas)
+- Node templates/presets library
+- Node analytics/usage tracking
+- Bulk node operations
+- Intent triggers (requires NLU integration)
+
+## Dependencies
+
+- US11: Chatbot Configuration Foundation (database partitioning setup)
+- Existing sidebar navigation system
+
+## Definition of Done
+
+- [ ] Database migration created for `altalune_chatbot_nodes` table
+- [ ] Table added to `partitionedTables`
+- [ ] Default `start_conversation_en` node auto-created on project creation
+- [ ] Backend domain implemented (7-file pattern)
+- [ ] Protobuf schema with validation rules
+- [ ] ListNodes API returns nodes for sidebar
+- [ ] All CRUD operations functional
+- [ ] SidebarNodeMenu.vue component for dynamic node list
+- [ ] Create node button in sidebar or page
+- [ ] NodeCreateSheet.vue for creating new nodes
+- [ ] Node edit page with TriggerEditor and MessageEditor
+- [ ] TriggerEditor supports all trigger types
+- [ ] MessageEditor with add/remove/reorder
+- [ ] Form validation comprehensive
+- [ ] i18n translations added (en-US, id-ID)
+
+## Notes
+
+- Node naming follows `{name}_{lang}` display format but stored separately in database
+- OpenAI message format ensures compatibility with AI inference middleware
+- Dynamic sidebar requires custom component to fetch and render nodes
+- Consider caching node list to avoid repeated API calls on navigation

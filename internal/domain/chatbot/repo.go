@@ -59,12 +59,8 @@ func (r *Repo) GetByProjectID(ctx context.Context, projectID int64) (*ChatbotCon
 		return nil, err
 	}
 
-	// Config doesn't exist - ensure partition exists and create default config
-	if err := r.ensurePartition(ctx, projectID); err != nil {
-		return nil, fmt.Errorf("ensure partition: %w", err)
-	}
-
-	// Create default config
+	// Config doesn't exist - create default config
+	// Note: Partition is created by migration (for existing projects) or project/repo.go (for new projects)
 	return r.createDefault(ctx, projectID)
 }
 
@@ -100,22 +96,6 @@ func (r *Repo) getExisting(ctx context.Context, projectID int64) (*ChatbotConfig
 	}
 
 	return result.ToChatbotConfig()
-}
-
-// ensurePartition ensures that a partition exists for the given project ID
-func (r *Repo) ensurePartition(ctx context.Context, projectID int64) error {
-	partitionName := fmt.Sprintf("altalune_chatbot_configs_p%d", projectID)
-	query := fmt.Sprintf(`
-		CREATE TABLE IF NOT EXISTS %s
-		PARTITION OF altalune_chatbot_configs FOR VALUES IN (%d)
-	`, partitionName, projectID)
-
-	_, err := r.db.ExecContext(ctx, query)
-	if err != nil {
-		return fmt.Errorf("create partition %s: %w", partitionName, err)
-	}
-
-	return nil
 }
 
 // createDefault creates a default chatbot config for a project

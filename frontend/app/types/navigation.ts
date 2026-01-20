@@ -60,6 +60,14 @@ export interface NavSubItem {
  */
 export interface NavItem extends NavSubItem {
   items?: NavSubItem[];
+  /**
+   * Action identifier for sidebar to handle (e.g., 'createNode' shows a + button)
+   */
+  action?: string;
+  /**
+   * If true, the menu item starts expanded by default
+   */
+  defaultExpanded?: boolean;
 }
 
 /**

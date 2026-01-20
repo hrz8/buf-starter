@@ -1,0 +1,130 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+import "buf/validate/validate.proto";
+import "chatbot/nodes/v1/node.proto";
+
+// ChatbotNodeService provides CRUD operations for managing chatbot nodes.
+// Nodes define FAQ/predefined responses with triggers and messages.
+service ChatbotNodeService {
+  // ListNodes retrieves all nodes for a project (for sidebar display)
+  rpc ListNodes(ListNodesRequest) returns (ListNodesResponse) {}
+  // CreateNode creates a new chatbot node
+  rpc CreateNode(CreateNodeRequest) returns (CreateNodeResponse) {}
+  // GetNode retrieves a single node with full data (triggers, messages)
+  rpc GetNode(GetNodeRequest) returns (GetNodeResponse) {}
+  // UpdateNode updates an existing chatbot node
+  rpc UpdateNode(UpdateNodeRequest) returns (UpdateNodeResponse) {}
+  // DeleteNode permanently removes a chatbot node
+  rpc DeleteNode(DeleteNodeRequest) returns (DeleteNodeResponse) {}
+}
+
+// ListNodesRequest retrieves all nodes for sidebar display
+message ListNodesRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+}
+
+// ListNodesResponse contains nodes sorted alphabetically by name_lang
+message ListNodesResponse {
+  repeated chatbot.nodes.v1.ChatbotNode nodes = 1;
+}
+
+// CreateNodeRequest creates a new chatbot node
+message CreateNodeRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+  string name = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 2,
+      max_len: 100,
+      pattern: "^[a-z][a-z0-9_]*$"
+    }
+  ];
+  string lang = 3 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      in: ["en-US", "id-ID"]
+    }
+  ];
+  repeated string tags = 4;
+}
+
+// CreateNodeResponse returns the created node
+message CreateNodeResponse {
+  chatbot.nodes.v1.ChatbotNode node = 1;
+}
+
+// GetNodeRequest retrieves a single node with full data
+message GetNodeRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+  string node_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+}
+
+// GetNodeResponse returns the full node data
+message GetNodeResponse {
+  chatbot.nodes.v1.ChatbotNode node = 1;
+}
+
+// UpdateNodeRequest updates an existing node
+message UpdateNodeRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+  string node_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+  // name - optional, if provided must match lowercase_snake_case pattern
+  optional string name = 3 [(buf.validate.field).string = {
+    min_len: 2,
+    max_len: 100,
+    pattern: "^[a-z][a-z0-9_]*$"
+  }];
+  // tags - replaces existing tags
+  repeated string tags = 4;
+  // enabled - toggle node on/off
+  optional bool enabled = 5;
+  // triggers - at least one required when provided
+  repeated chatbot.nodes.v1.ChatbotNodeTrigger triggers = 6;
+  // messages - at least one required when provided
+  repeated chatbot.nodes.v1.ChatbotNodeMessage messages = 7;
+}
+
+// UpdateNodeResponse returns the updated node
+message UpdateNodeResponse {
+  chatbot.nodes.v1.ChatbotNode node = 1;
+  string message = 2;
+}
+
+// DeleteNodeRequest permanently removes a node
+message DeleteNodeRequest {
+  string project_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+  string node_id = 2 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = { len: 14 }
+  ];
+}
+
+// DeleteNodeResponse confirms deletion
+message DeleteNodeResponse {
+  string message = 1;
+}

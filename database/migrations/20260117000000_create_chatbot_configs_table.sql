@@ -18,11 +18,24 @@ CREATE UNIQUE INDEX IF NOT EXISTS ux_altalune_chatbot_configs_public_id
 
 CREATE UNIQUE INDEX IF NOT EXISTS ux_altalune_chatbot_configs_project_id
   ON altalune_chatbot_configs (project_id);
+
+-- Create partitions for all existing projects
+DO $$
+DECLARE
+  proj RECORD;
+BEGIN
+  FOR proj IN SELECT id FROM altalune_projects LOOP
+    EXECUTE format(
+      'CREATE TABLE IF NOT EXISTS altalune_chatbot_configs_p%s PARTITION OF altalune_chatbot_configs FOR VALUES IN (%s)',
+      proj.id, proj.id
+    );
+  END LOOP;
+END $$;
 -- +goose StatementEnd
 
--- Note: Partitions and default configs are created via lazy initialization in Go code.
--- - New projects: Partition + config created in project/repo.go Create() method
--- - Existing projects: Partition + config created on first API access in chatbot/repo.go GetByProjectID()
+-- Note: Partitions are created in two ways:
+-- - Existing projects: Created by the DO block above during migration
+-- - New projects: Created by project/repo.go createPartitionsForProject()
 
 -- +goose Down
 -- +goose StatementBegin

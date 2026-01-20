@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { ModuleSchema } from '@/lib/chatbot-modules';
+import { Check, Loader2 } from 'lucide-vue-next';
 import { useForm } from 'vee-validate';
 import { toast } from 'vue-sonner';
 import { Button } from '@/components/ui/button';
@@ -17,23 +18,25 @@ const props = defineProps<{
 const { t } = useI18n();
 const chatbotStore = useChatbotStore();
 
-// Form setup with vee-validate
+const isLoading = ref(true);
+const dataLoaded = ref(false);
+
+const moduleEnabled = computed(() => chatbotStore.isModuleEnabled(props.moduleName));
+const isSaving = computed(() => chatbotStore.loading);
+
+// Form setup with empty initial values (plain object, not ref)
 const form = useForm({
   initialValues: {} as Record<string, unknown>,
 });
 
-// Local state for UI
-const isInitialized = ref(false);
+// Track unsaved changes
+const hasChanges = computed(() => form.meta.value.dirty);
 
-// Get module enabled state from store (reactive)
-const moduleEnabled = computed(() => chatbotStore.isModuleEnabled(props.moduleName));
+// Load data from store
+async function loadData() {
+  isLoading.value = true;
+  dataLoaded.value = false;
 
-// Loading state - only for initial load, not for save operations
-// Save operations keep the form visible (button is disabled via chatbotStore.loading)
-const isLoading = computed(() => !isInitialized.value);
-
-// Initialize form with config from store
-async function initializeForm() {
   try {
     // Ensure store is loaded
     await chatbotStore.ensureLoaded();
@@ -45,24 +48,25 @@ async function initializeForm() {
     const formValues = { ...moduleConfig };
     delete formValues.enabled;
 
-    form.setValues(formValues);
-    isInitialized.value = true;
+    // Reset form with new values
+    form.resetForm({
+      values: formValues,
+    });
+
+    dataLoaded.value = true;
   }
   catch (error) {
     console.error('Failed to load chatbot config:', error);
     toast.error(t('features.chatbot.messages.loadError'));
   }
+  finally {
+    isLoading.value = false;
+  }
 }
 
 // Initialize on mount
 onMounted(() => {
-  initializeForm();
-});
-
-// Re-initialize when project changes
-watch(() => props.projectId, () => {
-  isInitialized.value = false;
-  initializeForm();
+  loadData();
 });
 
 // Handle enabled toggle
@@ -105,6 +109,9 @@ const onSubmit = form.handleSubmit(async (values) => {
       configToSave,
     );
 
+    // Reset form with current values to clear dirty state
+    form.resetForm({ values });
+
     toast.success(t('features.chatbot.messages.saveSuccess'));
   }
   catch (error) {
@@ -126,8 +133,8 @@ const onSubmit = form.handleSubmit(async (values) => {
     <Skeleton class="h-10 w-32" />
   </div>
 
-  <!-- Form -->
-  <div v-else class="space-y-6">
+  <!-- Form - only render when data has been loaded -->
+  <div v-else-if="dataLoaded" class="space-y-6">
     <!-- Module Toggle Header -->
     <ModuleToggle
       :schema="schema"
@@ -144,14 +151,30 @@ const onSubmit = form.handleSubmit(async (values) => {
       />
 
       <div class="flex gap-2">
-        <Button type="submit" :disabled="chatbotStore.loading">
+        <Button type="submit" :disabled="isSaving">
           {{
-            chatbotStore.loading
+            isSaving
               ? t('features.chatbot.form.saving')
               : t('features.chatbot.form.save')
           }}
         </Button>
       </div>
     </form>
+
+    <!-- Unsaved changes indicator -->
+    <div
+      v-if="hasChanges"
+      class="fixed bottom-4 left-1/2 -translate-x-1/2 bg-background border
+        rounded-lg shadow-lg px-4 py-2 flex items-center gap-3 z-50"
+    >
+      <span class="text-sm text-muted-foreground">
+        {{ t('features.chatbot.page.unsavedChanges') }}
+      </span>
+      <Button size="sm" :disabled="isSaving" @click="onSubmit">
+        <Check v-if="!isSaving" class="h-4 w-4 mr-1" />
+        <Loader2 v-else class="h-4 w-4 mr-1 animate-spin" />
+        {{ t('common.save') }}
+      </Button>
+    </div>
   </div>
 </template>

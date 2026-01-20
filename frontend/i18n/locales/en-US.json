@@ -9,6 +9,7 @@
     },
     "label": {
       "active": "Active",
+      "disabled": "Disabled",
       "enabled": "On",
       "error": "Error",
       "inactive": "Inactive"
@@ -20,7 +21,15 @@
       "loading": "Loading...",
       "success": "Success",
       "updating": "Updating..."
-    }
+    },
+    "cancel": "Cancel",
+    "save": "Save",
+    "success": "Success",
+    "error": "Error",
+    "creating": "Creating...",
+    "deleting": "Deleting...",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
   },
   "datatable": {
     "clearFilters": "Clear filters",
@@ -79,6 +88,14 @@
     "60901": "OAuth client already exists",
     "60902": "Invalid redirect URI",
     "60903": "OAuth client secret is invalid",
+    "61001": "Node not found",
+    "61002": "Invalid node name format",
+    "61003": "Invalid language code",
+    "61004": "Duplicate node name and language combination",
+    "61005": "At least one trigger is required",
+    "61006": "At least one message is required",
+    "61007": "Invalid trigger type",
+    "61008": "Invalid regex pattern",
     "69901": "Server Error"
   },
   "errorPage": {
@@ -115,7 +132,8 @@
         "noProjectSelected": "Please select a project to configure chatbot modules.",
         "invalidModuleTitle": "Invalid Module",
         "invalidModuleDesc": "The module \"{name}\" does not exist.",
-        "unknownModule": "Unknown Module"
+        "unknownModule": "Unknown Module",
+        "unsavedChanges": "You have unsaved changes"
       },
       "form": {
         "save": "Save Configuration",
@@ -136,6 +154,68 @@
       "array": {
         "addItem": "Add Item",
         "removeItem": "Remove"
+      }
+    },
+    "chatbotNode": {
+      "page": {
+        "title": "Edit Node",
+        "subtitle": "Language: {lang}",
+        "noProjectSelected": "Please select a project to view nodes.",
+        "notFoundTitle": "Node Not Found",
+        "notFoundDesc": "The requested node does not exist or has been deleted.",
+        "unsavedChanges": "You have unsaved changes"
+      },
+      "sheet": {
+        "createTitle": "Create New Node",
+        "createDescription": "Create a new chatbot response node. You can configure triggers and messages after creation."
+      },
+      "form": {
+        "name": "Node Name",
+        "namePlaceholder": "e.g., greeting, faq_pricing",
+        "nameHelp": "Use lowercase letters, numbers, and underscores only",
+        "lang": "Language",
+        "langPlaceholder": "Select a language",
+        "tags": "Tags",
+        "tagsPlaceholder": "Add tags...",
+        "enabled": "Enabled",
+        "create": "Create Node"
+      },
+      "trigger": {
+        "title": "Triggers",
+        "description": "Define conditions that activate this node. When a user message matches any trigger, this node's messages will be sent.",
+        "count": "trigger | triggers",
+        "type": "Type",
+        "value": "Value",
+        "valuePlaceholder": "Enter trigger value...",
+        "add": "Add Trigger",
+        "remove": "Remove",
+        "invalidRegex": "Invalid regex pattern"
+      },
+      "message": {
+        "title": "Messages",
+        "description": "Configure the bot's response messages. Messages are sent in sequence when the node is triggered.",
+        "count": "message | messages",
+        "content": "Message Content",
+        "placeholder": "Enter message content...",
+        "add": "Add Message",
+        "remove": "Remove",
+        "moveUp": "Move Up",
+        "moveDown": "Move Down"
+      },
+      "delete": {
+        "title": "Delete Node",
+        "description": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+        "button": "Delete",
+        "confirm": "Delete Node"
+      },
+      "messages": {
+        "noProject": "No project selected",
+        "createSuccess": "Node created successfully",
+        "createError": "Failed to create node",
+        "saveSuccess": "Node saved successfully",
+        "saveError": "Failed to save node",
+        "deleteSuccess": "Node deleted successfully",
+        "deleteError": "Failed to delete node"
       }
     },
     "api_keys": {
@@ -894,6 +974,10 @@
       "prompt": "Prompt",
       "mcpServer": "MCP Server",
       "widget": "Widget"
+    },
+    "nodes": {
+      "title": "Nodes",
+      "create": "Create Node"
     },
     "dashboard": "Dashboard",
     "devices": {

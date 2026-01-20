@@ -27,7 +27,7 @@ auth:
   port: 3300                                        # Auth server port (default: 3300)
   sessionSecret: "gg6nAhpdc2ZetU37yquW8zQFo9V02KzP" # Session encryption secret (min 32 chars)
   codeExpiry: 600                                   # Authorization code expiry in seconds (default: 10 minutes)
-  accessTokenExpiry: 3600                           # Access token (JWT) expiry in seconds (default: 1 hour)
+  accessTokenExpiry: 7200                           # Access token (JWT) expiry in seconds (default: 1 hour)
   refreshTokenExpiry: 2592000                       # Refresh token expiry in seconds (default: 30 days)
 
 # Security configuration

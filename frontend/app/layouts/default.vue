@@ -8,6 +8,8 @@ import {
 } from '@/components/ui/sidebar';
 import { Toaster } from '@/components/ui/sonner';
 import { useProjectService } from '@/composables/services/useProjectService';
+import { useChatbotStore } from '@/stores/chatbot';
+import { useChatbotNodeStore } from '@/stores/chatbot-node';
 import { useProjectStore } from '@/stores/project';
 
 import 'vue-sonner/style.css';
@@ -20,6 +22,8 @@ function handleOpenUpdate(open: boolean) {
 }
 
 const projectStore = useProjectStore();
+const chatbotStore = useChatbotStore();
+const nodeStore = useChatbotNodeStore();
 const { query } = useProjectService();
 
 async function fetchProjects() {
@@ -50,6 +54,21 @@ onMounted(() => {
     fetchProjects();
   }
 });
+
+// Watch for project changes and load chatbot config + nodes
+watch(
+  () => projectStore.activeProjectId,
+  async (projectId) => {
+    if (projectId) {
+      // Load in parallel for better performance
+      await Promise.all([
+        chatbotStore.ensureLoaded(),
+        nodeStore.ensureLoaded(),
+      ]);
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import type { ChatbotNode } from '~~/gen/chatbot/nodes/v1/node_pb';
 import type { SidebarProps } from '@/components/ui/sidebar';
 
 import {
@@ -8,6 +9,7 @@ import {
   NavSettings,
   NavUser,
 } from '@/components/custom/nav';
+import NodeCreateSheet from '@/components/features/chatbot-node/NodeCreateSheet.vue';
 import {
   Sidebar,
   SidebarContent,
@@ -51,6 +53,21 @@ const data = {
   settings: settingsNavItems,
   iam: iamNavItems,
 };
+
+// Node create sheet state
+const isNodeCreateSheetOpen = ref(false);
+const router = useRouter();
+
+function handleNavAction(action: string) {
+  if (action === 'createNode') {
+    isNodeCreateSheetOpen.value = true;
+  }
+}
+
+function handleNodeCreated(node: ChatbotNode) {
+  // Navigate to the newly created node
+  router.push(`/platform/node/${node.id}`);
+}
 </script>
 
 <template>
@@ -59,7 +76,7 @@ const data = {
       <NavProject />
     </SidebarHeader>
     <SidebarContent>
-      <NavMenu :items="mainNavItems" />
+      <NavMenu :items="mainNavItems" @action="handleNavAction" />
       <NavIAM :items="data.iam.value" />
       <NavSettings :settings="data.settings.value" />
     </SidebarContent>
@@ -68,4 +85,10 @@ const data = {
     </SidebarFooter>
     <SidebarRail />
   </Sidebar>
+
+  <!-- Node Create Sheet -->
+  <NodeCreateSheet
+    v-model:open="isNodeCreateSheetOpen"
+    @success="handleNodeCreated"
+  />
 </template>

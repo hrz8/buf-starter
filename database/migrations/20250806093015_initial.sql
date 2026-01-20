@@ -31,11 +31,28 @@ CREATE TABLE IF NOT EXISTS altalune_project_api_keys (
 ) PARTITION BY LIST (project_id);
 
 -- Include project_id in unique indexes for partitioned table
-CREATE UNIQUE INDEX IF NOT EXISTS ux_altalune_project_api_keys_public_id 
+CREATE UNIQUE INDEX IF NOT EXISTS ux_altalune_project_api_keys_public_id
   ON altalune_project_api_keys (project_id, public_id);
-CREATE UNIQUE INDEX IF NOT EXISTS ux_altalune_project_api_keys_key 
+CREATE UNIQUE INDEX IF NOT EXISTS ux_altalune_project_api_keys_key
   ON altalune_project_api_keys (project_id, key);
+
+-- Create partitions for all existing projects
+DO $$
+DECLARE
+  proj RECORD;
+BEGIN
+  FOR proj IN SELECT id FROM altalune_projects LOOP
+    EXECUTE format(
+      'CREATE TABLE IF NOT EXISTS altalune_project_api_keys_p%s PARTITION OF altalune_project_api_keys FOR VALUES IN (%s)',
+      proj.id, proj.id
+    );
+  END LOOP;
+END $$;
 -- +goose StatementEnd
+
+-- Note: Partitions are created in two ways:
+-- - Existing projects: Created by the DO block above during migration
+-- - New projects: Created by project/repo.go createPartitionsForProject()
 
 -- +goose Down
 -- +goose StatementBegin

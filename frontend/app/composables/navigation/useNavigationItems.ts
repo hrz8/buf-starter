@@ -14,9 +14,11 @@ import {
   ShieldCheck,
   Smartphone,
   Users,
+  Workflow,
 } from 'lucide-vue-next';
 import { MODULE_SCHEMAS } from '@/lib/chatbot-modules';
 import { useChatbotStore } from '~/stores/chatbot';
+import { useChatbotNodeStore } from '~/stores/chatbot-node';
 
 const ICON_MAP: Record<string, LucideIcon> = {
   Brain,
@@ -36,6 +38,7 @@ const ICON_MAP: Record<string, LucideIcon> = {
 export function useNavigationItems() {
   const { t } = useI18n();
   const chatbotStore = useChatbotStore();
+  const nodeStore = useChatbotNodeStore();
 
   /**
    * Generate chatbot module nav items with enabled badges
@@ -57,6 +60,29 @@ export function useNavigationItems() {
         // Show badge only for enabled modules
         badge: isEnabled ? t('common.label.enabled') : undefined,
         badgeVariant: 'default' as const,
+      };
+    });
+  });
+
+  /**
+   * Generate chatbot node nav items
+   * Reactive to node store changes
+   */
+  const chatbotNodeItems = computed<NavSubItem[]>(() => {
+    return nodeStore.sortedNodes.map((node) => {
+      const displayName = `${node.name}_${node.lang}`;
+      return {
+        title: displayName,
+        to: `/platform/node/${node.id}`,
+        icon: FileText,
+        breadcrumb: {
+          path: `/platform/node/${node.id}`,
+          label: displayName,
+          parent: '/platform/nodes',
+        },
+        // Show badge for disabled nodes
+        badge: node.enabled ? undefined : t('common.label.disabled'),
+        badgeVariant: 'secondary' as const,
       };
     });
   });
@@ -143,6 +169,23 @@ export function useNavigationItems() {
       },
       // Reactive chatbot module items with enabled badges
       items: chatbotModuleItems.value,
+    },
+    {
+      title: t('nav.nodes.title'),
+      to: '/platform/nodes',
+      match: '/platform/node',
+      icon: Workflow,
+      breadcrumb: {
+        path: '/platform/nodes',
+        label: 'nav.nodes.title',
+        i18nKey: 'nav.nodes.title',
+      },
+      // Reactive chatbot node items
+      items: chatbotNodeItems.value,
+      // Action for creating new nodes (will be handled by sidebar component)
+      action: 'createNode',
+      // Always expanded by default
+      defaultExpanded: true,
     },
   ]);
 

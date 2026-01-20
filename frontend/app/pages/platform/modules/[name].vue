@@ -11,6 +11,8 @@ const projectStore = useProjectStore();
 // Get module name from route params
 const moduleName = computed(() => route.params.name as string);
 
+const projectId = computed(() => projectStore.activeProjectId);
+
 // Validate module name and get schema
 const moduleSchema = computed(() => {
   if (!isValidModuleName(moduleName.value)) {
@@ -19,9 +21,6 @@ const moduleSchema = computed(() => {
   return getModuleSchema(moduleName.value);
 });
 
-// Check if project is selected
-const projectId = computed(() => projectStore.activeProjectId);
-
 // Page title
 const pageTitle = computed(() => {
   if (moduleSchema.value) {
@@ -29,6 +28,21 @@ const pageTitle = computed(() => {
   }
   return t('features.chatbot.page.unknownModule');
 });
+
+const formMountId = ref(0);
+
+watch(
+  () => route.fullPath,
+  () => {
+    formMountId.value++;
+  },
+);
+
+onMounted(() => {
+  formMountId.value++;
+});
+
+const formKey = computed(() => `${moduleName.value}-${projectId.value}-${formMountId.value}`);
 </script>
 
 <template>
@@ -60,6 +74,7 @@ const pageTitle = computed(() => {
       </div>
 
       <ModuleConfigForm
+        :key="formKey"
         :project-id="projectId"
         :module-name="moduleName"
         :schema="moduleSchema"

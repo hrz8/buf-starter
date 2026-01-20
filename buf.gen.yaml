@@ -32,4 +32,4 @@ plugins:
 inputs:
   - directory: api/proto
     exclude_paths:
-      - api/proto/chatbot
+      - api/proto/chatbot/modules

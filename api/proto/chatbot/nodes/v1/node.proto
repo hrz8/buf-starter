@@ -1,0 +1,59 @@
+syntax = "proto3";
+
+package chatbot.nodes.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/chatbot/nodes/v1;chatbotnodesv1";
+
+import "google/protobuf/timestamp.proto";
+import "buf/validate/validate.proto";
+
+// ChatbotNode represents a chatbot response node with triggers and messages.
+// This type is shared between the dashboard (altalune) and inference services.
+message ChatbotNode {
+  // public_id - unique identifier for the node
+  string id = 1;
+  // name - lowercase_snake_case identifier (e.g., start_conversation, faq_pricing)
+  string name = 2;
+  // lang - language code (en-US, id-ID)
+  string lang = 3;
+  // tags - optional categorization tags
+  repeated string tags = 4;
+  // enabled - whether the node is active
+  bool enabled = 5;
+  // triggers - conditions that activate this node
+  repeated ChatbotNodeTrigger triggers = 6;
+  // messages - responses sent when node is triggered (OpenAI format)
+  repeated ChatbotNodeMessage messages = 7;
+  // created_at - timestamp of creation
+  google.protobuf.Timestamp created_at = 98;
+  // updated_at - timestamp of last update
+  google.protobuf.Timestamp updated_at = 99;
+}
+
+// ChatbotNodeTrigger defines a trigger condition for activating a node.
+// When a user message matches any trigger, the node's messages are sent.
+message ChatbotNodeTrigger {
+  // type - matching algorithm: keyword, contains, regex, equals
+  string type = 1 [(buf.validate.field).string = {
+    in: ["keyword", "contains", "regex", "equals"]
+  }];
+  // value - the pattern/text to match against user input
+  string value = 2 [(buf.validate.field).string = {
+    min_len: 1,
+    max_len: 500
+  }];
+}
+
+// ChatbotNodeMessage defines a message in OpenAI-compatible format.
+// Messages are sent sequentially when the node is triggered.
+message ChatbotNodeMessage {
+  // role - message role (currently only "assistant" is supported)
+  string role = 1 [(buf.validate.field).string = {
+    in: ["assistant"]
+  }];
+  // content - the message text to send to the user
+  string content = 2 [(buf.validate.field).string = {
+    min_len: 1,
+    max_len: 5000
+  }];
+}

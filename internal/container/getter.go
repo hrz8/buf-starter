@@ -68,6 +68,11 @@ func (c *Container) GetChatbotService() altalunev1.ChatbotServiceServer {
 	return c.chatbotService
 }
 
+// GetChatbotNodeService returns the chatbot node service
+func (c *Container) GetChatbotNodeService() altalunev1.ChatbotNodeServiceServer {
+	return c.chatbotNodeService
+}
+
 // GetUserService returns the user service
 func (c *Container) GetUserService() altalunev1.UserServiceServer {
 	return c.userService

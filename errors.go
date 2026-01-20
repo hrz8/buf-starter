@@ -76,6 +76,16 @@ const (
 	CodeInvalidRedirectURI       = "60902"
 	CodeOAuthClientSecretInvalid = "60903"
 
+	// Chatbot Node Domain Errors (610XX)
+	CodeChatbotNodeNotFound       = "61001"
+	CodeChatbotNodeInvalidName    = "61002"
+	CodeChatbotNodeInvalidLang    = "61003"
+	CodeChatbotNodeDuplicateName  = "61004"
+	CodeChatbotNodeNoTriggers     = "61005"
+	CodeChatbotNodeNoMessages     = "61006"
+	CodeChatbotNodeInvalidTrigger = "61007"
+	CodeChatbotNodeInvalidRegex   = "61008"
+
 	// Internal Errors (699XX)
 	CodeUnexpectedError = "69901"
 )
@@ -732,6 +742,45 @@ func NewOAuthClientAlreadyExistsError(name string) *AppError {
 				Code: code,
 				Meta: map[string]string{
 					"name": name,
+				},
+			},
+		},
+	}
+}
+
+// ==================== Chatbot Node Domain Errors ====================
+
+// NewChatbotNodeNotFoundError creates an error for when a chatbot node is not found
+func NewChatbotNodeNotFoundError(nodeID string) *AppError {
+	code := CodeChatbotNodeNotFound
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Chatbot node with ID '%s' not found", nodeID),
+		grpcCode: codes.NotFound,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"node_id": nodeID,
+				},
+			},
+		},
+	}
+}
+
+// NewChatbotNodeDuplicateNameError creates an error for duplicate node name+lang
+func NewChatbotNodeDuplicateNameError(name, lang string) *AppError {
+	code := CodeChatbotNodeDuplicateName
+	return &AppError{
+		code:     code,
+		message:  fmt.Sprintf("Chatbot node with name '%s' and language '%s' already exists", name, lang),
+		grpcCode: codes.AlreadyExists,
+		details: []proto.Message{
+			&altalunev1.ErrorDetail{
+				Code: code,
+				Meta: map[string]string{
+					"name": name,
+					"lang": lang,
 				},
 			},
 		},

@@ -29,9 +29,26 @@ CREATE UNIQUE INDEX IF NOT EXISTS ux_altalune_example_employees_email
   ON altalune_example_employees (project_id, email);
 
 -- Add regular index for common queries
-CREATE INDEX IF NOT EXISTS ix_altalune_example_employees_status 
+CREATE INDEX IF NOT EXISTS ix_altalune_example_employees_status
   ON altalune_example_employees (project_id, status);
+
+-- Create partitions for all existing projects
+DO $$
+DECLARE
+  proj RECORD;
+BEGIN
+  FOR proj IN SELECT id FROM altalune_projects LOOP
+    EXECUTE format(
+      'CREATE TABLE IF NOT EXISTS altalune_example_employees_p%s PARTITION OF altalune_example_employees FOR VALUES IN (%s)',
+      proj.id, proj.id
+    );
+  END LOOP;
+END $$;
 -- +goose StatementEnd
+
+-- Note: Partitions are created in two ways:
+-- - Existing projects: Created by the DO block above during migration
+-- - New projects: Created by project/repo.go createPartitionsForProject()
 
 -- +goose Down
 -- +goose StatementBegin

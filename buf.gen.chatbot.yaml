@@ -17,4 +17,4 @@ plugins:
 inputs:
   - directory: api/proto
     paths:
-      - api/proto/chatbot
+      - api/proto/chatbot/modules

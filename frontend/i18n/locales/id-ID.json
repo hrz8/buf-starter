@@ -9,6 +9,7 @@
     },
     "label": {
       "active": "Aktif",
+      "disabled": "Nonaktif",
       "enabled": "Aktif",
       "error": "Error",
       "inactive": "Tidak Aktif"
@@ -20,7 +21,15 @@
       "loading": "Memuat...",
       "success": "Berhasil",
       "updating": "Memperbarui..."
-    }
+    },
+    "cancel": "Batal",
+    "save": "Simpan",
+    "success": "Berhasil",
+    "error": "Error",
+    "creating": "Membuat...",
+    "deleting": "Menghapus...",
+    "enabled": "Aktif",
+    "disabled": "Nonaktif"
   },
   "datatable": {
     "clearFilters": "Hapus filter",
@@ -79,6 +88,14 @@
     "60901": "Klien OAuth sudah ada",
     "60902": "URI redirect tidak valid",
     "60903": "Client secret OAuth tidak valid",
+    "61001": "Node tidak ditemukan",
+    "61002": "Format nama node tidak valid",
+    "61003": "Bahasa tidak valid",
+    "61004": "Nama node duplikat untuk bahasa ini",
+    "61005": "Minimal satu trigger diperlukan",
+    "61006": "Minimal satu pesan diperlukan",
+    "61007": "Tipe trigger tidak valid",
+    "61008": "Pola regex tidak valid",
     "69901": "Kesalahan Server"
   },
   "errorPage": {
@@ -115,7 +132,8 @@
         "noProjectSelected": "Silakan pilih proyek untuk mengkonfigurasi modul chatbot.",
         "invalidModuleTitle": "Modul Tidak Valid",
         "invalidModuleDesc": "Modul \"{name}\" tidak ada.",
-        "unknownModule": "Modul Tidak Dikenal"
+        "unknownModule": "Modul Tidak Dikenal",
+        "unsavedChanges": "Anda memiliki perubahan yang belum disimpan"
       },
       "form": {
         "save": "Simpan Konfigurasi",
@@ -136,6 +154,68 @@
       "array": {
         "addItem": "Tambah Item",
         "removeItem": "Hapus"
+      }
+    },
+    "chatbotNode": {
+      "page": {
+        "title": "Edit Node",
+        "subtitle": "Bahasa: {lang}",
+        "noProjectSelected": "Silakan pilih proyek untuk melihat node.",
+        "notFoundTitle": "Node Tidak Ditemukan",
+        "notFoundDesc": "Node yang diminta tidak ada atau telah dihapus.",
+        "unsavedChanges": "Anda memiliki perubahan yang belum disimpan"
+      },
+      "sheet": {
+        "createTitle": "Buat Node Baru",
+        "createDescription": "Buat node respons chatbot baru. Anda dapat mengkonfigurasi pemicu dan pesan setelah pembuatan."
+      },
+      "form": {
+        "name": "Nama Node",
+        "namePlaceholder": "contoh: greeting, faq_pricing",
+        "nameHelp": "Gunakan huruf kecil, angka, dan garis bawah saja",
+        "lang": "Bahasa",
+        "langPlaceholder": "Pilih bahasa",
+        "tags": "Tag",
+        "tagsPlaceholder": "Tambah tag...",
+        "enabled": "Aktif",
+        "create": "Buat Node"
+      },
+      "trigger": {
+        "title": "Pemicu",
+        "description": "Tentukan kondisi yang mengaktifkan node ini. Ketika pesan pengguna cocok dengan pemicu, pesan node ini akan dikirim.",
+        "count": "pemicu",
+        "type": "Tipe",
+        "value": "Nilai",
+        "valuePlaceholder": "Masukkan nilai pemicu...",
+        "add": "Tambah Pemicu",
+        "remove": "Hapus",
+        "invalidRegex": "Pola regex tidak valid"
+      },
+      "message": {
+        "title": "Pesan",
+        "description": "Konfigurasi pesan respons bot. Pesan dikirim secara berurutan saat node dipicu.",
+        "count": "pesan",
+        "content": "Konten Pesan",
+        "placeholder": "Masukkan konten pesan...",
+        "add": "Tambah Pesan",
+        "remove": "Hapus",
+        "moveUp": "Pindah Ke Atas",
+        "moveDown": "Pindah Ke Bawah"
+      },
+      "delete": {
+        "title": "Hapus Node",
+        "description": "Apakah Anda yakin ingin menghapus \"{name}\"? Tindakan ini tidak dapat dibatalkan.",
+        "button": "Hapus",
+        "confirm": "Hapus Node"
+      },
+      "messages": {
+        "noProject": "Tidak ada proyek yang dipilih",
+        "createSuccess": "Node berhasil dibuat",
+        "createError": "Gagal membuat node",
+        "saveSuccess": "Node berhasil disimpan",
+        "saveError": "Gagal menyimpan node",
+        "deleteSuccess": "Node berhasil dihapus",
+        "deleteError": "Gagal menghapus node"
       }
     },
     "api_keys": {
@@ -896,6 +976,10 @@
       "widget": "Widget"
     },
     "dashboard": "Dasbor",
+    "nodes": {
+      "title": "Node",
+      "create": "Buat Node"
+    },
     "devices": {
       "chat": "Obrolan",
       "scan": "Pindai",

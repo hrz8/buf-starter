@@ -390,6 +390,12 @@ func (r *Repo) Create(ctx context.Context, input *CreateProjectInput) (*CreatePr
 		fmt.Printf("Warning: failed to create default chatbot config for project %d: %v\n", result.ID, err)
 	}
 
+	// Create default chatbot node (start_conversation_en) for the new project
+	if err := r.createDefaultChatbotNode(ctx, result.ID); err != nil {
+		// Log error but don't fail the project creation
+		fmt.Printf("Warning: failed to create default chatbot node for project %d: %v\n", result.ID, err)
+	}
+
 	return &result, nil
 }
 
@@ -605,6 +611,7 @@ var partitionedTables = []string{
 	"altalune_example_employees",
 	"altalune_project_api_keys",
 	"altalune_chatbot_configs",
+	"altalune_chatbot_nodes",
 	// Add future partitioned tables here:
 	// "altalune_project_logs",
 	// "altalune_project_metrics",
@@ -736,5 +743,53 @@ func (r *Repo) createDefaultChatbotConfig(ctx context.Context, projectID int64) 
 	}
 
 	fmt.Printf("Info: Successfully created default chatbot config for project %d\n", projectID)
+	return nil
+}
+
+// defaultChatbotNodeTriggers is the default trigger for start_conversation_en node
+const defaultChatbotNodeTriggers = `[{"type": "equals", "value": "start"}]`
+
+// defaultChatbotNodeMessages is the default message for start_conversation_en node
+const defaultChatbotNodeMessages = `[{"role": "assistant", "content": "Hello! How can I help you today?"}]`
+
+// createDefaultChatbotNode creates a default start_conversation_en node for a new project
+// This ensures every project has a basic node ready to use
+func (r *Repo) createDefaultChatbotNode(ctx context.Context, projectID int64) error {
+	// Check if any node already exists for this project (idempotent)
+	var exists bool
+	err := r.db.QueryRowContext(ctx, `
+		SELECT EXISTS(
+			SELECT 1 FROM altalune_chatbot_nodes
+			WHERE project_id = $1
+		)
+	`, projectID).Scan(&exists)
+
+	if err != nil {
+		return fmt.Errorf("check existing chatbot node: %w", err)
+	}
+
+	if exists {
+		// Node already exists, skip
+		return nil
+	}
+
+	// Generate public_id for the new node
+	publicID, err := nanoid.GeneratePublicID()
+	if err != nil {
+		return fmt.Errorf("generate public_id for chatbot node: %w", err)
+	}
+
+	// Create default chatbot node (start_conversation_en-US)
+	_, err = r.db.ExecContext(ctx, `
+		INSERT INTO altalune_chatbot_nodes (
+			public_id, project_id, name, lang, tags, enabled, triggers, messages, created_at, updated_at
+		) VALUES ($1, $2, 'start_conversation', 'en-US', '{}', true, $3::jsonb, $4::jsonb, NOW(), NOW())
+	`, publicID, projectID, defaultChatbotNodeTriggers, defaultChatbotNodeMessages)
+
+	if err != nil {
+		return fmt.Errorf("create default chatbot node: %w", err)
+	}
+
+	fmt.Printf("Info: Successfully created default chatbot node (start_conversation_en-US) for project %d\n", projectID)
 	return nil
 }
