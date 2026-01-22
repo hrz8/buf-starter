@@ -423,3 +423,44 @@ func (r *Repo) GetProjectMembers(ctx context.Context, projectID int64) ([]*Proje
 
 	return members, nil
 }
+
+func (r *Repo) GetUserProjects(ctx context.Context, userID int64) ([]*UserProjectMembership, error) {
+	query := `
+		SELECT
+			p.public_id as project_public_id,
+			p.name as project_name,
+			pm.role,
+			pm.created_at as joined_at
+		FROM altalune_project_members pm
+		INNER JOIN altalune_projects p ON p.id = pm.project_id
+		WHERE pm.user_id = $1
+		ORDER BY pm.created_at DESC
+	`
+
+	rows, err := r.db.QueryContext(ctx, query, userID)
+	if err != nil {
+		return nil, fmt.Errorf("get user projects: %w", err)
+	}
+	defer rows.Close()
+
+	var projects []*UserProjectMembership
+	for rows.Next() {
+		var result UserProjectQueryResult
+		err := rows.Scan(
+			&result.ProjectPublicID,
+			&result.ProjectName,
+			&result.Role,
+			&result.JoinedAt,
+		)
+		if err != nil {
+			return nil, fmt.Errorf("scan user project: %w", err)
+		}
+		projects = append(projects, result.ToUserProjectMembership())
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, fmt.Errorf("rows iteration error: %w", err)
+	}
+
+	return projects, nil
+}

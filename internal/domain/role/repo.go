@@ -40,6 +40,26 @@ func (r *Repo) GetIDByPublicID(ctx context.Context, publicID string) (int64, err
 	return roleID, nil
 }
 
+// GetInternalIDByName retrieves the internal role ID by name
+func (r *Repo) GetInternalIDByName(ctx context.Context, name string) (int64, error) {
+	query := `
+		SELECT id
+		FROM altalune_roles
+		WHERE name = $1
+	`
+
+	var roleID int64
+	err := r.db.QueryRowContext(ctx, query, name).Scan(&roleID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, ErrRoleNotFound
+		}
+		return 0, fmt.Errorf("get role ID by name: %w", err)
+	}
+
+	return roleID, nil
+}
+
 func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.QueryResult[Role], error) {
 	// Build the base query - NO project_id filtering
 	baseQuery := `

@@ -29,6 +29,7 @@ auth:
   codeExpiry: 600                                   # Authorization code expiry in seconds (default: 10 minutes)
   accessTokenExpiry: 7200                           # Access token (JWT) expiry in seconds (default: 1 hour)
   refreshTokenExpiry: 2592000                       # Refresh token expiry in seconds (default: 30 days)
+  autoActivate: false                               # Auto-activate new users on registration (default: true)
 
 # Security configuration
 security:
@@ -79,6 +80,7 @@ dashboardOauth:
 
 # Notification service configuration
 notification:
+  authBaseURL: "http://localhost:3300"                # Base URL for verification links in emails
   email:
     provider: "resend"                                # Email provider: resend, ses
     resend:
@@ -88,3 +90,9 @@ notification:
     ses:
       region: "us-east-1"                             # AWS region for SES
       fromEmail: "noreply@yourdomain.com"             # Sender email address
+  otp:
+    expirySeconds: 300                                # OTP expiry in seconds (default: 300 = 5 minutes)
+    rateLimit: 3                                      # Max OTPs per rate limit window (default: 3)
+    rateLimitWindowMins: 15                           # Rate limit window in minutes (default: 15)
+  verification:
+    tokenExpiryHours: 24                              # Email verification token expiry in hours (default: 24)

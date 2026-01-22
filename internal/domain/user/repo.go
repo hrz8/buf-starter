@@ -40,6 +40,26 @@ func (r *Repo) GetIDByPublicID(ctx context.Context, publicID string) (int64, err
 	return userID, nil
 }
 
+// GetInternalIDByEmail retrieves the internal user ID by email (case-insensitive)
+func (r *Repo) GetInternalIDByEmail(ctx context.Context, email string) (int64, error) {
+	query := `
+		SELECT id
+		FROM altalune_users
+		WHERE LOWER(email) = LOWER($1)
+	`
+
+	var userID int64
+	err := r.db.QueryRowContext(ctx, query, email).Scan(&userID)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return 0, ErrUserNotFound
+		}
+		return 0, fmt.Errorf("get user ID by email: %w", err)
+	}
+
+	return userID, nil
+}
+
 func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.QueryResult[User], error) {
 	// Build the base query - NO project_id filtering
 	baseQuery := `
@@ -50,6 +70,7 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 			first_name,
 			last_name,
 			is_active,
+			email_verified,
 			created_at,
 			updated_at
 		FROM altalune_users
@@ -161,6 +182,7 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 			&firstName,
 			&lastName,
 			&usr.IsActive,
+			&usr.EmailVerified,
 			&usr.CreatedAt,
 			&usr.UpdatedAt,
 		)
@@ -262,6 +284,12 @@ func (r *Repo) Create(ctx context.Context, input *CreateUserInput) (*CreateUserR
 	// Email is already lowercased by service layer, but ensure it here too
 	email := strings.ToLower(input.Email)
 
+	// Determine is_active value: use input.IsActive if provided, otherwise default to true
+	isActive := true
+	if input.IsActive != nil {
+		isActive = *input.IsActive
+	}
+
 	// Insert query - NO project_id
 	insertQuery := `
 		INSERT INTO altalune_users (
@@ -273,7 +301,7 @@ func (r *Repo) Create(ctx context.Context, input *CreateUserInput) (*CreateUserR
 			created_at,
 			updated_at
 		) VALUES ($1, $2, $3, $4, $5, $6, $7)
-		RETURNING id, public_id, email, first_name, last_name, is_active, created_at, updated_at
+		RETURNING id, public_id, email, first_name, last_name, is_active, email_verified, created_at, updated_at
 	`
 
 	now := time.Now()
@@ -287,7 +315,7 @@ func (r *Repo) Create(ctx context.Context, input *CreateUserInput) (*CreateUserR
 		email,
 		input.FirstName,
 		input.LastName,
-		true, // New users are active by default
+		isActive,
 		now,
 		now,
 	).Scan(
@@ -297,6 +325,7 @@ func (r *Repo) Create(ctx context.Context, input *CreateUserInput) (*CreateUserR
 		&firstName,
 		&lastName,
 		&result.IsActive,
+		&result.EmailVerified,
 		&result.CreatedAt,
 		&result.UpdatedAt,
 	)
@@ -332,6 +361,7 @@ func (r *Repo) GetByEmail(ctx context.Context, email string) (*User, error) {
 			first_name,
 			last_name,
 			is_active,
+			email_verified,
 			created_at,
 			updated_at
 		FROM altalune_users
@@ -348,6 +378,7 @@ func (r *Repo) GetByEmail(ctx context.Context, email string) (*User, error) {
 		&firstName,
 		&lastName,
 		&usr.IsActive,
+		&usr.EmailVerified,
 		&usr.CreatedAt,
 		&usr.UpdatedAt,
 	)
@@ -379,6 +410,7 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*User, error) {
 			first_name,
 			last_name,
 			is_active,
+			email_verified,
 			created_at,
 			updated_at
 		FROM altalune_users
@@ -394,6 +426,7 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*User, error) {
 		&firstName,
 		&lastName,
 		&usr.IsActive,
+		&usr.EmailVerified,
 		&usr.CreatedAt,
 		&usr.UpdatedAt,
 	)
@@ -425,6 +458,7 @@ func (r *Repo) GetByInternalID(ctx context.Context, internalID int64) (*User, er
 			first_name,
 			last_name,
 			is_active,
+			email_verified,
 			created_at,
 			updated_at
 		FROM altalune_users
@@ -440,6 +474,7 @@ func (r *Repo) GetByInternalID(ctx context.Context, internalID int64) (*User, er
 		&firstName,
 		&lastName,
 		&usr.IsActive,
+		&usr.EmailVerified,
 		&usr.CreatedAt,
 		&usr.UpdatedAt,
 	)
@@ -476,7 +511,7 @@ func (r *Repo) Update(ctx context.Context, input *UpdateUserInput) (*UpdateUserR
 		UPDATE altalune_users
 		SET email = $1, first_name = $2, last_name = $3, updated_at = CURRENT_TIMESTAMP
 		WHERE public_id = $4
-		RETURNING id, public_id, email, first_name, last_name, is_active,
+		RETURNING id, public_id, email, first_name, last_name, is_active, email_verified,
 		          created_at, updated_at
 	`
 
@@ -495,6 +530,7 @@ func (r *Repo) Update(ctx context.Context, input *UpdateUserInput) (*UpdateUserR
 		&firstName,
 		&lastName,
 		&result.IsActive,
+		&result.EmailVerified,
 		&result.CreatedAt,
 		&result.UpdatedAt,
 	)
@@ -557,7 +593,7 @@ func (r *Repo) Activate(ctx context.Context, publicID string) (*User, error) {
 		UPDATE altalune_users
 		SET is_active = true, updated_at = CURRENT_TIMESTAMP
 		WHERE public_id = $1
-		RETURNING public_id, email, first_name, last_name, is_active, created_at, updated_at
+		RETURNING public_id, email, first_name, last_name, is_active, email_verified, created_at, updated_at
 	`
 
 	var usr User
@@ -569,6 +605,7 @@ func (r *Repo) Activate(ctx context.Context, publicID string) (*User, error) {
 		&firstName,
 		&lastName,
 		&usr.IsActive,
+		&usr.EmailVerified,
 		&usr.CreatedAt,
 		&usr.UpdatedAt,
 	)
@@ -607,7 +644,7 @@ func (r *Repo) Deactivate(ctx context.Context, publicID string) (*User, error) {
 		UPDATE altalune_users
 		SET is_active = false, updated_at = CURRENT_TIMESTAMP
 		WHERE public_id = $1
-		RETURNING public_id, email, first_name, last_name, is_active, created_at, updated_at
+		RETURNING public_id, email, first_name, last_name, is_active, email_verified, created_at, updated_at
 	`
 
 	var usr User
@@ -619,6 +656,7 @@ func (r *Repo) Deactivate(ctx context.Context, publicID string) (*User, error) {
 		&firstName,
 		&lastName,
 		&usr.IsActive,
+		&usr.EmailVerified,
 		&usr.CreatedAt,
 		&usr.UpdatedAt,
 	)

@@ -14,8 +14,10 @@ const (
 	keyUserID          = "user_id"
 	keyAuthenticatedAt = "authenticated_at"
 	keyOAuthState      = "oauth_state"
+	keyOAuthProvider   = "oauth_provider"
 	keyOriginalURL     = "original_url"
 	keyCSRFToken       = "csrf_token"
+	keyPendingOTPEmail = "pending_otp_email"
 )
 
 type ctxKey string
@@ -27,8 +29,10 @@ type Data struct {
 	UserID          int64
 	AuthenticatedAt time.Time
 	OAuthState      string
+	OAuthProvider   string
 	OriginalURL     string
 	CSRFToken       string
+	PendingOTPEmail string
 }
 
 // Store wraps gorilla/sessions for cookie-based session management.
@@ -77,11 +81,17 @@ func (s *Store) GetData(r *http.Request) (*Data, error) {
 	if v, ok := sess.Values[keyOAuthState].(string); ok {
 		data.OAuthState = v
 	}
+	if v, ok := sess.Values[keyOAuthProvider].(string); ok {
+		data.OAuthProvider = v
+	}
 	if v, ok := sess.Values[keyOriginalURL].(string); ok {
 		data.OriginalURL = v
 	}
 	if v, ok := sess.Values[keyCSRFToken].(string); ok {
 		data.CSRFToken = v
+	}
+	if v, ok := sess.Values[keyPendingOTPEmail].(string); ok {
+		data.PendingOTPEmail = v
 	}
 
 	return data, nil
@@ -97,8 +107,10 @@ func (s *Store) SetData(r *http.Request, w http.ResponseWriter, data *Data) erro
 	sess.Values[keyUserID] = data.UserID
 	sess.Values[keyAuthenticatedAt] = data.AuthenticatedAt.Unix()
 	sess.Values[keyOAuthState] = data.OAuthState
+	sess.Values[keyOAuthProvider] = data.OAuthProvider
 	sess.Values[keyOriginalURL] = data.OriginalURL
 	sess.Values[keyCSRFToken] = data.CSRFToken
+	sess.Values[keyPendingOTPEmail] = data.PendingOTPEmail
 
 	return s.Save(r, w, sess)
 }

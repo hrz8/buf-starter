@@ -156,3 +156,14 @@ func (h *Handler) GetProjectMembers(
 	}
 	return connect.NewResponse(response), nil
 }
+
+func (h *Handler) GetUserProjects(
+	ctx context.Context,
+	req *connect.Request[altalunev1.GetUserProjectsRequest],
+) (*connect.Response[altalunev1.GetUserProjectsResponse], error) {
+	response, err := h.svc.GetUserProjects(ctx, req.Msg)
+	if err != nil {
+		return nil, altalune.ToConnectError(err)
+	}
+	return connect.NewResponse(response), nil
+}

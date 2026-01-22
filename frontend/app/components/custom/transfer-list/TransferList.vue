@@ -12,6 +12,7 @@ import {
   CommandItem,
   CommandList,
 } from '@/components/ui/command';
+import { Skeleton } from '@/components/ui/skeleton';
 import {
   Tooltip,
   TooltipContent,
@@ -34,6 +35,7 @@ interface Props {
   isLoading?: boolean;
   allowInlineCreate?: boolean; // Only true for permissions
   showTooltip?: boolean; // Show description tooltip
+  showSkeleton?: boolean; // Show skeleton while loading instead of empty state
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -41,6 +43,7 @@ const props = withDefaults(defineProps<Props>(), {
   isLoading: false,
   allowInlineCreate: false,
   showTooltip: false,
+  showSkeleton: false,
 });
 
 const emit = defineEmits<{
@@ -101,7 +104,39 @@ function handleInlineCreated(permission: TransferListItem) {
 </script>
 
 <template>
-  <div class="grid grid-cols-[1fr_auto_1fr] gap-4 w-full">
+  <!-- Skeleton Loading State -->
+  <div v-if="showSkeleton && isLoading" class="grid grid-cols-[1fr_auto_1fr] gap-4 w-full">
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <Skeleton class="h-5 w-24" />
+        <Skeleton class="h-5 w-8" />
+      </div>
+      <div class="border rounded-lg p-2 space-y-2">
+        <Skeleton class="h-9 w-full" />
+        <Skeleton class="h-8 w-full" />
+        <Skeleton class="h-8 w-full" />
+        <Skeleton class="h-8 w-3/4" />
+      </div>
+    </div>
+    <div class="flex flex-col justify-center gap-2">
+      <Skeleton class="h-9 w-9" />
+      <Skeleton class="h-9 w-9" />
+    </div>
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <Skeleton class="h-5 w-24" />
+        <Skeleton class="h-5 w-8" />
+      </div>
+      <div class="border rounded-lg p-2 space-y-2">
+        <Skeleton class="h-9 w-full" />
+        <Skeleton class="h-8 w-full" />
+        <Skeleton class="h-8 w-3/4" />
+      </div>
+    </div>
+  </div>
+
+  <!-- Normal Content -->
+  <div v-else class="grid grid-cols-[1fr_auto_1fr] gap-4 w-full">
     <!-- Available List -->
     <div class="space-y-2">
       <div class="flex items-center justify-between">
@@ -213,23 +248,27 @@ function handleInlineCreated(permission: TransferListItem) {
                 :checked="assignedSelected.includes(item.id)"
                 class="mr-2"
               />
-              <div class="flex-1 flex items-center">
-                <span>{{ getItemLabel(item) }}</span>
-                <!-- Description Tooltip for Permissions -->
-                <TooltipProvider v-if="showTooltip && item.description">
-                  <Tooltip>
-                    <TooltipTrigger as-child>
-                      <Button type="button" variant="ghost" size="icon" class="h-4 w-4 ml-1">
-                        <Info class="h-3 w-3" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p class="text-xs">
-                        {{ item.description }}
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
+              <div class="flex-1 flex items-center justify-between">
+                <div class="flex items-center">
+                  <span>{{ getItemLabel(item) }}</span>
+                  <!-- Description Tooltip -->
+                  <TooltipProvider v-if="showTooltip && item.description">
+                    <Tooltip>
+                      <TooltipTrigger as-child>
+                        <Button type="button" variant="ghost" size="icon" class="h-4 w-4 ml-1">
+                          <Info class="h-3 w-3" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p class="text-xs">
+                          {{ item.description }}
+                        </p>
+                      </TooltipContent>
+                    </Tooltip>
+                  </TooltipProvider>
+                </div>
+                <!-- Custom Action Slot for assigned items -->
+                <slot name="assigned-item-action" :item="item" />
               </div>
             </CommandItem>
           </CommandGroup>

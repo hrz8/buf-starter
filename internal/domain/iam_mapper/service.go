@@ -589,3 +589,31 @@ func (s *Service) GetProjectMembers(ctx context.Context, req *altalunev1.GetProj
 		Members: ProjectMembersToProto(members),
 	}, nil
 }
+
+func (s *Service) GetUserProjects(ctx context.Context, req *altalunev1.GetUserProjectsRequest) (*altalunev1.GetUserProjectsResponse, error) {
+	if err := s.validator.Validate(req); err != nil {
+		return nil, altalune.NewInvalidPayloadError(err.Error())
+	}
+
+	userID, err := s.userRepo.GetIDByPublicID(ctx, req.UserId)
+	if err != nil {
+		s.log.Error("user not found for get projects",
+			"error", err,
+			"user_public_id", req.UserId,
+		)
+		return nil, altalune.NewUserNotFoundError(req.UserId)
+	}
+
+	projects, err := s.mapperRepo.GetUserProjects(ctx, userID)
+	if err != nil {
+		s.log.Error("failed to get user projects",
+			"error", err,
+			"user_id", userID,
+		)
+		return nil, altalune.NewUnexpectedError("failed to get user projects: %w", err)
+	}
+
+	return &altalunev1.GetUserProjectsResponse{
+		Projects: UserProjectsToProto(projects),
+	}, nil
+}

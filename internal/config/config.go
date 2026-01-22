@@ -117,6 +117,10 @@ func (c *AppConfig) GetRefreshTokenExpiry() int {
 	return c.Auth.RefreshTokenExpiry
 }
 
+func (c *AppConfig) IsAutoActivate() bool {
+	return c.Auth.IsAutoActivate()
+}
+
 // Seeder configuration
 func (c *AppConfig) GetSuperadminEmail() string {
 	return c.Seeder.Superadmin.Email
@@ -166,4 +170,84 @@ func (c *AppConfig) GetOAuthProviders() []altalune.OAuthProviderConfig {
 		}
 	}
 	return providers
+}
+
+// Notification configuration
+func (c *AppConfig) GetNotificationEmailProvider() string {
+	if c.Notification == nil || c.Notification.Email == nil {
+		return ""
+	}
+	return c.Notification.Email.Provider
+}
+
+func (c *AppConfig) GetNotificationEmailFromEmail() string {
+	if c.Notification == nil || c.Notification.Email == nil {
+		return ""
+	}
+	if c.Notification.Email.Resend != nil && c.Notification.Email.Resend.FromEmail != "" {
+		return c.Notification.Email.Resend.FromEmail
+	}
+	if c.Notification.Email.SES != nil && c.Notification.Email.SES.FromEmail != "" {
+		return c.Notification.Email.SES.FromEmail
+	}
+	return ""
+}
+
+func (c *AppConfig) GetNotificationEmailFromName() string {
+	if c.Notification == nil || c.Notification.Email == nil || c.Notification.Email.Resend == nil {
+		return ""
+	}
+	return c.Notification.Email.Resend.FromName
+}
+
+func (c *AppConfig) GetNotificationResendAPIKey() string {
+	if c.Notification == nil || c.Notification.Email == nil || c.Notification.Email.Resend == nil {
+		return ""
+	}
+	return c.Notification.Email.Resend.APIKey
+}
+
+func (c *AppConfig) GetNotificationSESRegion() string {
+	if c.Notification == nil || c.Notification.Email == nil || c.Notification.Email.SES == nil {
+		return ""
+	}
+	return c.Notification.Email.SES.Region
+}
+
+// GetNotificationAuthBaseURL returns the base URL for verification links in emails.
+func (c *AppConfig) GetNotificationAuthBaseURL() string {
+	if c.Notification == nil {
+		return ""
+	}
+	return c.Notification.AuthBaseURL
+}
+
+// OTP configuration
+func (c *AppConfig) GetOTPExpirySeconds() int {
+	if c.Notification == nil || c.Notification.OTP == nil {
+		return 300 // 5 minutes default
+	}
+	return c.Notification.OTP.ExpirySeconds
+}
+
+func (c *AppConfig) GetOTPRateLimit() int {
+	if c.Notification == nil || c.Notification.OTP == nil {
+		return 3 // default
+	}
+	return c.Notification.OTP.RateLimit
+}
+
+func (c *AppConfig) GetOTPRateLimitWindowMins() int {
+	if c.Notification == nil || c.Notification.OTP == nil {
+		return 15 // 15 minutes default
+	}
+	return c.Notification.OTP.RateLimitWindowMins
+}
+
+// Email verification configuration
+func (c *AppConfig) GetVerificationTokenExpiryHours() int {
+	if c.Notification == nil || c.Notification.Verification == nil {
+		return 24 // 24 hours default
+	}
+	return c.Notification.Verification.TokenExpiryHours
 }

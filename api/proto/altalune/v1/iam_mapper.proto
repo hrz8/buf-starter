@@ -228,6 +228,34 @@ message GetProjectMembersResponse {
 }
 
 // ============================================================================
+// User Projects Messages (Projects a user belongs to)
+// ============================================================================
+
+// GetUserProjectsRequest for retrieving all projects a user is a member of
+message GetUserProjectsRequest {
+  string user_id = 1 [
+    (buf.validate.field).required = true,
+    (buf.validate.field).string = {
+      min_len: 14,
+      max_len: 20
+    }
+  ];
+}
+
+// UserProjectMembership contains project details and user's role in it
+message UserProjectMembership {
+  string project_id = 1;
+  string project_name = 2;
+  string role = 3;
+  google.protobuf.Timestamp joined_at = 4;
+}
+
+// GetUserProjectsResponse with list of projects the user belongs to
+message GetUserProjectsResponse {
+  repeated UserProjectMembership projects = 1;
+}
+
+// ============================================================================
 // IAMMapperService - Handles all IAM mapping operations
 // ============================================================================
 
@@ -251,4 +279,7 @@ service IAMMapperService {
   rpc AssignProjectMembers(AssignProjectMembersRequest) returns (google.protobuf.Empty) {}
   rpc RemoveProjectMembers(RemoveProjectMembersRequest) returns (google.protobuf.Empty) {}
   rpc GetProjectMembers(GetProjectMembersRequest) returns (GetProjectMembersResponse) {}
+
+  // User Projects (reverse lookup - projects a user belongs to)
+  rpc GetUserProjects(GetUserProjectsRequest) returns (GetUserProjectsResponse) {}
 }

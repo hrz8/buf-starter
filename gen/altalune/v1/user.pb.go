@@ -26,11 +26,12 @@ const (
 // User represents a global system user with OAuth-only authentication
 type User struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
-	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                // Public nanoid (14 chars)
-	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`                          // Unique, case-insensitive
-	FirstName     string                 `protobuf:"bytes,3,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"` // Optional
-	LastName      string                 `protobuf:"bytes,4,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`    // Optional
-	IsActive      bool                   `protobuf:"varint,5,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`   // User activation status
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`                                             // Public nanoid (14 chars)
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`                                       // Unique, case-insensitive
+	FirstName     string                 `protobuf:"bytes,3,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`              // Optional
+	LastName      string                 `protobuf:"bytes,4,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`                 // Optional
+	IsActive      bool                   `protobuf:"varint,5,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`                // User activation status
+	EmailVerified bool                   `protobuf:"varint,6,opt,name=email_verified,json=emailVerified,proto3" json:"email_verified,omitempty"` // Email verification status
 	CreatedAt     *timestamppb.Timestamp `protobuf:"bytes,98,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
 	UpdatedAt     *timestamppb.Timestamp `protobuf:"bytes,99,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
 	unknownFields protoimpl.UnknownFields
@@ -98,6 +99,13 @@ func (x *User) GetLastName() string {
 func (x *User) GetIsActive() bool {
 	if x != nil {
 		return x.IsActive
+	}
+	return false
+}
+
+func (x *User) GetEmailVerified() bool {
+	if x != nil {
+		return x.EmailVerified
 	}
 	return false
 }
@@ -963,14 +971,15 @@ var File_altalune_v1_user_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_user_proto_rawDesc = "" +
 	"\n" +
-	"\x16altalune/v1/user.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\xfb\x01\n" +
+	"\x16altalune/v1/user.proto\x12\valtalune.v1\x1a\x1fgoogle/protobuf/timestamp.proto\x1a\x1bbuf/validate/validate.proto\x1a\x18altalune/v1/common.proto\"\xa2\x02\n" +
 	"\x04User\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1d\n" +
 	"\n" +
 	"first_name\x18\x03 \x01(\tR\tfirstName\x12\x1b\n" +
 	"\tlast_name\x18\x04 \x01(\tR\blastName\x12\x1b\n" +
-	"\tis_active\x18\x05 \x01(\bR\bisActive\x129\n" +
+	"\tis_active\x18\x05 \x01(\bR\bisActive\x12%\n" +
+	"\x0eemail_verified\x18\x06 \x01(\bR\remailVerified\x129\n" +
 	"\n" +
 	"created_at\x18b \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\x129\n" +
 	"\n" +

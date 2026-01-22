@@ -32,6 +32,7 @@ const (
 	IAMMapperService_AssignProjectMembers_FullMethodName  = "/altalune.v1.IAMMapperService/AssignProjectMembers"
 	IAMMapperService_RemoveProjectMembers_FullMethodName  = "/altalune.v1.IAMMapperService/RemoveProjectMembers"
 	IAMMapperService_GetProjectMembers_FullMethodName     = "/altalune.v1.IAMMapperService/GetProjectMembers"
+	IAMMapperService_GetUserProjects_FullMethodName       = "/altalune.v1.IAMMapperService/GetUserProjects"
 )
 
 // IAMMapperServiceClient is the client API for IAMMapperService service.
@@ -54,6 +55,8 @@ type IAMMapperServiceClient interface {
 	AssignProjectMembers(ctx context.Context, in *AssignProjectMembersRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	RemoveProjectMembers(ctx context.Context, in *RemoveProjectMembersRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	GetProjectMembers(ctx context.Context, in *GetProjectMembersRequest, opts ...grpc.CallOption) (*GetProjectMembersResponse, error)
+	// User Projects (reverse lookup - projects a user belongs to)
+	GetUserProjects(ctx context.Context, in *GetUserProjectsRequest, opts ...grpc.CallOption) (*GetUserProjectsResponse, error)
 }
 
 type iAMMapperServiceClient struct {
@@ -184,6 +187,16 @@ func (c *iAMMapperServiceClient) GetProjectMembers(ctx context.Context, in *GetP
 	return out, nil
 }
 
+func (c *iAMMapperServiceClient) GetUserProjects(ctx context.Context, in *GetUserProjectsRequest, opts ...grpc.CallOption) (*GetUserProjectsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetUserProjectsResponse)
+	err := c.cc.Invoke(ctx, IAMMapperService_GetUserProjects_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // IAMMapperServiceServer is the server API for IAMMapperService service.
 // All implementations must embed UnimplementedIAMMapperServiceServer
 // for forward compatibility.
@@ -204,6 +217,8 @@ type IAMMapperServiceServer interface {
 	AssignProjectMembers(context.Context, *AssignProjectMembersRequest) (*emptypb.Empty, error)
 	RemoveProjectMembers(context.Context, *RemoveProjectMembersRequest) (*emptypb.Empty, error)
 	GetProjectMembers(context.Context, *GetProjectMembersRequest) (*GetProjectMembersResponse, error)
+	// User Projects (reverse lookup - projects a user belongs to)
+	GetUserProjects(context.Context, *GetUserProjectsRequest) (*GetUserProjectsResponse, error)
 	mustEmbedUnimplementedIAMMapperServiceServer()
 }
 
@@ -249,6 +264,9 @@ func (UnimplementedIAMMapperServiceServer) RemoveProjectMembers(context.Context,
 }
 func (UnimplementedIAMMapperServiceServer) GetProjectMembers(context.Context, *GetProjectMembersRequest) (*GetProjectMembersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetProjectMembers not implemented")
+}
+func (UnimplementedIAMMapperServiceServer) GetUserProjects(context.Context, *GetUserProjectsRequest) (*GetUserProjectsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserProjects not implemented")
 }
 func (UnimplementedIAMMapperServiceServer) mustEmbedUnimplementedIAMMapperServiceServer() {}
 func (UnimplementedIAMMapperServiceServer) testEmbeddedByValue()                          {}
@@ -487,6 +505,24 @@ func _IAMMapperService_GetProjectMembers_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _IAMMapperService_GetUserProjects_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserProjectsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(IAMMapperServiceServer).GetUserProjects(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: IAMMapperService_GetUserProjects_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(IAMMapperServiceServer).GetUserProjects(ctx, req.(*GetUserProjectsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // IAMMapperService_ServiceDesc is the grpc.ServiceDesc for IAMMapperService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -541,6 +577,10 @@ var IAMMapperService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetProjectMembers",
 			Handler:    _IAMMapperService_GetProjectMembers_Handler,
+		},
+		{
+			MethodName: "GetUserProjects",
+			Handler:    _IAMMapperService_GetUserProjects_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

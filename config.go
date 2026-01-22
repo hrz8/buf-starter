@@ -51,6 +51,7 @@ type Config interface {
 	GetCodeExpiry() int
 	GetAccessTokenExpiry() int
 	GetRefreshTokenExpiry() int
+	IsAutoActivate() bool // Whether new users are automatically activated (default: true)
 
 	// Seeder configuration
 	GetSuperadminEmail() string
@@ -64,4 +65,20 @@ type Config interface {
 	GetDefaultOAuthClientSecret() string
 	GetDefaultOAuthClientRedirectURIs() []string
 	GetDefaultOAuthClientPKCERequired() bool
+
+	// Notification configuration
+	GetNotificationAuthBaseURL() string   // Base URL for verification links in emails
+	GetNotificationEmailProvider() string // "resend" or "ses"
+	GetNotificationEmailFromEmail() string
+	GetNotificationEmailFromName() string
+	GetNotificationResendAPIKey() string
+	GetNotificationSESRegion() string
+
+	// OTP configuration
+	GetOTPExpirySeconds() int
+	GetOTPRateLimit() int
+	GetOTPRateLimitWindowMins() int
+
+	// Email verification configuration
+	GetVerificationTokenExpiryHours() int
 }

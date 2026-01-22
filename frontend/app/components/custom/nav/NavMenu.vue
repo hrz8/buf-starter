@@ -101,7 +101,8 @@ watch(() => useRoute().path, () => {
 });
 
 function handleToggle(item: NavItem) {
-  openStates[item.title] = !openStates[item.title];
+  // Note: Don't manually toggle openStates here - CollapsibleTrigger handles
+  // the toggle via v-model binding. We only track manual expansion state.
   toggleExpanded(item.title);
 }
 
@@ -128,11 +129,12 @@ function handleAction(action: string, event: Event) {
           class="group/collapsible"
         >
           <SidebarMenuItem>
-            <CollapsibleTrigger
-              as-child
-              @click.prevent="handleToggle(item)"
-            >
-              <SidebarMenuButton :tooltip="item.title">
+            <!--
+              Note: Don't use tooltip on SidebarMenuButton when used with CollapsibleTrigger as-child
+              The Tooltip wrapper breaks the as-child chain and prevents clicks from working
+            -->
+            <CollapsibleTrigger as-child>
+              <SidebarMenuButton @click="handleToggle(item)">
                 <component
                   :is="item.icon"
                   v-if="item.icon"
@@ -144,7 +146,7 @@ function handleAction(action: string, event: Event) {
                   variant="ghost"
                   size="icon"
                   class="ml-auto h-5 w-5 hover:bg-accent"
-                  @click="handleAction(item.action, $event)"
+                  @click.stop="handleAction(item.action, $event)"
                 >
                   <Plus class="h-3 w-3" />
                 </Button>

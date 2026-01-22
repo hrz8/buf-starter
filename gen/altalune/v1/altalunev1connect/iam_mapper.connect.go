@@ -70,6 +70,9 @@ const (
 	// IAMMapperServiceGetProjectMembersProcedure is the fully-qualified name of the IAMMapperService's
 	// GetProjectMembers RPC.
 	IAMMapperServiceGetProjectMembersProcedure = "/altalune.v1.IAMMapperService/GetProjectMembers"
+	// IAMMapperServiceGetUserProjectsProcedure is the fully-qualified name of the IAMMapperService's
+	// GetUserProjects RPC.
+	IAMMapperServiceGetUserProjectsProcedure = "/altalune.v1.IAMMapperService/GetUserProjects"
 )
 
 // These variables are the protoreflect.Descriptor objects for the RPCs defined in this package.
@@ -87,6 +90,7 @@ var (
 	iAMMapperServiceAssignProjectMembersMethodDescriptor  = iAMMapperServiceServiceDescriptor.Methods().ByName("AssignProjectMembers")
 	iAMMapperServiceRemoveProjectMembersMethodDescriptor  = iAMMapperServiceServiceDescriptor.Methods().ByName("RemoveProjectMembers")
 	iAMMapperServiceGetProjectMembersMethodDescriptor     = iAMMapperServiceServiceDescriptor.Methods().ByName("GetProjectMembers")
+	iAMMapperServiceGetUserProjectsMethodDescriptor       = iAMMapperServiceServiceDescriptor.Methods().ByName("GetUserProjects")
 )
 
 // IAMMapperServiceClient is a client for the altalune.v1.IAMMapperService service.
@@ -107,6 +111,8 @@ type IAMMapperServiceClient interface {
 	AssignProjectMembers(context.Context, *connect.Request[v1.AssignProjectMembersRequest]) (*connect.Response[emptypb.Empty], error)
 	RemoveProjectMembers(context.Context, *connect.Request[v1.RemoveProjectMembersRequest]) (*connect.Response[emptypb.Empty], error)
 	GetProjectMembers(context.Context, *connect.Request[v1.GetProjectMembersRequest]) (*connect.Response[v1.GetProjectMembersResponse], error)
+	// User Projects (reverse lookup - projects a user belongs to)
+	GetUserProjects(context.Context, *connect.Request[v1.GetUserProjectsRequest]) (*connect.Response[v1.GetUserProjectsResponse], error)
 }
 
 // NewIAMMapperServiceClient constructs a client for the altalune.v1.IAMMapperService service. By
@@ -191,6 +197,12 @@ func NewIAMMapperServiceClient(httpClient connect.HTTPClient, baseURL string, op
 			connect.WithSchema(iAMMapperServiceGetProjectMembersMethodDescriptor),
 			connect.WithClientOptions(opts...),
 		),
+		getUserProjects: connect.NewClient[v1.GetUserProjectsRequest, v1.GetUserProjectsResponse](
+			httpClient,
+			baseURL+IAMMapperServiceGetUserProjectsProcedure,
+			connect.WithSchema(iAMMapperServiceGetUserProjectsMethodDescriptor),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -208,6 +220,7 @@ type iAMMapperServiceClient struct {
 	assignProjectMembers  *connect.Client[v1.AssignProjectMembersRequest, emptypb.Empty]
 	removeProjectMembers  *connect.Client[v1.RemoveProjectMembersRequest, emptypb.Empty]
 	getProjectMembers     *connect.Client[v1.GetProjectMembersRequest, v1.GetProjectMembersResponse]
+	getUserProjects       *connect.Client[v1.GetUserProjectsRequest, v1.GetUserProjectsResponse]
 }
 
 // AssignUserRoles calls altalune.v1.IAMMapperService.AssignUserRoles.
@@ -270,6 +283,11 @@ func (c *iAMMapperServiceClient) GetProjectMembers(ctx context.Context, req *con
 	return c.getProjectMembers.CallUnary(ctx, req)
 }
 
+// GetUserProjects calls altalune.v1.IAMMapperService.GetUserProjects.
+func (c *iAMMapperServiceClient) GetUserProjects(ctx context.Context, req *connect.Request[v1.GetUserProjectsRequest]) (*connect.Response[v1.GetUserProjectsResponse], error) {
+	return c.getUserProjects.CallUnary(ctx, req)
+}
+
 // IAMMapperServiceHandler is an implementation of the altalune.v1.IAMMapperService service.
 type IAMMapperServiceHandler interface {
 	// User-Role Mappings
@@ -288,6 +306,8 @@ type IAMMapperServiceHandler interface {
 	AssignProjectMembers(context.Context, *connect.Request[v1.AssignProjectMembersRequest]) (*connect.Response[emptypb.Empty], error)
 	RemoveProjectMembers(context.Context, *connect.Request[v1.RemoveProjectMembersRequest]) (*connect.Response[emptypb.Empty], error)
 	GetProjectMembers(context.Context, *connect.Request[v1.GetProjectMembersRequest]) (*connect.Response[v1.GetProjectMembersResponse], error)
+	// User Projects (reverse lookup - projects a user belongs to)
+	GetUserProjects(context.Context, *connect.Request[v1.GetUserProjectsRequest]) (*connect.Response[v1.GetUserProjectsResponse], error)
 }
 
 // NewIAMMapperServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -368,6 +388,12 @@ func NewIAMMapperServiceHandler(svc IAMMapperServiceHandler, opts ...connect.Han
 		connect.WithSchema(iAMMapperServiceGetProjectMembersMethodDescriptor),
 		connect.WithHandlerOptions(opts...),
 	)
+	iAMMapperServiceGetUserProjectsHandler := connect.NewUnaryHandler(
+		IAMMapperServiceGetUserProjectsProcedure,
+		svc.GetUserProjects,
+		connect.WithSchema(iAMMapperServiceGetUserProjectsMethodDescriptor),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/altalune.v1.IAMMapperService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case IAMMapperServiceAssignUserRolesProcedure:
@@ -394,6 +420,8 @@ func NewIAMMapperServiceHandler(svc IAMMapperServiceHandler, opts ...connect.Han
 			iAMMapperServiceRemoveProjectMembersHandler.ServeHTTP(w, r)
 		case IAMMapperServiceGetProjectMembersProcedure:
 			iAMMapperServiceGetProjectMembersHandler.ServeHTTP(w, r)
+		case IAMMapperServiceGetUserProjectsProcedure:
+			iAMMapperServiceGetUserProjectsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -449,4 +477,8 @@ func (UnimplementedIAMMapperServiceHandler) RemoveProjectMembers(context.Context
 
 func (UnimplementedIAMMapperServiceHandler) GetProjectMembers(context.Context, *connect.Request[v1.GetProjectMembersRequest]) (*connect.Response[v1.GetProjectMembersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("altalune.v1.IAMMapperService.GetProjectMembers is not implemented"))
+}
+
+func (UnimplementedIAMMapperServiceHandler) GetUserProjects(context.Context, *connect.Request[v1.GetUserProjectsRequest]) (*connect.Response[v1.GetUserProjectsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("altalune.v1.IAMMapperService.GetUserProjects is not implemented"))
 }

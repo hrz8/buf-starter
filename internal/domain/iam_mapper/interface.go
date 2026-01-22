@@ -28,4 +28,7 @@ type Repository interface {
 	AssignProjectMembers(ctx context.Context, projectID int64, members []ProjectMemberInput) error
 	RemoveProjectMembers(ctx context.Context, projectID int64, userIDs []int64) error
 	GetProjectMembers(ctx context.Context, projectID int64) ([]*ProjectMemberWithUser, error)
+
+	// User Projects (reverse lookup - projects a user belongs to)
+	GetUserProjects(ctx context.Context, userID int64) ([]*UserProjectMembership, error)
 }

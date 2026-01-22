@@ -10,6 +10,8 @@ import type {
   GetRolePermissionsResponse,
   GetUserPermissionsRequest,
   GetUserPermissionsResponse,
+  GetUserProjectsRequest,
+  GetUserProjectsResponse,
   GetUserRolesRequest,
   GetUserRolesResponse,
   IAMMapperService,
@@ -172,6 +174,20 @@ export function iamMapperRepository(client: Client<typeof IAMMapperService>) {
     async getProjectMembers(req: GetProjectMembersRequest): Promise<GetProjectMembersResponse> {
       try {
         const response = await client.getProjectMembers(req);
+        return response;
+      }
+      catch (err) {
+        if (err instanceof ConnectError) {
+          console.error('ConnectError:', err);
+        }
+        throw err;
+      }
+    },
+
+    // User Projects (reverse lookup - projects a user belongs to)
+    async getUserProjects(req: GetUserProjectsRequest): Promise<GetUserProjectsResponse> {
+      try {
+        const response = await client.getUserProjects(req);
         return response;
       }
       catch (err) {

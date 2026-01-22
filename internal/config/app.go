@@ -91,6 +91,7 @@ type AuthConfig struct {
 	CodeExpiry         int    `yaml:"codeExpiry" validate:"gte=1"`
 	AccessTokenExpiry  int    `yaml:"accessTokenExpiry" validate:"gte=1"`
 	RefreshTokenExpiry int    `yaml:"refreshTokenExpiry" validate:"gte=1"`
+	AutoActivate       *bool  `yaml:"autoActivate"` // Whether new users are automatically activated (default: true)
 }
 
 func (c *AuthConfig) setDefaults() {
@@ -109,6 +110,19 @@ func (c *AuthConfig) setDefaults() {
 	if c.RefreshTokenExpiry == 0 {
 		c.RefreshTokenExpiry = 2592000 // 30 days
 	}
+	// AutoActivate defaults to true if not specified
+	if c.AutoActivate == nil {
+		defaultAutoActivate := true
+		c.AutoActivate = &defaultAutoActivate
+	}
+}
+
+// IsAutoActivate returns the auto-activate setting (defaults to true)
+func (c *AuthConfig) IsAutoActivate() bool {
+	if c.AutoActivate == nil {
+		return true
+	}
+	return *c.AutoActivate
 }
 
 type SuperadminConfig struct {
@@ -142,7 +156,22 @@ type DashboardOAuthConfig struct {
 
 // NotificationConfig contains notification service settings.
 type NotificationConfig struct {
-	Email *EmailNotificationConfig `yaml:"email" validate:"required"`
+	AuthBaseURL  string                   `yaml:"authBaseURL" validate:"omitempty,url"` // Base URL for verification links
+	Email        *EmailNotificationConfig `yaml:"email" validate:"required"`
+	OTP          *OTPNotificationConfig   `yaml:"otp"`
+	Verification *VerificationNotificationConfig `yaml:"verification"`
+}
+
+// OTPNotificationConfig contains OTP generation and validation settings.
+type OTPNotificationConfig struct {
+	ExpirySeconds       int `yaml:"expirySeconds" validate:"gte=60,lte=3600"`   // OTP expiry in seconds (default: 300 = 5 minutes)
+	RateLimit           int `yaml:"rateLimit" validate:"gte=1,lte=10"`          // Max OTPs per window (default: 3)
+	RateLimitWindowMins int `yaml:"rateLimitWindowMins" validate:"gte=1,lte=60"` // Rate limit window in minutes (default: 15)
+}
+
+// VerificationNotificationConfig contains email verification token settings.
+type VerificationNotificationConfig struct {
+	TokenExpiryHours int `yaml:"tokenExpiryHours" validate:"gte=1,lte=168"` // Token expiry in hours (default: 24)
 }
 
 // EmailNotificationConfig contains email provider settings.
@@ -166,6 +195,7 @@ type SESConfig struct {
 }
 
 func (c *NotificationConfig) setDefaults() {
+	// AuthBaseURL is required, no default - validated at runtime
 	if c.Email == nil {
 		c.Email = &EmailNotificationConfig{
 			Provider: "resend",
@@ -179,6 +209,28 @@ func (c *NotificationConfig) setDefaults() {
 	}
 	if c.Email.Resend.FromName == "" {
 		c.Email.Resend.FromName = "Altalune"
+	}
+
+	// OTP defaults
+	if c.OTP == nil {
+		c.OTP = &OTPNotificationConfig{}
+	}
+	if c.OTP.ExpirySeconds == 0 {
+		c.OTP.ExpirySeconds = 300 // 5 minutes
+	}
+	if c.OTP.RateLimit == 0 {
+		c.OTP.RateLimit = 3
+	}
+	if c.OTP.RateLimitWindowMins == 0 {
+		c.OTP.RateLimitWindowMins = 15
+	}
+
+	// Verification defaults
+	if c.Verification == nil {
+		c.Verification = &VerificationNotificationConfig{}
+	}
+	if c.Verification.TokenExpiryHours == 0 {
+		c.Verification.TokenExpiryHours = 24
 	}
 }
 

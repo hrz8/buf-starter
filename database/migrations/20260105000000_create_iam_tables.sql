@@ -21,6 +21,8 @@ CREATE TABLE IF NOT EXISTS altalune_users (
   first_name VARCHAR(100),
   last_name VARCHAR(100),
   is_active BOOLEAN NOT NULL DEFAULT true,
+  email_verified BOOLEAN NOT NULL DEFAULT false,
+  activated_at TIMESTAMPTZ,
   created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   updated_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
   CONSTRAINT chk_users_email_lowercase CHECK (email = LOWER(email))
@@ -29,6 +31,7 @@ CREATE TABLE IF NOT EXISTS altalune_users (
 -- Indexes for users table
 CREATE INDEX IF NOT EXISTS idx_users_email ON altalune_users (email);
 CREATE INDEX IF NOT EXISTS idx_users_is_active ON altalune_users (is_active);
+CREATE INDEX IF NOT EXISTS idx_users_email_verified ON altalune_users (email_verified);
 
 -- -----------------------------------------------------------------------------
 -- 2. altalune_roles
@@ -179,6 +182,9 @@ CREATE INDEX IF NOT EXISTS idx_user_identities_provider ON altalune_user_identit
 
 -- +goose Down
 -- +goose StatementBegin
+
+-- Drop indexes first
+DROP INDEX IF EXISTS idx_users_email_verified;
 
 -- Drop junction tables first (they have foreign keys to entity tables)
 DROP TABLE IF EXISTS altalune_user_identities;

@@ -47,12 +47,14 @@ INSERT INTO altalune_users (
   email,
   first_name,
   last_name,
-  is_active
+  is_active,
+  email_verified
 ) VALUES (
   'gpwnrdd5lwmwe5',
   'admin@altalune.id',
   'Super',
   'Admin',
+  true,
   true
 );
 

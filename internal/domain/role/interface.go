@@ -8,6 +8,7 @@ import (
 
 type Repository interface {
 	GetIDByPublicID(ctx context.Context, publicID string) (int64, error)
+	GetInternalIDByName(ctx context.Context, name string) (int64, error)
 	Query(ctx context.Context, params *query.QueryParams) (*query.QueryResult[Role], error)
 	Create(ctx context.Context, input *CreateRoleInput) (*CreateRoleResult, error)
 	GetByName(ctx context.Context, name string) (*Role, error)

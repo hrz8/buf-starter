@@ -25,6 +25,8 @@ import (
 	"github.com/hrz8/altalune/internal/postgres"
 	"github.com/hrz8/altalune/internal/session"
 	"github.com/hrz8/altalune/internal/shared/jwt"
+	"github.com/hrz8/altalune/internal/shared/notification"
+	"github.com/hrz8/altalune/internal/shared/notification/email"
 	"github.com/hrz8/altalune/logger"
 
 	migration_domain "github.com/hrz8/altalune/internal/domain/migration"
@@ -38,10 +40,6 @@ type Container struct {
 
 	// Database connection and manager
 	db postgres.DB
-
-	// Auth server components (conditionally initialized)
-	jwtSigner    *jwt.Signer
-	sessionStore *session.Store
 
 	// Migrations
 	migrationRepo    migration_domain.Migrator
@@ -69,25 +67,40 @@ type Container struct {
 	oauthClientRepo   oauth_client_domain.Repositor
 	oauthAuthRepo     oauth_auth_domain.Repositor
 
-	// Example Services
-	greeterService  greeterv1.GreeterServiceServer
-	employeeService altalunev1.EmployeeServiceServer
+	// OTP and Verification Repositories
+	otpRepo              oauth_auth_domain.OTPRepositor
+	otpUserRepo          oauth_auth_domain.UserLookupRepositor
+	verificationUserRepo oauth_auth_domain.UserEmailVerificationRepositor
+	verificationRepo     oauth_auth_domain.EmailVerificationRepositor
 
 	// Repositories
 	projectRepo project_domain.Repositor
 
-	// Services
-	projectService      altalunev1.ProjectServiceServer
-	apiKeyService       altalunev1.ApiKeyServiceServer
-	chatbotService      altalunev1.ChatbotServiceServer
-	chatbotNodeService  altalunev1.ChatbotNodeServiceServer
-	userService         altalunev1.UserServiceServer
+	// Shared Providers (available across the app)
+	notificationService *notification.NotificationService
+
+	// Example Services
+	greeterService  greeterv1.GreeterServiceServer
+	employeeService altalunev1.EmployeeServiceServer
+
+	// Domain Services
+	projectService       altalunev1.ProjectServiceServer
+	apiKeyService        altalunev1.ApiKeyServiceServer
+	chatbotService       altalunev1.ChatbotServiceServer
+	chatbotNodeService   altalunev1.ChatbotNodeServiceServer
+	userService          altalunev1.UserServiceServer
 	roleService          altalunev1.RoleServiceServer
 	permissionService    altalunev1.PermissionServiceServer
 	iamMapperService     altalunev1.IAMMapperServiceServer
 	oauthProviderService altalunev1.OAuthProviderServiceServer
 	oauthClientService   altalunev1.OAuthClientServiceServer
-	oauthAuthService     *oauth_auth_domain.Service
+
+	// Auth Server Components (conditionally initialized)
+	jwtSigner                *jwt.Signer
+	sessionStore             *session.Store
+	oauthAuthService         *oauth_auth_domain.Service
+	otpService               *oauth_auth_domain.OTPService
+	emailVerificationService *oauth_auth_domain.EmailVerificationService
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling
@@ -97,12 +110,20 @@ func CreateContainer(ctx context.Context, cfg altalune.Config) (*Container, erro
 		logger: logger.New(cfg.GetServerLogLevel()),
 	}
 
-	// Initialize components in dependency order
+	// Initialize components in dependency order:
+	// 1. Database connection
+	// 2. Repositories (data access layer)
+	// 3. Providers (shared infrastructure services like notification)
+	// 4. Services (domain business logic)
+	// 5. Auth components (auth-specific services)
 	if err := container.initDatabase(ctx); err != nil {
 		return nil, fmt.Errorf("failed to initialize database: %w", err)
 	}
 	if err := container.initRepositories(); err != nil {
 		return nil, fmt.Errorf("failed to initialize repositories: %w", err)
+	}
+	if err := container.initProviders(); err != nil {
+		return nil, fmt.Errorf("failed to initialize providers: %w", err)
 	}
 	if err := container.initServices(); err != nil {
 		return nil, fmt.Errorf("failed to initialize services: %w", err)
@@ -140,6 +161,50 @@ func (c *Container) initRepositories() error {
 	c.oauthProviderRepo = oauth_provider_domain.NewRepo(c.db, c.config.GetIAMEncryptionKey())
 	c.oauthClientRepo = oauth_client_domain.NewRepo(c.db)
 	c.oauthAuthRepo = oauth_auth_domain.NewRepo(c.db)
+
+	// OTP and Verification repositories
+	c.otpRepo = oauth_auth_domain.NewOTPRepo(c.db)
+	userRepo := oauth_auth_domain.NewUserRepo(c.db)
+	c.otpUserRepo = userRepo          // UserLookupRepositor for OTP service
+	c.verificationUserRepo = userRepo // UserEmailVerificationRepositor for verification service
+	c.verificationRepo = oauth_auth_domain.NewEmailVerificationRepo(c.db)
+	return nil
+}
+
+func (c *Container) initProviders() error {
+	emailProvider := c.config.GetNotificationEmailProvider()
+	if emailProvider != "" {
+		var emailSender email.EmailSender
+
+		fromEmail := c.config.GetNotificationEmailFromEmail()
+		fromName := c.config.GetNotificationEmailFromName()
+
+		switch emailProvider {
+		case "resend":
+			apiKey := c.config.GetNotificationResendAPIKey()
+			if apiKey != "" {
+				emailSender = email.NewResendEmailSender(apiKey, fromEmail, fromName)
+			}
+		case "ses":
+			region := c.config.GetNotificationSESRegion()
+			if region != "" {
+				emailSender = email.NewSESEmailSender(region, fromEmail)
+			}
+		}
+
+		if emailSender != nil {
+			baseURL := c.config.GetNotificationAuthBaseURL()
+			if baseURL == "" {
+				return fmt.Errorf("notification.authBaseURL is required when email provider is configured")
+			}
+			notificationSvc, err := notification.NewNotificationService(emailSender, baseURL)
+			if err != nil {
+				return fmt.Errorf("create notification service: %w", err)
+			}
+			c.notificationService = notificationSvc
+		}
+	}
+
 	return nil
 }
 
@@ -155,7 +220,6 @@ func (c *Container) initServices() error {
 	c.apiKeyService = api_key_domain.NewService(validator, c.logger, c.projectRepo, c.apiKeyRepo)
 	c.chatbotService = chatbot_domain.NewService(validator, c.logger, c.projectRepo, c.chatbotRepo)
 	c.chatbotNodeService = chatbot_node_domain.NewService(validator, c.logger, c.projectRepo, c.chatbotNodeRepo)
-	c.userService = user_domain.NewService(validator, c.logger, c.userRepo)
 	c.roleService = role_domain.NewService(validator, c.logger, c.roleRepo)
 	c.permissionService = permission_domain.NewService(validator, c.logger, c.permissionRepo)
 	c.iamMapperService = iam_mapper_domain.NewService(validator, c.logger, c.iamMapperRepo, c.userRepo, c.roleRepo, c.permissionRepo, c.projectRepo)
@@ -165,6 +229,8 @@ func (c *Container) initServices() error {
 	if err := c.initAuthComponents(); err != nil {
 		return fmt.Errorf("failed to initialize auth components: %w", err)
 	}
+
+	c.userService = user_domain.NewService(validator, c.logger, c.userRepo, c.roleRepo, c.iamMapperRepo, c.emailVerificationService)
 
 	return nil
 }
@@ -196,10 +262,30 @@ func (c *Container) initAuthComponents() error {
 		c.oauthAuthService = oauth_auth_domain.NewService(
 			c.logger,
 			c.oauthAuthRepo,
+			c.otpUserRepo,
 			c.jwtSigner,
 			c.config,
 			permissionProvider,
 			scopeHandlerRegistry,
+		)
+	}
+
+	// Initialize OTP and Email Verification Services if notification service is available
+	if c.notificationService != nil {
+		c.otpService = oauth_auth_domain.NewOTPService(
+			c.otpRepo,
+			c.otpUserRepo,
+			c.notificationService,
+			c.logger,
+			c.config,
+		)
+
+		c.emailVerificationService = oauth_auth_domain.NewEmailVerificationService(
+			c.verificationRepo,
+			c.verificationUserRepo,
+			c.notificationService,
+			c.logger,
+			c.config,
 		)
 	}
 

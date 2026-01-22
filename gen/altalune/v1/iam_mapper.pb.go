@@ -922,6 +922,165 @@ func (x *GetProjectMembersResponse) GetMembers() []*ProjectMemberWithUser {
 	return nil
 }
 
+// GetUserProjectsRequest for retrieving all projects a user is a member of
+type GetUserProjectsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserProjectsRequest) Reset() {
+	*x = GetUserProjectsRequest{}
+	mi := &file_altalune_v1_iam_mapper_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserProjectsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserProjectsRequest) ProtoMessage() {}
+
+func (x *GetUserProjectsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_iam_mapper_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserProjectsRequest.ProtoReflect.Descriptor instead.
+func (*GetUserProjectsRequest) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_iam_mapper_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *GetUserProjectsRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+// UserProjectMembership contains project details and user's role in it
+type UserProjectMembership struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	ProjectId     string                 `protobuf:"bytes,1,opt,name=project_id,json=projectId,proto3" json:"project_id,omitempty"`
+	ProjectName   string                 `protobuf:"bytes,2,opt,name=project_name,json=projectName,proto3" json:"project_name,omitempty"`
+	Role          string                 `protobuf:"bytes,3,opt,name=role,proto3" json:"role,omitempty"`
+	JoinedAt      *timestamppb.Timestamp `protobuf:"bytes,4,opt,name=joined_at,json=joinedAt,proto3" json:"joined_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UserProjectMembership) Reset() {
+	*x = UserProjectMembership{}
+	mi := &file_altalune_v1_iam_mapper_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UserProjectMembership) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UserProjectMembership) ProtoMessage() {}
+
+func (x *UserProjectMembership) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_iam_mapper_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UserProjectMembership.ProtoReflect.Descriptor instead.
+func (*UserProjectMembership) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_iam_mapper_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *UserProjectMembership) GetProjectId() string {
+	if x != nil {
+		return x.ProjectId
+	}
+	return ""
+}
+
+func (x *UserProjectMembership) GetProjectName() string {
+	if x != nil {
+		return x.ProjectName
+	}
+	return ""
+}
+
+func (x *UserProjectMembership) GetRole() string {
+	if x != nil {
+		return x.Role
+	}
+	return ""
+}
+
+func (x *UserProjectMembership) GetJoinedAt() *timestamppb.Timestamp {
+	if x != nil {
+		return x.JoinedAt
+	}
+	return nil
+}
+
+// GetUserProjectsResponse with list of projects the user belongs to
+type GetUserProjectsResponse struct {
+	state         protoimpl.MessageState   `protogen:"open.v1"`
+	Projects      []*UserProjectMembership `protobuf:"bytes,1,rep,name=projects,proto3" json:"projects,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserProjectsResponse) Reset() {
+	*x = GetUserProjectsResponse{}
+	mi := &file_altalune_v1_iam_mapper_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserProjectsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserProjectsResponse) ProtoMessage() {}
+
+func (x *GetUserProjectsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_altalune_v1_iam_mapper_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserProjectsResponse.ProtoReflect.Descriptor instead.
+func (*GetUserProjectsResponse) Descriptor() ([]byte, []int) {
+	return file_altalune_v1_iam_mapper_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GetUserProjectsResponse) GetProjects() []*UserProjectMembership {
+	if x != nil {
+		return x.Projects
+	}
+	return nil
+}
+
 var File_altalune_v1_iam_mapper_proto protoreflect.FileDescriptor
 
 const file_altalune_v1_iam_mapper_proto_rawDesc = "" +
@@ -977,7 +1136,17 @@ const file_altalune_v1_iam_mapper_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x03 \x01(\v2\x1a.google.protobuf.TimestampR\tcreatedAt\"Y\n" +
 	"\x19GetProjectMembersResponse\x12<\n" +
-	"\amembers\x18\x01 \x03(\v2\".altalune.v1.ProjectMemberWithUserR\amembers2\xf5\b\n" +
+	"\amembers\x18\x01 \x03(\v2\".altalune.v1.ProjectMemberWithUserR\amembers\"?\n" +
+	"\x16GetUserProjectsRequest\x12%\n" +
+	"\auser_id\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x14R\x06userId\"\xa6\x01\n" +
+	"\x15UserProjectMembership\x12\x1d\n" +
+	"\n" +
+	"project_id\x18\x01 \x01(\tR\tprojectId\x12!\n" +
+	"\fproject_name\x18\x02 \x01(\tR\vprojectName\x12\x12\n" +
+	"\x04role\x18\x03 \x01(\tR\x04role\x127\n" +
+	"\tjoined_at\x18\x04 \x01(\v2\x1a.google.protobuf.TimestampR\bjoinedAt\"Y\n" +
+	"\x17GetUserProjectsResponse\x12>\n" +
+	"\bprojects\x18\x01 \x03(\v2\".altalune.v1.UserProjectMembershipR\bprojects2\xd5\t\n" +
 	"\x10IAMMapperService\x12P\n" +
 	"\x0fAssignUserRoles\x12#.altalune.v1.AssignUserRolesRequest\x1a\x16.google.protobuf.Empty\"\x00\x12P\n" +
 	"\x0fRemoveUserRoles\x12#.altalune.v1.RemoveUserRolesRequest\x1a\x16.google.protobuf.Empty\"\x00\x12U\n" +
@@ -990,7 +1159,8 @@ const file_altalune_v1_iam_mapper_proto_rawDesc = "" +
 	"\x12GetUserPermissions\x12&.altalune.v1.GetUserPermissionsRequest\x1a'.altalune.v1.GetUserPermissionsResponse\"\x00\x12Z\n" +
 	"\x14AssignProjectMembers\x12(.altalune.v1.AssignProjectMembersRequest\x1a\x16.google.protobuf.Empty\"\x00\x12Z\n" +
 	"\x14RemoveProjectMembers\x12(.altalune.v1.RemoveProjectMembersRequest\x1a\x16.google.protobuf.Empty\"\x00\x12d\n" +
-	"\x11GetProjectMembers\x12%.altalune.v1.GetProjectMembersRequest\x1a&.altalune.v1.GetProjectMembersResponse\"\x00B\xa3\x01\n" +
+	"\x11GetProjectMembers\x12%.altalune.v1.GetProjectMembersRequest\x1a&.altalune.v1.GetProjectMembersResponse\"\x00\x12^\n" +
+	"\x0fGetUserProjects\x12#.altalune.v1.GetUserProjectsRequest\x1a$.altalune.v1.GetUserProjectsResponse\"\x00B\xa3\x01\n" +
 	"\x0fcom.altalune.v1B\x0eIamMapperProtoP\x01Z3github.com/hrz8/altalune/gen/altalune/v1;altalunev1\xa2\x02\x03AXX\xaa\x02\vAltalune.V1\xca\x02\vAltalune\\V1\xe2\x02\x17Altalune\\V1\\GPBMetadata\xea\x02\fAltalune::V1b\x06proto3"
 
 var (
@@ -1005,7 +1175,7 @@ func file_altalune_v1_iam_mapper_proto_rawDescGZIP() []byte {
 	return file_altalune_v1_iam_mapper_proto_rawDescData
 }
 
-var file_altalune_v1_iam_mapper_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_altalune_v1_iam_mapper_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_altalune_v1_iam_mapper_proto_goTypes = []any{
 	(*AssignUserRolesRequest)(nil),       // 0: altalune.v1.AssignUserRolesRequest
 	(*RemoveUserRolesRequest)(nil),       // 1: altalune.v1.RemoveUserRolesRequest
@@ -1025,49 +1195,56 @@ var file_altalune_v1_iam_mapper_proto_goTypes = []any{
 	(*GetProjectMembersRequest)(nil),     // 15: altalune.v1.GetProjectMembersRequest
 	(*ProjectMemberWithUser)(nil),        // 16: altalune.v1.ProjectMemberWithUser
 	(*GetProjectMembersResponse)(nil),    // 17: altalune.v1.GetProjectMembersResponse
-	(*Role)(nil),                         // 18: altalune.v1.Role
-	(*Permission)(nil),                   // 19: altalune.v1.Permission
-	(*User)(nil),                         // 20: altalune.v1.User
-	(*timestamppb.Timestamp)(nil),        // 21: google.protobuf.Timestamp
-	(*emptypb.Empty)(nil),                // 22: google.protobuf.Empty
+	(*GetUserProjectsRequest)(nil),       // 18: altalune.v1.GetUserProjectsRequest
+	(*UserProjectMembership)(nil),        // 19: altalune.v1.UserProjectMembership
+	(*GetUserProjectsResponse)(nil),      // 20: altalune.v1.GetUserProjectsResponse
+	(*Role)(nil),                         // 21: altalune.v1.Role
+	(*Permission)(nil),                   // 22: altalune.v1.Permission
+	(*User)(nil),                         // 23: altalune.v1.User
+	(*timestamppb.Timestamp)(nil),        // 24: google.protobuf.Timestamp
+	(*emptypb.Empty)(nil),                // 25: google.protobuf.Empty
 }
 var file_altalune_v1_iam_mapper_proto_depIdxs = []int32{
-	18, // 0: altalune.v1.GetUserRolesResponse.roles:type_name -> altalune.v1.Role
-	19, // 1: altalune.v1.GetRolePermissionsResponse.permissions:type_name -> altalune.v1.Permission
-	19, // 2: altalune.v1.GetUserPermissionsResponse.permissions:type_name -> altalune.v1.Permission
+	21, // 0: altalune.v1.GetUserRolesResponse.roles:type_name -> altalune.v1.Role
+	22, // 1: altalune.v1.GetRolePermissionsResponse.permissions:type_name -> altalune.v1.Permission
+	22, // 2: altalune.v1.GetUserPermissionsResponse.permissions:type_name -> altalune.v1.Permission
 	12, // 3: altalune.v1.AssignProjectMembersRequest.members:type_name -> altalune.v1.ProjectMember
-	20, // 4: altalune.v1.ProjectMemberWithUser.user:type_name -> altalune.v1.User
-	21, // 5: altalune.v1.ProjectMemberWithUser.created_at:type_name -> google.protobuf.Timestamp
+	23, // 4: altalune.v1.ProjectMemberWithUser.user:type_name -> altalune.v1.User
+	24, // 5: altalune.v1.ProjectMemberWithUser.created_at:type_name -> google.protobuf.Timestamp
 	16, // 6: altalune.v1.GetProjectMembersResponse.members:type_name -> altalune.v1.ProjectMemberWithUser
-	0,  // 7: altalune.v1.IAMMapperService.AssignUserRoles:input_type -> altalune.v1.AssignUserRolesRequest
-	1,  // 8: altalune.v1.IAMMapperService.RemoveUserRoles:input_type -> altalune.v1.RemoveUserRolesRequest
-	2,  // 9: altalune.v1.IAMMapperService.GetUserRoles:input_type -> altalune.v1.GetUserRolesRequest
-	4,  // 10: altalune.v1.IAMMapperService.AssignRolePermissions:input_type -> altalune.v1.AssignRolePermissionsRequest
-	5,  // 11: altalune.v1.IAMMapperService.RemoveRolePermissions:input_type -> altalune.v1.RemoveRolePermissionsRequest
-	6,  // 12: altalune.v1.IAMMapperService.GetRolePermissions:input_type -> altalune.v1.GetRolePermissionsRequest
-	8,  // 13: altalune.v1.IAMMapperService.AssignUserPermissions:input_type -> altalune.v1.AssignUserPermissionsRequest
-	9,  // 14: altalune.v1.IAMMapperService.RemoveUserPermissions:input_type -> altalune.v1.RemoveUserPermissionsRequest
-	10, // 15: altalune.v1.IAMMapperService.GetUserPermissions:input_type -> altalune.v1.GetUserPermissionsRequest
-	13, // 16: altalune.v1.IAMMapperService.AssignProjectMembers:input_type -> altalune.v1.AssignProjectMembersRequest
-	14, // 17: altalune.v1.IAMMapperService.RemoveProjectMembers:input_type -> altalune.v1.RemoveProjectMembersRequest
-	15, // 18: altalune.v1.IAMMapperService.GetProjectMembers:input_type -> altalune.v1.GetProjectMembersRequest
-	22, // 19: altalune.v1.IAMMapperService.AssignUserRoles:output_type -> google.protobuf.Empty
-	22, // 20: altalune.v1.IAMMapperService.RemoveUserRoles:output_type -> google.protobuf.Empty
-	3,  // 21: altalune.v1.IAMMapperService.GetUserRoles:output_type -> altalune.v1.GetUserRolesResponse
-	22, // 22: altalune.v1.IAMMapperService.AssignRolePermissions:output_type -> google.protobuf.Empty
-	22, // 23: altalune.v1.IAMMapperService.RemoveRolePermissions:output_type -> google.protobuf.Empty
-	7,  // 24: altalune.v1.IAMMapperService.GetRolePermissions:output_type -> altalune.v1.GetRolePermissionsResponse
-	22, // 25: altalune.v1.IAMMapperService.AssignUserPermissions:output_type -> google.protobuf.Empty
-	22, // 26: altalune.v1.IAMMapperService.RemoveUserPermissions:output_type -> google.protobuf.Empty
-	11, // 27: altalune.v1.IAMMapperService.GetUserPermissions:output_type -> altalune.v1.GetUserPermissionsResponse
-	22, // 28: altalune.v1.IAMMapperService.AssignProjectMembers:output_type -> google.protobuf.Empty
-	22, // 29: altalune.v1.IAMMapperService.RemoveProjectMembers:output_type -> google.protobuf.Empty
-	17, // 30: altalune.v1.IAMMapperService.GetProjectMembers:output_type -> altalune.v1.GetProjectMembersResponse
-	19, // [19:31] is the sub-list for method output_type
-	7,  // [7:19] is the sub-list for method input_type
-	7,  // [7:7] is the sub-list for extension type_name
-	7,  // [7:7] is the sub-list for extension extendee
-	0,  // [0:7] is the sub-list for field type_name
+	24, // 7: altalune.v1.UserProjectMembership.joined_at:type_name -> google.protobuf.Timestamp
+	19, // 8: altalune.v1.GetUserProjectsResponse.projects:type_name -> altalune.v1.UserProjectMembership
+	0,  // 9: altalune.v1.IAMMapperService.AssignUserRoles:input_type -> altalune.v1.AssignUserRolesRequest
+	1,  // 10: altalune.v1.IAMMapperService.RemoveUserRoles:input_type -> altalune.v1.RemoveUserRolesRequest
+	2,  // 11: altalune.v1.IAMMapperService.GetUserRoles:input_type -> altalune.v1.GetUserRolesRequest
+	4,  // 12: altalune.v1.IAMMapperService.AssignRolePermissions:input_type -> altalune.v1.AssignRolePermissionsRequest
+	5,  // 13: altalune.v1.IAMMapperService.RemoveRolePermissions:input_type -> altalune.v1.RemoveRolePermissionsRequest
+	6,  // 14: altalune.v1.IAMMapperService.GetRolePermissions:input_type -> altalune.v1.GetRolePermissionsRequest
+	8,  // 15: altalune.v1.IAMMapperService.AssignUserPermissions:input_type -> altalune.v1.AssignUserPermissionsRequest
+	9,  // 16: altalune.v1.IAMMapperService.RemoveUserPermissions:input_type -> altalune.v1.RemoveUserPermissionsRequest
+	10, // 17: altalune.v1.IAMMapperService.GetUserPermissions:input_type -> altalune.v1.GetUserPermissionsRequest
+	13, // 18: altalune.v1.IAMMapperService.AssignProjectMembers:input_type -> altalune.v1.AssignProjectMembersRequest
+	14, // 19: altalune.v1.IAMMapperService.RemoveProjectMembers:input_type -> altalune.v1.RemoveProjectMembersRequest
+	15, // 20: altalune.v1.IAMMapperService.GetProjectMembers:input_type -> altalune.v1.GetProjectMembersRequest
+	18, // 21: altalune.v1.IAMMapperService.GetUserProjects:input_type -> altalune.v1.GetUserProjectsRequest
+	25, // 22: altalune.v1.IAMMapperService.AssignUserRoles:output_type -> google.protobuf.Empty
+	25, // 23: altalune.v1.IAMMapperService.RemoveUserRoles:output_type -> google.protobuf.Empty
+	3,  // 24: altalune.v1.IAMMapperService.GetUserRoles:output_type -> altalune.v1.GetUserRolesResponse
+	25, // 25: altalune.v1.IAMMapperService.AssignRolePermissions:output_type -> google.protobuf.Empty
+	25, // 26: altalune.v1.IAMMapperService.RemoveRolePermissions:output_type -> google.protobuf.Empty
+	7,  // 27: altalune.v1.IAMMapperService.GetRolePermissions:output_type -> altalune.v1.GetRolePermissionsResponse
+	25, // 28: altalune.v1.IAMMapperService.AssignUserPermissions:output_type -> google.protobuf.Empty
+	25, // 29: altalune.v1.IAMMapperService.RemoveUserPermissions:output_type -> google.protobuf.Empty
+	11, // 30: altalune.v1.IAMMapperService.GetUserPermissions:output_type -> altalune.v1.GetUserPermissionsResponse
+	25, // 31: altalune.v1.IAMMapperService.AssignProjectMembers:output_type -> google.protobuf.Empty
+	25, // 32: altalune.v1.IAMMapperService.RemoveProjectMembers:output_type -> google.protobuf.Empty
+	17, // 33: altalune.v1.IAMMapperService.GetProjectMembers:output_type -> altalune.v1.GetProjectMembersResponse
+	20, // 34: altalune.v1.IAMMapperService.GetUserProjects:output_type -> altalune.v1.GetUserProjectsResponse
+	22, // [22:35] is the sub-list for method output_type
+	9,  // [9:22] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_altalune_v1_iam_mapper_proto_init() }
@@ -1084,7 +1261,7 @@ func file_altalune_v1_iam_mapper_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_altalune_v1_iam_mapper_proto_rawDesc), len(file_altalune_v1_iam_mapper_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

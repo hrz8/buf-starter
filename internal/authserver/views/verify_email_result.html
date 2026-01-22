@@ -1,0 +1,80 @@
+{{define "verify_email_result.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Email Verification - Altalune</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .auth-card {
+            max-width: 480px;
+            width: 100%;
+        }
+        .success-icon {
+            color: #198754;
+            font-size: 4rem;
+        }
+        .error-icon {
+            color: #dc3545;
+            font-size: 4rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="auth-card">
+                    {{if .Success}}
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-check-circle-fill success-icon"></i>
+                            </div>
+                            <h1 class="h3 mb-3 fw-bold">Email Verified!</h1>
+                            <p class="text-muted mb-4">Your email has been verified successfully.</p>
+                            <div class="d-grid">
+                                <a href="/login" class="btn btn-primary">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Continue to Login
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {{else}}
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4 text-center">
+                            <div class="mb-3">
+                                <i class="bi bi-x-circle-fill error-icon"></i>
+                            </div>
+                            <h1 class="h3 mb-3 fw-bold">Verification Failed</h1>
+                            <p class="text-muted mb-2">
+                                {{if eq .Error "missing_token"}}The verification link is invalid.{{end}}
+                                {{if eq .Error "expired_or_used"}}This verification link has expired or has already been used.{{end}}
+                                {{if eq .Error "invalid_token"}}This verification link is invalid.{{end}}
+                            </p>
+                            <p class="text-muted mb-4">Please request a new verification email from your dashboard.</p>
+                            <div class="d-grid">
+                                <a href="/login" class="btn btn-secondary">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Go to Login
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    {{end}}
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
+{{end}}

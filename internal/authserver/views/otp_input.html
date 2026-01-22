@@ -1,0 +1,116 @@
+{{define "otp_input.html"}}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter Code - Altalune</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .auth-card {
+            max-width: 480px;
+            width: 100%;
+        }
+        .otp-input {
+            font-size: 1.5rem;
+            text-align: center;
+            letter-spacing: 0.5rem;
+            font-family: monospace;
+        }
+        .countdown {
+            color: #6c757d;
+        }
+        .countdown.expired {
+            color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 col-lg-5">
+                <div class="auth-card">
+                    <div class="text-center mb-4">
+                        <div class="mb-3">
+                            <i class="bi bi-envelope-check text-primary" style="font-size: 3rem;"></i>
+                        </div>
+                        <h1 class="h3 mb-3 fw-bold">Check your email</h1>
+                        <p class="text-muted">We sent a 6-digit code to <strong>{{.Email}}</strong></p>
+                    </div>
+
+                    {{if .Error}}
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        {{if eq .Error "invalid_otp"}}Invalid or expired code. Please try again{{end}}
+                        {{if eq .Error "invalid_request"}}Something went wrong. Please try again{{end}}
+                    </div>
+                    {{end}}
+
+                    <div class="card shadow-sm">
+                        <div class="card-body p-4">
+                            <form method="POST" action="/login/otp/verify" id="otpForm">
+                                <div class="mb-3">
+                                    <label for="otp" class="form-label">6-digit code</label>
+                                    <input type="text" class="form-control otp-input" id="otp" name="otp"
+                                           required pattern="[0-9]{6}" maxlength="6" inputmode="numeric"
+                                           placeholder="000000" autocomplete="one-time-code">
+                                </div>
+                                <p class="text-center mb-3 countdown" id="countdownText">
+                                    Code expires in <span id="countdown">{{.ExpiryMins}}:00</span>
+                                </p>
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary">
+                                        <i class="bi bi-check-circle me-2"></i>Verify Code
+                                    </button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <a href="/login/email" class="text-decoration-none">
+                            <i class="bi bi-arrow-clockwise me-1"></i>Didn't receive the code? Send again
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Countdown timer
+    let seconds = {{.ExpiryMins}} * 60;
+    const countdown = document.getElementById('countdown');
+    const countdownText = document.getElementById('countdownText');
+    const timer = setInterval(() => {
+        seconds--;
+        const mins = Math.floor(seconds / 60);
+        const secs = seconds % 60;
+        countdown.textContent = mins + ':' + (secs < 10 ? '0' : '') + secs;
+        if (seconds <= 0) {
+            clearInterval(timer);
+            countdown.textContent = 'Expired';
+            countdownText.classList.add('expired');
+        }
+    }, 1000);
+
+    // Auto-submit when 6 digits entered
+    document.getElementById('otp').addEventListener('input', function(e) {
+        // Only allow digits
+        e.target.value = e.target.value.replace(/[^0-9]/g, '');
+        if (e.target.value.length === 6) {
+            document.getElementById('otpForm').submit();
+        }
+    });
+    </script>
+</body>
+</html>
+{{end}}

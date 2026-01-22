@@ -8,6 +8,7 @@ import (
 
 type Repository interface {
 	GetIDByPublicID(ctx context.Context, publicID string) (int64, error)
+	GetInternalIDByEmail(ctx context.Context, email string) (int64, error)
 	Query(ctx context.Context, params *query.QueryParams) (*query.QueryResult[User], error)
 	Create(ctx context.Context, input *CreateUserInput) (*CreateUserResult, error)
 	GetByEmail(ctx context.Context, email string) (*User, error)

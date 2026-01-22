@@ -30,4 +30,15 @@ var (
 	ErrRefreshTokenUsed    = errors.New("refresh token has already been used")
 	ErrCodeExpired         = errors.New("authorization code has expired")
 	ErrCodeAlreadyUsed     = errors.New("authorization code has already been used")
+
+	// OTP errors
+	ErrEmailNotRegistered = errors.New("email not registered")
+	ErrOTPRateLimited     = errors.New("too many OTP requests, please try again later")
+	ErrInvalidOTP         = errors.New("invalid or expired OTP")
+	ErrOTPAlreadyUsed     = errors.New("OTP has already been used")
+
+	// Email verification errors
+	ErrInvalidVerificationToken = errors.New("invalid or expired verification token")
+	ErrTokenAlreadyUsed         = errors.New("verification token has already been used")
+	ErrUserNotFound             = errors.New("user not found")
 )

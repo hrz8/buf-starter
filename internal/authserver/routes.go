@@ -12,14 +12,31 @@ func (s *Server) setupRoutes() *http.ServeMux {
 
 	oauthAuthHandler := oauth_auth_domain.NewHandler(
 		s.c.GetOAuthAuthService(),
+		s.cfg,
 		s.c.GetJWTSigner(),
 		s.c.GetSessionStore(),
 		s.c.GetOAuthProviderRepo(),
 		s.c.GetUserRepo(),
+		s.c.GetRoleRepo(),
+		s.c.GetIAMMapperRepo(),
+		s.c.GetOTPService(),
+		s.c.GetEmailVerificationService(),
 		s.log,
 	)
 
 	mux.HandleFunc("GET /healthz", s.handleHealthz)
+
+	// ============================================================================
+	// Standalone IDP Routes (login without OAuth client)
+	// ============================================================================
+	mux.HandleFunc("GET /{$}", oauthAuthHandler.HandleRoot)
+	mux.HandleFunc("GET /login/email", oauthAuthHandler.HandleEmailLoginPage)
+	mux.HandleFunc("POST /login/email", oauthAuthHandler.HandleEmailLoginSubmit)
+	mux.HandleFunc("GET /login/otp", oauthAuthHandler.HandleOTPPage)
+	mux.HandleFunc("POST /login/otp/verify", oauthAuthHandler.HandleOTPVerify)
+	mux.HandleFunc("GET /verify-email", oauthAuthHandler.HandleVerifyEmail)
+	mux.HandleFunc("POST /resend-verification", oauthAuthHandler.HandleResendVerification)
+	mux.HandleFunc("GET /pending-activation", oauthAuthHandler.HandlePendingActivation)
 
 	// ============================================================================
 	// OAuth Client Routes (this app acts as OAuth client to Providers e.g., Google/GitHub/etc)

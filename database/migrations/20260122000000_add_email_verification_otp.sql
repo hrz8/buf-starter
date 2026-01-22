@@ -5,25 +5,14 @@
 -- EMAIL VERIFICATION & OTP TOKENS MIGRATION
 -- =============================================================================
 -- This migration adds support for:
--- 1. Email verification status tracking on users
--- 2. Email verification tokens for link-based verification
--- 3. OTP tokens for passwordless login
--- 4. Predefined 'user' role (global) with 'dashboard:read' permission
--- 5. Fix project_members role constraint (remove 'viewer', keep 'user')
+-- 1. Email verification tokens for link-based verification
+-- 2. OTP tokens for passwordless login
+-- 3. Predefined 'user' role (global) with 'dashboard:read' permission
+-- 4. Fix project_members role constraint (remove 'viewer', keep 'user')
 -- =============================================================================
 
 -- -----------------------------------------------------------------------------
--- 1. Extend altalune_users table with email verification columns
--- -----------------------------------------------------------------------------
-ALTER TABLE altalune_users
-ADD COLUMN email_verified BOOLEAN NOT NULL DEFAULT false,
-ADD COLUMN activated_at TIMESTAMPTZ;
-
--- Index for filtering by email_verified status
-CREATE INDEX IF NOT EXISTS idx_users_email_verified ON altalune_users (email_verified);
-
--- -----------------------------------------------------------------------------
--- 2. Create altalune_email_verification_tokens table
+-- 1. Create altalune_email_verification_tokens table
 -- -----------------------------------------------------------------------------
 -- Stores hashed verification tokens sent to user emails
 -- token_hash: SHA256 hash of the actual token (64-char hex string)
@@ -161,9 +150,5 @@ DROP TABLE IF EXISTS altalune_otp_tokens;
 -- 6. Drop email verification tokens table
 DROP TABLE IF EXISTS altalune_email_verification_tokens;
 
--- 7. Remove columns from users table (drop index first)
-DROP INDEX IF EXISTS idx_users_email_verified;
-ALTER TABLE altalune_users DROP COLUMN IF EXISTS activated_at;
-ALTER TABLE altalune_users DROP COLUMN IF EXISTS email_verified;
 
 -- +goose StatementEnd

@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"net/http"
 	"net/url"
@@ -13,7 +14,9 @@ import (
 	"github.com/google/uuid"
 	"github.com/hrz8/altalune"
 	"github.com/hrz8/altalune/internal/authserver/views"
+	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
 	oauth_provider_domain "github.com/hrz8/altalune/internal/domain/oauth_provider"
+	role_domain "github.com/hrz8/altalune/internal/domain/role"
 	user_domain "github.com/hrz8/altalune/internal/domain/user"
 	"github.com/hrz8/altalune/internal/session"
 	"github.com/hrz8/altalune/internal/shared/jwt"
@@ -21,35 +24,68 @@ import (
 )
 
 type Handler struct {
-	svc               *Service
-	jwtSigner         *jwt.Signer
-	sessionStore      *session.Store
-	oauthProviderRepo oauth_provider_domain.Repository
-	userRepo          user_domain.Repository
-	log               altalune.Logger
+	svc                 *Service
+	cfg                 altalune.Config
+	jwtSigner           *jwt.Signer
+	sessionStore        *session.Store
+	oauthProviderRepo   oauth_provider_domain.Repository
+	userRepo            user_domain.Repository
+	roleRepo            role_domain.Repository
+	iamMapperRepo       iam_mapper_domain.Repository
+	otpService          *OTPService
+	verificationService *EmailVerificationService
+	log                 altalune.Logger
 }
 
 func NewHandler(
 	svc *Service,
+	cfg altalune.Config,
 	jwtSigner *jwt.Signer,
 	sessionStore *session.Store,
 	oauthProviderRepo oauth_provider_domain.Repository,
 	userRepo user_domain.Repository,
+	roleRepo role_domain.Repository,
+	iamMapperRepo iam_mapper_domain.Repository,
+	otpService *OTPService,
+	verificationService *EmailVerificationService,
 	log altalune.Logger,
 ) *Handler {
 	return &Handler{
-		svc:               svc,
-		jwtSigner:         jwtSigner,
-		sessionStore:      sessionStore,
-		oauthProviderRepo: oauthProviderRepo,
-		userRepo:          userRepo,
-		log:               log,
+		svc:                 svc,
+		cfg:                 cfg,
+		jwtSigner:           jwtSigner,
+		sessionStore:        sessionStore,
+		oauthProviderRepo:   oauthProviderRepo,
+		userRepo:            userRepo,
+		roleRepo:            roleRepo,
+		iamMapperRepo:       iamMapperRepo,
+		otpService:          otpService,
+		verificationService: verificationService,
+		log:                 log,
 	}
 }
 
 func (h *Handler) HandleLoginPage(w http.ResponseWriter, r *http.Request) {
 	if h.sessionStore.IsAuthenticated(r) {
-		http.Redirect(w, r, "/oauth/authorize", http.StatusFound)
+		// If user is already authenticated, redirect based on user status
+		sessionData, _ := h.sessionStore.GetData(r)
+		if sessionData != nil && sessionData.UserID != 0 {
+			user, err := h.userRepo.GetByInternalID(r.Context(), sessionData.UserID)
+			if err == nil {
+				// Redirect inactive users to pending activation
+				if !user.IsActive {
+					http.Redirect(w, r, "/pending-activation", http.StatusFound)
+					return
+				}
+			}
+		}
+		// Check for original URL first (OAuth flow)
+		if sessionData != nil && sessionData.OriginalURL != "" {
+			http.Redirect(w, r, sessionData.OriginalURL, http.StatusFound)
+			return
+		}
+		// Default to profile for standalone login
+		http.Redirect(w, r, "/profile", http.StatusFound)
 		return
 	}
 
@@ -93,6 +129,7 @@ func (h *Handler) HandleLoginProvider(w http.ResponseWriter, r *http.Request) {
 	}
 
 	sessionData.OAuthState = state
+	sessionData.OAuthProvider = providerName
 	if nextURL := r.URL.Query().Get("next"); nextURL != "" {
 		sessionData.OriginalURL = nextURL
 	}
@@ -145,9 +182,15 @@ func (h *Handler) HandleOAuthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	providerName := r.URL.Query().Get("provider")
+	// Get provider from session (set during HandleLoginProvider)
+	providerName := sessionData.OAuthProvider
 	if providerName == "" {
-		providerName = "google"
+		providerName = r.URL.Query().Get("provider")
+		if providerName == "" {
+			h.log.Error("no provider found in session or query")
+			http.Redirect(w, r, "/login?error=missing_provider", http.StatusFound)
+			return
+		}
 	}
 
 	provider, err := h.oauthProviderRepo.GetByProviderType(r.Context(), oauth_provider_domain.ProviderType(providerName))
@@ -182,6 +225,7 @@ func (h *Handler) HandleOAuthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Step 1: Check if identity already exists for this provider + provider_user_id
 	existingIdentity, err := h.userRepo.GetUserIdentityByProvider(r.Context(), string(provider.ProviderType), userInfo.ID)
 	if err != nil && err != user_domain.ErrUserNotFound {
 		h.log.Error("failed to check existing identity", "error", err)
@@ -190,32 +234,36 @@ func (h *Handler) HandleOAuthCallback(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var userID int64
+
 	if existingIdentity != nil {
+		// Identity exists - just update last login and use the existing user
 		userID = existingIdentity.UserID
 		if err := h.userRepo.UpdateUserIdentityLastLogin(r.Context(), userID, string(provider.ProviderType)); err != nil {
 			h.log.Error("failed to update last login", "error", err)
 		}
+		h.log.Info("user logged in via existing identity",
+			"userID", userID,
+			"provider", provider.ProviderType,
+			"email", userInfo.Email,
+		)
 	} else {
-		user, err := h.userRepo.Create(r.Context(), &user_domain.CreateUserInput{
-			Email:     userInfo.Email,
-			FirstName: userInfo.FirstName,
-			LastName:  userInfo.LastName,
-		})
-		if err != nil {
-			h.log.Error("failed to create user", "error", err)
+		// No identity for this provider - check if user exists by email (identity linking)
+		existingUserID, err := h.userRepo.GetInternalIDByEmail(r.Context(), userInfo.Email)
+		if err != nil && err != user_domain.ErrUserNotFound {
+			h.log.Error("failed to check existing user by email", "error", err)
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 
-		userID = user.ID
-
-		// Extract OAuth client info from the original authorization URL for historical tracking
+		// Extract OAuth client info for historical tracking
 		var oauthClientIDStr *string
 		var originClientName *string
+		var clientID string
 		if sessionData.OriginalURL != "" {
 			if params, err := parseAuthorizationParamsFromURL(sessionData.OriginalURL); err == nil && params.ClientID != uuid.Nil {
 				clientIDStr := params.ClientID.String()
 				oauthClientIDStr = &clientIDStr
+				clientID = clientIDStr
 
 				// Look up client to get name for historical snapshot
 				if client, err := h.svc.GetOAuthClient(r.Context(), clientIDStr); err == nil {
@@ -224,23 +272,97 @@ func (h *Handler) HandleOAuthCallback(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 
-		if err := h.userRepo.CreateUserIdentity(r.Context(), &user_domain.CreateUserIdentityInput{
-			UserID:                userID,
-			Provider:              string(provider.ProviderType),
-			ProviderUserID:        userInfo.ID,
-			Email:                 userInfo.Email,
-			FirstName:             userInfo.FirstName,
-			LastName:              userInfo.LastName,
-			OAuthClientID:         oauthClientIDStr,
-			OriginOAuthClientName: originClientName,
-		}); err != nil {
-			h.log.Error("failed to create user identity", "error", err)
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
+		if existingUserID > 0 {
+			// Step 2: User exists with same email - link new identity to existing user
+			userID = existingUserID
 
-		if err := h.userRepo.AddProjectMember(r.Context(), 1, userID, "user"); err != nil {
-			h.log.Error("failed to add project member", "error", err)
+			// Create new identity linked to existing user
+			if err := h.userRepo.CreateUserIdentity(r.Context(), &user_domain.CreateUserIdentityInput{
+				UserID:                userID,
+				Provider:              string(provider.ProviderType),
+				ProviderUserID:        userInfo.ID,
+				Email:                 userInfo.Email,
+				FirstName:             userInfo.FirstName,
+				LastName:              userInfo.LastName,
+				OAuthClientID:         oauthClientIDStr,
+				OriginOAuthClientName: originClientName,
+			}); err != nil {
+				h.log.Error("failed to create linked user identity", "error", err)
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				return
+			}
+
+			h.log.Info("linked new OAuth provider to existing user",
+				"userID", userID,
+				"provider", provider.ProviderType,
+				"email", userInfo.Email,
+			)
+		} else {
+			// Step 3: No user exists - create new user and identity
+			regCtx := DetermineRegistrationContext(clientID, h.cfg.GetDefaultOAuthClientID())
+			projectRole := GetProjectRoleForContext(regCtx)
+			autoActivate := h.cfg.IsAutoActivate()
+
+			user, err := h.userRepo.Create(r.Context(), &user_domain.CreateUserInput{
+				Email:     userInfo.Email,
+				FirstName: userInfo.FirstName,
+				LastName:  userInfo.LastName,
+				IsActive:  &autoActivate,
+			})
+			if err != nil {
+				h.log.Error("failed to create user", "error", err)
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				return
+			}
+
+			userID = user.ID
+
+			if err := h.userRepo.CreateUserIdentity(r.Context(), &user_domain.CreateUserIdentityInput{
+				UserID:                userID,
+				Provider:              string(provider.ProviderType),
+				ProviderUserID:        userInfo.ID,
+				Email:                 userInfo.Email,
+				FirstName:             userInfo.FirstName,
+				LastName:              userInfo.LastName,
+				OAuthClientID:         oauthClientIDStr,
+				OriginOAuthClientName: originClientName,
+			}); err != nil {
+				h.log.Error("failed to create user identity", "error", err)
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				return
+			}
+
+			// Assign user to default project with context-appropriate role
+			if err := h.userRepo.AddProjectMember(r.Context(), 1, userID, projectRole); err != nil {
+				h.log.Error("failed to add project member", "error", err, "role", projectRole)
+			}
+
+			// Assign global 'user' role to new user
+			if h.roleRepo != nil && h.iamMapperRepo != nil {
+				userRoleID, err := h.roleRepo.GetInternalIDByName(r.Context(), "user")
+				if err != nil {
+					h.log.Warn("failed to get 'user' role for assignment", "error", err)
+				} else {
+					if err := h.iamMapperRepo.AssignUserRoles(r.Context(), userID, []int64{userRoleID}); err != nil {
+						h.log.Warn("failed to assign global 'user' role", "error", err, "userID", userID)
+					}
+				}
+			}
+
+			// Send verification email if user is auto-activated
+			if autoActivate && h.verificationService != nil {
+				if err := h.verificationService.GenerateAndSendVerificationEmail(r.Context(), userID); err != nil {
+					h.log.Warn("failed to send verification email", "error", err, "userID", userID)
+				}
+			}
+
+			h.log.Info("created new user via OAuth",
+				"userID", userID,
+				"email", userInfo.Email,
+				"regContext", regCtx,
+				"projectRole", projectRole,
+				"autoActivated", autoActivate,
+			)
 		}
 	}
 
@@ -252,9 +374,23 @@ func (h *Handler) HandleOAuthCallback(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	redirectURL := sessionData.OriginalURL
-	if redirectURL == "" {
-		redirectURL = "/oauth/authorize"
+	// Check user activation status for standalone login redirect
+	var redirectURL string
+	if sessionData.OriginalURL != "" {
+		// OAuth client flow - redirect to original URL
+		redirectURL = sessionData.OriginalURL
+	} else {
+		// Standalone IDP login - check user status
+		user, err := h.userRepo.GetByInternalID(r.Context(), userID)
+		if err != nil {
+			h.log.Error("failed to get user for redirect", "error", err)
+			redirectURL = "/profile"
+		} else if !user.IsActive {
+			// Inactive users go to pending activation
+			redirectURL = "/pending-activation"
+		} else {
+			redirectURL = "/profile"
+		}
 	}
 	http.Redirect(w, r, redirectURL, http.StatusFound)
 }
@@ -529,9 +665,10 @@ func (h *Handler) handleAuthorizationCodeGrant(w http.ResponseWriter, r *http.Re
 	}
 
 	scopeClaims, err := h.svc.BuildUserInfoClaims(r.Context(), result.Scope, &ScopeUser{
-		Email:     user.Email,
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
+		Email:         user.Email,
+		FirstName:     user.FirstName,
+		LastName:      user.LastName,
+		EmailVerified: user.EmailVerified,
 	})
 	if err != nil {
 		h.log.Error("failed to build scope claims", "error", err)
@@ -543,12 +680,13 @@ func (h *Handler) handleAuthorizationCodeGrant(w http.ResponseWriter, r *http.Re
 	name, _ := scopeClaims["name"].(string)
 
 	tokenPair, err := h.svc.GenerateTokenPair(r.Context(), &GenerateTokenPairParams{
-		UserID:       result.UserID,
-		UserPublicID: user.ID,
-		ClientID:     client.ClientID,
-		Scope:        result.Scope,
-		Email:        email,
-		Name:         name,
+		UserID:        result.UserID,
+		UserPublicID:  user.ID,
+		ClientID:      client.ClientID,
+		Scope:         result.Scope,
+		Email:         email,
+		Name:          name,
+		EmailVerified: user.EmailVerified,
 	})
 	if err != nil {
 		h.log.Error("failed to generate tokens", "error", err)
@@ -592,9 +730,10 @@ func (h *Handler) handleRefreshTokenGrant(w http.ResponseWriter, r *http.Request
 	}
 
 	scopeUser := &ScopeUser{
-		Email:     user.Email,
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
+		Email:         user.Email,
+		FirstName:     user.FirstName,
+		LastName:      user.LastName,
+		EmailVerified: user.EmailVerified,
 	}
 	scopeClaims, err := h.svc.BuildUserInfoClaims(r.Context(), result.Scope, scopeUser)
 	if err != nil {
@@ -607,12 +746,13 @@ func (h *Handler) handleRefreshTokenGrant(w http.ResponseWriter, r *http.Request
 	name, _ := scopeClaims["name"].(string)
 
 	tokenPair, err := h.svc.GenerateTokenPair(r.Context(), &GenerateTokenPairParams{
-		UserID:       result.UserID,
-		UserPublicID: user.ID,
-		ClientID:     client.ClientID,
-		Scope:        result.Scope,
-		Email:        email,
-		Name:         name,
+		UserID:        result.UserID,
+		UserPublicID:  user.ID,
+		ClientID:      client.ClientID,
+		Scope:         result.Scope,
+		Email:         email,
+		Name:          name,
+		EmailVerified: user.EmailVerified,
 	})
 	if err != nil {
 		h.log.Error("failed to generate tokens", "error", err)
@@ -678,9 +818,10 @@ func (h *Handler) HandleUserInfo(w http.ResponseWriter, r *http.Request) {
 
 	// Use scope handler registry to build claims based on requested scopes
 	scopeUser := &ScopeUser{
-		Email:     user.Email,
-		FirstName: user.FirstName,
-		LastName:  user.LastName,
+		Email:         user.Email,
+		FirstName:     user.FirstName,
+		LastName:      user.LastName,
+		EmailVerified: user.EmailVerified,
 	}
 	scopeClaims, err := h.svc.BuildUserInfoClaims(r.Context(), scope, scopeUser)
 	if err != nil {
@@ -1132,6 +1273,12 @@ func (h *Handler) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Redirect inactive users to pending activation page
+	if !user.IsActive {
+		http.Redirect(w, r, "/pending-activation", http.StatusFound)
+		return
+	}
+
 	userIdentities, err := h.userRepo.GetUserIdentities(r.Context(), sessionData.UserID)
 	if err != nil {
 		h.log.Error("failed to get user identities", "error", err)
@@ -1146,13 +1293,22 @@ func (h *Handler) HandleProfile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check for verification email status from query params
+	verificationStatus := r.URL.Query().Get("verification")
+	verificationEmailSent := verificationStatus == "sent"
+	verificationEmailError := verificationStatus == "error"
+
 	data := views.ProfileData{
 		BaseData: views.BaseData{
 			Title: "Your Profile",
 		},
-		User:       user,
-		Identities: userIdentities,
-		Consents:   consents,
+		User:                       user,
+		Identities:                 userIdentities,
+		Consents:                   consents,
+		ShowEmailVerificationAlert: !user.EmailVerified,
+		UserEmail:                  user.Email,
+		VerificationEmailSent:      verificationEmailSent,
+		VerificationEmailError:     verificationEmailError,
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -1198,4 +1354,315 @@ func (h *Handler) HandleRevokeConsent(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.Redirect(w, r, "/profile", http.StatusFound)
+}
+
+// HandleRoot redirects based on authentication state.
+func (h *Handler) HandleRoot(w http.ResponseWriter, r *http.Request) {
+	if h.sessionStore.IsAuthenticated(r) {
+		http.Redirect(w, r, "/profile", http.StatusFound)
+		return
+	}
+	http.Redirect(w, r, "/login", http.StatusFound)
+}
+
+// HandleEmailLoginPage shows the email input form for OTP login.
+func (h *Handler) HandleEmailLoginPage(w http.ResponseWriter, r *http.Request) {
+	// Redirect logged-in users based on their status
+	if h.sessionStore.IsAuthenticated(r) {
+		sessionData, _ := h.sessionStore.GetData(r)
+		if sessionData != nil && sessionData.UserID != 0 {
+			user, err := h.userRepo.GetByInternalID(r.Context(), sessionData.UserID)
+			if err == nil {
+				if !user.IsActive {
+					http.Redirect(w, r, "/pending-activation", http.StatusFound)
+					return
+				}
+				http.Redirect(w, r, "/profile", http.StatusFound)
+				return
+			}
+		}
+	}
+
+	errorMsg := r.URL.Query().Get("error")
+
+	data := views.EmailLoginPageData{
+		BaseData: views.BaseData{
+			Title: "Login with Email",
+		},
+		Error: errorMsg,
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := views.Render(w, "email_input.html", data); err != nil {
+		h.log.Error("failed to render email login page", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
+}
+
+// HandleEmailLoginSubmit processes email submission and sends OTP.
+func (h *Handler) HandleEmailLoginSubmit(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Redirect(w, r, "/login/email?error=invalid_request", http.StatusFound)
+		return
+	}
+
+	email := strings.ToLower(strings.TrimSpace(r.FormValue("email")))
+	if email == "" {
+		http.Redirect(w, r, "/login/email?error=email_required", http.StatusFound)
+		return
+	}
+
+	// Check if OTP service is available
+	if h.otpService == nil {
+		h.log.Error("OTP service not configured")
+		http.Redirect(w, r, "/login/email?error=server_error", http.StatusFound)
+		return
+	}
+
+	// Generate and send OTP
+	err := h.otpService.GenerateAndSendOTP(r.Context(), email)
+	if err != nil {
+		switch {
+		case errors.Is(err, ErrEmailNotRegistered):
+			http.Redirect(w, r, "/login/email?error=email_not_registered", http.StatusFound)
+		case errors.Is(err, ErrOTPRateLimited):
+			http.Redirect(w, r, "/login/email?error=rate_limited", http.StatusFound)
+		default:
+			h.log.Error("failed to send OTP", "error", err)
+			http.Redirect(w, r, "/login/email?error=server_error", http.StatusFound)
+		}
+		return
+	}
+
+	// Store email in session for OTP verification
+	sessionData, err := h.sessionStore.GetData(r)
+	if err != nil || sessionData == nil {
+		sessionData = &session.Data{}
+	}
+	sessionData.PendingOTPEmail = email
+	if err := h.sessionStore.SetData(r, w, sessionData); err != nil {
+		h.log.Error("failed to save session", "error", err)
+		http.Redirect(w, r, "/login/email?error=server_error", http.StatusFound)
+		return
+	}
+
+	http.Redirect(w, r, "/login/otp", http.StatusFound)
+}
+
+// HandleOTPPage shows the OTP input form.
+func (h *Handler) HandleOTPPage(w http.ResponseWriter, r *http.Request) {
+	sessionData, err := h.sessionStore.GetData(r)
+	if err != nil || sessionData == nil || sessionData.PendingOTPEmail == "" {
+		http.Redirect(w, r, "/login/email", http.StatusFound)
+		return
+	}
+
+	// Mask email for display (j***n@example.com)
+	maskedEmail := maskEmail(sessionData.PendingOTPEmail)
+	errorMsg := r.URL.Query().Get("error")
+
+	data := views.OTPPageData{
+		BaseData: views.BaseData{
+			Title: "Enter Code",
+		},
+		Email:      maskedEmail,
+		Error:      errorMsg,
+		ExpiryMins: 5,
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := views.Render(w, "otp_input.html", data); err != nil {
+		h.log.Error("failed to render OTP page", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
+}
+
+// HandleOTPVerify validates the OTP and creates a session.
+func (h *Handler) HandleOTPVerify(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Redirect(w, r, "/login/otp?error=invalid_request", http.StatusFound)
+		return
+	}
+
+	sessionData, err := h.sessionStore.GetData(r)
+	if err != nil || sessionData == nil || sessionData.PendingOTPEmail == "" {
+		http.Redirect(w, r, "/login/email", http.StatusFound)
+		return
+	}
+
+	email := sessionData.PendingOTPEmail
+	otp := r.FormValue("otp")
+
+	if otp == "" {
+		http.Redirect(w, r, "/login/otp?error=invalid_otp", http.StatusFound)
+		return
+	}
+
+	// Check if OTP service is available
+	if h.otpService == nil {
+		h.log.Error("OTP service not configured")
+		http.Redirect(w, r, "/login/otp?error=invalid_request", http.StatusFound)
+		return
+	}
+
+	// Validate OTP
+	user, err := h.otpService.ValidateOTP(r.Context(), email, otp)
+	if err != nil {
+		h.log.Debug("invalid OTP attempt", "email", email, "error", err)
+		http.Redirect(w, r, "/login/otp?error=invalid_otp", http.StatusFound)
+		return
+	}
+
+	// Create session first (so pending-activation page can access user info)
+	sessionData.UserID = user.ID
+	sessionData.AuthenticatedAt = time.Now()
+	sessionData.PendingOTPEmail = "" // Clear pending email
+	if err := h.sessionStore.SetData(r, w, sessionData); err != nil {
+		h.log.Error("failed to save session", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Check if user is active - redirect inactive users to pending activation
+	if !user.IsActive {
+		http.Redirect(w, r, "/pending-activation", http.StatusFound)
+		return
+	}
+
+	// Redirect to original URL or profile
+	redirectURL := sessionData.OriginalURL
+	if redirectURL == "" {
+		redirectURL = "/profile"
+	}
+	sessionData.OriginalURL = ""
+	h.sessionStore.SetData(r, w, sessionData)
+
+	http.Redirect(w, r, redirectURL, http.StatusFound)
+}
+
+// HandleVerifyEmail handles email verification link clicks.
+func (h *Handler) HandleVerifyEmail(w http.ResponseWriter, r *http.Request) {
+	token := r.URL.Query().Get("token")
+
+	data := views.VerifyEmailResultData{
+		BaseData: views.BaseData{
+			Title: "Email Verification",
+		},
+	}
+
+	if token == "" {
+		data.Success = false
+		data.Error = "missing_token"
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		if err := views.Render(w, "verify_email_result.html", data); err != nil {
+			h.log.Error("failed to render verify email result page", "error", err)
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+		}
+		return
+	}
+
+	// Check if verification service is available
+	if h.verificationService == nil {
+		h.log.Error("verification service not configured")
+		data.Success = false
+		data.Error = "invalid_token"
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		views.Render(w, "verify_email_result.html", data)
+		return
+	}
+
+	err := h.verificationService.VerifyEmail(r.Context(), token)
+	if err != nil {
+		h.log.Debug("email verification failed", "error", err)
+		data.Success = false
+		if errors.Is(err, ErrInvalidVerificationToken) {
+			data.Error = "expired_or_used"
+		} else {
+			data.Error = "invalid_token"
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		views.Render(w, "verify_email_result.html", data)
+		return
+	}
+
+	data.Success = true
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := views.Render(w, "verify_email_result.html", data); err != nil {
+		h.log.Error("failed to render verify email result page", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
+}
+
+// HandleResendVerification resends verification email for authenticated user.
+func (h *Handler) HandleResendVerification(w http.ResponseWriter, r *http.Request) {
+	sessionData, err := h.sessionStore.GetData(r)
+	if err != nil || sessionData == nil || sessionData.UserID == 0 {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	// Check if verification service is available
+	if h.verificationService == nil {
+		h.log.Error("verification service not configured")
+		http.Redirect(w, r, "/profile?verification=error", http.StatusFound)
+		return
+	}
+
+	err = h.verificationService.ResendVerificationEmail(r.Context(), sessionData.UserID)
+	if err != nil {
+		h.log.Error("failed to resend verification email", "error", err, "userID", sessionData.UserID)
+		http.Redirect(w, r, "/profile?verification=error", http.StatusFound)
+		return
+	}
+
+	http.Redirect(w, r, "/profile?verification=sent", http.StatusFound)
+}
+
+// HandlePendingActivation shows the pending activation page.
+func (h *Handler) HandlePendingActivation(w http.ResponseWriter, r *http.Request) {
+	// Require authentication
+	sessionData, err := h.sessionStore.GetData(r)
+	if err != nil || sessionData.UserID == 0 {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	user, err := h.userRepo.GetByInternalID(r.Context(), sessionData.UserID)
+	if err != nil {
+		h.log.Error("failed to get user", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect active users to profile
+	if user.IsActive {
+		http.Redirect(w, r, "/profile", http.StatusFound)
+		return
+	}
+
+	data := views.PendingActivationData{
+		BaseData: views.BaseData{
+			Title: "Account Pending",
+		},
+		UserEmail: user.Email,
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := views.Render(w, "pending_activation.html", data); err != nil {
+		h.log.Error("failed to render pending activation page", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
+}
+
+// maskEmail masks an email for display (e.g., j***n@example.com).
+func maskEmail(email string) string {
+	parts := strings.Split(email, "@")
+	if len(parts) != 2 {
+		return email
+	}
+	local := parts[0]
+	if len(local) <= 2 {
+		return local[0:1] + "***@" + parts[1]
+	}
+	return local[0:1] + "***" + local[len(local)-1:] + "@" + parts[1]
 }

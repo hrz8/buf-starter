@@ -15,6 +15,7 @@ message User {
   string first_name = 3;                            // Optional
   string last_name = 4;                             // Optional
   bool is_active = 5;                               // User activation status
+  bool email_verified = 6;                          // Email verification status
   google.protobuf.Timestamp created_at = 98;
   google.protobuf.Timestamp updated_at = 99;
 }

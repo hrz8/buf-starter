@@ -45,7 +45,38 @@ type ErrorPageData struct {
 
 type ProfileData struct {
 	BaseData
-	User       any
-	Identities any
-	Consents   any
+	User                       any
+	Identities                 any
+	Consents                   any
+	ShowEmailVerificationAlert bool   // Show alert if email not verified
+	UserEmail                  string // For resend verification link
+	VerificationEmailSent      bool   // Show success message after resending
+	VerificationEmailError     bool   // Show error message if resend failed
+}
+
+// EmailLoginPageData is the data structure for the email login page.
+type EmailLoginPageData struct {
+	BaseData
+	Error string
+}
+
+// OTPPageData is the data structure for the OTP verification page.
+type OTPPageData struct {
+	BaseData
+	Email      string // Masked email (e.g., j***n@example.com)
+	Error      string
+	ExpiryMins int
+}
+
+// VerifyEmailResultData is the data structure for the email verification result page.
+type VerifyEmailResultData struct {
+	BaseData
+	Success bool
+	Error   string
+}
+
+// PendingActivationData is the data structure for the pending activation page.
+type PendingActivationData struct {
+	BaseData
+	UserEmail string // Email of the user awaiting activation
 }

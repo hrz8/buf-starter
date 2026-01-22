@@ -4,9 +4,11 @@ import (
 	"github.com/hrz8/altalune"
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
+	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
 	migration_domain "github.com/hrz8/altalune/internal/domain/migration"
 	oauth_auth_domain "github.com/hrz8/altalune/internal/domain/oauth_auth"
 	oauth_provider_domain "github.com/hrz8/altalune/internal/domain/oauth_provider"
+	role_domain "github.com/hrz8/altalune/internal/domain/role"
 	user_domain "github.com/hrz8/altalune/internal/domain/user"
 	"github.com/hrz8/altalune/internal/postgres"
 	"github.com/hrz8/altalune/internal/session"
@@ -126,4 +128,24 @@ func (c *Container) GetOAuthProviderRepo() oauth_provider_domain.Repository {
 // GetUserRepo returns the user repository.
 func (c *Container) GetUserRepo() user_domain.Repository {
 	return c.userRepo
+}
+
+// GetOTPService returns the OTP service, or nil if not configured.
+func (c *Container) GetOTPService() *oauth_auth_domain.OTPService {
+	return c.otpService
+}
+
+// GetEmailVerificationService returns the email verification service, or nil if not configured.
+func (c *Container) GetEmailVerificationService() *oauth_auth_domain.EmailVerificationService {
+	return c.emailVerificationService
+}
+
+// GetRoleRepo returns the role repository.
+func (c *Container) GetRoleRepo() role_domain.Repository {
+	return c.roleRepo
+}
+
+// GetIAMMapperRepo returns the IAM mapper repository.
+func (c *Container) GetIAMMapperRepo() iam_mapper_domain.Repository {
+	return c.iamMapperRepo
 }

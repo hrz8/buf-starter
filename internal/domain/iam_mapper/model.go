@@ -129,3 +129,29 @@ func (r *PermissionQueryResult) ToPermission() *permission.Permission {
 		UpdatedAt:   r.UpdatedAt,
 	}
 }
+
+// UserProjectMembership contains project details and user's role in it
+type UserProjectMembership struct {
+	ProjectID   string
+	ProjectName string
+	Role        string
+	JoinedAt    time.Time
+}
+
+// UserProjectQueryResult represents the query result for user projects from database
+type UserProjectQueryResult struct {
+	ProjectPublicID string    `db:"project_public_id"`
+	ProjectName     string    `db:"project_name"`
+	Role            string    `db:"role"`
+	JoinedAt        time.Time `db:"joined_at"`
+}
+
+// ToUserProjectMembership converts query result to domain model
+func (r *UserProjectQueryResult) ToUserProjectMembership() *UserProjectMembership {
+	return &UserProjectMembership{
+		ProjectID:   r.ProjectPublicID,
+		ProjectName: r.ProjectName,
+		Role:        r.Role,
+		JoinedAt:    r.JoinedAt,
+	}
+}

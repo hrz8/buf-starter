@@ -448,7 +448,9 @@
         "createdAt": "Dibuat Pada",
         "email": "Email",
         "firstName": "Nama Depan",
-        "lastName": "Nama Belakang"
+        "lastName": "Nama Belakang",
+        "isActive": "Status",
+        "emailVerified": "Email Terverifikasi"
       },
       "dialog": {
         "deleteDescription": "Apakah Anda yakin ingin menghapus {name}? Tindakan ini tidak dapat dibatalkan.",

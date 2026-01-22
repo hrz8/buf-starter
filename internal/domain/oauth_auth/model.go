@@ -124,3 +124,34 @@ type OAuthClientInfo struct {
 	SecretHash   *string // Nullable for public clients
 	Confidential bool
 }
+
+// OTPToken represents a one-time password token for authentication.
+type OTPToken struct {
+	ID        int64
+	Email     string
+	OTPHash   string
+	ExpiresAt time.Time
+	UsedAt    *time.Time
+	CreatedAt time.Time
+}
+
+// EmailVerificationToken represents a token for verifying user email addresses.
+type EmailVerificationToken struct {
+	ID        int64
+	UserID    int64
+	TokenHash string
+	ExpiresAt time.Time
+	UsedAt    *time.Time
+	CreatedAt time.Time
+}
+
+// UserInfo holds minimal user information for OTP/verification services.
+type UserInfo struct {
+	ID            int64
+	PublicID      string
+	Email         string
+	FirstName     string
+	LastName      string
+	IsActive      bool
+	EmailVerified bool
+}

@@ -13,9 +13,47 @@ import (
 	"github.com/hrz8/altalune/internal/shared/pkce"
 )
 
+// RegistrationContext represents how a user registered
+type RegistrationContext string
+
+const (
+	// RegistrationContextStandalone - user registered via standalone IDP (no client_id)
+	RegistrationContextStandalone RegistrationContext = "standalone"
+	// RegistrationContextDashboard - user registered via dashboard OAuth client
+	RegistrationContextDashboard RegistrationContext = "dashboard"
+	// RegistrationContextCustom - user registered via a custom OAuth client
+	RegistrationContextCustom RegistrationContext = "custom"
+	// RegistrationContextAdmin - user created by admin through dashboard
+	RegistrationContextAdmin RegistrationContext = "admin"
+)
+
+// DetermineRegistrationContext determines how a user is registering based on OAuth flow context
+func DetermineRegistrationContext(clientID string, dashboardClientID string) RegistrationContext {
+	if clientID == "" {
+		return RegistrationContextStandalone
+	}
+	if clientID == dashboardClientID {
+		return RegistrationContextDashboard
+	}
+	return RegistrationContextCustom
+}
+
+// GetProjectRoleForContext returns the appropriate project role based on registration context
+// - Dashboard/Admin registrations get "member" role (dashboard access)
+// - Standalone/Custom registrations get "user" role (basic access)
+func GetProjectRoleForContext(ctx RegistrationContext) string {
+	switch ctx {
+	case RegistrationContextDashboard, RegistrationContextAdmin:
+		return "member"
+	default:
+		return "user"
+	}
+}
+
 // Service handles OAuth authorization code and token operations.
 type Service struct {
 	repo                 Repositor
+	userLookup           UserLookupRepositor
 	jwtSigner            *jwt.Signer
 	cfg                  altalune.Config
 	log                  altalune.Logger
@@ -27,6 +65,7 @@ type Service struct {
 func NewService(
 	log altalune.Logger,
 	repo Repositor,
+	userLookup UserLookupRepositor,
 	jwtSigner *jwt.Signer,
 	cfg altalune.Config,
 	permissionFetcher UserPermissionProvider,
@@ -34,6 +73,7 @@ func NewService(
 ) *Service {
 	return &Service{
 		repo:                 repo,
+		userLookup:           userLookup,
 		jwtSigner:            jwtSigner,
 		cfg:                  cfg,
 		log:                  log,
@@ -120,12 +160,13 @@ func (s *Service) ValidateAndExchangeCode(ctx context.Context, codeStr string, c
 
 // GenerateTokenPairParams holds parameters for token pair generation.
 type GenerateTokenPairParams struct {
-	UserID       int64     // Internal user ID (for DB operations and permission fetching)
-	UserPublicID string    // Public user ID (nanoid) for JWT subject
-	ClientID     uuid.UUID // OAuth client ID
-	Scope        string    // Space-separated OAuth scopes
-	Email        string    // User email
-	Name         string    // User full name
+	UserID        int64     // Internal user ID (for DB operations and permission fetching)
+	UserPublicID  string    // Public user ID (nanoid) for JWT subject
+	ClientID      uuid.UUID // OAuth client ID
+	Scope         string    // Space-separated OAuth scopes
+	Email         string    // User email
+	Name          string    // User full name
+	EmailVerified bool      // Whether user's email is verified
 }
 
 // GenerateTokenPair creates an access token and refresh token pair.
@@ -148,13 +189,14 @@ func (s *Service) GenerateTokenPair(ctx context.Context, params *GenerateTokenPa
 	}
 
 	accessToken, err := s.jwtSigner.GenerateAccessToken(jwt.GenerateTokenParams{
-		UserPublicID: params.UserPublicID,
-		ClientID:     params.ClientID.String(),
-		Scope:        params.Scope,
-		Email:        params.Email,
-		Name:         params.Name,
-		Perms:        perms,
-		Expiry:       accessTokenExpiry,
+		UserPublicID:  params.UserPublicID,
+		ClientID:      params.ClientID.String(),
+		Scope:         params.Scope,
+		Email:         params.Email,
+		Name:          params.Name,
+		Perms:         perms,
+		EmailVerified: params.EmailVerified,
+		Expiry:        accessTokenExpiry,
 	})
 	if err != nil {
 		s.log.Error("failed to generate access token",
@@ -397,16 +439,32 @@ func (s *Service) IntrospectToken(ctx context.Context, token string, clientID uu
 			return map[string]interface{}{"active": false}, nil
 		}
 
+		// Check user's is_active status from database
+		isActive := true
+		if s.userLookup != nil {
+			user, err := s.userLookup.GetUserByPublicID(ctx, claims.Subject)
+			if err != nil {
+				// User not found or error - treat as inactive
+				return map[string]interface{}{"active": false}, nil
+			}
+			isActive = user.IsActive
+		}
+
+		if !isActive {
+			return map[string]interface{}{"active": false}, nil
+		}
+
 		result := map[string]interface{}{
-			"active":     true,
-			"scope":      claims.Scope,
-			"client_id":  aud,
-			"username":   claims.Subject,
-			"token_type": "Bearer",
-			"exp":        claims.ExpiresAt.Unix(),
-			"iat":        claims.IssuedAt.Unix(),
-			"sub":        claims.Subject,
-			"iss":        claims.Issuer,
+			"active":         true,
+			"scope":          claims.Scope,
+			"client_id":      aud,
+			"username":       claims.Subject,
+			"token_type":     "Bearer",
+			"exp":            claims.ExpiresAt.Unix(),
+			"iat":            claims.IssuedAt.Unix(),
+			"sub":            claims.Subject,
+			"iss":            claims.Issuer,
+			"email_verified": claims.EmailVerified,
 		}
 
 		if claims.ID != "" {
@@ -442,6 +500,14 @@ func (s *Service) IntrospectToken(ctx context.Context, token string, clientID uu
 
 	if refreshToken.ExchangeAt != nil {
 		return map[string]interface{}{"active": false}, nil
+	}
+
+	// Check user's is_active status from database for refresh token
+	if s.userLookup != nil {
+		user, err := s.userLookup.GetUserByID(ctx, refreshToken.UserID)
+		if err != nil || !user.IsActive {
+			return map[string]interface{}{"active": false}, nil
+		}
 	}
 
 	return map[string]interface{}{

@@ -448,7 +448,9 @@
         "createdAt": "Created At",
         "email": "Email",
         "firstName": "First Name",
-        "lastName": "Last Name"
+        "lastName": "Last Name",
+        "isActive": "Status",
+        "emailVerified": "Email Verified"
       },
       "dialog": {
         "deleteDescription": "Are you sure you want to delete {name}? This action cannot be undone.",
@@ -494,6 +496,7 @@
         "identities": "Identities",
         "permissions": "Permissions",
         "profile": "Profile",
+        "projects": "Projects",
         "roles": "Roles"
       },
       "identities": {
@@ -502,6 +505,10 @@
         "neverLoggedIn": "Never logged in"
       },
       "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "verified": "Verified",
+        "unverified": "Unverified",
         "unknown": "Unknown"
       }
     },

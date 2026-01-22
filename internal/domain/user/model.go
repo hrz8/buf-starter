@@ -9,48 +9,52 @@ import (
 
 // User represents a system user with OAuth-only authentication
 type User struct {
-	ID        string // Public nanoid
-	Email     string // Unique, lowercase
-	FirstName string // Optional
-	LastName  string // Optional
-	IsActive  bool   // User activation status
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID            string // Public nanoid
+	Email         string // Unique, lowercase
+	FirstName     string // Optional
+	LastName      string // Optional
+	IsActive      bool   // User activation status
+	EmailVerified bool   // Email verification status
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (m *User) ToUserProto() *altalunev1.User {
 	return &altalunev1.User{
-		Id:        m.ID,
-		Email:     m.Email,
-		FirstName: m.FirstName,
-		LastName:  m.LastName,
-		IsActive:  m.IsActive,
-		CreatedAt: timestamppb.New(m.CreatedAt),
-		UpdatedAt: timestamppb.New(m.UpdatedAt),
+		Id:            m.ID,
+		Email:         m.Email,
+		FirstName:     m.FirstName,
+		LastName:      m.LastName,
+		IsActive:      m.IsActive,
+		EmailVerified: m.EmailVerified,
+		CreatedAt:     timestamppb.New(m.CreatedAt),
+		UpdatedAt:     timestamppb.New(m.UpdatedAt),
 	}
 }
 
 // UserQueryResult represents a single user query result
 type UserQueryResult struct {
-	ID        int64  // Internal ID
-	PublicID  string // Public nanoid
-	Email     string
-	FirstName string
-	LastName  string
-	IsActive  bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID            int64  // Internal ID
+	PublicID      string // Public nanoid
+	Email         string
+	FirstName     string
+	LastName      string
+	IsActive      bool
+	EmailVerified bool
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (r *UserQueryResult) ToUser() *User {
 	return &User{
-		ID:        r.PublicID,
-		Email:     r.Email,
-		FirstName: r.FirstName,
-		LastName:  r.LastName,
-		IsActive:  r.IsActive,
-		CreatedAt: r.CreatedAt,
-		UpdatedAt: r.UpdatedAt,
+		ID:            r.PublicID,
+		Email:         r.Email,
+		FirstName:     r.FirstName,
+		LastName:      r.LastName,
+		IsActive:      r.IsActive,
+		EmailVerified: r.EmailVerified,
+		CreatedAt:     r.CreatedAt,
+		UpdatedAt:     r.UpdatedAt,
 	}
 }
 
@@ -59,29 +63,32 @@ type CreateUserInput struct {
 	Email     string
 	FirstName string
 	LastName  string
+	IsActive  *bool // If nil, defaults to true; allows explicit control for autoActivate feature
 }
 
 // CreateUserResult represents the result of creating a user
 type CreateUserResult struct {
-	ID        int64
-	PublicID  string
-	Email     string
-	FirstName string
-	LastName  string
-	IsActive  bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID            int64
+	PublicID      string
+	Email         string
+	FirstName     string
+	LastName      string
+	IsActive      bool
+	EmailVerified bool
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (r *CreateUserResult) ToUser() *User {
 	return &User{
-		ID:        r.PublicID,
-		Email:     r.Email,
-		FirstName: r.FirstName,
-		LastName:  r.LastName,
-		IsActive:  r.IsActive,
-		CreatedAt: r.CreatedAt,
-		UpdatedAt: r.UpdatedAt,
+		ID:            r.PublicID,
+		Email:         r.Email,
+		FirstName:     r.FirstName,
+		LastName:      r.LastName,
+		IsActive:      r.IsActive,
+		EmailVerified: r.EmailVerified,
+		CreatedAt:     r.CreatedAt,
+		UpdatedAt:     r.UpdatedAt,
 	}
 }
 
@@ -96,25 +103,27 @@ type UpdateUserInput struct {
 
 // UpdateUserResult represents the result of updating a user
 type UpdateUserResult struct {
-	ID        int64
-	PublicID  string
-	Email     string
-	FirstName string
-	LastName  string
-	IsActive  bool
-	CreatedAt time.Time
-	UpdatedAt time.Time
+	ID            int64
+	PublicID      string
+	Email         string
+	FirstName     string
+	LastName      string
+	IsActive      bool
+	EmailVerified bool
+	CreatedAt     time.Time
+	UpdatedAt     time.Time
 }
 
 func (r *UpdateUserResult) ToUser() *User {
 	return &User{
-		ID:        r.PublicID,
-		Email:     r.Email,
-		FirstName: r.FirstName,
-		LastName:  r.LastName,
-		IsActive:  r.IsActive,
-		CreatedAt: r.CreatedAt,
-		UpdatedAt: r.UpdatedAt,
+		ID:            r.PublicID,
+		Email:         r.Email,
+		FirstName:     r.FirstName,
+		LastName:      r.LastName,
+		IsActive:      r.IsActive,
+		EmailVerified: r.EmailVerified,
+		CreatedAt:     r.CreatedAt,
+		UpdatedAt:     r.UpdatedAt,
 	}
 }
 

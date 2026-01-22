@@ -11,18 +11,55 @@ import (
 	"google.golang.org/protobuf/types/known/timestamppb"
 )
 
-type Service struct {
-	altalunev1.UnimplementedUserServiceServer
-	validator protovalidate.Validator
-	log       altalune.Logger
-	userRepo  Repository
+// RoleLookup provides role lookup functionality for user service
+// Defined here to avoid circular dependency with role domain
+type RoleLookup interface {
+	GetInternalIDByName(ctx context.Context, name string) (int64, error)
 }
 
-func NewService(v protovalidate.Validator, log altalune.Logger, userRepo Repository) *Service {
+// UserRoleAssigner provides role assignment functionality for user service
+// Defined here to avoid circular dependency with iam_mapper domain
+type UserRoleAssigner interface {
+	AssignUserRoles(ctx context.Context, userID int64, roleIDs []int64) error
+}
+
+// EmailVerificationSender provides email verification functionality
+// Defined here to avoid circular dependency with oauth_auth domain
+type EmailVerificationSender interface {
+	GenerateAndSendVerificationEmail(ctx context.Context, userID int64) error
+}
+
+// Default project ID for new users created by admin
+const DefaultProjectID = 1
+
+// Default project role for admin-created users
+const DefaultProjectRoleMember = "member"
+
+type Service struct {
+	altalunev1.UnimplementedUserServiceServer
+	validator           protovalidate.Validator
+	log                 altalune.Logger
+	userRepo            Repository
+	roleLookup          RoleLookup
+	userRoleAssigner    UserRoleAssigner
+	verificationService EmailVerificationSender
+}
+
+func NewService(
+	v protovalidate.Validator,
+	log altalune.Logger,
+	userRepo Repository,
+	roleLookup RoleLookup,
+	userRoleAssigner UserRoleAssigner,
+	verificationService EmailVerificationSender,
+) *Service {
 	return &Service{
-		validator: v,
-		log:       log,
-		userRepo:  userRepo,
+		validator:           v,
+		log:                 log,
+		userRepo:            userRepo,
+		roleLookup:          roleLookup,
+		userRoleAssigner:    userRoleAssigner,
+		verificationService: verificationService,
 	}
 }
 
@@ -100,10 +137,13 @@ func (s *Service) CreateUser(ctx context.Context, req *altalunev1.CreateUserRequ
 		return nil, altalune.NewUserAlreadyExistsError(email)
 	}
 
+	// Admin-created users are always active (bypass autoActivate config)
+	isActive := true
 	result, err := s.userRepo.Create(ctx, &CreateUserInput{
 		Email:     email,
 		FirstName: strings.TrimSpace(req.FirstName),
 		LastName:  strings.TrimSpace(req.LastName),
+		IsActive:  &isActive,
 	})
 	if err != nil {
 		if err == ErrUserAlreadyExists {
@@ -114,6 +154,36 @@ func (s *Service) CreateUser(ctx context.Context, req *altalunev1.CreateUserRequ
 			"email", email,
 		)
 		return nil, altalune.NewUnexpectedError("failed to create user: %w", err)
+	}
+
+	// Assign global 'user' role to new user
+	if s.roleLookup != nil && s.userRoleAssigner != nil {
+		userRoleID, err := s.roleLookup.GetInternalIDByName(ctx, "user")
+		if err != nil {
+			s.log.Warn("failed to get 'user' role for assignment", "error", err, "email", email)
+		} else {
+			if err := s.userRoleAssigner.AssignUserRoles(ctx, result.ID, []int64{userRoleID}); err != nil {
+				s.log.Warn("failed to assign global 'user' role", "error", err, "userID", result.ID, "email", email)
+			} else {
+				s.log.Info("assigned global 'user' role to new user", "userID", result.ID, "email", email)
+			}
+		}
+	}
+
+	// Assign user to default project with role 'member'
+	if err := s.userRepo.AddProjectMember(ctx, DefaultProjectID, result.ID, DefaultProjectRoleMember); err != nil {
+		s.log.Warn("failed to add user to default project", "error", err, "userID", result.ID, "email", email)
+	} else {
+		s.log.Info("assigned user to default project", "userID", result.ID, "projectID", DefaultProjectID, "role", DefaultProjectRoleMember)
+	}
+
+	// Send verification email for admin-created users
+	if s.verificationService != nil {
+		if err := s.verificationService.GenerateAndSendVerificationEmail(ctx, result.ID); err != nil {
+			s.log.Warn("failed to send verification email", "error", err, "userID", result.ID, "email", email)
+		} else {
+			s.log.Info("sent verification email to admin-created user", "userID", result.ID, "email", email)
+		}
 	}
 
 	return &altalunev1.CreateUserResponse{

@@ -9,9 +9,10 @@ import (
 // ScopeUser represents user data needed by scope handlers.
 // This abstraction prevents coupling to specific user domain types.
 type ScopeUser struct {
-	Email     string
-	FirstName string
-	LastName  string
+	Email         string
+	FirstName     string
+	LastName      string
+	EmailVerified bool
 }
 
 // ScopeHandler processes a specific OAuth scope and returns claims to add to JWT.
@@ -71,7 +72,7 @@ func (h *EmailScopeHandler) Handle(_ context.Context, user *ScopeUser) (map[stri
 	}
 	return map[string]any{
 		"email":          user.Email,
-		"email_verified": true,
+		"email_verified": user.EmailVerified,
 	}, nil
 }
 

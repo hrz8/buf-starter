@@ -122,6 +122,44 @@ const columns = computed(() => [
     cell: info => h('div', { class: 'text-sm' }, info.getValue()),
     enableSorting: true,
   }),
+  columnHelper.accessor('isActive', {
+    header: ({ column }) => h(DataTableColumnHeader, {
+      column,
+      title: t('features.users.columns.isActive'),
+    }),
+    cell: (info) => {
+      const isActive = info.getValue();
+      return h(
+        'span',
+        {
+          class: isActive
+            ? 'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-green-100 text-green-800'
+            : 'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800',
+        },
+        isActive ? t('features.users.status.active') : t('features.users.status.inactive'),
+      );
+    },
+    enableSorting: true,
+  }),
+  columnHelper.accessor('emailVerified', {
+    header: ({ column }) => h(DataTableColumnHeader, {
+      column,
+      title: t('features.users.columns.emailVerified'),
+    }),
+    cell: (info) => {
+      const emailVerified = info.getValue();
+      return h(
+        'span',
+        {
+          class: emailVerified
+            ? 'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-green-100 text-green-800'
+            : 'inline-flex items-center rounded-full px-2 py-1 text-xs font-medium bg-gray-100 text-gray-800',
+        },
+        emailVerified ? t('features.users.status.verified') : t('features.users.status.unverified'),
+      );
+    },
+    enableSorting: true,
+  }),
   columnHelper.accessor('createdAt', {
     header: ({ column }) => h(DataTableColumnHeader, {
       column,

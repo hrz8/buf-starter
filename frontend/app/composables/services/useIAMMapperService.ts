@@ -1,5 +1,5 @@
 import type { MessageInitShape } from '@bufbuild/protobuf';
-import type { ProjectMemberWithUser } from '~~/gen/altalune/v1/iam_mapper_pb';
+import type { ProjectMemberWithUser, UserProjectMembership } from '~~/gen/altalune/v1/iam_mapper_pb';
 import type { Permission } from '~~/gen/altalune/v1/permission_pb';
 import type { Role } from '~~/gen/altalune/v1/role_pb';
 import { iamMapperRepository } from '#shared/repository/iam_mapper';
@@ -12,6 +12,7 @@ import {
   GetProjectMembersRequestSchema,
   GetRolePermissionsRequestSchema,
   GetUserPermissionsRequestSchema,
+  GetUserProjectsRequestSchema,
   GetUserRolesRequestSchema,
   RemoveProjectMembersRequestSchema,
   RemoveRolePermissionsRequestSchema,
@@ -38,6 +39,7 @@ export function useIAMMapperService() {
   const assignProjectMembersValidator = useConnectValidator(AssignProjectMembersRequestSchema);
   const removeProjectMembersValidator = useConnectValidator(RemoveProjectMembersRequestSchema);
   const getProjectMembersValidator = useConnectValidator(GetProjectMembersRequestSchema);
+  const getUserProjectsValidator = useConnectValidator(GetUserProjectsRequestSchema);
 
   const mappingState = reactive({
     loading: false,
@@ -361,6 +363,27 @@ export function useIAMMapperService() {
     }
   }
 
+  // User Projects (reverse lookup - projects a user belongs to)
+  async function getUserProjects(
+    req: MessageInitShape<typeof GetUserProjectsRequestSchema>,
+  ): Promise<UserProjectMembership[]> {
+    getUserProjectsValidator.reset();
+
+    if (!getUserProjectsValidator.validate(req)) {
+      return [];
+    }
+
+    try {
+      const message = create(GetUserProjectsRequestSchema, req);
+      const result = await iamMapper.getUserProjects(message);
+      return result.projects;
+    }
+    catch (err) {
+      const errorMessage = parseError(err);
+      throw new Error(errorMessage);
+    }
+  }
+
   return {
     // User-Role Mappings
     assignUserRoles,
@@ -381,6 +404,9 @@ export function useIAMMapperService() {
     assignProjectMembers,
     removeProjectMembers,
     getProjectMembers,
+
+    // User Projects
+    getUserProjects,
 
     // State
     mappingLoading: computed(() => mappingState.loading),

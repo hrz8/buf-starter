@@ -50,13 +50,14 @@ func (s *Signer) GetKID() string {
 
 // GenerateTokenParams holds parameters for access token generation.
 type GenerateTokenParams struct {
-	UserPublicID string        // User's public_id (nanoid) - used as JWT subject
-	ClientID     string        // OAuth client ID (UUID string)
-	Scope        string        // Space-separated OAuth scopes
-	Email        string        // User email (if scope includes "email")
-	Name         string        // User full name (if scope includes "profile")
-	Perms        []string      // User permissions for stateless authorization
-	Expiry       time.Duration // Token validity duration
+	UserPublicID  string        // User's public_id (nanoid) - used as JWT subject
+	ClientID      string        // OAuth client ID (UUID string)
+	Scope         string        // Space-separated OAuth scopes
+	Email         string        // User email (if scope includes "email")
+	Name          string        // User full name (if scope includes "profile")
+	Perms         []string      // User permissions for stateless authorization
+	EmailVerified bool          // Whether user's email is verified
+	Expiry        time.Duration // Token validity duration
 }
 
 // GenerateAccessToken creates a signed RS256 JWT access token.
@@ -73,10 +74,11 @@ func (s *Signer) GenerateAccessToken(params GenerateTokenParams) (string, error)
 			NotBefore: jwt.NewNumericDate(now),
 			ID:        uuid.New().String(),
 		},
-		Scope: params.Scope,
-		Email: params.Email,
-		Name:  params.Name,
-		Perms: params.Perms,
+		Scope:         params.Scope,
+		Email:         params.Email,
+		Name:          params.Name,
+		Perms:         params.Perms,
+		EmailVerified: params.EmailVerified,
 	}
 
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claims)

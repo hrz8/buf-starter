@@ -11,6 +11,15 @@ export const useAuthStore = defineStore('auth', () => {
     return !!user.value && (expiresAt.value ? Date.now() < expiresAt.value : true);
   });
 
+  // Email verification status computed properties
+  const isEmailVerified = computed(() => {
+    return user.value?.email_verified ?? false;
+  });
+
+  const isEmailVerificationRequired = computed(() => {
+    return isAuthenticated.value && !isEmailVerified.value;
+  });
+
   function setUser(userData: AuthUserInfo, expiresIn: number) {
     user.value = userData;
     expiresAt.value = Date.now() + expiresIn * 1000;
@@ -47,6 +56,8 @@ export const useAuthStore = defineStore('auth', () => {
     user: readonly(user),
     expiresAt: readonly(expiresAt),
     isAuthenticated,
+    isEmailVerified,
+    isEmailVerificationRequired,
     setUser,
     clearAuth,
     setReturnUrl,

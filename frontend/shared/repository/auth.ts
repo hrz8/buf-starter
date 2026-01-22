@@ -79,5 +79,18 @@ export function authRepository(f: $Fetch) {
         throw error;
       }
     },
+
+    async resendVerification(): Promise<void> {
+      try {
+        await f('/resend-verification', {
+          method: 'POST',
+          credentials: 'include',
+        });
+      }
+      catch (error) {
+        console.error('Auth resend verification error:', error);
+        throw error;
+      }
+    },
   };
 }

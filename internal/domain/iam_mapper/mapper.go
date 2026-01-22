@@ -49,3 +49,21 @@ func ProjectMembersToProto(members []*ProjectMemberWithUser) []*altalunev1.Proje
 	}
 	return protoMembers
 }
+
+// UserProjectsToProto converts a slice of user project membership domain models to protobuf messages
+func UserProjectsToProto(projects []*UserProjectMembership) []*altalunev1.UserProjectMembership {
+	if projects == nil {
+		return []*altalunev1.UserProjectMembership{}
+	}
+
+	protoProjects := make([]*altalunev1.UserProjectMembership, len(projects))
+	for i, p := range projects {
+		protoProjects[i] = &altalunev1.UserProjectMembership{
+			ProjectId:   p.ProjectID,
+			ProjectName: p.ProjectName,
+			Role:        p.Role,
+			JoinedAt:    timestamppb.New(p.JoinedAt),
+		}
+	}
+	return protoProjects
+}
