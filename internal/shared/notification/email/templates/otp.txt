@@ -1,0 +1,15 @@
+Your login code
+
+Hi {{.UserName}},
+
+Use the following code to complete your login:
+
+{{.OTPCode}}
+
+This code will expire in {{.ExpiryMinutes}} minutes.
+
+SECURITY TIP: Never share this code with anyone. Our team will never ask for your login code.
+
+If you didn't request this code, you can safely ignore this email. Someone may have entered your email address by mistake.
+
+— The Altalune Team

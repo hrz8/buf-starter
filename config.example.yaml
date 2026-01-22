@@ -76,3 +76,15 @@ dashboardOauth:
     - "http://localhost:8180/auth/callback"
     - "https://dashboard.altalune.id/auth/callback"
   pkceRequired: true                                  # Must be true for public clients (SPA, mobile apps)
+
+# Notification service configuration
+notification:
+  email:
+    provider: "resend"                                # Email provider: resend, ses
+    resend:
+      apiKey: "YOUR_RESEND_API_KEY"                   # Resend API key (get from resend.com)
+      fromEmail: "noreply@yourdomain.com"             # Sender email address
+      fromName: "Your App Name"                       # Sender display name
+    ses:
+      region: "us-east-1"                             # AWS region for SES
+      fromEmail: "noreply@yourdomain.com"             # Sender email address

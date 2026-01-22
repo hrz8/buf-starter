@@ -171,7 +171,7 @@ message ProjectMember {
   string role = 2 [
     (buf.validate.field).required = true,
     (buf.validate.field).string = {
-      in: ["owner", "admin", "member", "viewer"]
+      in: ["owner", "admin", "member", "user"]
     }
   ];
 }

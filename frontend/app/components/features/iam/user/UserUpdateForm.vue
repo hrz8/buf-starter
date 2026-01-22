@@ -115,19 +115,19 @@ const availablePermissions = computed(() => {
 async function fetchUser() {
   try {
     resetGetState();
-    const fetchedUser = await getUser({
+    const response = await getUser({
       id: props.userId,
     });
 
-    if (fetchedUser) {
-      user.value = fetchedUser;
+    if (response?.user) {
+      user.value = response.user;
 
       // Update form values using vee-validate setValues
       form.setValues({
-        id: fetchedUser.id,
-        email: fetchedUser.email,
-        firstName: fetchedUser.firstName,
-        lastName: fetchedUser.lastName,
+        id: response.user.id,
+        email: response.user.email,
+        firstName: response.user.firstName,
+        lastName: response.user.lastName,
       });
     }
   }

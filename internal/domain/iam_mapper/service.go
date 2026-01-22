@@ -14,19 +14,19 @@ import (
 	"google.golang.org/protobuf/types/known/emptypb"
 )
 
-// Valid project roles
+// Valid project roles (per PROJECT_MEMBERSHIP_GUIDE.md)
 const (
 	ProjectRoleOwner  = "owner"
 	ProjectRoleAdmin  = "admin"
 	ProjectRoleMember = "member"
-	ProjectRoleViewer = "viewer"
+	ProjectRoleUser   = "user"
 )
 
 var validProjectRoles = map[string]bool{
 	ProjectRoleOwner:  true,
 	ProjectRoleAdmin:  true,
 	ProjectRoleMember: true,
-	ProjectRoleViewer: true,
+	ProjectRoleUser:   true,
 }
 
 type Service struct {
@@ -476,7 +476,7 @@ func (s *Service) AssignProjectMembers(ctx context.Context, req *altalunev1.Assi
 		// Validate project role
 		if !validProjectRoles[member.Role] {
 			return nil, altalune.NewInvalidPayloadError(
-				fmt.Sprintf("invalid project role: %s (must be one of: owner, admin, member, viewer)", member.Role),
+				fmt.Sprintf("invalid project role: %s (must be one of: owner, admin, member, user)", member.Role),
 			)
 		}
 

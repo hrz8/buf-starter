@@ -140,6 +140,48 @@ type DashboardOAuthConfig struct {
 	PKCERequired   bool     `yaml:"pkceRequired"`
 }
 
+// NotificationConfig contains notification service settings.
+type NotificationConfig struct {
+	Email *EmailNotificationConfig `yaml:"email" validate:"required"`
+}
+
+// EmailNotificationConfig contains email provider settings.
+type EmailNotificationConfig struct {
+	Provider string        `yaml:"provider" validate:"required,oneof=resend ses"`
+	Resend   *ResendConfig `yaml:"resend"`
+	SES      *SESConfig    `yaml:"ses"`
+}
+
+// ResendConfig contains Resend email provider settings.
+type ResendConfig struct {
+	APIKey    string `yaml:"apiKey"`
+	FromEmail string `yaml:"fromEmail" validate:"omitempty,email"`
+	FromName  string `yaml:"fromName"`
+}
+
+// SESConfig contains AWS SES email provider settings.
+type SESConfig struct {
+	Region    string `yaml:"region"`
+	FromEmail string `yaml:"fromEmail" validate:"omitempty,email"`
+}
+
+func (c *NotificationConfig) setDefaults() {
+	if c.Email == nil {
+		c.Email = &EmailNotificationConfig{
+			Provider: "resend",
+		}
+	}
+	if c.Email.Resend == nil {
+		c.Email.Resend = &ResendConfig{}
+	}
+	if c.Email.SES == nil {
+		c.Email.SES = &SESConfig{}
+	}
+	if c.Email.Resend.FromName == "" {
+		c.Email.Resend.FromName = "Altalune"
+	}
+}
+
 type AppConfig struct {
 	Server         *ServerConfig         `yaml:"server" validate:"required"`
 	Database       *DatabaseConfig       `yaml:"database" validate:"required"`
@@ -147,6 +189,7 @@ type AppConfig struct {
 	Auth           *AuthConfig           `yaml:"auth" validate:"required"`
 	Seeder         *SeederConfig         `yaml:"seeder" validate:"required"`
 	DashboardOAuth *DashboardOAuthConfig `yaml:"dashboardOauth" validate:"required"`
+	Notification   *NotificationConfig   `yaml:"notification"`
 }
 
 func (c *AppConfig) setDefaults() {
@@ -154,6 +197,10 @@ func (c *AppConfig) setDefaults() {
 	c.Database.setDefaults()
 	c.Security.setDefaults()
 	c.Auth.setDefaults()
+	if c.Notification == nil {
+		c.Notification = &NotificationConfig{}
+	}
+	c.Notification.setDefaults()
 }
 
 func (c *AppConfig) Validate() error {

@@ -50,7 +50,7 @@ INSERT INTO altalune_users (
   is_active
 ) VALUES (
   'gpwnrdd5lwmwe5',
-  'admin@altalune.local',
+  'admin@altalune.id',
   'Super',
   'Admin',
   true
@@ -69,10 +69,10 @@ INSERT INTO altalune_user_identities (
   email
 ) VALUES (
   'unxf2rnnbsqjzw',
-  (SELECT id FROM altalune_users WHERE email = 'admin@altalune.local'),
-  'google',
-  'mock-google-user-id-123456789',
-  'admin@altalune.local'
+  (SELECT id FROM altalune_users WHERE email = 'admin@altalune.id'),
+  'system',
+  'superadmin123456789',
+  'admin@altalune.id'
 );
 
 -- -----------------------------------------------------------------------------
@@ -82,7 +82,7 @@ INSERT INTO altalune_users_roles (
   user_id,
   role_id
 ) VALUES (
-  (SELECT id FROM altalune_users WHERE email = 'admin@altalune.local'),
+  (SELECT id FROM altalune_users WHERE email = 'admin@altalune.id'),
   (SELECT id FROM altalune_roles WHERE name = 'superadmin')
 );
 
@@ -104,7 +104,7 @@ INSERT INTO altalune_users_permissions (
   user_id,
   permission_id
 ) VALUES (
-  (SELECT id FROM altalune_users WHERE email = 'admin@altalune.local'),
+  (SELECT id FROM altalune_users WHERE email = 'admin@altalune.id'),
   (SELECT id FROM altalune_permissions WHERE name = 'root')
 );
 
@@ -117,7 +117,7 @@ INSERT INTO altalune_users_permissions (
 
 -- Remove direct permission assignment
 DELETE FROM altalune_users_permissions
-WHERE user_id = (SELECT id FROM altalune_users WHERE email = 'admin@altalune.local')
+WHERE user_id = (SELECT id FROM altalune_users WHERE email = 'admin@altalune.id')
   AND permission_id = (SELECT id FROM altalune_permissions WHERE name = 'root');
 
 -- Remove role-permission assignment
@@ -127,7 +127,7 @@ WHERE role_id = (SELECT id FROM altalune_roles WHERE name = 'superadmin')
 
 -- Remove user-role assignment
 DELETE FROM altalune_users_roles
-WHERE user_id = (SELECT id FROM altalune_users WHERE email = 'admin@altalune.local')
+WHERE user_id = (SELECT id FROM altalune_users WHERE email = 'admin@altalune.id')
   AND role_id = (SELECT id FROM altalune_roles WHERE name = 'superadmin');
 
 -- Delete OAuth identity

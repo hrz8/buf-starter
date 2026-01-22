@@ -956,10 +956,10 @@ const file_altalune_v1_iam_mapper_proto_rawDesc = "" +
 	"\x19GetUserPermissionsRequest\x12%\n" +
 	"\auser_id\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x14R\x06userId\"W\n" +
 	"\x1aGetUserPermissionsResponse\x129\n" +
-	"\vpermissions\x18\x01 \x03(\v2\x17.altalune.v1.PermissionR\vpermissions\"r\n" +
+	"\vpermissions\x18\x01 \x03(\v2\x17.altalune.v1.PermissionR\vpermissions\"p\n" +
 	"\rProjectMember\x12%\n" +
-	"\auser_id\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x14R\x06userId\x12:\n" +
-	"\x04role\x18\x02 \x01(\tB&\xbaH#\xc8\x01\x01r\x1eR\x05ownerR\x05adminR\x06memberR\x06viewerR\x04role\"\x8a\x01\n" +
+	"\auser_id\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x14R\x06userId\x128\n" +
+	"\x04role\x18\x02 \x01(\tB$\xbaH!\xc8\x01\x01r\x1cR\x05ownerR\x05adminR\x06memberR\x04userR\x04role\"\x8a\x01\n" +
 	"\x1bAssignProjectMembersRequest\x12+\n" +
 	"\n" +
 	"project_id\x18\x01 \x01(\tB\f\xbaH\t\xc8\x01\x01r\x04\x10\x0e\x18\x14R\tprojectId\x12>\n" +

@@ -1,0 +1,15 @@
+Verify your email address
+
+Hi {{.UserName}},
+
+Thank you for signing up! Please verify your email address to complete your registration and get full access to your account.
+
+Click the link below to verify your email:
+
+{{.VerificationLink}}
+
+This link will expire in {{.ExpiryHours}} hours.
+
+If you didn't create an account, you can safely ignore this email.
+
+— The Altalune Team

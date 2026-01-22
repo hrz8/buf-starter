@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #1f2937; margin: 0; padding: 0; }
+        .container { max-width: 600px; margin: 0 auto; padding: 40px 20px; }
+        .header { text-align: center; margin-bottom: 32px; }
+        .header h1 { color: #111827; font-size: 24px; font-weight: 600; margin: 0; }
+        .content { background: #ffffff; border-radius: 8px; padding: 32px; border: 1px solid #e5e7eb; }
+        .greeting { font-size: 16px; margin-bottom: 16px; }
+        .message { font-size: 16px; color: #4b5563; margin-bottom: 24px; }
+        .otp-container { text-align: center; margin: 32px 0; }
+        .otp-code { display: inline-block; font-size: 36px; font-weight: 700; letter-spacing: 8px; color: #2563eb; padding: 20px 32px; background: #f3f4f6; border-radius: 8px; font-family: 'Courier New', Courier, monospace; }
+        .expiry { font-size: 14px; color: #6b7280; margin-top: 24px; text-align: center; }
+        .security-note { font-size: 14px; color: #6b7280; margin-top: 16px; padding: 16px; background: #fef3c7; border-radius: 6px; border-left: 4px solid #f59e0b; }
+        .footer { margin-top: 32px; padding-top: 24px; border-top: 1px solid #e5e7eb; color: #6b7280; font-size: 14px; }
+        .footer p { margin: 8px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Your login code</h1>
+        </div>
+        <div class="content">
+            <p class="greeting">Hi {{.UserName}},</p>
+            <p class="message">Use the following code to complete your login:</p>
+            <div class="otp-container">
+                <div class="otp-code">{{.OTPCode}}</div>
+            </div>
+            <p class="expiry">This code will expire in {{.ExpiryMinutes}} minutes.</p>
+            <div class="security-note">
+                <strong>Security tip:</strong> Never share this code with anyone. Our team will never ask for your login code.
+            </div>
+        </div>
+        <div class="footer">
+            <p>If you didn't request this code, you can safely ignore this email. Someone may have entered your email address by mistake.</p>
+            <p>— The Altalune Team</p>
+        </div>
+    </div>
+</body>
+</html>
