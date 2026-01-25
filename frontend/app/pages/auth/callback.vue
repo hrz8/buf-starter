@@ -33,15 +33,21 @@ async function processCallback() {
 
   // Check for error in query params (auth server error)
   const errorParam = route.query.error as string;
+  const errorDescription = route.query.error_description as string;
   if (errorParam) {
-    // Map OAuth error codes to translated messages
+    // Map specific error descriptions to translated messages
+    const errorDescriptionMessages: Record<string, string> = {
+      account_not_activated: t('auth.errors.accountNotActivated'),
+    };
+    // Map OAuth error codes to translated messages (fallback)
     const oauthErrorMessages: Record<string, string> = {
       access_denied: t('auth.errors.accessDenied'),
     };
     error.value = {
       code: errorParam,
-      message: oauthErrorMessages[errorParam]
-        || (route.query.error_description as string)
+      message: errorDescriptionMessages[errorDescription]
+        || oauthErrorMessages[errorParam]
+        || errorDescription
         || t('auth.callback.unknownError'),
     };
     isProcessing.value = false;

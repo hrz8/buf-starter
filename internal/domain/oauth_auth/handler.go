@@ -5,7 +5,6 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strings"
@@ -307,6 +306,7 @@ func (h *Handler) HandleOAuthCallback(w http.ResponseWriter, r *http.Request) {
 				Email:     userInfo.Email,
 				FirstName: userInfo.FirstName,
 				LastName:  userInfo.LastName,
+				AvatarURL: userInfo.AvatarURL,
 				IsActive:  &autoActivate,
 			})
 			if err != nil {
@@ -442,6 +442,20 @@ func (h *Handler) HandleAuthorize(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// Check if user is active before allowing authorization
+	// This prevents inactive users from completing OAuth flow to client applications
+	user, err := h.userRepo.GetByInternalID(r.Context(), sessionData.UserID)
+	if err != nil {
+		h.log.Error("failed to get user for authorization check", "error", err)
+		h.renderAuthError(w, r, params.RedirectURI, params.State, ErrServerError)
+		return
+	}
+	if !user.IsActive {
+		// Return OAuth error to client - user account is not activated
+		redirectWithError(w, r, params.RedirectURI, "access_denied", "account_not_activated", params.State)
+		return
+	}
+
 	if client.PKCERequired {
 		if params.CodeChallenge == nil || *params.CodeChallenge == "" {
 			h.renderAuthError(w, r, params.RedirectURI, params.State, ErrMissingCodeChallenge)
@@ -530,6 +544,18 @@ func (h *Handler) HandleAuthorizeProcess(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	params.ClientID = clientID
+
+	// Check if user is still active (could have been deactivated while on consent page)
+	user, err := h.userRepo.GetByInternalID(r.Context(), sessionData.UserID)
+	if err != nil {
+		h.log.Error("failed to get user for consent processing", "error", err)
+		h.renderAuthError(w, r, params.RedirectURI, params.State, ErrServerError)
+		return
+	}
+	if !user.IsActive {
+		redirectWithError(w, r, params.RedirectURI, "access_denied", "account_not_activated", params.State)
+		return
+	}
 
 	decision := r.FormValue("decision")
 
@@ -664,10 +690,17 @@ func (h *Handler) handleAuthorizationCodeGrant(w http.ResponseWriter, r *http.Re
 		return
 	}
 
+	// Prevent inactive users from exchanging authorization codes
+	if !user.IsActive {
+		writeTokenError(w, "invalid_grant", "User account is not active", http.StatusBadRequest)
+		return
+	}
+
 	scopeClaims, err := h.svc.BuildUserInfoClaims(r.Context(), result.Scope, &ScopeUser{
 		Email:         user.Email,
 		FirstName:     user.FirstName,
 		LastName:      user.LastName,
+		AvatarURL:     user.AvatarURL,
 		EmailVerified: user.EmailVerified,
 	})
 	if err != nil {
@@ -729,10 +762,17 @@ func (h *Handler) handleRefreshTokenGrant(w http.ResponseWriter, r *http.Request
 		return
 	}
 
+	// Prevent inactive users from refreshing tokens
+	if !user.IsActive {
+		writeTokenError(w, "invalid_grant", "User account is not active", http.StatusBadRequest)
+		return
+	}
+
 	scopeUser := &ScopeUser{
 		Email:         user.Email,
 		FirstName:     user.FirstName,
 		LastName:      user.LastName,
+		AvatarURL:     user.AvatarURL,
 		EmailVerified: user.EmailVerified,
 	}
 	scopeClaims, err := h.svc.BuildUserInfoClaims(r.Context(), result.Scope, scopeUser)
@@ -821,6 +861,7 @@ func (h *Handler) HandleUserInfo(w http.ResponseWriter, r *http.Request) {
 		Email:         user.Email,
 		FirstName:     user.FirstName,
 		LastName:      user.LastName,
+		AvatarURL:     user.AvatarURL,
 		EmailVerified: user.EmailVerified,
 	}
 	scopeClaims, err := h.svc.BuildUserInfoClaims(r.Context(), scope, scopeUser)
@@ -913,20 +954,18 @@ func (h *Handler) HandleIntrospect(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *Handler) HandleOpenIDConfiguration(w http.ResponseWriter, r *http.Request) {
-	scheme := "http"
-	if r.TLS != nil {
-		scheme = "https"
-	}
-	baseURL := fmt.Sprintf("%s://%s", scheme, r.Host)
+	// Use configured issuer for consistency with JWT tokens
+	// This must match the "iss" claim in access tokens for JWKS discovery
+	issuer := h.cfg.GetJWTIssuer()
 
 	config := map[string]interface{}{
-		"issuer":                 baseURL,
-		"authorization_endpoint": baseURL + "/oauth/authorize",
-		"token_endpoint":         baseURL + "/oauth/token",
-		"userinfo_endpoint":      baseURL + "/oauth/userinfo",
-		"jwks_uri":               baseURL + "/.well-known/jwks.json",
-		"revocation_endpoint":    baseURL + "/oauth/revoke",
-		"introspection_endpoint": baseURL + "/oauth/introspect",
+		"issuer":                 issuer,
+		"authorization_endpoint": issuer + "/oauth/authorize",
+		"token_endpoint":         issuer + "/oauth/token",
+		"userinfo_endpoint":      issuer + "/oauth/userinfo",
+		"jwks_uri":               issuer + "/.well-known/jwks.json",
+		"revocation_endpoint":    issuer + "/oauth/revoke",
+		"introspection_endpoint": issuer + "/oauth/introspect",
 		"scopes_supported": []string{
 			"openid",
 			"profile",
@@ -943,24 +982,32 @@ func (h *Handler) HandleOpenIDConfiguration(w http.ResponseWriter, r *http.Reque
 		"subject_types_supported": []string{
 			"public",
 		},
-		"id_token_signing_alg_values_supported": []string{
-			"RS256",
-		},
+		// Note: This server returns claims in access tokens (JWT) rather than
+		// separate ID tokens. Access tokens are RS256-signed and can be validated
+		// using the JWKS endpoint for stateless authorization.
 		"token_endpoint_auth_methods_supported": []string{
 			"client_secret_basic",
-			"none",
+			"none", // For public clients using PKCE
+		},
+		"introspection_endpoint_auth_methods_supported": []string{
+			"client_secret_basic",
+		},
+		"revocation_endpoint_auth_methods_supported": []string{
+			"client_secret_basic",
 		},
 		"code_challenge_methods_supported": []string{
 			"S256",
 			"plain",
 		},
+		// Claims available via userinfo endpoint when corresponding scopes are requested
 		"claims_supported": []string{
-			"sub",
-			"name",
-			"given_name",
-			"family_name",
-			"email",
-			"email_verified",
+			"sub",            // Always included (user public_id)
+			"name",           // profile scope
+			"given_name",     // profile scope
+			"family_name",    // profile scope
+			"picture",        // profile scope
+			"email",          // email scope
+			"email_verified", // email scope
 		},
 	}
 
@@ -1634,9 +1681,16 @@ func (h *Handler) HandlePendingActivation(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	// Redirect active users to profile
+	// Redirect active users to their original destination or profile
 	if user.IsActive {
-		http.Redirect(w, r, "/profile", http.StatusFound)
+		redirectURL := "/profile"
+		if sessionData.OriginalURL != "" {
+			redirectURL = sessionData.OriginalURL
+			// Clear the original URL after using it
+			sessionData.OriginalURL = ""
+			h.sessionStore.SetData(r, w, sessionData)
+		}
+		http.Redirect(w, r, redirectURL, http.StatusFound)
 		return
 	}
 

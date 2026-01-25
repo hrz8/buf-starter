@@ -158,6 +158,7 @@ type AuthUserInfo struct {
 	Name          string `json:"name,omitempty"`
 	GivenName     string `json:"given_name,omitempty"`
 	FamilyName    string `json:"family_name,omitempty"`
+	Picture       string `json:"picture,omitempty"`
 }
 
 // AuthExchangeSuccessResponse is the success response from token exchange
@@ -499,6 +500,9 @@ func extractUserInfoFromJWT(accessToken string) AuthUserInfo {
 	}
 	if name, ok := claims["name"].(string); ok {
 		userInfo.Name = name
+	}
+	if picture, ok := claims["picture"].(string); ok {
+		userInfo.Picture = picture
 	}
 
 	return userInfo

@@ -13,6 +13,7 @@ export interface AuthUserInfo {
   name?: string;
   given_name?: string;
   family_name?: string;
+  picture?: string;
 }
 
 export interface AuthExchangeResponse {

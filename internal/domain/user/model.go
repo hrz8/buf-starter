@@ -13,6 +13,7 @@ type User struct {
 	Email         string // Unique, lowercase
 	FirstName     string // Optional
 	LastName      string // Optional
+	AvatarURL     string // Optional, from OAuth provider
 	IsActive      bool   // User activation status
 	EmailVerified bool   // Email verification status
 	CreatedAt     time.Time
@@ -39,6 +40,7 @@ type UserQueryResult struct {
 	Email         string
 	FirstName     string
 	LastName      string
+	AvatarURL     string
 	IsActive      bool
 	EmailVerified bool
 	CreatedAt     time.Time
@@ -51,6 +53,7 @@ func (r *UserQueryResult) ToUser() *User {
 		Email:         r.Email,
 		FirstName:     r.FirstName,
 		LastName:      r.LastName,
+		AvatarURL:     r.AvatarURL,
 		IsActive:      r.IsActive,
 		EmailVerified: r.EmailVerified,
 		CreatedAt:     r.CreatedAt,
@@ -63,6 +66,7 @@ type CreateUserInput struct {
 	Email     string
 	FirstName string
 	LastName  string
+	AvatarURL string
 	IsActive  *bool // If nil, defaults to true; allows explicit control for autoActivate feature
 }
 
@@ -73,6 +77,7 @@ type CreateUserResult struct {
 	Email         string
 	FirstName     string
 	LastName      string
+	AvatarURL     string
 	IsActive      bool
 	EmailVerified bool
 	CreatedAt     time.Time
@@ -85,6 +90,7 @@ func (r *CreateUserResult) ToUser() *User {
 		Email:         r.Email,
 		FirstName:     r.FirstName,
 		LastName:      r.LastName,
+		AvatarURL:     r.AvatarURL,
 		IsActive:      r.IsActive,
 		EmailVerified: r.EmailVerified,
 		CreatedAt:     r.CreatedAt,
@@ -108,6 +114,7 @@ type UpdateUserResult struct {
 	Email         string
 	FirstName     string
 	LastName      string
+	AvatarURL     string
 	IsActive      bool
 	EmailVerified bool
 	CreatedAt     time.Time
@@ -120,6 +127,7 @@ func (r *UpdateUserResult) ToUser() *User {
 		Email:         r.Email,
 		FirstName:     r.FirstName,
 		LastName:      r.LastName,
+		AvatarURL:     r.AvatarURL,
 		IsActive:      r.IsActive,
 		EmailVerified: r.EmailVerified,
 		CreatedAt:     r.CreatedAt,

@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import {
-  BadgeCheck,
-  Bell,
   ChevronsUpDown,
-  CreditCard,
   LogOut,
-  Sparkles,
+  User,
 } from 'lucide-vue-next';
 
 import {
@@ -16,7 +13,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -34,15 +30,43 @@ const props = defineProps<{
   user: {
     name: string;
     email: string;
-    avatar: string;
+    avatar?: string;
+    givenName?: string;
+    familyName?: string;
   };
 }>();
 
 const { t } = useI18n();
 const { isMobile } = useSidebar();
 const authService = useAuthService();
+const router = useRouter();
 
 const isLoggingOut = ref(false);
+
+// Generate initials from given_name and family_name, or fallback to name
+const initials = computed(() => {
+  const { givenName, familyName, name } = props.user;
+
+  // Try given_name + family_name first
+  if (givenName || familyName) {
+    const first = givenName?.charAt(0)?.toUpperCase() || '';
+    const last = familyName?.charAt(0)?.toUpperCase() || '';
+    return (first + last) || 'U';
+  }
+
+  // Fallback to parsing name
+  if (name) {
+    const parts = name.trim().split(/\s+/);
+    if (parts.length >= 2) {
+      const first = parts[0]?.charAt(0) ?? '';
+      const last = parts[parts.length - 1]?.charAt(0) ?? '';
+      return (first + last).toUpperCase() || 'U';
+    }
+    return name.charAt(0).toUpperCase();
+  }
+
+  return 'U';
+});
 
 async function handleLogout() {
   if (isLoggingOut.value) {
@@ -55,6 +79,10 @@ async function handleLogout() {
   finally {
     isLoggingOut.value = false;
   }
+}
+
+function handleProfile() {
+  router.push('/settings/profile');
 }
 </script>
 
@@ -72,16 +100,17 @@ async function handleLogout() {
           >
             <Avatar class="h-8 w-8 rounded-lg">
               <AvatarImage
+                v-if="props.user.avatar"
                 :src="props.user.avatar"
                 :alt="props.user.name"
               />
               <AvatarFallback class="rounded-lg">
-                CN
+                {{ initials }}
               </AvatarFallback>
             </Avatar>
             <div class="grid flex-1 text-left text-sm leading-tight">
               <span class="truncate font-medium">{{ props.user.name }}</span>
-              <span class="truncate text-xs">{{ props.user.email }}</span>
+              <span class="truncate text-xs text-muted-foreground">{{ props.user.email }}</span>
             </div>
             <ChevronsUpDown class="ml-auto size-4" />
           </SidebarMenuButton>
@@ -96,41 +125,25 @@ async function handleLogout() {
             <div class="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
               <Avatar class="h-8 w-8 rounded-lg">
                 <AvatarImage
+                  v-if="props.user.avatar"
                   :src="props.user.avatar"
-                  :alt="user.name"
+                  :alt="props.user.name"
                 />
                 <AvatarFallback class="rounded-lg">
-                  CN
+                  {{ initials }}
                 </AvatarFallback>
               </Avatar>
               <div class="grid flex-1 text-left text-sm leading-tight">
                 <span class="truncate font-semibold">{{ props.user.name }}</span>
-                <span class="truncate text-xs">{{ props.user.email }}</span>
+                <span class="truncate text-xs text-muted-foreground">{{ props.user.email }}</span>
               </div>
             </div>
           </DropdownMenuLabel>
           <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <Sparkles />
-              {{ t('nav.user.upgradeToPro') }}
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
-          <DropdownMenuSeparator />
-          <DropdownMenuGroup>
-            <DropdownMenuItem>
-              <BadgeCheck />
-              {{ t('nav.user.account') }}
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <CreditCard />
-              {{ t('nav.user.billing') }}
-            </DropdownMenuItem>
-            <DropdownMenuItem>
-              <Bell />
-              {{ t('nav.user.notifications') }}
-            </DropdownMenuItem>
-          </DropdownMenuGroup>
+          <DropdownMenuItem @click="handleProfile">
+            <User />
+            {{ t('nav.user.profile') }}
+          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem
             class="text-destructive focus:text-destructive focus:bg-destructive/10"

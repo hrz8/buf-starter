@@ -34,6 +34,8 @@ const userData = computed(() => {
       name: 'Guest',
       email: '',
       avatar: '',
+      givenName: '',
+      familyName: '',
     };
   }
 
@@ -45,7 +47,9 @@ const userData = computed(() => {
   return {
     name: displayName,
     email: user.email || '',
-    avatar: '', // TODO: Avatar could be added later if needed
+    avatar: user.picture || '',
+    givenName: user.given_name || '',
+    familyName: user.family_name || '',
   };
 });
 

@@ -48,6 +48,23 @@
     "tryAdjusting": "Try adjusting your search or filters",
     "view": "View"
   },
+  "dashboard": {
+    "greeting": "Welcome back, {name}",
+    "subtitle": "Here's what's happening with your projects today."
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Your account information. Contact an administrator to update your details.",
+    "personalInfo": "Personal Information",
+    "email": "Email Address",
+    "emailHint": "Your email address is used for authentication and cannot be changed.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "userId": "User ID",
+    "verified": "Verified",
+    "unverified": "Unverified",
+    "notLoggedIn": "You are not logged in."
+  },
   "errorCodes": {
     "60001": "Invalid input",
     "60101": "Greeting to '{name}' is not recognized",
@@ -933,6 +950,16 @@
       }
     }
   },
+  "emailVerification": {
+    "title": "Verify your email",
+    "description": "We've sent a verification email to {email}. Please check your inbox and click the verification link to continue.",
+    "resendButton": "Resend verification email",
+    "resendSuccess": "Email sent!",
+    "refreshButton": "I already verified my email",
+    "checkSpam": "Can't find the email? Check your spam folder.",
+    "successMessage": "Verification email sent! Please check your inbox.",
+    "errorMessage": "Failed to resend verification email"
+  },
   "auth": {
     "loggingOut": "Logging out...",
     "login": {
@@ -961,7 +988,8 @@
     "errors": {
       "invalidState": "Invalid state parameter. Please try logging in again.",
       "missingCodeVerifier": "Session expired. Please try logging in again.",
-      "accessDenied": "Access was denied. Please try again."
+      "accessDenied": "Access was denied. Please try again.",
+      "accountNotActivated": "Your account is pending activation. Please wait for an administrator to activate your account."
     }
   },
   "layout": {
@@ -1013,11 +1041,8 @@
       "title": "Settings"
     },
     "user": {
-      "account": "Account",
-      "billing": "Billing",
       "logOut": "Log out",
-      "notifications": "Notifications",
-      "upgradeToPro": "Upgrade to Pro"
+      "profile": "Profile"
     }
   }
 }

@@ -48,6 +48,23 @@
     "tryAdjusting": "Coba sesuaikan pencarian atau filter Anda",
     "view": "Tampilan"
   },
+  "dashboard": {
+    "greeting": "Selamat datang kembali, {name}",
+    "subtitle": "Berikut yang terjadi dengan proyek Anda hari ini."
+  },
+  "profile": {
+    "title": "Profil",
+    "description": "Informasi akun Anda. Hubungi administrator untuk memperbarui data Anda.",
+    "personalInfo": "Informasi Pribadi",
+    "email": "Alamat Email",
+    "emailHint": "Alamat email Anda digunakan untuk autentikasi dan tidak dapat diubah.",
+    "firstName": "Nama Depan",
+    "lastName": "Nama Belakang",
+    "userId": "ID Pengguna",
+    "verified": "Terverifikasi",
+    "unverified": "Belum Terverifikasi",
+    "notLoggedIn": "Anda belum masuk."
+  },
   "errorCodes": {
     "60001": "Input tidak valid",
     "60101": "Sapa kepada '{name}' tidak dikenali",
@@ -928,6 +945,16 @@
       }
     }
   },
+  "emailVerification": {
+    "title": "Verifikasi email Anda",
+    "description": "Kami telah mengirim email verifikasi ke {email}. Silakan periksa kotak masuk Anda dan klik tautan verifikasi untuk melanjutkan.",
+    "resendButton": "Kirim ulang email verifikasi",
+    "resendSuccess": "Email terkirim!",
+    "refreshButton": "Saya sudah memverifikasi email",
+    "checkSpam": "Tidak menemukan email? Periksa folder spam Anda.",
+    "successMessage": "Email verifikasi terkirim! Silakan periksa kotak masuk Anda.",
+    "errorMessage": "Gagal mengirim ulang email verifikasi"
+  },
   "auth": {
     "loggingOut": "Sedang keluar...",
     "login": {
@@ -956,7 +983,8 @@
     "errors": {
       "invalidState": "Parameter state tidak valid. Silakan coba masuk lagi.",
       "missingCodeVerifier": "Sesi berakhir. Silakan coba masuk lagi.",
-      "accessDenied": "Akses ditolak. Silakan coba lagi."
+      "accessDenied": "Akses ditolak. Silakan coba lagi.",
+      "accountNotActivated": "Akun Anda menunggu aktivasi. Silakan tunggu administrator untuk mengaktifkan akun Anda."
     }
   },
   "layout": {
@@ -1008,11 +1036,8 @@
       "title": "Pengaturan"
     },
     "user": {
-      "account": "Akun",
-      "billing": "Tagihan",
       "logOut": "Keluar",
-      "notifications": "Notifikasi",
-      "upgradeToPro": "Upgrade ke Pro"
+      "profile": "Profil"
     }
   }
 }

@@ -69,6 +69,7 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 			email,
 			first_name,
 			last_name,
+			avatar_url,
 			is_active,
 			email_verified,
 			created_at,
@@ -173,7 +174,7 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 	queryResults := make([]*UserQueryResult, 0)
 	for rows.Next() {
 		var usr UserQueryResult
-		var firstName, lastName sql.NullString
+		var firstName, lastName, avatarURL sql.NullString
 
 		err := rows.Scan(
 			&usr.ID,
@@ -181,6 +182,7 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 			&usr.Email,
 			&firstName,
 			&lastName,
+			&avatarURL,
 			&usr.IsActive,
 			&usr.EmailVerified,
 			&usr.CreatedAt,
@@ -196,6 +198,9 @@ func (r *Repo) Query(ctx context.Context, params *query.QueryParams) (*query.Que
 		}
 		if lastName.Valid {
 			usr.LastName = lastName.String
+		}
+		if avatarURL.Valid {
+			usr.AvatarURL = avatarURL.String
 		}
 
 		queryResults = append(queryResults, &usr)
@@ -297,16 +302,17 @@ func (r *Repo) Create(ctx context.Context, input *CreateUserInput) (*CreateUserR
 			email,
 			first_name,
 			last_name,
+			avatar_url,
 			is_active,
 			created_at,
 			updated_at
-		) VALUES ($1, $2, $3, $4, $5, $6, $7)
-		RETURNING id, public_id, email, first_name, last_name, is_active, email_verified, created_at, updated_at
+		) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		RETURNING id, public_id, email, first_name, last_name, avatar_url, is_active, email_verified, created_at, updated_at
 	`
 
 	now := time.Now()
 	var result CreateUserResult
-	var firstName, lastName sql.NullString
+	var firstName, lastName, avatarURL sql.NullString
 
 	err := r.db.QueryRowContext(
 		ctx,
@@ -315,6 +321,7 @@ func (r *Repo) Create(ctx context.Context, input *CreateUserInput) (*CreateUserR
 		email,
 		input.FirstName,
 		input.LastName,
+		input.AvatarURL,
 		isActive,
 		now,
 		now,
@@ -324,6 +331,7 @@ func (r *Repo) Create(ctx context.Context, input *CreateUserInput) (*CreateUserR
 		&result.Email,
 		&firstName,
 		&lastName,
+		&avatarURL,
 		&result.IsActive,
 		&result.EmailVerified,
 		&result.CreatedAt,
@@ -348,6 +356,9 @@ func (r *Repo) Create(ctx context.Context, input *CreateUserInput) (*CreateUserR
 	if lastName.Valid {
 		result.LastName = lastName.String
 	}
+	if avatarURL.Valid {
+		result.AvatarURL = avatarURL.String
+	}
 
 	return &result, nil
 }
@@ -360,6 +371,7 @@ func (r *Repo) GetByEmail(ctx context.Context, email string) (*User, error) {
 			email,
 			first_name,
 			last_name,
+			avatar_url,
 			is_active,
 			email_verified,
 			created_at,
@@ -370,13 +382,14 @@ func (r *Repo) GetByEmail(ctx context.Context, email string) (*User, error) {
 	`
 
 	var usr User
-	var firstName, lastName sql.NullString
+	var firstName, lastName, avatarURL sql.NullString
 
 	err := r.db.QueryRowContext(ctx, query, email).Scan(
 		&usr.ID,
 		&usr.Email,
 		&firstName,
 		&lastName,
+		&avatarURL,
 		&usr.IsActive,
 		&usr.EmailVerified,
 		&usr.CreatedAt,
@@ -397,6 +410,9 @@ func (r *Repo) GetByEmail(ctx context.Context, email string) (*User, error) {
 	if lastName.Valid {
 		usr.LastName = lastName.String
 	}
+	if avatarURL.Valid {
+		usr.AvatarURL = avatarURL.String
+	}
 
 	return &usr, nil
 }
@@ -409,6 +425,7 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*User, error) {
 			email,
 			first_name,
 			last_name,
+			avatar_url,
 			is_active,
 			email_verified,
 			created_at,
@@ -418,13 +435,14 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*User, error) {
 	`
 
 	var usr User
-	var firstName, lastName sql.NullString
+	var firstName, lastName, avatarURL sql.NullString
 
 	err := r.db.QueryRowContext(ctx, sqlQuery, publicID).Scan(
 		&usr.ID,
 		&usr.Email,
 		&firstName,
 		&lastName,
+		&avatarURL,
 		&usr.IsActive,
 		&usr.EmailVerified,
 		&usr.CreatedAt,
@@ -445,6 +463,9 @@ func (r *Repo) GetByID(ctx context.Context, publicID string) (*User, error) {
 	if lastName.Valid {
 		usr.LastName = lastName.String
 	}
+	if avatarURL.Valid {
+		usr.AvatarURL = avatarURL.String
+	}
 
 	return &usr, nil
 }
@@ -457,6 +478,7 @@ func (r *Repo) GetByInternalID(ctx context.Context, internalID int64) (*User, er
 			email,
 			first_name,
 			last_name,
+			avatar_url,
 			is_active,
 			email_verified,
 			created_at,
@@ -466,13 +488,14 @@ func (r *Repo) GetByInternalID(ctx context.Context, internalID int64) (*User, er
 	`
 
 	var usr User
-	var firstName, lastName sql.NullString
+	var firstName, lastName, avatarURL sql.NullString
 
 	err := r.db.QueryRowContext(ctx, sqlQuery, internalID).Scan(
 		&usr.ID,
 		&usr.Email,
 		&firstName,
 		&lastName,
+		&avatarURL,
 		&usr.IsActive,
 		&usr.EmailVerified,
 		&usr.CreatedAt,
@@ -491,6 +514,9 @@ func (r *Repo) GetByInternalID(ctx context.Context, internalID int64) (*User, er
 	}
 	if lastName.Valid {
 		usr.LastName = lastName.String
+	}
+	if avatarURL.Valid {
+		usr.AvatarURL = avatarURL.String
 	}
 
 	return &usr, nil
@@ -511,12 +537,12 @@ func (r *Repo) Update(ctx context.Context, input *UpdateUserInput) (*UpdateUserR
 		UPDATE altalune_users
 		SET email = $1, first_name = $2, last_name = $3, updated_at = CURRENT_TIMESTAMP
 		WHERE public_id = $4
-		RETURNING id, public_id, email, first_name, last_name, is_active, email_verified,
+		RETURNING id, public_id, email, first_name, last_name, avatar_url, is_active, email_verified,
 		          created_at, updated_at
 	`
 
 	var result UpdateUserResult
-	var firstName, lastName sql.NullString
+	var firstName, lastName, avatarURL sql.NullString
 
 	err = r.db.QueryRowContext(ctx, sqlQuery,
 		email,
@@ -529,6 +555,7 @@ func (r *Repo) Update(ctx context.Context, input *UpdateUserInput) (*UpdateUserR
 		&result.Email,
 		&firstName,
 		&lastName,
+		&avatarURL,
 		&result.IsActive,
 		&result.EmailVerified,
 		&result.CreatedAt,
@@ -551,6 +578,9 @@ func (r *Repo) Update(ctx context.Context, input *UpdateUserInput) (*UpdateUserR
 	}
 	if lastName.Valid {
 		result.LastName = lastName.String
+	}
+	if avatarURL.Valid {
+		result.AvatarURL = avatarURL.String
 	}
 
 	return &result, nil
@@ -593,17 +623,18 @@ func (r *Repo) Activate(ctx context.Context, publicID string) (*User, error) {
 		UPDATE altalune_users
 		SET is_active = true, updated_at = CURRENT_TIMESTAMP
 		WHERE public_id = $1
-		RETURNING public_id, email, first_name, last_name, is_active, email_verified, created_at, updated_at
+		RETURNING public_id, email, first_name, last_name, avatar_url, is_active, email_verified, created_at, updated_at
 	`
 
 	var usr User
-	var firstName, lastName sql.NullString
+	var firstName, lastName, avatarURL sql.NullString
 
 	err = r.db.QueryRowContext(ctx, sqlQuery, publicID).Scan(
 		&usr.ID,
 		&usr.Email,
 		&firstName,
 		&lastName,
+		&avatarURL,
 		&usr.IsActive,
 		&usr.EmailVerified,
 		&usr.CreatedAt,
@@ -623,6 +654,9 @@ func (r *Repo) Activate(ctx context.Context, publicID string) (*User, error) {
 	}
 	if lastName.Valid {
 		usr.LastName = lastName.String
+	}
+	if avatarURL.Valid {
+		usr.AvatarURL = avatarURL.String
 	}
 
 	return &usr, nil
@@ -644,17 +678,18 @@ func (r *Repo) Deactivate(ctx context.Context, publicID string) (*User, error) {
 		UPDATE altalune_users
 		SET is_active = false, updated_at = CURRENT_TIMESTAMP
 		WHERE public_id = $1
-		RETURNING public_id, email, first_name, last_name, is_active, email_verified, created_at, updated_at
+		RETURNING public_id, email, first_name, last_name, avatar_url, is_active, email_verified, created_at, updated_at
 	`
 
 	var usr User
-	var firstName, lastName sql.NullString
+	var firstName, lastName, avatarURL sql.NullString
 
 	err = r.db.QueryRowContext(ctx, sqlQuery, publicID).Scan(
 		&usr.ID,
 		&usr.Email,
 		&firstName,
 		&lastName,
+		&avatarURL,
 		&usr.IsActive,
 		&usr.EmailVerified,
 		&usr.CreatedAt,
@@ -674,6 +709,9 @@ func (r *Repo) Deactivate(ctx context.Context, publicID string) (*User, error) {
 	}
 	if lastName.Valid {
 		usr.LastName = lastName.String
+	}
+	if avatarURL.Valid {
+		usr.AvatarURL = avatarURL.String
 	}
 
 	return &usr, nil

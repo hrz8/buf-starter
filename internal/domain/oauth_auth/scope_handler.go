@@ -12,6 +12,7 @@ type ScopeUser struct {
 	Email         string
 	FirstName     string
 	LastName      string
+	AvatarURL     string
 	EmailVerified bool
 }
 
@@ -91,6 +92,9 @@ func (h *ProfileScopeHandler) Handle(_ context.Context, user *ScopeUser) (map[st
 	}
 	if user.LastName != "" {
 		claims["family_name"] = user.LastName
+	}
+	if user.AvatarURL != "" {
+		claims["picture"] = user.AvatarURL
 	}
 	return claims, nil
 }

@@ -9,18 +9,18 @@ import (
 	"github.com/google/uuid"
 )
 
-// Issuer is the JWT issuer claim value.
-const Issuer = "altalune-oauth"
-
 // Signer handles JWT token generation and validation using RS256.
 type Signer struct {
 	privateKey *rsa.PrivateKey
 	publicKey  *rsa.PublicKey
 	kid        string
+	issuer     string
 }
 
 // NewSigner creates a new JWT signer from PEM key files.
-func NewSigner(privateKeyPath, publicKeyPath, kid string) (*Signer, error) {
+// The issuer parameter is used as the "iss" claim in JWTs and should be a valid URL
+// that supports JWKS discovery (e.g., http://localhost:3300).
+func NewSigner(privateKeyPath, publicKeyPath, kid, issuer string) (*Signer, error) {
 	privateKey, err := LoadPrivateKeyPEM(privateKeyPath)
 	if err != nil {
 		return nil, fmt.Errorf("load private key: %w", err)
@@ -35,6 +35,7 @@ func NewSigner(privateKeyPath, publicKeyPath, kid string) (*Signer, error) {
 		privateKey: privateKey,
 		publicKey:  publicKey,
 		kid:        kid,
+		issuer:     issuer,
 	}, nil
 }
 
@@ -46,6 +47,11 @@ func (s *Signer) GetPublicKey() *rsa.PublicKey {
 // GetKID returns the key ID used in JWT headers.
 func (s *Signer) GetKID() string {
 	return s.kid
+}
+
+// GetIssuer returns the JWT issuer URL.
+func (s *Signer) GetIssuer() string {
+	return s.issuer
 }
 
 // GenerateTokenParams holds parameters for access token generation.
@@ -66,7 +72,7 @@ func (s *Signer) GenerateAccessToken(params GenerateTokenParams) (string, error)
 
 	claims := AccessTokenClaims{
 		RegisteredClaims: jwt.RegisteredClaims{
-			Issuer:    Issuer,
+			Issuer:    s.issuer,
 			Subject:   params.UserPublicID,
 			Audience:  jwt.ClaimStrings{params.ClientID},
 			ExpiresAt: jwt.NewNumericDate(now.Add(params.Expiry)),

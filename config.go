@@ -43,6 +43,7 @@ type Config interface {
 	GetJWTPrivateKeyPath() string
 	GetJWTPublicKeyPath() string
 	GetJWKSKid() string
+	GetJWTIssuer() string // JWT issuer URL (derived from auth server URL)
 
 	// Auth configuration
 	GetAuthHost() string

@@ -242,6 +242,7 @@ func (c *Container) initAuthComponents() error {
 			c.config.GetJWTPrivateKeyPath(),
 			c.config.GetJWTPublicKeyPath(),
 			c.config.GetJWKSKid(),
+			c.config.GetJWTIssuer(),
 		)
 		if err != nil {
 			return fmt.Errorf("create jwt signer: %w", err)

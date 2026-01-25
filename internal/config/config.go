@@ -2,6 +2,7 @@ package config
 
 import (
 	"encoding/base64"
+	"fmt"
 	"time"
 
 	"github.com/hrz8/altalune"
@@ -90,6 +91,17 @@ func (c *AppConfig) GetJWTPublicKeyPath() string {
 
 func (c *AppConfig) GetJWKSKid() string {
 	return c.Security.JWKSKid
+}
+
+// GetJWTIssuer returns the JWT issuer URL derived from auth server configuration.
+// This URL should match the auth server's base URL for JWKS discovery.
+func (c *AppConfig) GetJWTIssuer() string {
+	// Use dashboardOauth.server as the issuer since it's the canonical auth server URL
+	if c.DashboardOAuth != nil && c.DashboardOAuth.Server != "" {
+		return c.DashboardOAuth.Server
+	}
+	// Fallback: construct from auth host/port
+	return fmt.Sprintf("http://%s:%d", c.Auth.Host, c.Auth.Port)
 }
 
 // Auth configuration

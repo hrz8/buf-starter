@@ -20,6 +20,7 @@ CREATE TABLE IF NOT EXISTS altalune_users (
   email VARCHAR(255) NOT NULL UNIQUE,
   first_name VARCHAR(100),
   last_name VARCHAR(100),
+  avatar_url VARCHAR(512),
   is_active BOOLEAN NOT NULL DEFAULT true,
   email_verified BOOLEAN NOT NULL DEFAULT false,
   activated_at TIMESTAMPTZ,

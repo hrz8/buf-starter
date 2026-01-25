@@ -15,8 +15,12 @@ export function useAuthService() {
   const authStore = useAuthStore();
 
   // Create API client for OAuth BFF endpoints using oauthBackendUrl
-  const client = $api.createClient(config.public.oauthBackendUrl);
-  const repo = authRepository(client);
+  const bffClient = $api.createClient(config.public.oauthBackendUrl);
+  const repo = authRepository(bffClient);
+
+  // Create API client for Auth Server direct endpoints (e.g., resend-verification)
+  const authServerClient = $api.createClient(config.public.authServerUrl);
+  const authServerRepo = authRepository(authServerClient);
 
   async function handleCallback(code: string, state: string): Promise<AuthExchangeResponse> {
     // Validate state parameter
@@ -147,6 +151,19 @@ export function useAuthService() {
     navigateTo('/auth/login');
   }
 
+  async function resendVerificationEmail(): Promise<void> {
+    try {
+      await authServerRepo.resendVerification();
+    }
+    catch (error) {
+      const err = error as { data?: { error?: string; error_description?: string } };
+      throw new AuthError(
+        err.data?.error || 'resend_failed',
+        err.data?.error_description || 'Failed to resend verification email',
+      );
+    }
+  }
+
   return {
     handleCallback,
     refreshTokens,
@@ -154,6 +171,7 @@ export function useAuthService() {
     logout,
     isTokenExpired,
     checkAndRefreshIfNeeded,
+    resendVerificationEmail,
   };
 }
 

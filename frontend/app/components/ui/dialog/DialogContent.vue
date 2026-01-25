@@ -14,10 +14,17 @@ import { cn } from '@/lib/utils';
 
 import DialogOverlay from './DialogOverlay.vue';
 
-const props = defineProps<DialogContentProps & { class?: HTMLAttributes['class'] }>();
+interface Props extends DialogContentProps {
+  class?: HTMLAttributes['class'];
+  closable?: boolean;
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  closable: true,
+});
 const emits = defineEmits<DialogContentEmits>();
 
-const delegatedProps = reactiveOmit(props, 'class');
+const delegatedProps = reactiveOmit(props, 'class', 'closable');
 
 const forwarded = useForwardPropsEmits(delegatedProps, emits);
 </script>
@@ -41,6 +48,7 @@ const forwarded = useForwardPropsEmits(delegatedProps, emits);
       <slot />
 
       <DialogClose
+        v-if="closable"
         class="
           ring-offset-background focus:ring-ring data-[state=open]:bg-accent
           data-[state=open]:text-muted-foreground absolute top-4 right-4 rounded-xs opacity-70

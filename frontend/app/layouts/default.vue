@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core';
 import { LayoutHeader, LayoutSidebar } from '@/components/custom/layout';
+import EmailVerificationOverlay from '@/components/features/email-verification/EmailVerificationOverlay.vue';
 
 import {
   SidebarInset,
@@ -77,6 +78,7 @@ watch(
     @update:open="handleOpenUpdate"
   >
     <Toaster />
+    <EmailVerificationOverlay />
     <LayoutSidebar />
     <SidebarInset>
       <LayoutHeader />
