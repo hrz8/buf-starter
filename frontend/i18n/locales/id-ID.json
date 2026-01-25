@@ -623,6 +623,15 @@
       },
       "noProjectSelected": "Tidak ada proyek dipilih",
       "noProjectsFound": "Tidak ada proyek ditemukan",
+      "notFound": {
+        "title": "Proyek Tidak Ditemukan",
+        "description": "Proyek yang Anda gunakan sebelumnya tidak lagi tersedia. Silakan pilih proyek lain untuk melanjutkan.",
+        "invalidId": "ID proyek yang tersimpan tidak valid atau telah dihapus:",
+        "selectLabel": "Pilih proyek",
+        "selectPlaceholder": "Pilih proyek...",
+        "confirmButton": "Pindah ke Proyek Terpilih",
+        "hint": "Pilihan proyek Anda akan disimpan untuk sesi berikutnya."
+      },
       "form": {
         "commonTimezones": "Zona Waktu Umum",
         "descriptionDescription": "Deskripsi proyek opsional (maksimal 100 karakter)",

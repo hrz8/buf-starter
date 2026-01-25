@@ -155,8 +155,10 @@ func (s *Seeder) createSuperadminIdentity(ctx context.Context, tx *sql.Tx, userI
 	return nil
 }
 
-// ensureSuperadminIdentity ensures user identity exists for superadmin
+// ensureSuperadminIdentity ensures user identity exists for superadmin and updates email if changed
 func (s *Seeder) ensureSuperadminIdentity(ctx context.Context, tx *sql.Tx, userID int64) error {
+	email := s.config.GetSuperadminEmail()
+
 	var count int
 	err := tx.QueryRowContext(ctx, `
 		SELECT COUNT(*) FROM altalune_user_identities
@@ -168,7 +170,17 @@ func (s *Seeder) ensureSuperadminIdentity(ctx context.Context, tx *sql.Tx, userI
 	}
 
 	if count > 0 {
-		s.logger.Info("Superadmin user identity already exists, skipping")
+		_, err = tx.ExecContext(ctx, `
+			UPDATE altalune_user_identities
+			SET email = $1, updated_at = NOW()
+			WHERE user_id = $2 AND provider = 'system'
+		`, email, userID)
+
+		if err != nil {
+			return fmt.Errorf("update superadmin identity email: %w", err)
+		}
+
+		s.logger.Info("Superadmin user identity email updated", "email", email)
 		return nil
 	}
 

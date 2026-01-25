@@ -628,6 +628,15 @@
       },
       "noProjectSelected": "No project selected",
       "noProjectsFound": "No projects found",
+      "notFound": {
+        "title": "Project Not Found",
+        "description": "The project you were working on is no longer available. Please select a different project to continue.",
+        "invalidId": "The stored project ID is invalid or has been deleted:",
+        "selectLabel": "Select a project",
+        "selectPlaceholder": "Choose a project...",
+        "confirmButton": "Switch to Selected Project",
+        "hint": "Your project selection will be saved for future sessions."
+      },
       "form": {
         "commonTimezones": "Common Timezones",
         "descriptionDescription": "Optional project description (maximum 100 characters)",

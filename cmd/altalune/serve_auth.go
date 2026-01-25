@@ -65,7 +65,7 @@ func serveAuth(rootCmd *cobra.Command) func(cmd *cobra.Command, args []string) e
 		)
 
 		go func() {
-			log.Printf("starting OAuth authorization server at port: %d\n", cfg.GetAuthPort())
+			log.Printf("🚀 starting OAuth authorization server at port: %d\n", cfg.GetAuthPort())
 			httpSrv.Start()
 		}()
 

@@ -2,6 +2,7 @@
 import { useLocalStorage } from '@vueuse/core';
 import { LayoutHeader, LayoutSidebar } from '@/components/custom/layout';
 import EmailVerificationOverlay from '@/components/features/email-verification/EmailVerificationOverlay.vue';
+import ProjectNotFoundOverlay from '@/components/features/project/ProjectNotFoundOverlay.vue';
 
 import {
   SidebarInset,
@@ -79,6 +80,7 @@ watch(
   >
     <Toaster />
     <EmailVerificationOverlay />
+    <ProjectNotFoundOverlay />
     <LayoutSidebar />
     <SidebarInset>
       <LayoutHeader />
