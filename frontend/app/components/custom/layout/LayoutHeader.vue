@@ -14,8 +14,10 @@ import { useBreadcrumbs } from '@/composables/navigation/useBreadcrumbs';
 const { t, locales, setLocale, locale } = useI18n();
 const colorMode = useColorMode();
 
-const flags = {
+const flags: Record<string, string> = {
   'en-US': 'emojione:flag-for-united-states',
+  'en-GB': 'emojione:flag-for-united-kingdom',
+  'ms-MY': 'emojione:flag-for-malaysia',
   'id-ID': 'emojione:flag-for-indonesia',
 };
 

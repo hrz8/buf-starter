@@ -1,0 +1,1057 @@
+{
+  "common": {
+    "btn": {
+      "cancel": "Batal",
+      "create": "Cipta",
+      "delete": "Padam",
+      "edit": "Edit",
+      "update": "Kemas Kini"
+    },
+    "label": {
+      "active": "Aktif",
+      "disabled": "Tidak Aktif",
+      "enabled": "Aktif",
+      "error": "Ralat",
+      "inactive": "Tidak Aktif"
+    },
+    "status": {
+      "creating": "Sedang mencipta...",
+      "deleting": "Sedang memadam...",
+      "error": "Ralat",
+      "loading": "Sedang memuatkan...",
+      "success": "Berjaya",
+      "updating": "Sedang mengemas kini..."
+    },
+    "cancel": "Batal",
+    "save": "Simpan",
+    "success": "Berjaya",
+    "error": "Ralat",
+    "creating": "Sedang mencipta...",
+    "deleting": "Sedang memadam...",
+    "enabled": "Aktif",
+    "disabled": "Tidak Aktif"
+  },
+  "datatable": {
+    "clearFilters": "Kosongkan penapis",
+    "makeCopy": "Buat salinan",
+    "noDataFound": "Data tidak dijumpai",
+    "noResults": "Tiada keputusan",
+    "noResultsFound": "Keputusan tidak dijumpai.",
+    "openMenu": "Buka menu",
+    "reset": "Set Semula",
+    "rows": "Baris",
+    "searchPlaceholder": "Cari {filter}...",
+    "selected": "{count} dipilih",
+    "showing": "Memaparkan {start} hingga {end} daripada {total} keputusan",
+    "showingShort": "{start}-{end} daripada {total}",
+    "toggleColumns": "Togol lajur",
+    "tryAdjusting": "Cuba laraskan carian atau penapis anda",
+    "view": "Paparan"
+  },
+  "dashboard": {
+    "greeting": "Selamat kembali, {name}",
+    "subtitle": "Berikut apa yang berlaku dengan projek anda hari ini."
+  },
+  "profile": {
+    "title": "Profil",
+    "description": "Maklumat akaun anda. Hubungi pentadbir untuk mengemas kini butiran anda.",
+    "personalInfo": "Maklumat Peribadi",
+    "email": "Alamat E-mel",
+    "emailHint": "Alamat e-mel anda digunakan untuk pengesahan dan tidak boleh diubah.",
+    "firstName": "Nama Pertama",
+    "lastName": "Nama Keluarga",
+    "userId": "ID Pengguna",
+    "verified": "Disahkan",
+    "unverified": "Belum Disahkan",
+    "notLoggedIn": "Anda belum log masuk."
+  },
+  "errorCodes": {
+    "60001": "Input tidak sah",
+    "60101": "Sapaan kepada '{name}' tidak dikenali",
+    "60201": "Pekerja tidak dijumpai",
+    "60202": "Pekerja sudah wujud",
+    "60301": "Projek tidak dijumpai",
+    "60401": "Kunci API tidak dijumpai",
+    "60402": "Kunci API sudah wujud",
+    "60500": "Pengguna tidak dijumpai",
+    "60501": "Pengguna sudah wujud",
+    "60502": "Alamat e-mel tidak sah",
+    "60503": "Pengguna sudah aktif",
+    "60504": "Pengguna sudah tidak aktif",
+    "60505": "Tidak boleh memadam akaun anda sendiri",
+    "60600": "Peranan tidak dijumpai",
+    "60601": "Peranan sudah wujud",
+    "60602": "Nama peranan tidak sah",
+    "60603": "Peranan sedang digunakan dan tidak boleh dipadam",
+    "60604": "Peranan dilindungi dan tidak boleh dipadam",
+    "60700": "Kebenaran tidak dijumpai",
+    "60701": "Kebenaran sudah wujud",
+    "60702": "Format nama kebenaran tidak sah",
+    "60704": "Kebenaran sedang digunakan dan tidak boleh dipadam",
+    "60705": "Kebenaran dilindungi dan tidak boleh dipadam",
+    "60800": "Pemetaan tidak dijumpai",
+    "60801": "Pemetaan sudah wujud",
+    "60802": "Peranan projek tidak sah",
+    "60803": "Tidak boleh membuang pemilik terakhir daripada projek",
+    "60804": "Pengguna tidak dijumpai dalam pemetaan",
+    "60805": "Peranan tidak dijumpai dalam pemetaan",
+    "60806": "Kebenaran tidak dijumpai dalam pemetaan",
+    "60807": "Projek tidak dijumpai dalam pemetaan",
+    "60810": "Pembekal OAuth tidak dijumpai",
+    "60811": "Jenis pembekal pendua (sudah wujud)",
+    "60812": "Gagal menyulitkan client secret",
+    "60813": "Gagal menyahsulit client secret",
+    "60900": "Klien OAuth tidak dijumpai",
+    "60901": "Klien OAuth sudah wujud",
+    "60902": "URI alih tidak sah",
+    "60903": "Client secret OAuth tidak sah",
+    "61001": "Nod tidak dijumpai",
+    "61002": "Format nama nod tidak sah",
+    "61003": "Bahasa tidak sah",
+    "61004": "Nama nod pendua untuk bahasa ini",
+    "61005": "Sekurang-kurangnya satu pencetus diperlukan",
+    "61006": "Sekurang-kurangnya satu mesej diperlukan",
+    "61007": "Jenis pencetus tidak sah",
+    "61008": "Corak regex tidak sah",
+    "69901": "Ralat Pelayan"
+  },
+  "errorPage": {
+    "goHome": "Kembali ke Laman Utama"
+  },
+  "example": {
+    "allowedNames": {
+      "errorLoading": "Ralat memuatkan nama",
+      "header": "Nama Yang Dibenarkan",
+      "loading": "Memuatkan nama...",
+      "nextBtn": "Seterusnya",
+      "noNames": "Nama tidak dijumpai",
+      "pageInfo": "Halaman {current} daripada {total}",
+      "paginationInfo": "Memaparkan {from} hingga {to} daripada {total} nama",
+      "previousBtn": "Sebelumnya",
+      "refreshBtn": "Muat Semula",
+      "refreshBtnProgress": "Sedang memuat semula...",
+      "showingCount": "Memaparkan {count} nama",
+      "tableName": "Nama",
+      "tableNumber": "#"
+    },
+    "error": "Ralat",
+    "header": "Semak Sapaan",
+    "inputPlaceholder": "Masukkan nama anda",
+    "response": "Respons",
+    "submitBtn": "Ucap Hello",
+    "submitBtnProgress": "Sedang menghantar..."
+  },
+  "features": {
+    "chatbot": {
+      "page": {
+        "title": "Konfigurasi Modul",
+        "description": "Konfigurasi modul chatbot untuk projek anda",
+        "noProjectSelected": "Sila pilih projek untuk mengkonfigurasi modul chatbot.",
+        "invalidModuleTitle": "Modul Tidak Sah",
+        "invalidModuleDesc": "Modul \"{name}\" tidak wujud.",
+        "unknownModule": "Modul Tidak Dikenali",
+        "unsavedChanges": "Anda mempunyai perubahan yang belum disimpan"
+      },
+      "form": {
+        "save": "Simpan Konfigurasi",
+        "saving": "Sedang menyimpan..."
+      },
+      "messages": {
+        "saveSuccess": "Konfigurasi berjaya disimpan",
+        "saveError": "Gagal menyimpan konfigurasi",
+        "loadError": "Gagal memuatkan konfigurasi chatbot",
+        "moduleEnabled": "Modul diaktifkan",
+        "moduleDisabled": "Modul dinyahaktifkan",
+        "toggleError": "Gagal menukar status modul"
+      },
+      "toggle": {
+        "enabled": "Aktif",
+        "disabled": "Tidak Aktif"
+      },
+      "array": {
+        "addItem": "Tambah Item",
+        "removeItem": "Buang"
+      }
+    },
+    "chatbotNode": {
+      "page": {
+        "title": "Edit Nod",
+        "subtitle": "Bahasa: {lang}",
+        "noProjectSelected": "Sila pilih projek untuk melihat nod.",
+        "notFoundTitle": "Nod Tidak Dijumpai",
+        "notFoundDesc": "Nod yang diminta tidak wujud atau telah dipadam.",
+        "unsavedChanges": "Anda mempunyai perubahan yang belum disimpan"
+      },
+      "sheet": {
+        "createTitle": "Cipta Nod Baharu",
+        "createDescription": "Cipta nod respons chatbot baharu. Anda boleh mengkonfigurasi pencetus dan mesej selepas penciptaan."
+      },
+      "form": {
+        "name": "Nama Nod",
+        "namePlaceholder": "contoh: greeting, faq_pricing",
+        "nameHelp": "Gunakan huruf kecil, nombor, dan garis bawah sahaja",
+        "lang": "Bahasa",
+        "langPlaceholder": "Pilih bahasa",
+        "tags": "Tag",
+        "tagsPlaceholder": "Tambah tag...",
+        "enabled": "Aktif",
+        "create": "Cipta Nod"
+      },
+      "trigger": {
+        "title": "Pencetus",
+        "description": "Tentukan syarat yang mengaktifkan nod ini. Apabila mesej pengguna sepadan dengan mana-mana pencetus, mesej nod ini akan dihantar.",
+        "count": "pencetus",
+        "type": "Jenis",
+        "value": "Nilai",
+        "valuePlaceholder": "Masukkan nilai pencetus...",
+        "add": "Tambah Pencetus",
+        "remove": "Buang",
+        "invalidRegex": "Corak regex tidak sah"
+      },
+      "message": {
+        "title": "Mesej",
+        "description": "Konfigurasi mesej respons bot. Mesej dihantar secara berurutan apabila nod dicetuskan.",
+        "count": "mesej",
+        "content": "Kandungan Mesej",
+        "placeholder": "Masukkan kandungan mesej...",
+        "add": "Tambah Mesej",
+        "remove": "Buang",
+        "moveUp": "Alih Ke Atas",
+        "moveDown": "Alih Ke Bawah"
+      },
+      "delete": {
+        "title": "Padam Nod",
+        "description": "Adakah anda pasti mahu memadam \"{name}\"? Tindakan ini tidak boleh dibatalkan.",
+        "button": "Padam",
+        "confirm": "Padam Nod"
+      },
+      "messages": {
+        "noProject": "Tiada projek dipilih",
+        "createSuccess": "Nod berjaya dicipta",
+        "createError": "Gagal mencipta nod",
+        "saveSuccess": "Nod berjaya disimpan",
+        "saveError": "Gagal menyimpan nod",
+        "deleteSuccess": "Nod berjaya dipadam",
+        "deleteError": "Gagal memadam nod"
+      }
+    },
+    "api_keys": {
+      "actions": {
+        "activate": "Aktifkan Kunci API",
+        "create": "Cipta Kunci API",
+        "deactivate": "Nyahaktifkan Kunci API",
+        "delete": "Padam Kunci API",
+        "edit": "Edit Kunci API",
+        "hideKey": "Sembunyi kunci API",
+        "refresh": "Muat Semula",
+        "search": "Cari kunci API...",
+        "showKey": "Papar kunci API"
+      },
+      "btn": {
+        "copied": "Disalin!",
+        "copyKey": "Salin Kunci",
+        "copyToClipboard": "Salin ke papan keratan",
+        "done": "Selesai"
+      },
+      "columns": {
+        "createdAt": "Dicipta Pada",
+        "expiration": "Tamat Tempoh",
+        "id": "ID",
+        "name": "Nama",
+        "status": "Status"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Adakah anda pasti mahu memadam **{name}**? Tindakan ini tidak boleh dibatalkan dan akan membatalkan kunci API ini secara kekal. Sebarang aplikasi yang menggunakan kunci ini akan kehilangan akses serta-merta.",
+        "title": "Padam Kunci API"
+      },
+      "display": {
+        "bestPracticesTitle": "Amalan Keselamatan Terbaik",
+        "keyNameLabel": "Nama Kunci API",
+        "keyValueLabel": "Nilai Kunci API",
+        "modalSubtitle": "Simpan kunci ini dengan selamat - anda tidak akan melihatnya lagi",
+        "modalTitle": "Kunci API Berjaya Dicipta",
+        "securityTip1": "Simpan kunci ini di lokasi yang selamat (pengurus kata laluan, peti besi selamat)",
+        "securityTip2": "Jangan sekali-kali berkongsi secara awam atau commit ke version control",
+        "securityTip3": "Gunakan pembolehubah persekitaran atau pengurusan konfigurasi yang selamat",
+        "securityTip4": "Putar kunci ini secara berkala untuk keselamatan yang lebih baik",
+        "warningMessage": "Ini satu-satunya masa anda akan melihat kunci API ini. Salin sekarang dan simpan dengan selamat. Anda tidak akan dapat melihatnya lagi.",
+        "warningTitle": "Penting:"
+      },
+      "empty": {
+        "description": "Kami tidak dapat menemui kunci API yang sepadan dengan kriteria anda. Cuba laraskan penapis atau terma carian anda.",
+        "title": "Tiada kunci API dijumpai"
+      },
+      "filter": {
+        "status": "Status"
+      },
+      "form": {
+        "expirationDescription": "Bila kunci API ini akan tamat tempoh dan menjadi tidak sah. Mesti tarikh masa hadapan.",
+        "expirationLabel": "Tarikh Tamat Tempoh *",
+        "nameDescription": "Nama deskriptif untuk kunci API ini (2-50 aksara, alfanumerik dengan ruang, sempang, dan garis bawah)",
+        "nameLabel": "Nama Kunci API *",
+        "namePlaceholder": "Kunci API Pengeluaran"
+      },
+      "loading": "Memuatkan kunci API...",
+      "messages": {
+        "activateSuccess": "Kunci API berjaya diaktifkan",
+        "closeWithoutCopying": "Tutup Tanpa Menyalin",
+        "createError": "Gagal mencipta kunci API",
+        "createErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "createSuccess": "Kunci API berjaya dicipta",
+        "createSuccessDesc": "{name} telah dicipta. Sila simpan nilai kunci dengan selamat.",
+        "deactivateSuccess": "Kunci API berjaya dinyahaktifkan",
+        "deleteError": "Gagal memadam kunci API",
+        "deleteErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "deleteSuccess": "Kunci API berjaya dipadam",
+        "deleteSuccessDesc": "{name} telah dibuang.",
+        "failedToCopy": "Gagal menyalin ke papan keratan",
+        "failedToCopyDesc": "Sila salin kunci API secara manual.",
+        "keyCopied": "Kunci API disalin ke papan keratan",
+        "keyCopiedDesc": "Kunci API telah disalin ke papan keratan anda. Simpan dengan selamat.",
+        "loadError": "Gagal memuatkan data kunci API",
+        "loadErrorDesc": "Ralat tidak dijangka berlaku.",
+        "toggleError": "Gagal menukar status kunci API",
+        "updateError": "Gagal mengemas kini kunci API",
+        "updateErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "updateSuccess": "Kunci API berjaya dikemas kini",
+        "updateSuccessDesc": "{name} telah dikemas kini."
+      },
+      "page": {
+        "description": "Urus kunci API untuk akses programatik yang selamat kepada sumber dan perkhidmatan projek anda.",
+        "selectProjectMessage": "Sila pilih projek untuk mengurus kunci API.",
+        "title": "Kunci API"
+      },
+      "sheet": {
+        "createDescription": "Cipta kunci API baharu untuk projek anda. Kunci yang dijana hanya akan dipaparkan sekali, jadi pastikan untuk menyimpannya dengan selamat.",
+        "createTitle": "Cipta Kunci API Baharu",
+        "editDescription": "Kemas kini butiran kunci API di bawah. Semua medan yang bertanda * adalah wajib.",
+        "editTitle": "Edit Kunci API"
+      },
+      "status": {
+        "active": "Aktif",
+        "expired": "Tamat Tempoh",
+        "expiringSoon": "Bakal Tamat Tempoh",
+        "inactive": "Tidak Aktif",
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "permissions": {
+      "actions": {
+        "create": "Cipta Kebenaran",
+        "delete": "Padam Kebenaran",
+        "edit": "Edit Kebenaran",
+        "refresh": "Muat Semula",
+        "search": "Cari kebenaran..."
+      },
+      "columns": {
+        "createdAt": "Dicipta Pada",
+        "description": "Penerangan",
+        "name": "Nama"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Adakah anda pasti mahu memadam **{name}**? Tindakan ini tidak boleh dibatalkan dan akan membuang kebenaran ini secara kekal daripada sistem.",
+        "title": "Padam Kebenaran"
+      },
+      "empty": {
+        "description": "Kami tidak dapat menemui kebenaran yang sepadan dengan kriteria anda. Cuba laraskan penapis atau terma carian anda.",
+        "title": "Tiada kebenaran dijumpai"
+      },
+      "form": {
+        "descriptionLabel": "Penerangan (Pilihan)",
+        "descriptionPlaceholder": "Terangkan apa yang dibenarkan oleh kebenaran ini",
+        "nameDescription": "Format: huruf, nombor, garis bawah, dan titik bertindih (cth., \"project:read:metadata\")",
+        "nameLabel": "Nama Kebenaran *",
+        "namePlaceholder": "project:read"
+      },
+      "loading": "Memuatkan kebenaran...",
+      "page": {
+        "description": "Tentukan kebenaran akses terperinci yang boleh diberikan kepada peranan dan pengguna untuk kawalan akses yang lebih tepat.",
+        "title": "Kebenaran"
+      },
+      "messages": {
+        "createError": "Gagal mencipta kebenaran",
+        "createErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "createSuccess": "Kebenaran dicipta",
+        "createSuccessDesc": "Kebenaran \"{name}\" telah berjaya dicipta.",
+        "deleteError": "Gagal memadam kebenaran",
+        "deleteErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "deleteSuccess": "Kebenaran berjaya dipadam",
+        "deleteSuccessDesc": "\"{name}\" telah dibuang.",
+        "updateError": "Gagal mengemas kini kebenaran",
+        "updateErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "updateSuccess": "Kebenaran berjaya dikemas kini",
+        "updateSuccessDesc": "\"{name}\" telah dikemas kini."
+      },
+      "sheet": {
+        "createDescription": "Cipta kebenaran baharu yang boleh diberikan kepada peranan dan pengguna.",
+        "createTitle": "Cipta Kebenaran Baharu",
+        "editDescription": "Kemas kini butiran kebenaran di bawah. Semua medan yang bertanda * adalah wajib.",
+        "editTitle": "Edit Kebenaran"
+      },
+      "status": {
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "roles": {
+      "actions": {
+        "create": "Cipta Peranan",
+        "delete": "Padam Peranan",
+        "edit": "Edit Peranan",
+        "refresh": "Muat Semula",
+        "search": "Cari peranan..."
+      },
+      "columns": {
+        "createdAt": "Dicipta Pada",
+        "description": "Penerangan",
+        "name": "Nama"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Adakah anda pasti mahu memadam **{name}**? Tindakan ini tidak boleh dibatalkan dan akan membuang peranan ini secara kekal daripada sistem.",
+        "title": "Padam Peranan"
+      },
+      "empty": {
+        "description": "Kami tidak dapat menemui peranan yang sepadan dengan kriteria anda. Cuba laraskan penapis atau terma carian anda.",
+        "title": "Tiada peranan dijumpai"
+      },
+      "form": {
+        "descriptionLabel": "Penerangan (Pilihan)",
+        "descriptionPlaceholder": "Terangkan untuk apa peranan ini digunakan",
+        "nameDescription": "Format: huruf, nombor, dan garis bawah (cth., \"admin\" atau \"project_manager\")",
+        "nameLabel": "Nama Peranan *",
+        "namePlaceholder": "admin"
+      },
+      "loading": "Memuatkan peranan...",
+      "page": {
+        "description": "Cipta dan urus peranan untuk mentakrifkan kebenaran pengguna dan tahap akses di seluruh sistem anda.",
+        "title": "Peranan"
+      },
+      "messages": {
+        "createError": "Gagal mencipta peranan",
+        "createErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "createSuccess": "Peranan dicipta",
+        "createSuccessDesc": "Peranan \"{name}\" telah berjaya dicipta.",
+        "deleteError": "Gagal memadam peranan",
+        "deleteErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "deleteSuccess": "Peranan berjaya dipadam",
+        "deleteSuccessDesc": "\"{name}\" telah dibuang.",
+        "updateError": "Gagal mengemas kini peranan",
+        "updateErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "updateSuccess": "Peranan berjaya dikemas kini",
+        "updateSuccessDesc": "\"{name}\" telah dikemas kini."
+      },
+      "sheet": {
+        "createDescription": "Cipta peranan baharu yang boleh diberikan kepada pengguna.",
+        "createTitle": "Cipta Peranan Baharu",
+        "editDescription": "Kemas kini butiran peranan di bawah. Semua medan yang bertanda * adalah wajib.",
+        "editTitle": "Edit Peranan"
+      },
+      "tabs": {
+        "details": "Butiran",
+        "permissions": "Kebenaran"
+      },
+      "status": {
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "users": {
+      "actions": {
+        "create": "Cipta Pengguna",
+        "delete": "Padam Pengguna",
+        "edit": "Edit Pengguna",
+        "openMenu": "Buka menu",
+        "search": "Cari pengguna..."
+      },
+      "columns": {
+        "createdAt": "Dicipta Pada",
+        "email": "E-mel",
+        "firstName": "Nama Pertama",
+        "lastName": "Nama Keluarga",
+        "isActive": "Status",
+        "emailVerified": "E-mel Disahkan"
+      },
+      "dialog": {
+        "deleteDescription": "Adakah anda pasti mahu memadam {name}? Tindakan ini tidak boleh dibatalkan.",
+        "deleteTitle": "Padam Pengguna"
+      },
+      "empty": {
+        "description": "Mulakan dengan mencipta pengguna pertama anda.",
+        "title": "Tiada pengguna dijumpai"
+      },
+      "form": {
+        "emailDescription": "Alamat e-mel pengguna untuk pengesahan dan komunikasi",
+        "emailLabel": "E-mel",
+        "emailPlaceholder": "pengguna{'@'}contoh.com",
+        "firstNameLabel": "Nama Pertama",
+        "firstNamePlaceholder": "Ahmad",
+        "lastNameLabel": "Nama Keluarga",
+        "lastNamePlaceholder": "Abdullah"
+      },
+      "loading": "Memuatkan pengguna...",
+      "page": {
+        "description": "Urus akaun pengguna, kebenaran, dan kawalan akses untuk organisasi anda.",
+        "title": "Pengguna"
+      },
+      "messages": {
+        "createError": "Gagal mencipta pengguna",
+        "createSuccess": "Pengguna dicipta",
+        "createSuccessDesc": "{name} telah berjaya dicipta.",
+        "deleteError": "Gagal memadam pengguna",
+        "deleteSuccess": "Pengguna dipadam",
+        "deleteSuccessDesc": "{name} telah berjaya dipadam.",
+        "updateError": "Gagal mengemas kini pengguna",
+        "updateSuccess": "Pengguna berjaya dikemas kini",
+        "updateSuccessDesc": "{name} telah dikemas kini."
+      },
+      "sheet": {
+        "createDescription": "Cipta akaun pengguna baharu.",
+        "createTitle": "Cipta Pengguna Baharu",
+        "editDescription": "Kemas kini butiran pengguna di bawah. Semua medan yang bertanda * adalah wajib.",
+        "editTitle": "Edit Pengguna"
+      },
+      "tabs": {
+        "details": "Butiran",
+        "identities": "Identiti",
+        "permissions": "Kebenaran",
+        "profile": "Profil",
+        "projects": "Projek",
+        "roles": "Peranan"
+      },
+      "identities": {
+        "empty": "Tiada identiti berkaitan dijumpai untuk pengguna ini",
+        "info": "Identiti pengguna dicipta apabila pengguna mengesahkan melalui pembekal OAuth.",
+        "neverLoggedIn": "Tidak pernah log masuk"
+      },
+      "status": {
+        "active": "Aktif",
+        "inactive": "Tidak Aktif",
+        "verified": "Disahkan",
+        "unverified": "Belum Disahkan",
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "employees": {
+      "actions": {
+        "create": "Cipta Pekerja",
+        "delete": "Padam Pekerja",
+        "duplicate": "Salin Pekerja",
+        "edit": "Edit Pekerja",
+        "search": "Cari pekerja..."
+      },
+      "btn": {
+        "create": "Cipta Pekerja",
+        "duplicate": "Salin Pekerja"
+      },
+      "columns": {
+        "createdAt": "Dicipta Pada",
+        "department": "Jabatan",
+        "email": "E-mel",
+        "id": "ID",
+        "name": "Nama",
+        "role": "Peranan",
+        "status": "Status"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Adakah anda pasti mahu memadam **{name}**? Tindakan ini tidak boleh dibatalkan dan akan membuang pekerja ini secara kekal daripada sistem.",
+        "title": "Padam Pekerja"
+      },
+      "empty": {
+        "description": "Kami tidak dapat menemui pekerja yang sepadan dengan kriteria anda. Cuba laraskan penapis atau terma carian anda.",
+        "title": "Tiada pekerja dijumpai"
+      },
+      "filter": {
+        "department": "Jabatan",
+        "role": "Peranan",
+        "status": "Status"
+      },
+      "loading": "Memuatkan data pekerja...",
+      "form": {
+        "departmentDescription": "Pilih daripada jabatan biasa",
+        "departmentLabel": "Jabatan *",
+        "departmentPlaceholder": "Pilih jabatan",
+        "departmentSelectLabel": "Jabatan",
+        "emailDescription": "Mesti alamat e-mel yang sah",
+        "emailLabel": "Alamat E-mel *",
+        "emailPlaceholder": "ahmad{'@'}syarikat.com",
+        "nameDescription": "Nama penuh pekerja (2-50 aksara, huruf sahaja)",
+        "nameLabel": "Nama Penuh *",
+        "namePlaceholder": "Ahmad Abdullah",
+        "roleDescription": "Pilih daripada peranan biasa",
+        "roleLabel": "Peranan *",
+        "rolePlaceholder": "Pilih peranan",
+        "roleSelectLabel": "Peranan Biasa",
+        "statusDescription": "Status semasa pekerja",
+        "statusLabel": "Status *",
+        "statusPlaceholder": "Pilih status"
+      },
+      "messages": {
+        "createError": "Gagal mencipta pekerja",
+        "createErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "createSuccess": "Pekerja berjaya dicipta",
+        "createSuccessDesc": "{name} telah ditambah ke pasukan.",
+        "deleteError": "Gagal memadam pekerja",
+        "deleteErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "deleteSuccess": "Pekerja berjaya dipadam",
+        "deleteSuccessDesc": "{name} telah dibuang.",
+        "loadError": "Gagal memuatkan data pekerja",
+        "loadErrorDesc": "Ralat tidak dijangka berlaku.",
+        "updateError": "Gagal mengemas kini pekerja",
+        "updateErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "updateSuccess": "Pekerja berjaya dikemas kini",
+        "updateSuccessDesc": "{name} telah dikemas kini."
+      },
+      "sheet": {
+        "createDescription": "Isi butiran pekerja di bawah. Semua medan yang bertanda * adalah wajib.",
+        "createTitle": "Tambah Pekerja Baharu",
+        "duplicateDescription": "Semak dan ubah suai butiran pekerja di bawah. Semua medan yang bertanda * adalah wajib.",
+        "duplicateTitle": "Salin Pekerja",
+        "editDescription": "Kemas kini butiran pekerja di bawah. Semua medan yang bertanda * adalah wajib.",
+        "editTitle": "Edit Pekerja"
+      },
+      "status": {
+        "errorLoadingTitle": "Ralat Memuatkan Pekerja",
+        "unknown": "Tidak Diketahui"
+      }
+    },
+    "projects": {
+      "actions": {
+        "add": "Tambah projek",
+        "create": "Cipta Projek"
+      },
+      "btn": {
+        "create": "Cipta Projek"
+      },
+      "error": "Maaf, sesuatu telah berlaku",
+      "label": "Projek",
+      "labels": {
+        "default": "Lalai",
+        "defaultProject": "Projek Lalai"
+      },
+      "noProjectSelected": "Tiada projek dipilih",
+      "noProjectsFound": "Tiada projek dijumpai",
+      "notFound": {
+        "title": "Projek Tidak Dijumpai",
+        "description": "Projek yang anda gunakan sebelum ini tidak lagi tersedia. Sila pilih projek lain untuk meneruskan.",
+        "invalidId": "ID projek yang disimpan tidak sah atau telah dipadam:",
+        "selectLabel": "Pilih projek",
+        "selectPlaceholder": "Pilih projek...",
+        "confirmButton": "Tukar ke Projek Dipilih",
+        "hint": "Pilihan projek anda akan disimpan untuk sesi akan datang."
+      },
+      "form": {
+        "commonTimezones": "Zon Masa Biasa",
+        "descriptionDescription": "Penerangan projek pilihan (maksimum 100 aksara)",
+        "descriptionLabel": "Penerangan",
+        "descriptionPlaceholder": "Penerangan ringkas projek (pilihan)",
+        "environment": {
+          "live": "Live",
+          "liveDesc": "Persekitaran pengeluaran untuk data live",
+          "sandbox": "Sandbox",
+          "sandboxDesc": "Persekitaran ujian untuk pembangunan"
+        },
+        "environmentDescription": "Pilih jenis persekitaran untuk projek ini",
+        "environmentLabel": "Persekitaran *",
+        "environmentPlaceholder": "Pilih persekitaran",
+        "nameDescription": "Nama projek (1-50 aksara, huruf, nombor, ruang, sempang, dan garis bawah sahaja)",
+        "nameLabel": "Nama Projek *",
+        "namePlaceholder": "Projek Hebat Saya",
+        "timezoneDescription": "Zon masa projek untuk penjadualan dan pemprosesan data",
+        "timezoneLabel": "Zon Masa *",
+        "timezonePlaceholder": "Pilih zon masa"
+      },
+      "messages": {
+        "createError": "Gagal mencipta projek",
+        "createErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "createSuccess": "Projek berjaya dicipta",
+        "createSuccessDesc": "{name} telah dicipta dan sedia untuk digunakan."
+      },
+      "sheet": {
+        "createDescription": "Isi butiran projek di bawah. Semua medan yang bertanda * adalah wajib.",
+        "createTitle": "Tambah Projek Baharu"
+      },
+      "settings": {
+        "actions": {
+          "cancel": "Batal",
+          "delete": "Padam Projek",
+          "deleting": "Sedang memadam...",
+          "save": "Simpan Perubahan",
+          "saving": "Sedang menyimpan..."
+        },
+        "deleteDialog": {
+          "confirmDescription": "Taip 'Confirm delete {name}' untuk mengesahkan",
+          "confirmLabel": "Taip pengesahan untuk memadam",
+          "confirmPlaceholder": "Confirm delete [NamaProjek]",
+          "description": "Tindakan ini tidak boleh dibatalkan. Semua data yang berkaitan dengan projek ini akan dipadam secara kekal.",
+          "lastProjectWarning": "Tidak boleh memadam projek terakhir. Anda mesti mempunyai sekurang-kurangnya satu projek.",
+          "title": "Padam Projek"
+        },
+        "description": "Urus konfigurasi dan butiran projek anda",
+        "form": {
+          "descriptionDescription": "Penerangan ringkas projek anda (pilihan)",
+          "descriptionLabel": "Penerangan",
+          "descriptionPlaceholder": "Masukkan penerangan projek",
+          "environmentDescription": "Tidak boleh diubah selepas projek dicipta",
+          "environmentLabel": "Persekitaran",
+          "nameDescription": "Pengenal unik untuk projek anda",
+          "nameLabel": "Nama Projek *",
+          "namePlaceholder": "Masukkan nama projek",
+          "timezoneDescription": "Zon masa untuk projek ini",
+          "timezoneLabel": "Zon Masa *",
+          "timezonePlaceholder": "Pilih zon masa"
+        },
+        "messages": {
+          "deleteConfirmMismatch": "Teks pengesahan tidak sepadan. Sila cuba lagi.",
+          "deleteError": "Gagal memadam projek",
+          "deleteErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+          "deleteSuccess": "Projek dipadam",
+          "deleteSuccessDesc": "{name} telah dipadam secara kekal",
+          "loadError": "Gagal memuatkan tetapan projek",
+          "noProjectSelected": "Sila pilih projek untuk melihat tetapan",
+          "updateError": "Gagal mengemas kini projek",
+          "updateErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+          "updateSuccess": "Projek dikemas kini",
+          "updateSuccessDesc": "{name} telah berjaya dikemas kini",
+          "fetchError": "Gagal memuatkan projek",
+          "fetchErrorDesc": "Tidak dapat memuatkan tetapan projek. Sila cuba lagi."
+        },
+        "title": "Tetapan Projek",
+        "dangerZone": {
+          "title": "Zon Bahaya",
+          "description": "Padam projek ini secara kekal bersama semua data berkaitan. Tindakan ini tidak boleh dibatalkan."
+        }
+      }
+    },
+    "oauth": {
+      "page": {
+        "title": "Pembekal OAuth",
+        "description": "Konfigurasi pembekal pengesahan OAuth untuk log masuk pengguna"
+      },
+      "table": {
+        "providerType": "Pembekal",
+        "clientId": "Client ID",
+        "redirectUrl": "URL Alih",
+        "scopes": "Skop",
+        "status": "Status",
+        "enabled": "Status",
+        "createdAt": "Dicipta",
+        "actions": "Tindakan",
+        "search": "Cari pembekal...",
+        "noScopes": "Tiada skop"
+      },
+      "loading": "Memuatkan pembekal OAuth...",
+      "status": {
+        "enabled": "Aktif",
+        "disabled": "Tidak Aktif"
+      },
+      "fields": {
+        "providerType": "Jenis Pembekal",
+        "clientId": "Client ID",
+        "clientSecret": "Client Secret",
+        "updateClientSecret": "Kemas Kini Client Secret",
+        "redirectUrl": "URL Alih",
+        "scopes": "Skop",
+        "enabled": "Aktif"
+      },
+      "descriptions": {
+        "providerType": "Pilih pembekal OAuth (tidak boleh diubah selepas dicipta)",
+        "providerTypeImmutable": "Jenis pembekal tidak boleh diubah selepas dicipta",
+        "clientSecret": "Kelayakan rahsia daripada pembekal OAuth (disulitkan sebelum disimpan)",
+        "updateClientSecret": "Biarkan kosong untuk mengekalkan secret semasa",
+        "scopes": "Senarai skop OAuth yang dipisahkan koma",
+        "enabled": "Aktifkan atau nyahaktifkan pembekal ini untuk pengesahan"
+      },
+      "actions": {
+        "create": "Cipta Pembekal",
+        "createFirst": "Cipta pembekal pertama anda",
+        "update": "Kemas Kini Pembekal",
+        "delete": "Padam Pembekal",
+        "search": "Cari pembekal...",
+        "revealSecret": "Papar Secret",
+        "hideSecret": "Sembunyi Secret",
+        "copySecret": "Salin Secret"
+      },
+      "messages": {
+        "createSuccess": "Pembekal OAuth dicipta",
+        "createSuccessDesc": "Pembekal {name} telah berjaya dikonfigurasi",
+        "createError": "Gagal mencipta pembekal",
+        "updateSuccess": "Pembekal OAuth dikemas kini",
+        "updateSuccessDesc": "Pembekal {name} telah berjaya dikemas kini",
+        "updateError": "Gagal mengemas kini pembekal",
+        "updateErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "deleteSuccess": "Pembekal OAuth dipadam",
+        "deleteSuccessDesc": "Pembekal {name} telah berjaya dibuang",
+        "deleteError": "Gagal memadam pembekal",
+        "deleteErrorDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "secretRevealed": "Client secret dipaparkan",
+        "secretRevealedDesc": "Secret akan disembunyikan secara automatik dalam 30 saat",
+        "secretRevealError": "Gagal memaparkan secret",
+        "secretRevealErrorDesc": "Tidak dapat menyahsulit client secret",
+        "secretHidden": "Client secret disembunyikan",
+        "secretCopied": "Client secret disalin ke papan keratan",
+        "failedToCopy": "Gagal menyalin ke papan keratan",
+        "autoHiding": "Menyembunyikan secara automatik dalam {seconds}s",
+        "noSecretSet": "Tiada client secret ditetapkan"
+      },
+      "filters": {
+        "providerType": "Jenis Pembekal",
+        "enabled": "Status",
+        "status": "Status"
+      },
+      "immutable": "Tidak boleh diubah",
+      "deleteDialog": {
+        "title": "Padam Pembekal OAuth",
+        "confirmMessage": "Adakah anda pasti mahu memadam **{name}**? Tindakan ini tidak boleh dibatalkan dan akan membuang konfigurasi pembekal OAuth ini secara kekal."
+      },
+      "sheet": {
+        "createTitle": "Cipta Pembekal OAuth",
+        "createDescription": "Konfigurasi pembekal OAuth baharu untuk pengesahan.",
+        "editTitle": "Edit Pembekal OAuth",
+        "editDescription": "Kemas kini konfigurasi pembekal OAuth di bawah."
+      },
+      "empty": {
+        "title": "Tiada pembekal OAuth dijumpai",
+        "description": "Kami tidak dapat menemui pembekal OAuth. Cuba laraskan penapis anda atau cipta pembekal baharu."
+      }
+    },
+    "oauth_clients": {
+      "page": {
+        "title": "Klien OAuth",
+        "description": "Urus aplikasi klien OAuth 2.0 yang boleh mengesahkan dengan pelayan kebenaran anda"
+      },
+      "columns": {
+        "name": "Nama Klien",
+        "clientId": "Client ID",
+        "redirectUris": "URI Alih",
+        "pkceRequired": "PKCE",
+        "createdAt": "Dicipta",
+        "type": "Jenis"
+      },
+      "types": {
+        "confidential": "Sulit",
+        "public": "Awam"
+      },
+      "actions": {
+        "create": "Cipta Klien",
+        "search": "Cari klien...",
+        "edit": "Edit",
+        "revealSecret": "Papar Secret",
+        "delete": "Padam",
+        "cancel": "Batal",
+        "update": "Kemas Kini Klien",
+        "copy": "Salin",
+        "copied": "Disalin!",
+        "revealing": "Sedang memaparkan...",
+        "deleting": "Sedang memadam...",
+        "addRedirectUri": "Tambah URI Alih",
+        "closeNow": "Tutup Sekarang",
+        "saveSecret": "Saya Telah Menyimpan Secret",
+        "done": "Selesai"
+      },
+      "labels": {
+        "default": "Lalai",
+        "required": "Wajib",
+        "optional": "Pilihan",
+        "clientName": "Nama Klien *",
+        "redirectUris": "URI Alih *",
+        "pkceRequired": "PKCE Wajib",
+        "clientType": "Jenis Klien"
+      },
+      "placeholders": {
+        "clientName": "Aplikasi Saya",
+        "redirectUri": "https://example.com/callback"
+      },
+      "descriptions": {
+        "clientName": "Nama mesra untuk klien OAuth ini",
+        "redirectUris": "URL HTTP/HTTPS yang sah. Localhost dibenarkan untuk pembangunan.",
+        "pkceRequired": "Aktifkan untuk klien awam (SPA, aplikasi mudah alih)",
+        "pkceRequiredPublic": "PKCE sentiasa diperlukan untuk klien awam",
+        "confidentialType": "Aplikasi bahagian pelayan dengan penyimpanan secret yang selamat",
+        "publicType": "SPA, aplikasi mudah alih (PKCE wajib, tanpa secret)",
+        "clientTypeImmutable": "Jenis klien tidak boleh diubah selepas penciptaan"
+      },
+      "sheets": {
+        "create": {
+          "title": "Cipta Klien OAuth",
+          "description": "Cipta klien OAuth baharu untuk aplikasi anda. Client secret hanya akan dipaparkan sekali."
+        },
+        "edit": {
+          "title": "Edit Klien OAuth",
+          "description": "Kemas kini konfigurasi klien OAuth. Perubahan akan berkuat kuasa serta-merta."
+        }
+      },
+      "dialogs": {
+        "delete": {
+          "title": "Padam Klien OAuth",
+          "description": "Adakah anda pasti mahu memadam {name}? Tindakan ini tidak boleh dibatalkan. Semua aplikasi yang menggunakan klien ini akan berhenti berfungsi."
+        },
+        "reveal": {
+          "title": "Papar Client Secret",
+          "warning": "Amaran: Ini akan memaparkan sementara client secret untuk {name}. Secret akan kelihatan selama 30 saat.",
+          "securityNotice": {
+            "title": "Notis Keselamatan",
+            "point1": "Hanya paparkan secret dalam persekitaran yang selamat",
+            "point2": "Secret akan disembunyikan secara automatik selepas 30 saat",
+            "point3": "Pastikan tiada sesiapa yang melihat skrin anda"
+          },
+          "revealed": {
+            "title": "Secret Dipaparkan ({count}s berbaki)"
+          },
+          "remember": {
+            "title": "Ingat",
+            "point1": "Simpan secret dengan selamat jika anda belum berbuat demikian",
+            "point2": "Jangan sekali-kali commit secret ke version control",
+            "point3": "Dialog ini akan ditutup dalam {count} saat"
+          }
+        }
+      },
+      "secretDisplay": {
+        "title": "Client Secret Dicipta",
+        "warning": "Penting: Simpan secret ini sekarang - tidak akan dipaparkan lagi!",
+        "bestPractices": {
+          "title": "Amalan keselamatan terbaik:",
+          "point1": "Simpan di lokasi yang selamat (pengurus kata laluan, peti besi)",
+          "point2": "Jangan sekali-kali commit ke version control",
+          "point3": "Gunakan pembolehubah persekitaran dalam pengeluaran"
+        }
+      },
+      "toasts": {
+        "created": "Klien OAuth dicipta",
+        "createdDesc": "{name} telah berjaya dicipta.",
+        "updated": "Klien OAuth dikemas kini",
+        "updatedDesc": "{name} telah berjaya dikemas kini.",
+        "deleted": "Klien OAuth dipadam",
+        "deletedDesc": "{name} telah dipadam secara kekal.",
+        "secretCopied": "Secret disalin",
+        "secretCopiedDesc": "Client secret disalin ke papan keratan",
+        "createFailed": "Gagal mencipta klien OAuth",
+        "createFailedDesc": "Ralat tidak dijangka berlaku. Sila cuba lagi.",
+        "updateFailed": "Kemas kini gagal",
+        "updateFailedDesc": "Gagal mengemas kini klien OAuth",
+        "deleteFailed": "Pemadaman gagal",
+        "deleteFailedDesc": "Gagal memadam klien OAuth",
+        "loadFailed": "Gagal memuatkan klien",
+        "loadFailedDesc": "Tidak dapat memuatkan data klien OAuth",
+        "revealFailed": "Gagal memaparkan secret",
+        "revealFailedDesc": "Tidak dapat mendapatkan client secret",
+        "copyFailed": "Gagal menyalin",
+        "copyFailedDesc": "Gagal menyalin secret ke papan keratan",
+        "validationError": "Ralat Pengesahan",
+        "atLeastOneUri": "Sekurang-kurangnya satu URI alih diperlukan"
+      },
+      "alerts": {
+        "error": "Ralat",
+        "publicClientTitle": "Klien Awam",
+        "publicClientInfo": "Tidak memerlukan client secret. PKCE diperlukan untuk semua aliran kebenaran."
+      },
+      "credentialsDisplay": {
+        "title": "Klien OAuth Dicipta",
+        "clientIdLabel": "Client ID",
+        "secretWarning": "Client Secret - Simpan sekarang, tidak akan dipaparkan lagi!",
+        "publicClientInfo": {
+          "title": "Persediaan Klien Awam",
+          "point1": "Tidak perlu client secret - gunakan PKCE untuk keselamatan",
+          "point2": "Sertakan client_id dalam permintaan token melalui form body"
+        }
+      },
+      "loading": "Memuatkan klien OAuth...",
+      "empty": {
+        "title": "Tiada klien OAuth dijumpai",
+        "description": "Mulakan dengan mencipta aplikasi klien OAuth 2.0 pertama anda. Klien OAuth membenarkan aplikasi luaran mengesahkan pengguna melalui pelayan kebenaran anda."
+      }
+    }
+  },
+  "emailVerification": {
+    "title": "Sahkan e-mel anda",
+    "description": "Kami telah menghantar e-mel pengesahan ke {email}. Sila semak peti masuk anda dan klik pautan pengesahan untuk meneruskan.",
+    "resendButton": "Hantar semula e-mel pengesahan",
+    "resendSuccess": "E-mel dihantar!",
+    "refreshButton": "Saya sudah mengesahkan e-mel saya",
+    "checkSpam": "Tidak menemui e-mel? Semak folder spam anda.",
+    "successMessage": "E-mel pengesahan dihantar! Sila semak peti masuk anda.",
+    "errorMessage": "Gagal menghantar semula e-mel pengesahan"
+  },
+  "auth": {
+    "loggingOut": "Sedang log keluar...",
+    "login": {
+      "title": "Selamat Datang ke Altalune",
+      "subtitle": "Log masuk untuk mengakses papan pemuka anda",
+      "mockFormInfo": "Log masuk nama pengguna/kata laluan adalah untuk visualisasi sahaja. Sila gunakan log masuk OAuth di bawah.",
+      "usernameLabel": "Nama Pengguna",
+      "usernamePlaceholder": "Masukkan nama pengguna",
+      "passwordLabel": "Kata Laluan",
+      "passwordPlaceholder": "Masukkan kata laluan",
+      "usernameLoginButton": "Log Masuk dengan Nama Pengguna (Akan Datang)",
+      "oauthButton": "Log Masuk dengan Altalune",
+      "or": "Atau",
+      "redirecting": "Sedang mengalih..."
+    },
+    "callback": {
+      "processing": "Sedang melog masuk...",
+      "pleaseWait": "Sila tunggu sementara kami melengkapkan pengesahan",
+      "errorTitle": "Pengesahan Gagal",
+      "errorSubtitle": "Terdapat masalah semasa melog masuk anda",
+      "tryAgain": "Cuba Lagi",
+      "missingParams": "Kod kebenaran atau parameter state tidak dijumpai",
+      "exchangeFailed": "Gagal menukar kod kebenaran",
+      "unknownError": "Ralat tidak diketahui berlaku"
+    },
+    "errors": {
+      "invalidState": "Parameter state tidak sah. Sila cuba log masuk semula.",
+      "missingCodeVerifier": "Sesi tamat tempoh. Sila cuba log masuk semula.",
+      "accessDenied": "Akses dinafikan. Sila cuba lagi.",
+      "accountNotActivated": "Akaun anda sedang menunggu pengaktifan. Sila tunggu pentadbir untuk mengaktifkan akaun anda."
+    }
+  },
+  "layout": {
+    "header": {
+      "theme": {
+        "dark": "Gelap",
+        "light": "Terang",
+        "system": "Sistem"
+      },
+      "toggleTheme": "Togol tema"
+    }
+  },
+  "nav": {
+    "chatbot": {
+      "title": "Chatbot",
+      "llm": "LLM",
+      "prompt": "Prompt",
+      "mcpServer": "MCP Server",
+      "widget": "Widget"
+    },
+    "dashboard": "Papan Pemuka",
+    "nodes": {
+      "title": "Nod",
+      "create": "Cipta Nod"
+    },
+    "devices": {
+      "chat": "Sembang",
+      "scan": "Imbas",
+      "title": "Peranti"
+    },
+    "examples": {
+      "datatable": "Jadual Data",
+      "datatableVariant": "Jadual Data {variant}",
+      "title": "Contoh"
+    },
+    "home": "Laman Utama",
+    "iam": {
+      "title": "Identiti & Akses",
+      "users": "Pengguna",
+      "roles": "Peranan",
+      "permissions": "Kebenaran",
+      "oauthProviders": "Pembekal OAuth",
+      "oauthClients": "Klien OAuth"
+    },
+    "settings": {
+      "apiKeys": "Kunci API",
+      "oauth": "Pembekal OAuth",
+      "project": "Tetapan Projek",
+      "title": "Tetapan"
+    },
+    "user": {
+      "logOut": "Log Keluar",
+      "profile": "Profil"
+    }
+  }
+}

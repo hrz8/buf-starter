@@ -1,0 +1,1057 @@
+{
+  "common": {
+    "btn": {
+      "cancel": "Cancel",
+      "create": "Create",
+      "delete": "Delete",
+      "edit": "Edit",
+      "update": "Update"
+    },
+    "label": {
+      "active": "Active",
+      "disabled": "Disabled",
+      "enabled": "On",
+      "error": "Error",
+      "inactive": "Inactive"
+    },
+    "status": {
+      "creating": "Creating...",
+      "deleting": "Deleting...",
+      "error": "Error",
+      "loading": "Loading...",
+      "success": "Success",
+      "updating": "Updating..."
+    },
+    "cancel": "Cancel",
+    "save": "Save",
+    "success": "Success",
+    "error": "Error",
+    "creating": "Creating...",
+    "deleting": "Deleting...",
+    "enabled": "Enabled",
+    "disabled": "Disabled"
+  },
+  "datatable": {
+    "clearFilters": "Clear filters",
+    "makeCopy": "Make a copy",
+    "noDataFound": "No data found",
+    "noResults": "No results",
+    "noResultsFound": "No results found.",
+    "openMenu": "Open menu",
+    "reset": "Reset",
+    "rows": "Rows",
+    "searchPlaceholder": "Search {filter}...",
+    "selected": "{count} selected",
+    "showing": "Showing {start} to {end} of {total} results",
+    "showingShort": "{start}-{end} of {total}",
+    "toggleColumns": "Toggle columns",
+    "tryAdjusting": "Try adjusting your search or filters",
+    "view": "View"
+  },
+  "dashboard": {
+    "greeting": "Welcome back, {name}",
+    "subtitle": "Here's what's happening with your projects today."
+  },
+  "profile": {
+    "title": "Profile",
+    "description": "Your account information. Contact an administrator to update your details.",
+    "personalInfo": "Personal Information",
+    "email": "Email Address",
+    "emailHint": "Your email address is used for authentication and cannot be changed.",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "userId": "User ID",
+    "verified": "Verified",
+    "unverified": "Unverified",
+    "notLoggedIn": "You are not logged in."
+  },
+  "errorCodes": {
+    "60001": "Invalid input",
+    "60101": "Greeting to '{name}' is not recognized",
+    "60201": "Employee not found",
+    "60202": "Employee already exists",
+    "60301": "Project not found",
+    "60401": "API key not found",
+    "60402": "API key already exists",
+    "60500": "User not found",
+    "60501": "User already exists",
+    "60502": "Invalid email address",
+    "60503": "User is already active",
+    "60504": "User is already inactive",
+    "60505": "Cannot delete your own account",
+    "60600": "Role not found",
+    "60601": "Role already exists",
+    "60602": "Invalid role name",
+    "60603": "Role is in use and cannot be deleted",
+    "60604": "Role is protected and cannot be deleted",
+    "60700": "Permission not found",
+    "60701": "Permission already exists",
+    "60702": "Invalid permission name format",
+    "60704": "Permission is in use and cannot be deleted",
+    "60705": "Permission is protected and cannot be deleted",
+    "60800": "Mapping not found",
+    "60801": "Mapping already exists",
+    "60802": "Invalid project role",
+    "60803": "Cannot remove the last owner from the project",
+    "60804": "User not found in mapping",
+    "60805": "Role not found in mapping",
+    "60806": "Permission not found in mapping",
+    "60807": "Project not found in mapping",
+    "60810": "OAuth provider not found",
+    "60811": "Duplicate provider type (already exists)",
+    "60812": "Failed to encrypt client secret",
+    "60813": "Failed to decrypt client secret",
+    "60900": "OAuth client not found",
+    "60901": "OAuth client already exists",
+    "60902": "Invalid redirect URI",
+    "60903": "OAuth client secret is invalid",
+    "61001": "Node not found",
+    "61002": "Invalid node name format",
+    "61003": "Invalid language code",
+    "61004": "Duplicate node name and language combination",
+    "61005": "At least one trigger is required",
+    "61006": "At least one message is required",
+    "61007": "Invalid trigger type",
+    "61008": "Invalid regex pattern",
+    "69901": "Server Error"
+  },
+  "errorPage": {
+    "goHome": "Go back Home"
+  },
+  "example": {
+    "allowedNames": {
+      "errorLoading": "Error loading names",
+      "header": "Allowed Names",
+      "loading": "Loading names...",
+      "nextBtn": "Next",
+      "noNames": "No names found",
+      "pageInfo": "Page {current} of {total}",
+      "paginationInfo": "Showing {from} to {to} of {total} names",
+      "previousBtn": "Previous",
+      "refreshBtn": "Refresh",
+      "refreshBtnProgress": "Refreshing...",
+      "showingCount": "Showing {count} names",
+      "tableName": "Name",
+      "tableNumber": "#"
+    },
+    "error": "Error",
+    "header": "Check Greeting",
+    "inputPlaceholder": "Enter your name",
+    "response": "Response",
+    "submitBtn": "Say Hello",
+    "submitBtnProgress": "Sending..."
+  },
+  "features": {
+    "chatbot": {
+      "page": {
+        "title": "Module Configuration",
+        "description": "Configure chatbot modules for your project",
+        "noProjectSelected": "Please select a project to configure chatbot modules.",
+        "invalidModuleTitle": "Invalid Module",
+        "invalidModuleDesc": "The module \"{name}\" does not exist.",
+        "unknownModule": "Unknown Module",
+        "unsavedChanges": "You have unsaved changes"
+      },
+      "form": {
+        "save": "Save Configuration",
+        "saving": "Saving..."
+      },
+      "messages": {
+        "saveSuccess": "Configuration saved successfully",
+        "saveError": "Failed to save configuration",
+        "loadError": "Failed to load chatbot configuration",
+        "moduleEnabled": "Module enabled",
+        "moduleDisabled": "Module disabled",
+        "toggleError": "Failed to toggle module"
+      },
+      "toggle": {
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+      },
+      "array": {
+        "addItem": "Add Item",
+        "removeItem": "Remove"
+      }
+    },
+    "chatbotNode": {
+      "page": {
+        "title": "Edit Node",
+        "subtitle": "Language: {lang}",
+        "noProjectSelected": "Please select a project to view nodes.",
+        "notFoundTitle": "Node Not Found",
+        "notFoundDesc": "The requested node does not exist or has been deleted.",
+        "unsavedChanges": "You have unsaved changes"
+      },
+      "sheet": {
+        "createTitle": "Create New Node",
+        "createDescription": "Create a new chatbot response node. You can configure triggers and messages after creation."
+      },
+      "form": {
+        "name": "Node Name",
+        "namePlaceholder": "e.g., greeting, faq_pricing",
+        "nameHelp": "Use lowercase letters, numbers, and underscores only",
+        "lang": "Language",
+        "langPlaceholder": "Select a language",
+        "tags": "Tags",
+        "tagsPlaceholder": "Add tags...",
+        "enabled": "Enabled",
+        "create": "Create Node"
+      },
+      "trigger": {
+        "title": "Triggers",
+        "description": "Define conditions that activate this node. When a user message matches any trigger, this node's messages will be sent.",
+        "count": "trigger | triggers",
+        "type": "Type",
+        "value": "Value",
+        "valuePlaceholder": "Enter trigger value...",
+        "add": "Add Trigger",
+        "remove": "Remove",
+        "invalidRegex": "Invalid regex pattern"
+      },
+      "message": {
+        "title": "Messages",
+        "description": "Configure the bot's response messages. Messages are sent in sequence when the node is triggered.",
+        "count": "message | messages",
+        "content": "Message Content",
+        "placeholder": "Enter message content...",
+        "add": "Add Message",
+        "remove": "Remove",
+        "moveUp": "Move Up",
+        "moveDown": "Move Down"
+      },
+      "delete": {
+        "title": "Delete Node",
+        "description": "Are you sure you want to delete \"{name}\"? This action cannot be undone.",
+        "button": "Delete",
+        "confirm": "Delete Node"
+      },
+      "messages": {
+        "noProject": "No project selected",
+        "createSuccess": "Node created successfully",
+        "createError": "Failed to create node",
+        "saveSuccess": "Node saved successfully",
+        "saveError": "Failed to save node",
+        "deleteSuccess": "Node deleted successfully",
+        "deleteError": "Failed to delete node"
+      }
+    },
+    "api_keys": {
+      "actions": {
+        "activate": "Activate API Key",
+        "create": "Create API Key",
+        "deactivate": "Deactivate API Key",
+        "delete": "Delete API Key",
+        "edit": "Edit API Key",
+        "hideKey": "Hide API key",
+        "refresh": "Refresh",
+        "search": "Search API keys...",
+        "showKey": "Show API key"
+      },
+      "btn": {
+        "copied": "Copied!",
+        "copyKey": "Copy Key",
+        "copyToClipboard": "Copy to clipboard",
+        "done": "Done"
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "expiration": "Expiration",
+        "id": "ID",
+        "name": "Name",
+        "status": "Status"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently revoke this API key. Any applications using this key will lose access immediately.",
+        "title": "Delete API Key"
+      },
+      "display": {
+        "bestPracticesTitle": "Security Best Practices",
+        "keyNameLabel": "API Key Name",
+        "keyValueLabel": "API Key Value",
+        "modalSubtitle": "Save this key securely - you won't see it again",
+        "modalTitle": "API Key Created Successfully",
+        "securityTip1": "Store this key in a secure location (password manager, secure vault)",
+        "securityTip2": "Never share it publicly or commit it to version control",
+        "securityTip3": "Use environment variables or secure configuration management",
+        "securityTip4": "Rotate this key regularly for enhanced security",
+        "warningMessage": "This is the only time you'll see this API key. Copy it now and store it securely. You won't be able to see it again.",
+        "warningTitle": "Important:"
+      },
+      "empty": {
+        "description": "We couldn't find any API keys matching your criteria. Try adjusting your filters or search terms.",
+        "title": "No API keys found"
+      },
+      "filter": {
+        "status": "Status"
+      },
+      "form": {
+        "expirationDescription": "When this API key will expire and become invalid. Must be a future date.",
+        "expirationLabel": "Expiration Date *",
+        "nameDescription": "A descriptive name for this API key (2-50 characters, alphanumeric with spaces, hyphens, and underscores)",
+        "nameLabel": "API Key Name *",
+        "namePlaceholder": "Production API Key"
+      },
+      "loading": "Loading API keys...",
+      "messages": {
+        "activateSuccess": "API key activated successfully",
+        "closeWithoutCopying": "Close Without Copying",
+        "createError": "Failed to create API key",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "API key created successfully",
+        "createSuccessDesc": "{name} has been created. Please save the key value securely.",
+        "deactivateSuccess": "API key deactivated successfully",
+        "deleteError": "Failed to delete API key",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "API key deleted successfully",
+        "deleteSuccessDesc": "{name} has been removed.",
+        "failedToCopy": "Failed to copy to clipboard",
+        "failedToCopyDesc": "Please manually copy the API key.",
+        "keyCopied": "API key copied to clipboard",
+        "keyCopiedDesc": "The API key has been copied to your clipboard. Store it securely.",
+        "loadError": "Failed to load API key data",
+        "loadErrorDesc": "An unexpected error occurred.",
+        "toggleError": "Failed to toggle API key status",
+        "updateError": "Failed to update API key",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "updateSuccess": "API key updated successfully",
+        "updateSuccessDesc": "{name} has been updated."
+      },
+      "page": {
+        "description": "Manage API keys for secure programmatic access to your project's resources and services.",
+        "selectProjectMessage": "Please select a project to manage API keys.",
+        "title": "API Keys"
+      },
+      "sheet": {
+        "createDescription": "Create a new API key for your project. The generated key will only be shown once, so make sure to save it securely.",
+        "createTitle": "Create New API Key",
+        "editDescription": "Update API key details below. All fields marked with * are required.",
+        "editTitle": "Edit API Key"
+      },
+      "status": {
+        "active": "Active",
+        "expired": "Expired",
+        "expiringSoon": "Expiring Soon",
+        "inactive": "Inactive",
+        "unknown": "Unknown"
+      }
+    },
+    "permissions": {
+      "actions": {
+        "create": "Create Permission",
+        "delete": "Delete Permission",
+        "edit": "Edit Permission",
+        "refresh": "Refresh",
+        "search": "Search permissions..."
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "description": "Description",
+        "name": "Name"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently remove this permission from the system.",
+        "title": "Delete Permission"
+      },
+      "empty": {
+        "description": "We couldn't find any permissions matching your criteria. Try adjusting your filters or search terms.",
+        "title": "No permissions found"
+      },
+      "form": {
+        "descriptionLabel": "Description (Optional)",
+        "descriptionPlaceholder": "Describe what this permission allows",
+        "nameDescription": "Format: letters, numbers, underscores, and colons (e.g., \"project:read:metadata\")",
+        "nameLabel": "Permission Name *",
+        "namePlaceholder": "project:read"
+      },
+      "loading": "Loading permissions...",
+      "page": {
+        "description": "Define granular access permissions that can be assigned to roles and users for fine-grained access control.",
+        "title": "Permissions"
+      },
+      "messages": {
+        "createError": "Failed to create permission",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "Permission created",
+        "createSuccessDesc": "Permission \"{name}\" has been created successfully.",
+        "deleteError": "Failed to delete permission",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "Permission deleted successfully",
+        "deleteSuccessDesc": "\"{name}\" has been removed.",
+        "updateError": "Failed to update permission",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "updateSuccess": "Permission updated successfully",
+        "updateSuccessDesc": "\"{name}\" has been updated."
+      },
+      "sheet": {
+        "createDescription": "Create a new permission that can be assigned to roles and users.",
+        "createTitle": "Create New Permission",
+        "editDescription": "Update permission details below. All fields marked with * are required.",
+        "editTitle": "Edit Permission"
+      },
+      "status": {
+        "unknown": "Unknown"
+      }
+    },
+    "roles": {
+      "actions": {
+        "create": "Create Role",
+        "delete": "Delete Role",
+        "edit": "Edit Role",
+        "refresh": "Refresh",
+        "search": "Search roles..."
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "description": "Description",
+        "name": "Name"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently remove this role from the system.",
+        "title": "Delete Role"
+      },
+      "empty": {
+        "description": "We couldn't find any roles matching your criteria. Try adjusting your filters or search terms.",
+        "title": "No roles found"
+      },
+      "form": {
+        "descriptionLabel": "Description (Optional)",
+        "descriptionPlaceholder": "Describe what this role is used for",
+        "nameDescription": "Format: letters, numbers, and underscores (e.g., \"admin\" or \"project_manager\")",
+        "nameLabel": "Role Name *",
+        "namePlaceholder": "admin"
+      },
+      "loading": "Loading roles...",
+      "page": {
+        "description": "Create and manage roles to define user permissions and access levels across your system.",
+        "title": "Roles"
+      },
+      "messages": {
+        "createError": "Failed to create role",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "Role created",
+        "createSuccessDesc": "Role \"{name}\" has been created successfully.",
+        "deleteError": "Failed to delete role",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "Role deleted successfully",
+        "deleteSuccessDesc": "\"{name}\" has been removed.",
+        "updateError": "Failed to update role",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "updateSuccess": "Role updated successfully",
+        "updateSuccessDesc": "\"{name}\" has been updated."
+      },
+      "sheet": {
+        "createDescription": "Create a new role that can be assigned to users.",
+        "createTitle": "Create New Role",
+        "editDescription": "Update role details below. All fields marked with * are required.",
+        "editTitle": "Edit Role"
+      },
+      "tabs": {
+        "details": "Details",
+        "permissions": "Permissions"
+      },
+      "status": {
+        "unknown": "Unknown"
+      }
+    },
+    "users": {
+      "actions": {
+        "create": "Create User",
+        "delete": "Delete User",
+        "edit": "Edit User",
+        "openMenu": "Open menu",
+        "search": "Search users..."
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "email": "Email",
+        "firstName": "First Name",
+        "lastName": "Last Name",
+        "isActive": "Status",
+        "emailVerified": "Email Verified"
+      },
+      "dialog": {
+        "deleteDescription": "Are you sure you want to delete {name}? This action cannot be undone.",
+        "deleteTitle": "Delete User"
+      },
+      "empty": {
+        "description": "Get started by creating your first user.",
+        "title": "No users found"
+      },
+      "form": {
+        "emailDescription": "User's email address for authentication and communication",
+        "emailLabel": "Email",
+        "emailPlaceholder": "john.doe{'@'}example.com",
+        "firstNameLabel": "First Name",
+        "firstNamePlaceholder": "John",
+        "lastNameLabel": "Last Name",
+        "lastNamePlaceholder": "Doe"
+      },
+      "loading": "Loading users...",
+      "page": {
+        "description": "Manage user accounts, permissions, and access control for your organisation.",
+        "title": "Users"
+      },
+      "messages": {
+        "createError": "Failed to create user",
+        "createSuccess": "User created",
+        "createSuccessDesc": "{name} has been created successfully.",
+        "deleteError": "Failed to delete user",
+        "deleteSuccess": "User deleted",
+        "deleteSuccessDesc": "{name} has been deleted successfully.",
+        "updateError": "Failed to update user",
+        "updateSuccess": "User updated successfully",
+        "updateSuccessDesc": "{name} has been updated."
+      },
+      "sheet": {
+        "createDescription": "Create a new user account.",
+        "createTitle": "Create New User",
+        "editDescription": "Update user details below. All fields marked with * are required.",
+        "editTitle": "Edit User"
+      },
+      "tabs": {
+        "details": "Details",
+        "identities": "Identities",
+        "permissions": "Permissions",
+        "profile": "Profile",
+        "projects": "Projects",
+        "roles": "Roles"
+      },
+      "identities": {
+        "empty": "No linked identities found for this user",
+        "info": "User identities are created when users authenticate via OAuth providers.",
+        "neverLoggedIn": "Never logged in"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "verified": "Verified",
+        "unverified": "Unverified",
+        "unknown": "Unknown"
+      }
+    },
+    "employees": {
+      "actions": {
+        "create": "Create Employee",
+        "delete": "Delete Employee",
+        "duplicate": "Duplicate Employee",
+        "edit": "Edit Employee",
+        "search": "Search employees..."
+      },
+      "btn": {
+        "create": "Create Employee",
+        "duplicate": "Duplicate Employee"
+      },
+      "columns": {
+        "createdAt": "Created At",
+        "department": "Department",
+        "email": "Email",
+        "id": "ID",
+        "name": "Name",
+        "role": "Role",
+        "status": "Status"
+      },
+      "deleteDialog": {
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently remove this employee from the system.",
+        "title": "Delete Employee"
+      },
+      "empty": {
+        "description": "We couldn't find any employees matching your criteria. Try adjusting your filters or search terms.",
+        "title": "No employees found"
+      },
+      "filter": {
+        "department": "Department",
+        "role": "Role",
+        "status": "Status"
+      },
+      "loading": "Loading employee data...",
+      "form": {
+        "departmentDescription": "Select from common departments",
+        "departmentLabel": "Department *",
+        "departmentPlaceholder": "Select a department",
+        "departmentSelectLabel": "Departments",
+        "emailDescription": "Must be a valid email address",
+        "emailLabel": "Email Address *",
+        "emailPlaceholder": "john.doe{'@'}company.com",
+        "nameDescription": "Employee's full name (2-50 characters, letters only)",
+        "nameLabel": "Full Name *",
+        "namePlaceholder": "John Doe",
+        "roleDescription": "Select from common roles",
+        "roleLabel": "Role *",
+        "rolePlaceholder": "Select a role",
+        "roleSelectLabel": "Common Roles",
+        "statusDescription": "Employee's current status",
+        "statusLabel": "Status *",
+        "statusPlaceholder": "Select status"
+      },
+      "messages": {
+        "createError": "Failed to create employee",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "Employee created successfully",
+        "createSuccessDesc": "{name} has been added to the team.",
+        "deleteError": "Failed to delete employee",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "Employee deleted successfully",
+        "deleteSuccessDesc": "{name} has been removed.",
+        "loadError": "Failed to load employee data",
+        "loadErrorDesc": "An unexpected error occurred.",
+        "updateError": "Failed to update employee",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "updateSuccess": "Employee updated successfully",
+        "updateSuccessDesc": "{name} has been updated."
+      },
+      "sheet": {
+        "createDescription": "Fill in the employee details below. All fields marked with * are required.",
+        "createTitle": "Add New Employee",
+        "duplicateDescription": "Review and modify the employee details below. All fields marked with * are required.",
+        "duplicateTitle": "Duplicate Employee",
+        "editDescription": "Update employee details below. All fields marked with * are required.",
+        "editTitle": "Edit Employee"
+      },
+      "status": {
+        "errorLoadingTitle": "Error Loading Employee",
+        "unknown": "Unknown"
+      }
+    },
+    "projects": {
+      "actions": {
+        "add": "Add project",
+        "create": "Create Project"
+      },
+      "btn": {
+        "create": "Create Project"
+      },
+      "error": "Oops, something went wrong",
+      "label": "Projects",
+      "labels": {
+        "default": "Default",
+        "defaultProject": "Default Project"
+      },
+      "noProjectSelected": "No project selected",
+      "noProjectsFound": "No projects found",
+      "notFound": {
+        "title": "Project Not Found",
+        "description": "The project you were working on is no longer available. Please select a different project to continue.",
+        "invalidId": "The stored project ID is invalid or has been deleted:",
+        "selectLabel": "Select a project",
+        "selectPlaceholder": "Choose a project...",
+        "confirmButton": "Switch to Selected Project",
+        "hint": "Your project selection will be saved for future sessions."
+      },
+      "form": {
+        "commonTimezones": "Common Timezones",
+        "descriptionDescription": "Optional project description (maximum 100 characters)",
+        "descriptionLabel": "Description",
+        "descriptionPlaceholder": "Brief description of the project (optional)",
+        "environment": {
+          "live": "Live",
+          "liveDesc": "Production environment for live data",
+          "sandbox": "Sandbox",
+          "sandboxDesc": "Testing environment for development"
+        },
+        "environmentDescription": "Choose the environment type for this project",
+        "environmentLabel": "Environment *",
+        "environmentPlaceholder": "Select environment",
+        "nameDescription": "Project name (1-50 characters, letters, numbers, spaces, dashes, and underscores only)",
+        "nameLabel": "Project Name *",
+        "namePlaceholder": "My Awesome Project",
+        "timezoneDescription": "Project timezone for scheduling and data processing",
+        "timezoneLabel": "Timezone *",
+        "timezonePlaceholder": "Select a timezone"
+      },
+      "messages": {
+        "createError": "Failed to create project",
+        "createErrorDesc": "An unexpected error occurred. Please try again.",
+        "createSuccess": "Project created successfully",
+        "createSuccessDesc": "{name} has been created and is ready to use."
+      },
+      "sheet": {
+        "createDescription": "Fill in the project details below. All fields marked with * are required.",
+        "createTitle": "Add New Project"
+      },
+      "settings": {
+        "actions": {
+          "cancel": "Cancel",
+          "delete": "Delete Project",
+          "deleting": "Deleting...",
+          "save": "Save Changes",
+          "saving": "Saving..."
+        },
+        "deleteDialog": {
+          "confirmDescription": "Type 'Confirm delete {name}' to confirm",
+          "confirmLabel": "Type confirmation to delete",
+          "confirmPlaceholder": "Confirm delete [ProjectName]",
+          "description": "This action cannot be undone. All data associated with this project will be permanently deleted.",
+          "lastProjectWarning": "Cannot delete the last project. You must have at least one project.",
+          "title": "Delete Project"
+        },
+        "description": "Manage your project configuration and details",
+        "form": {
+          "descriptionDescription": "Brief description of your project (optional)",
+          "descriptionLabel": "Description",
+          "descriptionPlaceholder": "Enter project description",
+          "environmentDescription": "Cannot be changed after project creation",
+          "environmentLabel": "Environment",
+          "nameDescription": "A unique identifier for your project",
+          "nameLabel": "Project Name *",
+          "namePlaceholder": "Enter project name",
+          "timezoneDescription": "The timezone for this project",
+          "timezoneLabel": "Timezone *",
+          "timezonePlaceholder": "Select timezone"
+        },
+        "messages": {
+          "deleteConfirmMismatch": "Confirmation text does not match. Please try again.",
+          "deleteError": "Failed to delete project",
+          "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+          "deleteSuccess": "Project deleted",
+          "deleteSuccessDesc": "{name} has been permanently deleted",
+          "loadError": "Failed to load project settings",
+          "noProjectSelected": "Please select a project to view settings",
+          "updateError": "Failed to update project",
+          "updateErrorDesc": "An unexpected error occurred. Please try again.",
+          "updateSuccess": "Project updated",
+          "updateSuccessDesc": "{name} has been updated successfully",
+          "fetchError": "Failed to load project",
+          "fetchErrorDesc": "Unable to load project settings. Please try again."
+        },
+        "title": "Project Settings",
+        "dangerZone": {
+          "title": "Danger Zone",
+          "description": "Permanently delete this project and all associated data. This action cannot be undone."
+        }
+      }
+    },
+    "oauth": {
+      "page": {
+        "title": "OAuth Providers",
+        "description": "Configure OAuth authentication providers for user login"
+      },
+      "table": {
+        "providerType": "Provider",
+        "clientId": "Client ID",
+        "redirectUrl": "Redirect URL",
+        "scopes": "Scopes",
+        "status": "Status",
+        "enabled": "Status",
+        "createdAt": "Created",
+        "actions": "Actions",
+        "search": "Search providers...",
+        "noScopes": "No scopes"
+      },
+      "loading": "Loading OAuth providers...",
+      "status": {
+        "enabled": "Enabled",
+        "disabled": "Disabled"
+      },
+      "fields": {
+        "providerType": "Provider Type",
+        "clientId": "Client ID",
+        "clientSecret": "Client Secret",
+        "updateClientSecret": "Update Client Secret",
+        "redirectUrl": "Redirect URL",
+        "scopes": "Scopes",
+        "enabled": "Enabled"
+      },
+      "descriptions": {
+        "providerType": "Select the OAuth provider (cannot be changed after creation)",
+        "providerTypeImmutable": "Provider type cannot be changed after creation",
+        "clientSecret": "Secret credential from OAuth provider (encrypted before storage)",
+        "updateClientSecret": "Leave empty to keep the current secret",
+        "scopes": "Comma-separated list of OAuth scopes",
+        "enabled": "Enable or disable this provider for authentication"
+      },
+      "actions": {
+        "create": "Create Provider",
+        "createFirst": "Create your first provider",
+        "update": "Update Provider",
+        "delete": "Delete Provider",
+        "search": "Search providers...",
+        "revealSecret": "Reveal Secret",
+        "hideSecret": "Hide Secret",
+        "copySecret": "Copy Secret"
+      },
+      "messages": {
+        "createSuccess": "OAuth provider created",
+        "createSuccessDesc": "Provider {name} has been configured successfully",
+        "createError": "Failed to create provider",
+        "updateSuccess": "OAuth provider updated",
+        "updateSuccessDesc": "{name} provider has been updated successfully",
+        "updateError": "Failed to update provider",
+        "updateErrorDesc": "An unexpected error occurred. Please try again.",
+        "deleteSuccess": "OAuth provider deleted",
+        "deleteSuccessDesc": "{name} provider has been removed successfully",
+        "deleteError": "Failed to delete provider",
+        "deleteErrorDesc": "An unexpected error occurred. Please try again.",
+        "secretRevealed": "Client secret revealed",
+        "secretRevealedDesc": "Secret will auto-hide in 30 seconds",
+        "secretRevealError": "Failed to reveal secret",
+        "secretRevealErrorDesc": "Could not decrypt client secret",
+        "secretHidden": "Client secret hidden",
+        "secretCopied": "Client secret copied to clipboard",
+        "failedToCopy": "Failed to copy to clipboard",
+        "autoHiding": "Auto-hiding in {seconds}s",
+        "noSecretSet": "No client secret set"
+      },
+      "filters": {
+        "providerType": "Provider Type",
+        "enabled": "Status",
+        "status": "Status"
+      },
+      "immutable": "Immutable",
+      "deleteDialog": {
+        "title": "Delete OAuth Provider",
+        "confirmMessage": "Are you sure you want to delete **{name}**? This action cannot be undone and will permanently remove this OAuth provider configuration."
+      },
+      "sheet": {
+        "createTitle": "Create OAuth Provider",
+        "createDescription": "Configure a new OAuth provider for authentication.",
+        "editTitle": "Edit OAuth Provider",
+        "editDescription": "Update OAuth provider configuration below."
+      },
+      "empty": {
+        "title": "No OAuth providers found",
+        "description": "We couldn't find any OAuth providers. Try adjusting your filters or create a new provider."
+      }
+    },
+    "oauth_clients": {
+      "page": {
+        "title": "OAuth Clients",
+        "description": "Manage OAuth 2.0 client applications that can authenticate with your authorization server"
+      },
+      "columns": {
+        "name": "Client Name",
+        "clientId": "Client ID",
+        "redirectUris": "Redirect URIs",
+        "pkceRequired": "PKCE",
+        "createdAt": "Created",
+        "type": "Type"
+      },
+      "types": {
+        "confidential": "Confidential",
+        "public": "Public"
+      },
+      "actions": {
+        "create": "Create Client",
+        "search": "Search clients...",
+        "edit": "Edit",
+        "revealSecret": "Reveal Secret",
+        "delete": "Delete",
+        "cancel": "Cancel",
+        "update": "Update Client",
+        "copy": "Copy",
+        "copied": "Copied!",
+        "revealing": "Revealing...",
+        "deleting": "Deleting...",
+        "addRedirectUri": "Add Redirect URI",
+        "closeNow": "Close Now",
+        "saveSecret": "I've Saved the Secret",
+        "done": "Done"
+      },
+      "labels": {
+        "default": "Default",
+        "required": "Required",
+        "optional": "Optional",
+        "clientName": "Client Name *",
+        "redirectUris": "Redirect URIs *",
+        "pkceRequired": "PKCE Required",
+        "clientType": "Client Type"
+      },
+      "placeholders": {
+        "clientName": "My Application",
+        "redirectUri": "https://example.com/callback"
+      },
+      "descriptions": {
+        "clientName": "A friendly name for this OAuth client",
+        "redirectUris": "Valid HTTP/HTTPS URLs. Localhost allowed for development.",
+        "pkceRequired": "Enable for public clients (SPAs, mobile apps)",
+        "pkceRequiredPublic": "PKCE is always required for public clients",
+        "confidentialType": "Server-side applications with secure secret storage",
+        "publicType": "SPAs, mobile apps (PKCE required, no secret)",
+        "clientTypeImmutable": "Client type cannot be changed after creation"
+      },
+      "sheets": {
+        "create": {
+          "title": "Create OAuth Client",
+          "description": "Create a new OAuth client for your application. The client secret will only be shown once."
+        },
+        "edit": {
+          "title": "Edit OAuth Client",
+          "description": "Update the OAuth client configuration. Changes will take effect immediately."
+        }
+      },
+      "dialogs": {
+        "delete": {
+          "title": "Delete OAuth Client",
+          "description": "Are you sure you want to delete {name}? This action cannot be undone. All applications using this client will stop working."
+        },
+        "reveal": {
+          "title": "Reveal Client Secret",
+          "warning": "Warning: This will temporarily reveal the client secret for {name}. The secret will be visible for 30 seconds.",
+          "securityNotice": {
+            "title": "Security Notice",
+            "point1": "Only reveal the secret in a secure environment",
+            "point2": "The secret will auto-hide after 30 seconds",
+            "point3": "Make sure no one is watching your screen"
+          },
+          "revealed": {
+            "title": "Secret Revealed ({count}s remaining)"
+          },
+          "remember": {
+            "title": "Remember",
+            "point1": "Store the secret securely if you haven't already",
+            "point2": "Never commit secrets to version control",
+            "point3": "This dialog will close in {count} seconds"
+          }
+        }
+      },
+      "secretDisplay": {
+        "title": "Client Secret Created",
+        "warning": "Important: Save this secret now - it won't be shown again!",
+        "bestPractices": {
+          "title": "Security best practices:",
+          "point1": "Store in a secure location (password manager, vault)",
+          "point2": "Never commit to version control",
+          "point3": "Use environment variables in production"
+        }
+      },
+      "toasts": {
+        "created": "OAuth client created",
+        "createdDesc": "{name} has been created successfully.",
+        "updated": "OAuth client updated",
+        "updatedDesc": "{name} has been updated successfully.",
+        "deleted": "OAuth client deleted",
+        "deletedDesc": "{name} has been deleted permanently.",
+        "secretCopied": "Secret copied",
+        "secretCopiedDesc": "Client secret copied to clipboard",
+        "createFailed": "Failed to create OAuth client",
+        "createFailedDesc": "An unexpected error occurred. Please try again.",
+        "updateFailed": "Update failed",
+        "updateFailedDesc": "Failed to update OAuth client",
+        "deleteFailed": "Delete failed",
+        "deleteFailedDesc": "Failed to delete OAuth client",
+        "loadFailed": "Failed to load client",
+        "loadFailedDesc": "Could not load OAuth client data",
+        "revealFailed": "Failed to reveal secret",
+        "revealFailedDesc": "Could not retrieve client secret",
+        "copyFailed": "Copy failed",
+        "copyFailedDesc": "Failed to copy secret to clipboard",
+        "validationError": "Validation Error",
+        "atLeastOneUri": "At least one redirect URI is required"
+      },
+      "alerts": {
+        "error": "Error",
+        "publicClientTitle": "Public Client",
+        "publicClientInfo": "No client secret required. PKCE is required for all authorization flows."
+      },
+      "credentialsDisplay": {
+        "title": "OAuth Client Created",
+        "clientIdLabel": "Client ID",
+        "secretWarning": "Client Secret - Save this now, it won't be shown again!",
+        "publicClientInfo": {
+          "title": "Public Client Setup",
+          "point1": "No client secret required - use PKCE for security",
+          "point2": "Include client_id in token requests via form body"
+        }
+      },
+      "loading": "Loading OAuth clients...",
+      "empty": {
+        "title": "No OAuth clients found",
+        "description": "Get started by creating your first OAuth 2.0 client application. OAuth clients allow external applications to authenticate users through your authorization server."
+      }
+    }
+  },
+  "emailVerification": {
+    "title": "Verify your email",
+    "description": "We've sent a verification email to {email}. Please check your inbox and click the verification link to continue.",
+    "resendButton": "Resend verification email",
+    "resendSuccess": "Email sent!",
+    "refreshButton": "I already verified my email",
+    "checkSpam": "Can't find the email? Check your spam folder.",
+    "successMessage": "Verification email sent! Please check your inbox.",
+    "errorMessage": "Failed to resend verification email"
+  },
+  "auth": {
+    "loggingOut": "Logging out...",
+    "login": {
+      "title": "Welcome to Altalune",
+      "subtitle": "Sign in to access your dashboard",
+      "mockFormInfo": "Username/password login is for visualization only. Please use OAuth login below.",
+      "usernameLabel": "Username",
+      "usernamePlaceholder": "Enter your username",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "usernameLoginButton": "Login with Username (Coming Soon)",
+      "oauthButton": "Login with Altalune",
+      "or": "Or",
+      "redirecting": "Redirecting..."
+    },
+    "callback": {
+      "processing": "Signing you in...",
+      "pleaseWait": "Please wait while we complete authentication",
+      "errorTitle": "Authentication Failed",
+      "errorSubtitle": "There was a problem signing you in",
+      "tryAgain": "Try Again",
+      "missingParams": "Missing authorization code or state parameter",
+      "exchangeFailed": "Failed to exchange authorization code",
+      "unknownError": "An unknown error occurred"
+    },
+    "errors": {
+      "invalidState": "Invalid state parameter. Please try logging in again.",
+      "missingCodeVerifier": "Session expired. Please try logging in again.",
+      "accessDenied": "Access was denied. Please try again.",
+      "accountNotActivated": "Your account is pending activation. Please wait for an administrator to activate your account."
+    }
+  },
+  "layout": {
+    "header": {
+      "theme": {
+        "dark": "Dark",
+        "light": "Light",
+        "system": "System"
+      },
+      "toggleTheme": "Toggle theme"
+    }
+  },
+  "nav": {
+    "chatbot": {
+      "title": "Chatbot",
+      "llm": "LLM",
+      "prompt": "Prompt",
+      "mcpServer": "MCP Server",
+      "widget": "Widget"
+    },
+    "nodes": {
+      "title": "Nodes",
+      "create": "Create Node"
+    },
+    "dashboard": "Dashboard",
+    "devices": {
+      "chat": "Chat",
+      "scan": "Scan",
+      "title": "Devices"
+    },
+    "examples": {
+      "datatable": "Datatable",
+      "datatableVariant": "Datatable {variant}",
+      "title": "Examples"
+    },
+    "home": "Home",
+    "iam": {
+      "title": "Identity & Access",
+      "users": "Users",
+      "roles": "Roles",
+      "permissions": "Permissions",
+      "oauthProviders": "OAuth Providers",
+      "oauthClients": "OAuth Clients"
+    },
+    "settings": {
+      "apiKeys": "API Keys",
+      "oauth": "OAuth Providers",
+      "project": "Project Settings",
+      "title": "Settings"
+    },
+    "user": {
+      "logOut": "Log out",
+      "profile": "Profile"
+    }
+  }
+}

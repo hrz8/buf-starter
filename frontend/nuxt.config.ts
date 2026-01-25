@@ -70,14 +70,26 @@ export default defineNuxtConfig({
     locales: [
       {
         code: 'en-US',
-        name: 'English',
+        name: 'English (US)',
         file: 'en-US.json',
+        dir: 'ltr',
+      },
+      {
+        code: 'en-GB',
+        name: 'English (UK)',
+        file: 'en-GB.json',
         dir: 'ltr',
       },
       {
         code: 'id-ID',
         name: 'Bahasa Indonesia',
         file: 'id-ID.json',
+        dir: 'ltr',
+      },
+      {
+        code: 'ms-MY',
+        name: 'Bahasa Melayu',
+        file: 'ms-MY.json',
         dir: 'ltr',
       },
     ],

@@ -5,7 +5,9 @@ export type TriggerType = typeof TRIGGER_TYPES[number];
 // Supported languages
 export const LANGUAGES = [
   { value: 'en-US', label: 'English (US)' },
-  { value: 'id-ID', label: 'Indonesian' },
+  { value: 'en-GB', label: 'English (UK)' },
+  { value: 'id-ID', label: 'Bahasa Indonesia' },
+  { value: 'ms-MY', label: 'Bahasa Melayu' },
 ] as const;
 
 export type LanguageCode = typeof LANGUAGES[number]['value'];
