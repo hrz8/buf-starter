@@ -1,5 +1,7 @@
 <script setup lang="ts">
+import { usePageTitle } from '@/composables/usePageTitle';
 import { useAuthStore } from '@/stores/auth';
+import { useBrandingStore } from '@/stores/branding';
 
 definePageMeta({
   layout: 'default',
@@ -7,6 +9,9 @@ definePageMeta({
 
 const { t } = useI18n();
 const authStore = useAuthStore();
+const brandingStore = useBrandingStore();
+
+usePageTitle(computed(() => t('nav.dashboard')));
 
 // Get first name for greeting, fallback to name or email
 const greeting = computed(() => {
@@ -29,7 +34,7 @@ const greeting = computed(() => {
     <!-- Greeting Section -->
     <div class="space-y-1">
       <h1 class="text-2xl font-semibold tracking-tight">
-        {{ t('dashboard.greeting', { name: greeting }) }}
+        {{ t('dashboard.greeting', { brand: brandingStore.dashboardName, name: greeting }) }}
       </h1>
       <p class="text-sm text-muted-foreground">
         {{ t('dashboard.subtitle') }}

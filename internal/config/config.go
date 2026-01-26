@@ -263,3 +263,18 @@ func (c *AppConfig) GetVerificationTokenExpiryHours() int {
 	}
 	return c.Notification.Verification.TokenExpiryHours
 }
+
+// Branding configuration
+func (c *AppConfig) GetDashboardBrandingName() string {
+	if c.Branding == nil || c.Branding.Dashboard == nil || c.Branding.Dashboard.Name == "" {
+		return "Altalune"
+	}
+	return c.Branding.Dashboard.Name
+}
+
+func (c *AppConfig) GetAuthServerBrandingName() string {
+	if c.Branding == nil || c.Branding.AuthServer == nil || c.Branding.AuthServer.Name == "" {
+		return "Altalune"
+	}
+	return c.Branding.AuthServer.Name
+}

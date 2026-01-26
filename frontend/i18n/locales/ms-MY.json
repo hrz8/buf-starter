@@ -49,12 +49,12 @@
     "view": "Paparan"
   },
   "dashboard": {
-    "greeting": "Selamat kembali, {name}",
+    "greeting": "Selamat kembali ke {brand}, {name}",
     "subtitle": "Berikut apa yang berlaku dengan projek anda hari ini."
   },
   "profile": {
     "title": "Profil",
-    "description": "Maklumat akaun anda. Hubungi pentadbir untuk mengemas kini butiran anda.",
+    "description": "Maklumat akaun anda.",
     "personalInfo": "Maklumat Peribadi",
     "email": "Alamat E-mel",
     "emailHint": "Alamat e-mel anda digunakan untuk pengesahan dan tidak boleh diubah.",
@@ -63,7 +63,8 @@
     "userId": "ID Pengguna",
     "verified": "Disahkan",
     "unverified": "Belum Disahkan",
-    "notLoggedIn": "Anda belum log masuk."
+    "notLoggedIn": "Anda belum log masuk.",
+    "editProfile": "Edit Profil"
   },
   "errorCodes": {
     "60001": "Input tidak sah",
@@ -972,7 +973,7 @@
   "auth": {
     "loggingOut": "Sedang log keluar...",
     "login": {
-      "title": "Selamat Datang ke Altalune",
+      "title": "Selamat Datang ke {brand}",
       "subtitle": "Log masuk untuk mengakses papan pemuka anda",
       "mockFormInfo": "Log masuk nama pengguna/kata laluan adalah untuk visualisasi sahaja. Sila gunakan log masuk OAuth di bawah.",
       "usernameLabel": "Nama Pengguna",
@@ -980,7 +981,7 @@
       "passwordLabel": "Kata Laluan",
       "passwordPlaceholder": "Masukkan kata laluan",
       "usernameLoginButton": "Log Masuk dengan Nama Pengguna (Akan Datang)",
-      "oauthButton": "Log Masuk dengan Altalune",
+      "oauthButton": "Log Masuk dengan {brand}",
       "or": "Atau",
       "redirecting": "Sedang mengalih..."
     },

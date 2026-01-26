@@ -156,16 +156,16 @@ type DashboardOAuthConfig struct {
 
 // NotificationConfig contains notification service settings.
 type NotificationConfig struct {
-	AuthBaseURL  string                   `yaml:"authBaseURL" validate:"omitempty,url"` // Base URL for verification links
-	Email        *EmailNotificationConfig `yaml:"email" validate:"required"`
-	OTP          *OTPNotificationConfig   `yaml:"otp"`
+	AuthBaseURL  string                          `yaml:"authBaseURL" validate:"omitempty,url"` // Base URL for verification links
+	Email        *EmailNotificationConfig        `yaml:"email" validate:"required"`
+	OTP          *OTPNotificationConfig          `yaml:"otp"`
 	Verification *VerificationNotificationConfig `yaml:"verification"`
 }
 
 // OTPNotificationConfig contains OTP generation and validation settings.
 type OTPNotificationConfig struct {
-	ExpirySeconds       int `yaml:"expirySeconds" validate:"gte=60,lte=3600"`   // OTP expiry in seconds (default: 300 = 5 minutes)
-	RateLimit           int `yaml:"rateLimit" validate:"gte=1,lte=10"`          // Max OTPs per window (default: 3)
+	ExpirySeconds       int `yaml:"expirySeconds" validate:"gte=60,lte=3600"`    // OTP expiry in seconds (default: 300 = 5 minutes)
+	RateLimit           int `yaml:"rateLimit" validate:"gte=1,lte=10"`           // Max OTPs per window (default: 3)
 	RateLimitWindowMins int `yaml:"rateLimitWindowMins" validate:"gte=1,lte=60"` // Rate limit window in minutes (default: 15)
 }
 
@@ -234,6 +234,32 @@ func (c *NotificationConfig) setDefaults() {
 	}
 }
 
+// BrandingNameConfig contains name configuration for a specific component.
+type BrandingNameConfig struct {
+	Name string `yaml:"name" validate:"required,min=1,max=100"`
+}
+
+// BrandingConfig contains whitelabel branding configuration.
+type BrandingConfig struct {
+	Dashboard  *BrandingNameConfig `yaml:"dashboard"`
+	AuthServer *BrandingNameConfig `yaml:"authServer"`
+}
+
+func (c *BrandingConfig) setDefaults() {
+	if c.Dashboard == nil {
+		c.Dashboard = &BrandingNameConfig{}
+	}
+	if c.Dashboard.Name == "" {
+		c.Dashboard.Name = "Altalune Dashboard"
+	}
+	if c.AuthServer == nil {
+		c.AuthServer = &BrandingNameConfig{}
+	}
+	if c.AuthServer.Name == "" {
+		c.AuthServer.Name = "Authalune"
+	}
+}
+
 type AppConfig struct {
 	Server         *ServerConfig         `yaml:"server" validate:"required"`
 	Database       *DatabaseConfig       `yaml:"database" validate:"required"`
@@ -242,6 +268,7 @@ type AppConfig struct {
 	Seeder         *SeederConfig         `yaml:"seeder" validate:"required"`
 	DashboardOAuth *DashboardOAuthConfig `yaml:"dashboardOauth" validate:"required"`
 	Notification   *NotificationConfig   `yaml:"notification"`
+	Branding       *BrandingConfig       `yaml:"branding"`
 }
 
 func (c *AppConfig) setDefaults() {
@@ -253,6 +280,10 @@ func (c *AppConfig) setDefaults() {
 		c.Notification = &NotificationConfig{}
 	}
 	c.Notification.setDefaults()
+	if c.Branding == nil {
+		c.Branding = &BrandingConfig{}
+	}
+	c.Branding.setDefaults()
 }
 
 func (c *AppConfig) Validate() error {

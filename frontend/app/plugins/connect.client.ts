@@ -5,6 +5,7 @@ import { createConnectTransport } from '@connectrpc/connect-web';
 import { ApiKeyService } from '~~/gen/altalune/v1/api_key_pb';
 import { ChatbotNodeService } from '~~/gen/altalune/v1/chatbot_node_pb';
 import { ChatbotService } from '~~/gen/altalune/v1/chatbot_pb';
+import { ConfigService } from '~~/gen/altalune/v1/config_pb';
 import { EmployeeService } from '~~/gen/altalune/v1/employee_pb';
 import { IAMMapperService } from '~~/gen/altalune/v1/iam_mapper_pb';
 import { OAuthClientService } from '~~/gen/altalune/v1/oauth_client_pb';
@@ -46,45 +47,56 @@ function createAuthInterceptor(): Interceptor {
   };
 }
 
-export default defineNuxtPlugin(() => {
-  const config = useRuntimeConfig();
+export default defineNuxtPlugin({
+  name: 'connect',
+  setup() {
+    const config = useRuntimeConfig();
 
-  const authInterceptor = createAuthInterceptor();
+    const authInterceptor = createAuthInterceptor();
 
-  const transport = createConnectTransport({
-    baseUrl: config.public.apiUrl,
-    interceptors: [authInterceptor],
-  });
+    // Transport with auth interceptor for authenticated endpoints
+    const transport = createConnectTransport({
+      baseUrl: config.public.apiUrl,
+      interceptors: [authInterceptor],
+    });
 
-  const validator = createValidator();
-  const apiKeyClient = createClient(ApiKeyService, transport);
-  const chatbotClient = createClient(ChatbotService, transport);
-  const chatbotNodeClient = createClient(ChatbotNodeService, transport);
-  const greeterClient = createClient(GreeterService, transport);
-  const employeeClient = createClient(EmployeeService, transport);
-  const projectClient = createClient(ProjectService, transport);
-  const userClient = createClient(UserService, transport);
-  const roleClient = createClient(RoleService, transport);
-  const permissionClient = createClient(PermissionService, transport);
-  const iamMapperClient = createClient(IAMMapperService, transport);
-  const oauthClientClient = createClient(OAuthClientService, transport);
-  const oauthProviderClient = createClient(OAuthProviderService, transport);
+    // Transport without auth for public endpoints
+    const publicTransport = createConnectTransport({
+      baseUrl: config.public.apiUrl,
+    });
 
-  return {
-    provide: {
-      validator,
-      apiKeyClient,
-      chatbotClient,
-      chatbotNodeClient,
-      greeterClient,
-      employeeClient,
-      projectClient,
-      userClient,
-      roleClient,
-      permissionClient,
-      iamMapperClient,
-      oauthClientClient,
-      oauthProviderClient,
-    },
-  };
+    const validator = createValidator();
+    const configClient = createClient(ConfigService, publicTransport);
+    const apiKeyClient = createClient(ApiKeyService, transport);
+    const chatbotClient = createClient(ChatbotService, transport);
+    const chatbotNodeClient = createClient(ChatbotNodeService, transport);
+    const greeterClient = createClient(GreeterService, transport);
+    const employeeClient = createClient(EmployeeService, transport);
+    const projectClient = createClient(ProjectService, transport);
+    const userClient = createClient(UserService, transport);
+    const roleClient = createClient(RoleService, transport);
+    const permissionClient = createClient(PermissionService, transport);
+    const iamMapperClient = createClient(IAMMapperService, transport);
+    const oauthClientClient = createClient(OAuthClientService, transport);
+    const oauthProviderClient = createClient(OAuthProviderService, transport);
+
+    return {
+      provide: {
+        validator,
+        configClient,
+        apiKeyClient,
+        chatbotClient,
+        chatbotNodeClient,
+        greeterClient,
+        employeeClient,
+        projectClient,
+        userClient,
+        roleClient,
+        permissionClient,
+        iamMapperClient,
+        oauthClientClient,
+        oauthProviderClient,
+      },
+    };
+  },
 });

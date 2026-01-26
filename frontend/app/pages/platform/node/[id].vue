@@ -19,6 +19,7 @@ import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
 import { Switch } from '@/components/ui/switch';
 import { useChatbotNodeService } from '@/composables/services/useChatbotNodeService';
+import { usePageTitle } from '@/composables/usePageTitle';
 import { useChatbotNodeStore } from '@/stores/chatbot-node';
 import { useProjectStore } from '@/stores/project';
 
@@ -28,6 +29,8 @@ const router = useRouter();
 const projectStore = useProjectStore();
 const nodeStore = useChatbotNodeStore();
 const nodeService = useChatbotNodeService();
+
+usePageTitle(computed(() => t('features.chatbotNode.page.title')));
 
 // Get node ID from route params
 const nodeId = computed(() => route.params.id as string);

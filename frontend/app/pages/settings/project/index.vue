@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import ProjectSettingsForm from '@/components/features/project/ProjectSettingsForm.vue';
+import { usePageTitle } from '@/composables/usePageTitle';
 import { useProjectStore } from '~/stores/project';
 
 const { t } = useI18n();
 const projectStore = useProjectStore();
 const projectId = computed(() => projectStore.activeProjectId);
+
+usePageTitle(computed(() => t('features.projects.settings.title')));
 </script>
 
 <template>

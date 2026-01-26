@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package altalune.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/altalune/v1;altalunev1";
+
+// ConfigService provides public configuration for client applications.
+// This service does not require authentication.
+service ConfigService {
+  // GetPublicConfig returns public configuration including branding information.
+  rpc GetPublicConfig(GetPublicConfigRequest) returns (GetPublicConfigResponse);
+}
+
+message GetPublicConfigRequest {}
+
+message GetPublicConfigResponse {
+  BrandingConfig branding = 1;
+}
+
+// BrandingConfig contains whitelabel branding information.
+message BrandingConfig {
+  // Dashboard application branding name (e.g., "Company CRM")
+  string dashboard_name = 1;
+  // Auth server/IDP branding name (e.g., "Trinity Wizard SSO")
+  string auth_server_name = 2;
+}

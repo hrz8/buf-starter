@@ -82,4 +82,8 @@ type Config interface {
 
 	// Email verification configuration
 	GetVerificationTokenExpiryHours() int
+
+	// Branding configuration
+	GetDashboardBrandingName() string
+	GetAuthServerBrandingName() string
 }

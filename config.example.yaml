@@ -14,6 +14,13 @@ server:
   idleTimeout: 60         # HTTP idle timeout in seconds (default: 60)
   cleanupTimeout: 10      # HTTP cleanup timeout in seconds (default: 10)
 
+# Branding configuration (whitelabel support)
+branding:
+  dashboard:
+    name: "Altalune Dashboard"  # Dashboard application name (shown on login page, greeting, etc.)
+  authServer:
+    name: "Authalune"           # Auth server/IDP name (shown on login with button, OAuth consent, etc.)
+
 # Database configuration
 database:
   url: "postgres://postgres:toor@localhost:5432/altalune?sslmode=disable"   # PostgreSQL connection string

@@ -49,12 +49,12 @@
     "view": "Tampilan"
   },
   "dashboard": {
-    "greeting": "Selamat datang kembali, {name}",
+    "greeting": "Selamat datang kembali di {brand}, {name}",
     "subtitle": "Berikut yang terjadi dengan proyek Anda hari ini."
   },
   "profile": {
     "title": "Profil",
-    "description": "Informasi akun Anda. Hubungi administrator untuk memperbarui data Anda.",
+    "description": "Informasi akun Anda.",
     "personalInfo": "Informasi Pribadi",
     "email": "Alamat Email",
     "emailHint": "Alamat email Anda digunakan untuk autentikasi dan tidak dapat diubah.",
@@ -63,7 +63,8 @@
     "userId": "ID Pengguna",
     "verified": "Terverifikasi",
     "unverified": "Belum Terverifikasi",
-    "notLoggedIn": "Anda belum masuk."
+    "notLoggedIn": "Anda belum masuk.",
+    "editProfile": "Edit Profil"
   },
   "errorCodes": {
     "60001": "Input tidak valid",
@@ -967,7 +968,7 @@
   "auth": {
     "loggingOut": "Sedang keluar...",
     "login": {
-      "title": "Selamat Datang di Altalune",
+      "title": "Selamat Datang di {brand}",
       "subtitle": "Masuk untuk mengakses dasbor Anda",
       "mockFormInfo": "Login username/password hanya untuk visualisasi. Silakan gunakan login OAuth di bawah.",
       "usernameLabel": "Nama Pengguna",
@@ -975,7 +976,7 @@
       "passwordLabel": "Kata Sandi",
       "passwordPlaceholder": "Masukkan kata sandi",
       "usernameLoginButton": "Login dengan Username (Segera Hadir)",
-      "oauthButton": "Login dengan Altalune",
+      "oauthButton": "Login dengan {brand}",
       "or": "Atau",
       "redirecting": "Mengalihkan..."
     },

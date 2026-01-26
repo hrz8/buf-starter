@@ -8,6 +8,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
+import { usePageTitle } from '@/composables/usePageTitle';
+import { useBrandingStore } from '@/stores/branding';
 import { initiateOAuthFlow } from '@/utils/oauth';
 
 definePageMeta({
@@ -17,6 +19,9 @@ definePageMeta({
 
 const { t } = useI18n();
 const config = useRuntimeConfig();
+const brandingStore = useBrandingStore();
+
+usePageTitle('Login');
 
 const isRedirecting = ref(false);
 
@@ -39,7 +44,7 @@ async function handleLogin() {
           <Icon name="lucide:lock" class="size-12 mx-auto text-primary" />
         </div>
         <CardTitle class="text-2xl">
-          {{ t('auth.login.title') }}
+          {{ t('auth.login.title', { brand: brandingStore.dashboardName }) }}
         </CardTitle>
         <CardDescription>
           {{ t('auth.login.subtitle') }}
@@ -58,7 +63,7 @@ async function handleLogin() {
             {{ t('auth.login.redirecting') }}
           </template>
           <template v-else>
-            {{ t('auth.login.oauthButton') }}
+            {{ t('auth.login.oauthButton', { brand: brandingStore.authServerName }) }}
           </template>
         </Button>
       </CardContent>

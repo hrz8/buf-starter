@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{{.Title}} - Altalune</title>
+    <title>{{.Title}} - {{.Branding.Name}}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css">
     <style>
@@ -40,9 +40,9 @@
                     <div class="text-center mb-4">
                         {{if .ClientName}}
                         <h1 class="h3 mb-3 fw-bold">Sign in to {{.ClientName}}</h1>
-                        <p class="text-muted">via Altalune</p>
+                        <p class="text-muted">via {{.Branding.Name}}</p>
                         {{else}}
-                        <h1 class="h3 mb-3 fw-bold">Sign in to Altalune</h1>
+                        <h1 class="h3 mb-3 fw-bold">Sign in to {{.Branding.Name}}</h1>
                         <p class="text-muted">Choose your authentication method</p>
                         {{end}}
                     </div>

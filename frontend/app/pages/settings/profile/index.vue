@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
@@ -11,10 +12,16 @@ import {
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { usePageTitle } from '@/composables/usePageTitle';
 import { useAuthStore } from '@/stores/auth';
 
 const { t } = useI18n();
+const config = useRuntimeConfig();
 const authStore = useAuthStore();
+
+usePageTitle(computed(() => t('profile.title')));
+
+const editProfileUrl = computed(() => `${config.public.authServerUrl}/edit-profile`);
 
 const user = computed(() => authStore.user);
 
@@ -64,25 +71,31 @@ const displayName = computed(() => {
       </CardHeader>
       <CardContent v-if="user" class="space-y-6">
         <!-- Avatar Section -->
-        <div class="flex items-center gap-4">
-          <Avatar class="h-20 w-20">
-            <AvatarImage
-              v-if="user.picture"
-              :src="user.picture"
-              :alt="displayName"
-            />
-            <AvatarFallback class="text-2xl">
-              {{ initials }}
-            </AvatarFallback>
-          </Avatar>
-          <div>
-            <h3 class="text-lg font-medium">
-              {{ displayName }}
-            </h3>
-            <p class="text-sm text-muted-foreground">
-              {{ user.email }}
-            </p>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-4">
+            <Avatar class="h-20 w-20">
+              <AvatarImage
+                v-if="user.picture"
+                :src="user.picture"
+                :alt="displayName"
+              />
+              <AvatarFallback class="text-2xl">
+                {{ initials }}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <h3 class="text-lg font-medium">
+                {{ displayName }}
+              </h3>
+              <p class="text-sm text-muted-foreground">
+                {{ user.email }}
+              </p>
+            </div>
           </div>
+          <Button as="a" :href="editProfileUrl" target="_blank" variant="outline">
+            <Icon name="lucide:external-link" class="mr-2 h-4 w-4" />
+            {{ t('profile.editProfile') }}
+          </Button>
         </div>
 
         <Separator />

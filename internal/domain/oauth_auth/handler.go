@@ -64,6 +64,16 @@ func NewHandler(
 	}
 }
 
+// baseData creates a BaseData struct with branding information.
+func (h *Handler) baseData(title string) views.BaseData {
+	return views.BaseData{
+		Title: title,
+		Branding: views.BrandingData{
+			Name: h.cfg.GetAuthServerBrandingName(),
+		},
+	}
+}
+
 func (h *Handler) HandleLoginPage(w http.ResponseWriter, r *http.Request) {
 	if h.sessionStore.IsAuthenticated(r) {
 		// If user is already authenticated, redirect based on user status
@@ -99,9 +109,7 @@ func (h *Handler) HandleLoginPage(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := views.LoginPageData{
-		BaseData: views.BaseData{
-			Title: "Sign In",
-		},
+		BaseData:     h.baseData("Sign In"),
 		Providers:    views.GetProviders(),
 		ErrorMessage: errorMsg,
 		ClientName:   clientName,
@@ -409,9 +417,7 @@ func (h *Handler) HandleLogout(w http.ResponseWriter, r *http.Request) {
 		h.log.Error("failed to clear session", "error", err)
 	}
 
-	data := views.BaseData{
-		Title: "Logged Out",
-	}
+	data := h.baseData("Logged Out")
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if err := views.Render(w, "logout.html", data); err != nil {
@@ -1197,9 +1203,7 @@ func (h *Handler) renderAuthError(w http.ResponseWriter, r *http.Request, redire
 
 func (h *Handler) renderError(w http.ResponseWriter, errorCode, errorDesc string) {
 	data := views.ErrorPageData{
-		BaseData: views.BaseData{
-			Title: "Error",
-		},
+		BaseData:         h.baseData("Error"),
 		Error:            errorCode,
 		ErrorDescription: errorDesc,
 		ShowBackToLogin:  true,
@@ -1217,9 +1221,7 @@ func (h *Handler) renderConsentPage(w http.ResponseWriter, client *OAuthClientIn
 	scopes := parseScopes(params.Scope)
 
 	data := views.ConsentPageData{
-		BaseData: views.BaseData{
-			Title: "Authorize",
-		},
+		BaseData:            h.baseData("Authorize"),
 		ClientName:          client.Name,
 		Scopes:              scopes,
 		CSRFToken:           csrfToken,
@@ -1360,9 +1362,7 @@ func (h *Handler) HandleProfile(w http.ResponseWriter, r *http.Request) {
 	verificationEmailError := verificationStatus == "error"
 
 	data := views.ProfileData{
-		BaseData: views.BaseData{
-			Title: "Your Profile",
-		},
+		BaseData:                   h.baseData("Your Profile"),
 		User:                       user,
 		Identities:                 userIdentities,
 		Consents:                   consents,
@@ -1447,10 +1447,8 @@ func (h *Handler) HandleEmailLoginPage(w http.ResponseWriter, r *http.Request) {
 	errorMsg := r.URL.Query().Get("error")
 
 	data := views.EmailLoginPageData{
-		BaseData: views.BaseData{
-			Title: "Login with Email",
-		},
-		Error: errorMsg,
+		BaseData: h.baseData("Login with Email"),
+		Error:    errorMsg,
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -1523,9 +1521,7 @@ func (h *Handler) HandleOTPPage(w http.ResponseWriter, r *http.Request) {
 	errorMsg := r.URL.Query().Get("error")
 
 	data := views.OTPPageData{
-		BaseData: views.BaseData{
-			Title: "Enter Code",
-		},
+		BaseData:   h.baseData("Enter Code"),
 		Email:      maskedEmail,
 		Error:      errorMsg,
 		ExpiryMins: 5,
@@ -1606,9 +1602,7 @@ func (h *Handler) HandleVerifyEmail(w http.ResponseWriter, r *http.Request) {
 	token := r.URL.Query().Get("token")
 
 	data := views.VerifyEmailResultData{
-		BaseData: views.BaseData{
-			Title: "Email Verification",
-		},
+		BaseData: h.baseData("Email Verification"),
 	}
 
 	if token == "" {
@@ -1709,9 +1703,7 @@ func (h *Handler) HandlePendingActivation(w http.ResponseWriter, r *http.Request
 	}
 
 	data := views.PendingActivationData{
-		BaseData: views.BaseData{
-			Title: "Account Pending",
-		},
+		BaseData:  h.baseData("Account Pending"),
 		UserEmail: user.Email,
 	}
 
@@ -1758,10 +1750,8 @@ func (h *Handler) HandleEditProfile(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := views.EditProfileData{
-		BaseData: views.BaseData{
-			Title: "Edit Profile",
-		},
-		User: user,
+		BaseData: h.baseData("Edit Profile"),
+		User:     user,
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -1804,9 +1794,7 @@ func (h *Handler) HandleUpdateProfile(w http.ResponseWriter, r *http.Request) {
 	// Validate input lengths
 	if len(firstName) > 100 || len(lastName) > 100 {
 		data := views.EditProfileData{
-			BaseData: views.BaseData{
-				Title: "Edit Profile",
-			},
+			BaseData:     h.baseData("Edit Profile"),
 			User:         user,
 			ErrorMessage: "Name fields must be 100 characters or less",
 		}
@@ -1820,9 +1808,7 @@ func (h *Handler) HandleUpdateProfile(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		h.log.Error("failed to update user profile", "error", err)
 		data := views.EditProfileData{
-			BaseData: views.BaseData{
-				Title: "Edit Profile",
-			},
+			BaseData:     h.baseData("Edit Profile"),
 			User:         user,
 			ErrorMessage: "Failed to update profile. Please try again.",
 		}
@@ -1833,11 +1819,9 @@ func (h *Handler) HandleUpdateProfile(w http.ResponseWriter, r *http.Request) {
 
 	// Show success message
 	data := views.EditProfileData{
-		BaseData: views.BaseData{
-			Title: "Edit Profile",
-		},
-		User:    updatedUser,
-		Success: true,
+		BaseData: h.baseData("Edit Profile"),
+		User:     updatedUser,
+		Success:  true,
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")

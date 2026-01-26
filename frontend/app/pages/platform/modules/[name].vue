@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ModuleConfigForm from '@/components/features/chatbot/ModuleConfigForm.vue';
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { usePageTitle } from '@/composables/usePageTitle';
 import { getModuleSchema, isValidModuleName } from '@/lib/chatbot-modules';
 import { useProjectStore } from '~/stores/project';
 
@@ -28,6 +29,8 @@ const pageTitle = computed(() => {
   }
   return t('features.chatbot.page.unknownModule');
 });
+
+usePageTitle(pageTitle);
 
 const formMountId = ref(0);
 

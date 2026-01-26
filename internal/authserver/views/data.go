@@ -1,8 +1,14 @@
 package views
 
+// BrandingData contains branding information for templates.
+type BrandingData struct {
+	Name string // Auth server branding name
+}
+
 type BaseData struct {
-	Title   string
-	Message string
+	Title    string
+	Message  string
+	Branding BrandingData
 }
 
 type LoginPageData struct {

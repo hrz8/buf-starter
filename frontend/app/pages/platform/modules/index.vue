@@ -1,11 +1,14 @@
 <script setup lang="ts">
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { usePageTitle } from '@/composables/usePageTitle';
 import { MODULE_SCHEMAS } from '@/lib/chatbot-modules';
 import { useProjectStore } from '~/stores/project';
 
 const { t } = useI18n();
 const router = useRouter();
 const projectStore = useProjectStore();
+
+usePageTitle(computed(() => t('features.chatbot.page.title')));
 
 // Check if project is selected
 const projectId = computed(() => projectStore.activeProjectId);

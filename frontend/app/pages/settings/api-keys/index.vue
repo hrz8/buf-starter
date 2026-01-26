@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ApiKeyTable } from '@/components/features/api_key';
+import { usePageTitle } from '@/composables/usePageTitle';
 import { useProjectStore } from '@/stores/project';
 
 definePageMeta({
@@ -9,6 +10,8 @@ definePageMeta({
 const { t } = useI18n();
 const projectStore = useProjectStore();
 const projectId = computed(() => projectStore.activeProjectId);
+
+usePageTitle(computed(() => t('features.api_keys.page.title')));
 </script>
 
 <template>
