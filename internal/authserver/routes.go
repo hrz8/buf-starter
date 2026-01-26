@@ -46,6 +46,8 @@ func (s *Server) setupRoutes() *http.ServeMux {
 	mux.HandleFunc("GET /login/{provider}", oauthAuthHandler.HandleLoginProvider)
 	mux.HandleFunc("GET /auth/callback", oauthAuthHandler.HandleOAuthCallback)
 	mux.HandleFunc("GET /profile", oauthAuthHandler.HandleProfile)
+	mux.HandleFunc("GET /edit-profile", oauthAuthHandler.HandleEditProfile)
+	mux.HandleFunc("POST /edit-profile", oauthAuthHandler.HandleUpdateProfile)
 	mux.HandleFunc("POST /profile/consents/revoke", oauthAuthHandler.HandleRevokeConsent)
 	mux.HandleFunc("POST /logout", oauthAuthHandler.HandleLogout)
 

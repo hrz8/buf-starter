@@ -15,6 +15,7 @@ type Repository interface {
 	GetByID(ctx context.Context, publicID string) (*User, error)
 	GetByInternalID(ctx context.Context, internalID int64) (*User, error)
 	Update(ctx context.Context, input *UpdateUserInput) (*UpdateUserResult, error)
+	UpdateProfileByInternalID(ctx context.Context, internalID int64, firstName, lastName string) (*User, error)
 	Delete(ctx context.Context, publicID string) error
 	Activate(ctx context.Context, publicID string) (*User, error)
 	Deactivate(ctx context.Context, publicID string) (*User, error)

@@ -90,12 +90,21 @@ func (h *Handler) HandleLoginPage(w http.ResponseWriter, r *http.Request) {
 
 	errorMsg := r.URL.Query().Get("error")
 
+	// Check if this login is for an OAuth client (UX transparency)
+	var clientName string
+	if clientID := r.URL.Query().Get("client_id"); clientID != "" {
+		if client, err := h.svc.GetOAuthClient(r.Context(), clientID); err == nil {
+			clientName = client.Name
+		}
+	}
+
 	data := views.LoginPageData{
 		BaseData: views.BaseData{
 			Title: "Sign In",
 		},
 		Providers:    views.GetProviders(),
 		ErrorMessage: errorMsg,
+		ClientName:   clientName,
 	}
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -416,7 +425,12 @@ func (h *Handler) HandleAuthorize(w http.ResponseWriter, r *http.Request) {
 	if err != nil || sessionData.UserID == 0 {
 		sessionData = &session.Data{OriginalURL: r.URL.String()}
 		h.sessionStore.SetData(r, w, sessionData)
-		http.Redirect(w, r, "/login", http.StatusFound)
+
+		loginURL := "/login"
+		if clientID := r.URL.Query().Get("client_id"); clientID != "" {
+			loginURL = "/login?client_id=" + clientID
+		}
+		http.Redirect(w, r, loginURL, http.StatusFound)
 		return
 	}
 
@@ -1719,4 +1733,116 @@ func maskEmail(email string) string {
 		return local[0:1] + "***@" + parts[1]
 	}
 	return local[0:1] + "***" + local[len(local)-1:] + "@" + parts[1]
+}
+
+// HandleEditProfile shows the edit profile form.
+func (h *Handler) HandleEditProfile(w http.ResponseWriter, r *http.Request) {
+	// Require authentication
+	sessionData, err := h.sessionStore.GetData(r)
+	if err != nil || sessionData.UserID == 0 {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	user, err := h.userRepo.GetByInternalID(r.Context(), sessionData.UserID)
+	if err != nil {
+		h.log.Error("failed to get user", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect inactive users to pending activation page
+	if !user.IsActive {
+		http.Redirect(w, r, "/pending-activation", http.StatusFound)
+		return
+	}
+
+	data := views.EditProfileData{
+		BaseData: views.BaseData{
+			Title: "Edit Profile",
+		},
+		User: user,
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := views.Render(w, "edit_profile.html", data); err != nil {
+		h.log.Error("failed to render edit profile page", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
+}
+
+// HandleUpdateProfile processes the edit profile form submission.
+func (h *Handler) HandleUpdateProfile(w http.ResponseWriter, r *http.Request) {
+	// Require authentication
+	sessionData, err := h.sessionStore.GetData(r)
+	if err != nil || sessionData.UserID == 0 {
+		http.Redirect(w, r, "/login", http.StatusFound)
+		return
+	}
+
+	user, err := h.userRepo.GetByInternalID(r.Context(), sessionData.UserID)
+	if err != nil {
+		h.log.Error("failed to get user", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	// Redirect inactive users to pending activation page
+	if !user.IsActive {
+		http.Redirect(w, r, "/pending-activation", http.StatusFound)
+		return
+	}
+
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "Bad request", http.StatusBadRequest)
+		return
+	}
+
+	firstName := strings.TrimSpace(r.FormValue("first_name"))
+	lastName := strings.TrimSpace(r.FormValue("last_name"))
+
+	// Validate input lengths
+	if len(firstName) > 100 || len(lastName) > 100 {
+		data := views.EditProfileData{
+			BaseData: views.BaseData{
+				Title: "Edit Profile",
+			},
+			User:         user,
+			ErrorMessage: "Name fields must be 100 characters or less",
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		views.Render(w, "edit_profile.html", data)
+		return
+	}
+
+	// Update the profile
+	updatedUser, err := h.userRepo.UpdateProfileByInternalID(r.Context(), sessionData.UserID, firstName, lastName)
+	if err != nil {
+		h.log.Error("failed to update user profile", "error", err)
+		data := views.EditProfileData{
+			BaseData: views.BaseData{
+				Title: "Edit Profile",
+			},
+			User:         user,
+			ErrorMessage: "Failed to update profile. Please try again.",
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		views.Render(w, "edit_profile.html", data)
+		return
+	}
+
+	// Show success message
+	data := views.EditProfileData{
+		BaseData: views.BaseData{
+			Title: "Edit Profile",
+		},
+		User:    updatedUser,
+		Success: true,
+	}
+
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	if err := views.Render(w, "edit_profile.html", data); err != nil {
+		h.log.Error("failed to render edit profile page", "error", err)
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
 }

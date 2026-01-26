@@ -141,7 +141,14 @@
                         <h1 class="h3 mb-1">
                             {{if .User.FirstName}}{{.User.FirstName}}{{if .User.LastName}} {{.User.LastName}}{{end}}{{else}}{{.User.Email}}{{end}}
                         </h1>
-                        <p class="text-muted mb-2">{{.User.Email}}</p>
+                        <p class="text-muted mb-2">
+                            {{.User.Email}}
+                            {{if .User.EmailVerified}}
+                            <span class="badge bg-success ms-2"><i class="bi bi-check-circle me-1"></i>Verified</span>
+                            {{else}}
+                            <span class="badge bg-warning text-dark ms-2"><i class="bi bi-exclamation-circle me-1"></i>Unverified</span>
+                            {{end}}
+                        </p>
                         {{range .Identities}}
                         <div class="identity-badge">
                             <i class="bi bi-{{if eq .Provider "google"}}google{{else if eq .Provider "github"}}github{{else}}shield-check{{end}} me-1"></i>
@@ -149,7 +156,10 @@
                         </div>
                         {{end}}
                     </div>
-                    <div>
+                    <div class="d-flex gap-2">
+                        <a href="/edit-profile" class="btn btn-outline-primary">
+                            <i class="bi bi-pencil me-2"></i>Edit Profile
+                        </a>
                         <form method="POST" action="/logout" class="d-inline">
                             <button type="submit" class="btn btn-outline-danger">
                                 <i class="bi bi-box-arrow-right me-2"></i>Logout

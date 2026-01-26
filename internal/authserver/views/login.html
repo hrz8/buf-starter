@@ -38,8 +38,13 @@
             <div class="col-md-6 col-lg-5">
                 <div class="auth-card">
                     <div class="text-center mb-4">
+                        {{if .ClientName}}
+                        <h1 class="h3 mb-3 fw-bold">Sign in to {{.ClientName}}</h1>
+                        <p class="text-muted">via Altalune</p>
+                        {{else}}
                         <h1 class="h3 mb-3 fw-bold">Sign in to Altalune</h1>
                         <p class="text-muted">Choose your authentication method</p>
+                        {{end}}
                     </div>
 
                     {{if .ErrorMessage}}

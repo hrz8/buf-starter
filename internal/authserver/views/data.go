@@ -9,6 +9,7 @@ type LoginPageData struct {
 	BaseData
 	Providers    []Provider
 	ErrorMessage string
+	ClientName   string
 }
 
 type Provider struct {
@@ -79,4 +80,12 @@ type VerifyEmailResultData struct {
 type PendingActivationData struct {
 	BaseData
 	UserEmail string // Email of the user awaiting activation
+}
+
+// EditProfileData is the data structure for the edit profile page.
+type EditProfileData struct {
+	BaseData
+	User         any
+	ErrorMessage string
+	Success      bool
 }

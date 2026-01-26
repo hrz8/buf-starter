@@ -716,3 +716,49 @@ func (r *Repo) Deactivate(ctx context.Context, publicID string) (*User, error) {
 
 	return &usr, nil
 }
+
+// UpdateProfileByInternalID updates only the first_name and last_name of a user by internal ID.
+// This is used by the auth server profile edit page where we only have the internal ID from session.
+func (r *Repo) UpdateProfileByInternalID(ctx context.Context, internalID int64, firstName, lastName string) (*User, error) {
+	sqlQuery := `
+		UPDATE altalune_users
+		SET first_name = $1, last_name = $2, updated_at = CURRENT_TIMESTAMP
+		WHERE id = $3
+		RETURNING public_id, email, first_name, last_name, avatar_url, is_active, email_verified, created_at, updated_at
+	`
+
+	var usr User
+	var firstNameDB, lastNameDB, avatarURL sql.NullString
+
+	err := r.db.QueryRowContext(ctx, sqlQuery, firstName, lastName, internalID).Scan(
+		&usr.ID,
+		&usr.Email,
+		&firstNameDB,
+		&lastNameDB,
+		&avatarURL,
+		&usr.IsActive,
+		&usr.EmailVerified,
+		&usr.CreatedAt,
+		&usr.UpdatedAt,
+	)
+
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, ErrUserNotFound
+		}
+		return nil, fmt.Errorf("failed to update user profile: %w", err)
+	}
+
+	// Handle nullable fields
+	if firstNameDB.Valid {
+		usr.FirstName = firstNameDB.String
+	}
+	if lastNameDB.Valid {
+		usr.LastName = lastNameDB.String
+	}
+	if avatarURL.Valid {
+		usr.AvatarURL = avatarURL.String
+	}
+
+	return &usr, nil
+}
