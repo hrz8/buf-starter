@@ -1,13 +1,13 @@
 import { Bot } from './bot.js';
 
-class BotProxy {
-  get(target: Bot, prop: keyof Bot) {
-    return target[prop];
-  }
-}
-
 interface Config {
   getDefaultProjectId: () => string;
+}
+
+class BotProxy {
+  public get(target: Bot, prop: keyof Bot) {
+    return target[prop];
+  }
 }
 
 function proxifyBot(bot: Bot): Bot {
@@ -22,6 +22,8 @@ async function createAndLoadBot(projectId: string): Promise<Bot> {
 
 export class BotFactory {
   private static bots: Bot[] = [];
+
+  private constructor() {}
 
   public static async initialize(config: Config): Promise<Bot> {
     const bots = [await createAndLoadBot(config.getDefaultProjectId())];
@@ -44,7 +46,7 @@ export class BotFactory {
   }
 
   public static getBotByProjectId(projectId: string): Bot | null {
-    const bot = this.bots.find(bot => bot.projectId === projectId);
+    const bot = this.bots.find(b => b.projectId === projectId);
     if (!bot) {
       return null;
     }

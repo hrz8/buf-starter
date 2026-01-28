@@ -1,0 +1,33 @@
+{
+  "$defs": {
+    "chatbot.nodes.v1.ChatbotNodeMessage.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "ChatbotNodeMessage defines a message in OpenAI-compatible format.\n Messages are sent sequentially when the node is triggered.",
+      "properties": {
+        "content": {
+          "description": "content - the message text to send to the user",
+          "maxLength": 5000,
+          "minLength": 1,
+          "type": "string"
+        },
+        "role": {
+          "description": "role - message role (currently only \"assistant\" is supported)",
+          "enum": [
+            "assistant"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "Chatbot Node Message",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.nodes.v1.ChatbotNodeMessage.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.nodes.v1.ChatbotNodeMessage.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

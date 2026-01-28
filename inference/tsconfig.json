@@ -9,7 +9,7 @@
     
     // Output
     "outDir": "./dist",
-    "rootDir": "./src",
+    "rootDir": ".",
     "removeComments": true,
     
     // Type Checking
@@ -40,7 +40,8 @@
     "lib": ["ES2022"]
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
+    "gen/**/*"
   ],
   "exclude": [
     "node_modules",

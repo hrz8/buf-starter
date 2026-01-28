@@ -2,9 +2,16 @@ version: v2
 managed:
   enabled: true
 plugins:
-  # TypeScript types for chatbot module configs
+  # TypeScript types for chatbot module configs (frontend)
   - remote: buf.build/bufbuild/es:v2.6.3
     out: frontend/gen
+    opt:
+      - target=ts
+      - import_extension=js
+    include_imports: true
+  # TypeScript types for chatbot module configs (inference)
+  - remote: buf.build/bufbuild/es:v2.6.3
+    out: inference/gen
     opt:
       - target=ts
       - import_extension=js
@@ -18,3 +25,4 @@ inputs:
   - directory: api/proto
     paths:
       - api/proto/chatbot/modules
+      - api/proto/chatbot/nodes

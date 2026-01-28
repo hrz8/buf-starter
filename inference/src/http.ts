@@ -1,4 +1,5 @@
 import type { Server as HttpServer } from 'node:http';
+
 import type { Server } from './types.js';
 import { app } from './server/express.js';
 
@@ -17,17 +18,18 @@ export const httpServer: Server<HttpServer> = {
     });
   },
   async stop() {
-    if (this.instance) {
-      return new Promise((resolve, reject) => {
-        this.instance!.close((err) => {
-          if (err) {
-            console.error(`⚠️ failed to stop ${this.name}:`, err);
-            reject(err);
-          } else {
-            resolve();
-          }
-        });
-      });
+    if (!this.instance) {
+      return;
     }
+
+    return new Promise<void>((resolve) => {
+      this.instance!.close((err) => {
+        if (err && (err as NodeJS.ErrnoException).code !== 'ERR_SERVER_NOT_RUNNING') {
+          console.error(`⚠️ failed to stop ${this.name}:`, err);
+        }
+        this.instance = null;
+        resolve();
+      });
+    });
   },
 };

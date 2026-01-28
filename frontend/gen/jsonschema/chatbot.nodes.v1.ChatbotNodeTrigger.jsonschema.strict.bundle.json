@@ -1,0 +1,36 @@
+{
+  "$defs": {
+    "chatbot.nodes.v1.ChatbotNodeTrigger.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "ChatbotNodeTrigger defines a trigger condition for activating a node.\n When a user message matches any trigger, the node's messages are sent.",
+      "properties": {
+        "type": {
+          "description": "type - matching algorithm: keyword, contains, regex, equals",
+          "enum": [
+            "keyword",
+            "contains",
+            "regex",
+            "equals"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "description": "value - the pattern/text to match against user input",
+          "maxLength": 500,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "title": "Chatbot Node Trigger",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.nodes.v1.ChatbotNodeTrigger.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.nodes.v1.ChatbotNodeTrigger.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

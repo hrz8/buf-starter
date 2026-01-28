@@ -15,7 +15,7 @@ export default antfu(
       commaDangle: 'always-multiline',
     },
     ignores: [
-      'src/gen',
+      'gen',
     ],
   },
   {

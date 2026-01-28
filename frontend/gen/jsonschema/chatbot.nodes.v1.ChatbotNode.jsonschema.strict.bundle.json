@@ -1,0 +1,128 @@
+{
+  "$defs": {
+    "chatbot.nodes.v1.ChatbotNode.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "ChatbotNode represents a chatbot response node with triggers and messages.\n This type is shared between the dashboard (altalune) and inference services.",
+      "properties": {
+        "createdAt": {
+          "$ref": "#/$defs/google.protobuf.Timestamp.jsonschema.strict.json",
+          "description": "created_at - timestamp of creation"
+        },
+        "enabled": {
+          "description": "enabled - whether the node is active",
+          "type": "boolean"
+        },
+        "id": {
+          "description": "public_id - unique identifier for the node",
+          "type": "string"
+        },
+        "lang": {
+          "description": "lang - language code (en-US, id-ID)",
+          "type": "string"
+        },
+        "messages": {
+          "description": "messages - responses sent when node is triggered (OpenAI format)",
+          "items": {
+            "$ref": "#/$defs/chatbot.nodes.v1.ChatbotNodeMessage.jsonschema.strict.json"
+          },
+          "type": "array"
+        },
+        "name": {
+          "description": "name - lowercase_snake_case identifier (e.g., start_conversation, faq_pricing)",
+          "type": "string"
+        },
+        "tags": {
+          "description": "tags - optional categorization tags",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "triggers": {
+          "description": "triggers - conditions that activate this node",
+          "items": {
+            "$ref": "#/$defs/chatbot.nodes.v1.ChatbotNodeTrigger.jsonschema.strict.json"
+          },
+          "type": "array"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/google.protobuf.Timestamp.jsonschema.strict.json",
+          "description": "updated_at - timestamp of last update"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "lang",
+        "enabled"
+      ],
+      "title": "Chatbot Node",
+      "type": "object"
+    },
+    "chatbot.nodes.v1.ChatbotNodeMessage.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "ChatbotNodeMessage defines a message in OpenAI-compatible format.\n Messages are sent sequentially when the node is triggered.",
+      "properties": {
+        "content": {
+          "description": "content - the message text to send to the user",
+          "maxLength": 5000,
+          "minLength": 1,
+          "type": "string"
+        },
+        "role": {
+          "description": "role - message role (currently only \"assistant\" is supported)",
+          "enum": [
+            "assistant"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "role",
+        "content"
+      ],
+      "title": "Chatbot Node Message",
+      "type": "object"
+    },
+    "chatbot.nodes.v1.ChatbotNodeTrigger.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "ChatbotNodeTrigger defines a trigger condition for activating a node.\n When a user message matches any trigger, the node's messages are sent.",
+      "properties": {
+        "type": {
+          "description": "type - matching algorithm: keyword, contains, regex, equals",
+          "enum": [
+            "keyword",
+            "contains",
+            "regex",
+            "equals"
+          ],
+          "type": "string"
+        },
+        "value": {
+          "description": "value - the pattern/text to match against user input",
+          "maxLength": 500,
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "value"
+      ],
+      "title": "Chatbot Node Trigger",
+      "type": "object"
+    },
+    "google.protobuf.Timestamp.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "format": "date-time",
+      "title": "Timestamp",
+      "type": "string"
+    }
+  },
+  "$id": "chatbot.nodes.v1.ChatbotNode.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.nodes.v1.ChatbotNode.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}
