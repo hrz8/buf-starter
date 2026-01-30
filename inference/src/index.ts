@@ -1,6 +1,6 @@
 import type { Server } from './types.js';
-import { Blueprint } from './bot/blueprint.js';
-import { BotFactory } from './bot/factory.js';
+import { Blueprint } from './app/bot/blueprint.js';
+import { BotFactory } from './app/bot/factory.js';
 import { AppConfig } from './config/config.js';
 import { httpServer } from './http.js';
 import { BotRepository } from './repositories/db/bot.js';
@@ -42,8 +42,10 @@ async function main() {
   await startServers();
 
   const bot = BotFactory.getDefaultBot();
-  console.info(bot.modules);
-  console.info(bot.nodes);
+  console.info(`\n--- Bot '${bot.projectName}' ready ---`);
+  console.info(`status: ${bot.getState().status}`);
+  console.info(`modules: ${Array.from(bot.modules.keys()).join(', ') || '(none)'}`);
+  console.info(`nodes: ${bot.nodes.size}`);
 }
 
 async function cleanup() {

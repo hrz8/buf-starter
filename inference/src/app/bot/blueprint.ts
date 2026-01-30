@@ -1,5 +1,5 @@
-import type { BotRepository } from '../repositories/db/bot.js';
-import type { ProjectRepository } from '../repositories/db/project.js';
+import type { BotRepository } from '../../repositories/db/bot.js';
+import type { ProjectRepository } from '../../repositories/db/project.js';
 import type { BlueprintData } from './types.js';
 
 export class Blueprint {

@@ -6,7 +6,9 @@ export type LlmConfigInit = MessageInitShape<GenMessage<LlmConfig>>;
 
 export const llmDefaults: LlmConfigInit = {
   enabled: false,
+  sdk: 'ai-sdk',
+  provider: 'bedrock',
   model: '',
   temperature: 0.7,
-  maxToolCalls: 5,
+  maxSteps: 5,
 };

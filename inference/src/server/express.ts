@@ -1,13 +1,15 @@
 import cors from 'cors';
 import express from 'express';
 import { ERROR_CODE } from '../errors/errors.js';
+import { chatHandler } from '../handlers/chat/index.js';
 
 const app = express();
 
 app.use(express.json());
 app.use(cors());
 
-app.get('/healthz', (req, res) => {
+// Health check endpoint
+app.get('/healthz', (_req, res) => {
   res.status(200).json({
     result: {
       status: 'ok',
@@ -15,18 +17,23 @@ app.get('/healthz', (req, res) => {
   });
 });
 
-app.use((req, res) => {
+// Chat endpoint - stateless, accepts message history from client
+app.post('/chat', chatHandler);
+
+// 404 handler
+app.use((_req, res) => {
   res.status(404).json({
     code: ERROR_CODE.NOT_FOUND,
     error: 'Resource not found',
   });
 });
 
+// Error handler
 app.use((
   err: unknown,
-  req: express.Request,
+  _req: express.Request,
   res: express.Response,
-  _: express.NextFunction,
+  _next: express.NextFunction,
 ) => {
   console.error('Unhandled error:', err);
   return res.status(500).json({

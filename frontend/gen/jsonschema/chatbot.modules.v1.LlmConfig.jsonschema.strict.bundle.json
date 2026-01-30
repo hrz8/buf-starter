@@ -9,15 +9,31 @@
           "description": "Whether the LLM module is enabled",
           "type": "boolean"
         },
-        "maxToolCalls": {
-          "description": "Maximum number of tool calls per conversation turn",
-          "maximum": 20,
+        "maxSteps": {
+          "description": "Maximum number of agent loop steps per conversation turn",
+          "maximum": 50,
           "minimum": 1,
           "type": "integer"
         },
         "model": {
-          "description": "Model identifier (e.g., gpt-4, claude-3-opus)",
+          "description": "Model identifier (e.g., us.anthropic.claude-sonnet-4-20250514-v1:0)",
           "maxLength": 200,
+          "type": "string"
+        },
+        "provider": {
+          "description": "AI provider to use: \"bedrock\" (default)\n Future: \"openai\", \"anthropic\", \"google\", etc.",
+          "enum": [
+            "bedrock",
+            ""
+          ],
+          "type": "string"
+        },
+        "sdk": {
+          "description": "SDK to use for LLM calls: \"ai-sdk\" (default)\n Future: \"langchain\", \"llamaindex\", etc.",
+          "enum": [
+            "ai-sdk",
+            ""
+          ],
           "type": "string"
         },
         "temperature": {
@@ -29,9 +45,11 @@
       },
       "required": [
         "enabled",
+        "sdk",
+        "provider",
         "model",
         "temperature",
-        "maxToolCalls"
+        "maxSteps"
       ],
       "title": "Llm Config",
       "type": "object"

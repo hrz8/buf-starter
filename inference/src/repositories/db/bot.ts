@@ -6,7 +6,7 @@ import type {
   ChatbotNodeTrigger,
   ModuleConfigMap,
   PlainMessage,
-} from '../../bot/types.js';
+} from '../../app/bot/types.js';
 
 // Database row types
 interface ChatbotConfigRow {

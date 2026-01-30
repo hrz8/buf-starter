@@ -52,4 +52,15 @@ export class BotFactory {
     }
     return proxifyBot(bot);
   }
+
+  public static async getOrCreateBot(projectId: string): Promise<Bot> {
+    const existing = this.bots.find(b => b.projectId === projectId);
+    if (existing) {
+      return proxifyBot(existing);
+    }
+
+    const bot = await createAndLoadBot(projectId);
+    this.bots.push(bot);
+    return bot;
+  }
 }

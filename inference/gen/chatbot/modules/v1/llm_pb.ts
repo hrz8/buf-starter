@@ -11,7 +11,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file chatbot/modules/v1/llm.proto.
  */
 export const file_chatbot_modules_v1_llm: GenFile = /*@__PURE__*/
-  fileDesc("ChxjaGF0Ym90L21vZHVsZXMvdjEvbGxtLnByb3RvEhJjaGF0Ym90Lm1vZHVsZXMudjEihgEKCUxsbUNvbmZpZxIPCgdlbmFibGVkGAEgASgIEhcKBW1vZGVsGAIgASgJQgi6SAVyAxjIARIsCgt0ZW1wZXJhdHVyZRgDIAEoAUIXukgUEhIZAAAAAAAAAEApAAAAAAAAAAASIQoObWF4X3Rvb2xfY2FsbHMYBCABKAVCCbpIBhoEGBQoAULOAQoWY29tLmNoYXRib3QubW9kdWxlcy52MUIITGxtUHJvdG9QAVpAZ2l0aHViLmNvbS9ocno4L2FsdGFsdW5lL2dlbi9jaGF0Ym90L21vZHVsZXMvdjE7Y2hhdGJvdG1vZHVsZXN2MaICA0NNWKoCEkNoYXRib3QuTW9kdWxlcy5WMcoCEkNoYXRib3RcTW9kdWxlc1xWMeICHkNoYXRib3RcTW9kdWxlc1xWMVxHUEJNZXRhZGF0YeoCFENoYXRib3Q6Ok1vZHVsZXM6OlYxYgZwcm90bzM", [file_buf_validate_validate]);
+  fileDesc("ChxjaGF0Ym90L21vZHVsZXMvdjEvbGxtLnByb3RvEhJjaGF0Ym90Lm1vZHVsZXMudjEiwwEKCUxsbUNvbmZpZxIPCgdlbmFibGVkGAEgASgIEhwKA3NkaxgCIAEoCUIPukgMcgpSBmFpLXNka1IAEiIKCHByb3ZpZGVyGAMgASgJQhC6SA1yC1IHYmVkcm9ja1IAEhcKBW1vZGVsGAQgASgJQgi6SAVyAxjIARIsCgt0ZW1wZXJhdHVyZRgFIAEoAUIXukgUEhIZAAAAAAAAAEApAAAAAAAAAAASHAoJbWF4X3N0ZXBzGAYgASgFQgm6SAYaBBgyKAFCzgEKFmNvbS5jaGF0Ym90Lm1vZHVsZXMudjFCCExsbVByb3RvUAFaQGdpdGh1Yi5jb20vaHJ6OC9hbHRhbHVuZS9nZW4vY2hhdGJvdC9tb2R1bGVzL3YxO2NoYXRib3Rtb2R1bGVzdjGiAgNDTViqAhJDaGF0Ym90Lk1vZHVsZXMuVjHKAhJDaGF0Ym90XE1vZHVsZXNcVjHiAh5DaGF0Ym90XE1vZHVsZXNcVjFcR1BCTWV0YWRhdGHqAhRDaGF0Ym90OjpNb2R1bGVzOjpWMWIGcHJvdG8z", [file_buf_validate_validate]);
 
 /**
  * LlmConfig defines the configuration for the LLM module.
@@ -28,25 +28,41 @@ export type LlmConfig = Message<"chatbot.modules.v1.LlmConfig"> & {
   enabled: boolean;
 
   /**
-   * Model identifier (e.g., gpt-4, claude-3-opus)
+   * SDK to use for LLM calls: "ai-sdk" (default)
+   * Future: "langchain", "llamaindex", etc.
    *
-   * @generated from field: string model = 2;
+   * @generated from field: string sdk = 2;
+   */
+  sdk: string;
+
+  /**
+   * AI provider to use: "bedrock" (default)
+   * Future: "openai", "anthropic", "google", etc.
+   *
+   * @generated from field: string provider = 3;
+   */
+  provider: string;
+
+  /**
+   * Model identifier (e.g., us.anthropic.claude-sonnet-4-20250514-v1:0)
+   *
+   * @generated from field: string model = 4;
    */
   model: string;
 
   /**
    * Temperature for response randomness (0 = deterministic, 2 = very random)
    *
-   * @generated from field: double temperature = 3;
+   * @generated from field: double temperature = 5;
    */
   temperature: number;
 
   /**
-   * Maximum number of tool calls per conversation turn
+   * Maximum number of agent loop steps per conversation turn
    *
-   * @generated from field: int32 max_tool_calls = 4;
+   * @generated from field: int32 max_steps = 6;
    */
-  maxToolCalls: number;
+  maxSteps: number;
 };
 
 /**

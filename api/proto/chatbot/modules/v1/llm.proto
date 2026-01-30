@@ -12,12 +12,24 @@ message LlmConfig {
   // Whether the LLM module is enabled
   bool enabled = 1;
 
-  // Model identifier (e.g., gpt-4, claude-3-opus)
-  string model = 2 [(buf.validate.field).string.max_len = 200];
+  // SDK to use for LLM calls: "ai-sdk" (default)
+  // Future: "langchain", "llamaindex", etc.
+  string sdk = 2 [(buf.validate.field).string = {
+    in: ["ai-sdk", ""]
+  }];
+
+  // AI provider to use: "bedrock" (default)
+  // Future: "openai", "anthropic", "google", etc.
+  string provider = 3 [(buf.validate.field).string = {
+    in: ["bedrock", ""]
+  }];
+
+  // Model identifier (e.g., us.anthropic.claude-sonnet-4-20250514-v1:0)
+  string model = 4 [(buf.validate.field).string.max_len = 200];
 
   // Temperature for response randomness (0 = deterministic, 2 = very random)
-  double temperature = 3 [(buf.validate.field).double = {gte: 0, lte: 2}];
+  double temperature = 5 [(buf.validate.field).double = {gte: 0, lte: 2}];
 
-  // Maximum number of tool calls per conversation turn
-  int32 max_tool_calls = 4 [(buf.validate.field).int32 = {gte: 1, lte: 20}];
+  // Maximum number of agent loop steps per conversation turn
+  int32 max_steps = 6 [(buf.validate.field).int32 = {gte: 1, lte: 50}];
 }
