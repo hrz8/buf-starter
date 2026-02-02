@@ -116,6 +116,14 @@
     "61008": "Invalid regex pattern",
     "69901": "Server Error"
   },
+  "errors": {
+    "accessDenied": {
+      "title": "Access Denied",
+      "description": "You don't have permission to access this page. Please contact your administrator if you believe this is an error.",
+      "goBack": "Go Back",
+      "goHome": "Go to Dashboard"
+    }
+  },
   "errorPage": {
     "goHome": "Go back Home"
   },

@@ -116,6 +116,14 @@
     "61008": "Pola regex tidak valid",
     "69901": "Kesalahan Server"
   },
+  "errors": {
+    "accessDenied": {
+      "title": "Akses Ditolak",
+      "description": "Anda tidak memiliki izin untuk mengakses halaman ini. Silakan hubungi administrator jika Anda merasa ini adalah kesalahan.",
+      "goBack": "Kembali",
+      "goHome": "Ke Dashboard"
+    }
+  },
   "errorPage": {
     "goHome": "Kembali ke Beranda"
   },

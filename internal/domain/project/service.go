@@ -3,7 +3,6 @@ package project
 
 import (
 	"context"
-	"time"
 
 	"buf.build/go/protovalidate"
 	"github.com/hrz8/altalune"
@@ -28,9 +27,6 @@ func NewService(v protovalidate.Validator, log altalune.Logger, projectRepo Repo
 }
 
 func (s *Service) QueryProjects(ctx context.Context, req *altalunev1.QueryProjectsRequest) (*altalunev1.QueryProjectsResponse, error) {
-	// Add artificial delay to match frontend pattern
-	time.Sleep(2000 * time.Millisecond)
-
 	// Validate request
 	if err := s.validator.Validate(req); err != nil {
 		return nil, altalune.NewInvalidPayloadError(err.Error())

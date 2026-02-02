@@ -14,6 +14,8 @@ export interface AuthUserInfo {
   given_name?: string;
   family_name?: string;
   picture?: string;
+  perms?: string[];
+  memberships?: Record<string, string>;
 }
 
 export interface AuthExchangeResponse {

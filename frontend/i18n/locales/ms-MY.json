@@ -116,6 +116,14 @@
     "61008": "Corak regex tidak sah",
     "69901": "Ralat Pelayan"
   },
+  "errors": {
+    "accessDenied": {
+      "title": "Akses Ditolak",
+      "description": "Anda tidak mempunyai kebenaran untuk mengakses halaman ini. Sila hubungi pentadbir anda jika anda percaya ini adalah kesilapan.",
+      "goBack": "Kembali",
+      "goHome": "Pergi ke Papan Pemuka"
+    }
+  },
   "errorPage": {
     "goHome": "Kembali ke Laman Utama"
   },

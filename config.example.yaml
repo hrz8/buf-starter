@@ -85,6 +85,16 @@ dashboardOauth:
     - "https://dashboard.altalune.id/auth/callback"
   pkceRequired: true                                  # Must be true for public clients (SPA, mobile apps)
 
+# Auth validation configuration (resource server JWT validation)
+# This is used by the resource server to validate access tokens
+authValidation:
+  jwks:
+    url: "http://localhost:3300/.well-known/jwks.json"  # JWKS endpoint URL (your auth server)
+    cacheTTL: 3600                                      # Cache TTL in seconds (default: 1 hour)
+    refreshRetryLimit: 3                                # Max refresh attempts per minute (default: 3)
+  issuer: "http://localhost:3300"                       # Expected JWT issuer (must match auth server)
+  audiences: []                                         # Expected JWT audiences (empty = skip validation)
+
 # Notification service configuration
 notification:
   authBaseURL: "http://localhost:3300"                # Base URL for verification links in emails

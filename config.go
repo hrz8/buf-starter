@@ -86,4 +86,12 @@ type Config interface {
 	// Branding configuration
 	GetDashboardBrandingName() string
 	GetAuthServerBrandingName() string
+
+	// Auth Validation configuration (resource server JWT validation)
+	GetAuthValidationJWKSURL() string
+	GetAuthValidationJWKSCacheTTL() int
+	GetAuthValidationJWKSRefreshLimit() int
+	GetAuthValidationIssuer() string
+	GetAuthValidationAudiences() []string
+	IsAuthValidationEnabled() bool
 }

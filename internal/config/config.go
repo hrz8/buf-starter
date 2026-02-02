@@ -278,3 +278,50 @@ func (c *AppConfig) GetAuthServerBrandingName() string {
 	}
 	return c.Branding.AuthServer.Name
 }
+
+// AuthValidation configuration getters
+
+// GetAuthValidationJWKSURL returns the JWKS endpoint URL.
+func (c *AppConfig) GetAuthValidationJWKSURL() string {
+	if c.AuthValidation == nil || c.AuthValidation.JWKS == nil {
+		return ""
+	}
+	return c.AuthValidation.JWKS.URL
+}
+
+// GetAuthValidationJWKSCacheTTL returns the JWKS cache TTL in seconds.
+func (c *AppConfig) GetAuthValidationJWKSCacheTTL() int {
+	if c.AuthValidation == nil || c.AuthValidation.JWKS == nil {
+		return 3600 // 1 hour default
+	}
+	return c.AuthValidation.JWKS.CacheTTL
+}
+
+// GetAuthValidationJWKSRefreshLimit returns the max JWKS refresh attempts per minute.
+func (c *AppConfig) GetAuthValidationJWKSRefreshLimit() int {
+	if c.AuthValidation == nil || c.AuthValidation.JWKS == nil {
+		return 3 // default
+	}
+	return c.AuthValidation.JWKS.RefreshRetryLimit
+}
+
+// GetAuthValidationIssuer returns the expected JWT issuer.
+func (c *AppConfig) GetAuthValidationIssuer() string {
+	if c.AuthValidation == nil {
+		return ""
+	}
+	return c.AuthValidation.Issuer
+}
+
+// GetAuthValidationAudiences returns the expected JWT audiences.
+func (c *AppConfig) GetAuthValidationAudiences() []string {
+	if c.AuthValidation == nil {
+		return nil
+	}
+	return c.AuthValidation.Audiences
+}
+
+// IsAuthValidationEnabled returns true if auth validation is configured.
+func (c *AppConfig) IsAuthValidationEnabled() bool {
+	return c.AuthValidation != nil && c.AuthValidation.JWKS != nil && c.AuthValidation.JWKS.URL != ""
+}

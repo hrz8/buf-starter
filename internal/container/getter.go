@@ -4,6 +4,7 @@ import (
 	"github.com/hrz8/altalune"
 	altalunev1 "github.com/hrz8/altalune/gen/altalune/v1"
 	greeterv1 "github.com/hrz8/altalune/gen/greeter/v1"
+	"github.com/hrz8/altalune/internal/auth"
 	iam_mapper_domain "github.com/hrz8/altalune/internal/domain/iam_mapper"
 	migration_domain "github.com/hrz8/altalune/internal/domain/migration"
 	oauth_auth_domain "github.com/hrz8/altalune/internal/domain/oauth_auth"
@@ -148,4 +149,14 @@ func (c *Container) GetRoleRepo() role_domain.Repository {
 // GetIAMMapperRepo returns the IAM mapper repository.
 func (c *Container) GetIAMMapperRepo() iam_mapper_domain.Repository {
 	return c.iamMapperRepo
+}
+
+// GetJWTValidator returns the JWT validator for resource server, or nil if not configured.
+func (c *Container) GetJWTValidator() *auth.JWTValidator {
+	return c.jwtValidator
+}
+
+// GetAuthorizer returns the authorizer for permission checks.
+func (c *Container) GetAuthorizer() *auth.Authorizer {
+	return c.authorizer
 }

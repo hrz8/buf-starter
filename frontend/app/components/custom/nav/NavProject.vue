@@ -18,6 +18,8 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from '@/components/ui/sidebar';
+import { usePermissions } from '@/composables/usePermissions';
+import { PERMISSIONS } from '@/constants/permissions';
 import { useProjectStore } from '@/stores/project';
 
 const { t } = useI18n();
@@ -50,9 +52,40 @@ function getProjectIcon(publicId: string) {
 const router = useRouter();
 const { isMobile } = useSidebar();
 const projectStore = useProjectStore();
+const { memberships, isSuperAdmin, can } = usePermissions();
 
 const pending = computed(() => projectStore.pending);
 const error = computed(() => projectStore.error);
+
+/**
+ * Filter projects by membership
+ * - Superadmin sees all projects
+ * - Regular users only see projects they are members of
+ */
+const visibleProjects = computed(() => {
+  if (isSuperAdmin.value)
+    return projectStore.projects;
+
+  return projectStore.projects.filter(
+    project => project.id in memberships.value,
+  );
+});
+
+/**
+ * Get role badge for a project (shows owner/admin badge)
+ */
+function getProjectRoleBadge(projectId: string): { label: string; variant: 'default' | 'secondary' } | null {
+  const role = memberships.value[projectId];
+  if (role === 'owner' || role === 'admin')
+    return { label: role, variant: 'default' };
+
+  return null;
+}
+
+/**
+ * Check if user can create projects
+ */
+const canCreateProject = computed(() => can(PERMISSIONS.PROJECT.WRITE));
 
 const isCreateSheetOpen = ref(false);
 
@@ -137,7 +170,7 @@ function handleAddProjectClick() {
           </DropdownMenuLabel>
 
           <div
-            v-if="pending && !projectStore.projects.length"
+            v-if="pending && !visibleProjects.length"
             class="p-2"
           >
             <div class="flex flex-col gap-2">
@@ -160,7 +193,7 @@ function handleAddProjectClick() {
             {{ error.message || t('features.projects.error') }}
           </div>
 
-          <template v-else-if="projectStore.projects.length > 0">
+          <template v-else-if="visibleProjects.length > 0">
             <div
               v-if="pending"
               class="px-2 py-1"
@@ -171,7 +204,7 @@ function handleAddProjectClick() {
             </div>
 
             <DropdownMenuItem
-              v-for="(project, index) in projectStore.projects"
+              v-for="(project, index) in visibleProjects"
               :key="project.id"
               class="gap-2 p-2"
               :class="{ 'opacity-60': pending }"
@@ -182,8 +215,16 @@ function handleAddProjectClick() {
                 size="1em"
               />
               <span class="flex-1">{{ project.name }}</span>
+              <!-- Role badge for owner/admin -->
               <Badge
-                v-if="project.isDefault"
+                v-if="getProjectRoleBadge(project.id)"
+                variant="outline"
+                class="text-xs capitalize"
+              >
+                {{ getProjectRoleBadge(project.id)?.label }}
+              </Badge>
+              <Badge
+                v-else-if="project.isDefault"
                 variant="secondary"
                 class="text-xs"
               >
@@ -200,21 +241,24 @@ function handleAddProjectClick() {
             {{ t('features.projects.noProjectsFound') }}
           </div>
 
-          <DropdownMenuSeparator />
-          <DropdownMenuItem
-            class="gap-2 p-2"
-            @click="handleAddProjectClick"
-          >
-            <div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
-              <Icon
-                name="lucide:plus"
-                class="size-4"
-              />
-            </div>
-            <div class="font-medium text-muted-foreground">
-              {{ t('features.projects.actions.add') }}
-            </div>
-          </DropdownMenuItem>
+          <!-- Only show add project if user has permission -->
+          <template v-if="canCreateProject">
+            <DropdownMenuSeparator />
+            <DropdownMenuItem
+              class="gap-2 p-2"
+              @click="handleAddProjectClick"
+            >
+              <div class="flex size-6 items-center justify-center rounded-md border bg-transparent">
+                <Icon
+                  name="lucide:plus"
+                  class="size-4"
+                />
+              </div>
+              <div class="font-medium text-muted-foreground">
+                {{ t('features.projects.actions.add') }}
+              </div>
+            </DropdownMenuItem>
+          </template>
         </DropdownMenuContent>
       </DropdownMenu>
     </SidebarMenuItem>

@@ -24,6 +24,7 @@ import (
 	user_domain "github.com/hrz8/altalune/internal/domain/user"
 	"github.com/hrz8/altalune/internal/postgres"
 	"github.com/hrz8/altalune/internal/session"
+	"github.com/hrz8/altalune/internal/auth"
 	"github.com/hrz8/altalune/internal/shared/jwt"
 	"github.com/hrz8/altalune/internal/shared/notification"
 	"github.com/hrz8/altalune/internal/shared/notification/email"
@@ -101,6 +102,10 @@ type Container struct {
 	oauthAuthService         *oauth_auth_domain.Service
 	otpService               *oauth_auth_domain.OTPService
 	emailVerificationService *oauth_auth_domain.EmailVerificationService
+
+	// Resource Server Auth Components (for JWT validation)
+	jwtValidator *auth.JWTValidator
+	authorizer   *auth.Authorizer
 }
 
 // CreateContainer creates a new dependency injection container with proper error handling
@@ -258,6 +263,7 @@ func (c *Container) initAuthComponents() error {
 	// OAuth Auth Service - only initialize if JWT signer is available
 	if c.jwtSigner != nil {
 		permissionProvider := oauth_auth_domain.NewPermissionService(c.iamMapperRepo)
+		membershipProvider := oauth_auth_domain.NewMembershipService(c.iamMapperRepo)
 		scopeHandlerRegistry := oauth_auth_domain.NewScopeHandlerRegistry()
 
 		c.oauthAuthService = oauth_auth_domain.NewService(
@@ -267,6 +273,7 @@ func (c *Container) initAuthComponents() error {
 			c.jwtSigner,
 			c.config,
 			permissionProvider,
+			membershipProvider,
 			scopeHandlerRegistry,
 		)
 	}
@@ -287,6 +294,21 @@ func (c *Container) initAuthComponents() error {
 			c.notificationService,
 			c.logger,
 			c.config,
+		)
+	}
+
+	// Initialize Resource Server Auth Components (for JWT validation)
+	// Always initialize authorizer
+	c.authorizer = auth.NewAuthorizer()
+
+	// Initialize JWT validator if authValidation is configured
+	if c.config.GetAuthValidationJWKSURL() != "" {
+		c.jwtValidator = auth.NewJWTValidator(
+			c.config.GetAuthValidationJWKSURL(),
+			c.config.GetAuthValidationIssuer(),
+			c.config.GetAuthValidationAudiences(),
+			c.config.GetAuthValidationJWKSCacheTTL(),
+			c.config.GetAuthValidationJWKSRefreshLimit(),
 		)
 	}
 

@@ -58,6 +58,7 @@ type Service struct {
 	cfg                  altalune.Config
 	log                  altalune.Logger
 	permissionProvider   UserPermissionProvider
+	membershipProvider   UserMembershipProvider
 	scopeHandlerRegistry *ScopeHandlerRegistry
 }
 
@@ -69,6 +70,7 @@ func NewService(
 	jwtSigner *jwt.Signer,
 	cfg altalune.Config,
 	permissionFetcher UserPermissionProvider,
+	membershipProvider UserMembershipProvider,
 	scopeHandlerRegistry *ScopeHandlerRegistry,
 ) *Service {
 	return &Service{
@@ -78,6 +80,7 @@ func NewService(
 		cfg:                  cfg,
 		log:                  log,
 		permissionProvider:   permissionFetcher,
+		membershipProvider:   membershipProvider,
 		scopeHandlerRegistry: scopeHandlerRegistry,
 	}
 }
@@ -188,6 +191,20 @@ func (s *Service) GenerateTokenPair(ctx context.Context, params *GenerateTokenPa
 		}
 	}
 
+	// Fetch user memberships (graceful degradation - log warning but continue on error)
+	memberships := make(map[string]string)
+	if s.membershipProvider != nil {
+		fetchedMemberships, err := s.membershipProvider.GetUserMemberships(ctx, params.UserID)
+		if err != nil {
+			s.log.Warn("failed to fetch user memberships, continuing with empty memberships",
+				"error", err,
+				"user_id", params.UserID,
+			)
+		} else if fetchedMemberships != nil {
+			memberships = fetchedMemberships
+		}
+	}
+
 	accessToken, err := s.jwtSigner.GenerateAccessToken(jwt.GenerateTokenParams{
 		UserPublicID:  params.UserPublicID,
 		ClientID:      params.ClientID.String(),
@@ -195,6 +212,7 @@ func (s *Service) GenerateTokenPair(ctx context.Context, params *GenerateTokenPa
 		Email:         params.Email,
 		Name:          params.Name,
 		Perms:         perms,
+		Memberships:   memberships,
 		EmailVerified: params.EmailVerified,
 		Expiry:        accessTokenExpiry,
 	})

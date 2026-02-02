@@ -34,7 +34,7 @@ function toNavItem(item: SettingItem) {
 </script>
 
 <template>
-  <SidebarGroup class="group-data-[collapsible=icon]:hidden">
+  <SidebarGroup v-if="settings.length > 0" class="group-data-[collapsible=icon]:hidden">
     <SidebarGroupLabel>{{ t('nav.settings.title') }}</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem

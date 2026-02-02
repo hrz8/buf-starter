@@ -25,19 +25,25 @@ function createAuthInterceptor(): Interceptor {
     }
     catch (error) {
       if (error instanceof ConnectError && error.code === Code.Unauthenticated) {
-        try {
-          const authService = useAuthService();
-          const refreshed = await authService.checkAndRefreshIfNeeded();
+        const authStore = useAuthStore();
 
-          if (refreshed) {
-            return await next(req);
+        // Only attempt refresh if we're currently authenticated
+        // (prevents unnecessary refresh attempts during login flow)
+        if (authStore.isAuthenticated) {
+          try {
+            const authService = useAuthService();
+            const refreshed = await authService.checkAndRefreshIfNeeded();
+
+            if (refreshed) {
+              return await next(req);
+            }
+          }
+          catch {
+            // Only log if we expected to be authenticated
+            console.warn('[Connect] Token refresh failed, redirecting to login');
           }
         }
-        catch (refreshError) {
-          console.error('[Connect] Token refresh failed:', refreshError);
-        }
 
-        const authStore = useAuthStore();
         authStore.clearAuth();
         navigateTo('/auth/login');
       }
@@ -54,15 +60,25 @@ export default defineNuxtPlugin({
 
     const authInterceptor = createAuthInterceptor();
 
+    // Custom fetch with credentials: 'include' for cross-origin cookie sending
+    const fetchWithCredentials: typeof globalThis.fetch = (input, init) => {
+      return globalThis.fetch(input, {
+        ...init,
+        credentials: 'include',
+      });
+    };
+
     // Transport with auth interceptor for authenticated endpoints
     const transport = createConnectTransport({
       baseUrl: config.public.apiUrl,
       interceptors: [authInterceptor],
+      fetch: fetchWithCredentials,
     });
 
     // Transport without auth for public endpoints
     const publicTransport = createConnectTransport({
       baseUrl: config.public.apiUrl,
+      fetch: fetchWithCredentials,
     });
 
     const validator = createValidator();

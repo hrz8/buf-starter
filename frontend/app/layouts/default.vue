@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useLocalStorage } from '@vueuse/core';
+import AuthLoadingOverlay from '@/components/custom/AuthLoadingOverlay.vue';
 import { LayoutHeader, LayoutSidebar } from '@/components/custom/layout';
 import EmailVerificationOverlay from '@/components/features/email-verification/EmailVerificationOverlay.vue';
 import ProjectNotFoundOverlay from '@/components/features/project/ProjectNotFoundOverlay.vue';
@@ -79,6 +80,7 @@ watch(
     @update:open="handleOpenUpdate"
   >
     <Toaster />
+    <AuthLoadingOverlay />
     <EmailVerificationOverlay />
     <ProjectNotFoundOverlay />
     <LayoutSidebar />

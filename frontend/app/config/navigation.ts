@@ -24,6 +24,12 @@ export const specialBreadcrumbs: Record<string, BreadcrumbConfig> = {
     label: 'nav.settings.title',
     i18nKey: 'nav.settings.title',
   },
+  '/settings/profile': {
+    path: '/settings/profile',
+    label: 'profile.title',
+    i18nKey: 'profile.title',
+    parent: '/settings',
+  },
   // Example dynamic route patterns
   '/examples/datatable/:variant': {
     path: '/examples/datatable/:variant',

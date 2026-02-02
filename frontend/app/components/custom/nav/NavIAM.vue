@@ -34,7 +34,7 @@ function toNavItem(item: IAMItem) {
 </script>
 
 <template>
-  <SidebarGroup class="group-data-[collapsible=icon]:hidden">
+  <SidebarGroup v-if="items.length > 0" class="group-data-[collapsible=icon]:hidden">
     <SidebarGroupLabel>{{ t('nav.iam.title') }}</SidebarGroupLabel>
     <SidebarMenu>
       <SidebarMenuItem

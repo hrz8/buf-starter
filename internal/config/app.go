@@ -234,6 +234,32 @@ func (c *NotificationConfig) setDefaults() {
 	}
 }
 
+// AuthValidationConfig contains configuration for JWT validation on resource server.
+type AuthValidationConfig struct {
+	JWKS      *JWKSValidationConfig `yaml:"jwks" validate:"required"`
+	Issuer    string                `yaml:"issuer" validate:"required,url"`
+	Audiences []string              `yaml:"audiences,omitempty"`
+}
+
+// JWKSValidationConfig contains JWKS fetching configuration.
+type JWKSValidationConfig struct {
+	URL               string `yaml:"url" validate:"required,url"`
+	CacheTTL          int    `yaml:"cacheTTL"`          // seconds, default 3600
+	RefreshRetryLimit int    `yaml:"refreshRetryLimit"` // default 3
+}
+
+func (c *AuthValidationConfig) setDefaults() {
+	if c.JWKS == nil {
+		c.JWKS = &JWKSValidationConfig{}
+	}
+	if c.JWKS.CacheTTL == 0 {
+		c.JWKS.CacheTTL = 3600 // 1 hour
+	}
+	if c.JWKS.RefreshRetryLimit == 0 {
+		c.JWKS.RefreshRetryLimit = 3
+	}
+}
+
 // BrandingNameConfig contains name configuration for a specific component.
 type BrandingNameConfig struct {
 	Name string `yaml:"name" validate:"required,min=1,max=100"`
@@ -269,6 +295,7 @@ type AppConfig struct {
 	DashboardOAuth *DashboardOAuthConfig `yaml:"dashboardOauth" validate:"required"`
 	Notification   *NotificationConfig   `yaml:"notification"`
 	Branding       *BrandingConfig       `yaml:"branding"`
+	AuthValidation *AuthValidationConfig `yaml:"authValidation"`
 }
 
 func (c *AppConfig) setDefaults() {
@@ -284,6 +311,9 @@ func (c *AppConfig) setDefaults() {
 		c.Branding = &BrandingConfig{}
 	}
 	c.Branding.setDefaults()
+	if c.AuthValidation != nil {
+		c.AuthValidation.setDefaults()
+	}
 }
 
 func (c *AppConfig) Validate() error {

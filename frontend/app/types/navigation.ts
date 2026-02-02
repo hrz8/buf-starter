@@ -46,6 +46,10 @@ export interface NavSubItem {
   match?: string | RegExp | ((route: RouteLocationNormalizedLoaded) => boolean);
   breadcrumb?: BreadcrumbConfig;
   /**
+   * Required permission to view this nav item
+   */
+  permission?: string;
+  /**
    * Optional badge to display (e.g., "Enabled", "3", etc.)
    */
   badge?: string;
@@ -78,4 +82,8 @@ export interface SettingsItem {
   url: string;
   icon: LucideIcon;
   breadcrumb?: BreadcrumbConfig;
+  /**
+   * Required permission to view this settings item
+   */
+  permission?: string;
 }
