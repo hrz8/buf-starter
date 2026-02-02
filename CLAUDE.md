@@ -119,7 +119,7 @@ buf breaking
 Need new endpoint?
 ├─ Domain exists? → Extend existing service
 └─ New domain? → Follow 7-file domain pattern
-   └─ See: docs/dev_guidelines/BACKEND_GUIDE.md
+   └─ Use: altalune-backend skill
 ```
 
 ### For Frontend Development:
@@ -129,7 +129,7 @@ Need new UI feature?
 ├─ Repository exists? → Extend existing repository
 ├─ Component exists? → Extend existing component
 └─ New feature? → Create repository + service + component
-   └─ See: docs/dev_guidelines/FRONTEND_GUIDE.md
+   └─ Use: altalune-frontend skill
 ```
 
 ## Development Workflow
@@ -207,13 +207,19 @@ PARTITION OF {table_name} FOR VALUES IN ({PROJECT_ID});
 - Tanstack Table for data tables
 - VueUse for composables
 
-## 📖 Specialized Guides
+## 🛠️ Development Skills (Recommended)
 
-- **[BACKEND-GUIDE.md](./docs/dev_guidelines/BACKEND_GUIDE.md)** - Backend patterns, domain architecture, database operations
-- **[FRONTEND_GUIDE.md](./docs/dev_guidelines/FRONTEND_GUIDE.md)** - Frontend patterns, component architecture, form handling
-- **[DOMAIN_ARCHITECTURE_GUIDE.md](./docs/dev_guidelines/DOMAIN_ARCHITECTURE_GUIDE.md)** - Backend domain patterns
-- **[EFFICIENCY_GUIDE.md](./docs/dev_guidelines/EFFICIENCY_GUIDE.md)** - AI optimization, development efficiency process and checklists
-- **[BREADCRUMB_GUIDE.md](./docs/dev_guidelines/BREADCRUMB_GUIDE.md)** - Hierarchical navigation context for frontend
+Use these skills for detailed implementation guidance:
+
+| Skill | Trigger | Description |
+|-------|---------|-------------|
+| `altalune-backend` | Backend development | Go domain patterns, protobuf, database, auth server |
+| `altalune-frontend` | Frontend development | Vue/Nuxt patterns, forms, i18n, components |
+| `altalune-chatbot` | Chatbot modules | Non-entity JSONB config modules (llm, prompt, widget) |
+| `altalune-authorization` | Authorization | Project membership, RBAC, middleware patterns |
+| `altalune-workflow` | Task management | `/idea`, `/breakdown`, `/work` commands |
+
+**Location:** `.claude/skills/`
 
 ## ⚠️ Critical Frontend Patterns
 
@@ -226,7 +232,7 @@ When using vee-validate FormField components, follow these critical patterns to 
 3. **Simple Conditional Rendering**: Use straightforward `v-if`/`v-else-if` patterns
 4. **Avoid Teleport Around Forms**: Don't wrap FormFields in Teleport/Portal
 
-**Full details:** See [FRONTEND_GUIDE.md - vee-validate FormField Best Practices](./docs/dev_guidelines/FRONTEND_GUIDE.md#vee-validate-formfield-best-practices)
+**Full details:** Use `altalune-frontend` skill for complete patterns
 
 ### Feature Organization Pattern
 
@@ -237,6 +243,6 @@ Organize feature domains with centralized files:
 - **constants.ts** - Shared constants (dropdown options, enums)
 
 **Benefits:** DRY, type-safe, maintainable, testable
-**Full details:** See [FRONTEND_GUIDE.md - Feature Organization and Refactoring Pattern](./docs/dev_guidelines/FRONTEND_GUIDE.md#feature-organization-and-refactoring-pattern)
+**Full details:** Use `altalune-frontend` skill for complete patterns
 
-**Remember**: This guide provides the foundation. Consult specialized guides for detailed implementation patterns and workflows.
+**Remember**: Use skills for detailed implementation guidance. This CLAUDE.md provides the foundation overview.
