@@ -1,0 +1,91 @@
+{
+  "$defs": {
+    "chatbot.nodes.v1.NodeCaptureValidation.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeCaptureValidation defines Zod-inspired validation rules for captured input.",
+      "properties": {
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "enum": [
+                "Infinity",
+                "-Infinity",
+                "NaN"
+              ],
+              "type": "string"
+            }
+          ],
+          "description": "max - maximum numeric value (for type=\"number\")"
+        },
+        "maxLength": {
+          "description": "max_length - maximum string length (for type=\"string\")",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "enum": [
+                "Infinity",
+                "-Infinity",
+                "NaN"
+              ],
+              "type": "string"
+            }
+          ],
+          "description": "min - minimum numeric value (for type=\"number\")"
+        },
+        "minLength": {
+          "description": "min_length - minimum string length (for type=\"string\")",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        },
+        "options": {
+          "description": "options - valid option values (for type=\"options\")",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pattern": {
+          "description": "pattern - custom regex pattern (for type=\"regex\")",
+          "type": "string"
+        },
+        "type": {
+          "description": "type - validation preset type\n \"string\" - any non-empty string\n \"email\" - valid email format\n \"phone\" - valid phone number (international)\n \"number\" - numeric value (int or float)\n \"regex\" - custom regex pattern\n \"options\" - must match one of provided options",
+          "enum": [
+            "string",
+            "email",
+            "phone",
+            "number",
+            "regex",
+            "options"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "pattern",
+        "minLength",
+        "maxLength",
+        "min",
+        "max"
+      ],
+      "title": "Node Capture Validation",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.nodes.v1.NodeCaptureValidation.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.nodes.v1.NodeCaptureValidation.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

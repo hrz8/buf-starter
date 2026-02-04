@@ -44,33 +44,55 @@ const {
 
 const openStates = reactive<Record<string, boolean>>({});
 
-// Initialize open states for items
+// Initialize open states for items (including nested sub-items)
 function initializeOpenStates() {
   props.items.forEach((item) => {
     if (item.items?.length) {
       // Skip if already initialized (unless defaultExpanded)
       if (openStates[item.title] !== undefined && !item.defaultExpanded) {
-        return;
-      }
-
-      // Items with defaultExpanded always start expanded
-      if (item.defaultExpanded) {
-        openStates[item.title] = true;
-        return;
-      }
-
-      const shouldBeOpen = hasActiveSubItem(item) || isItemActive(item);
-      const hasManualState = isManuallyExpanded(item.title);
-
-      if (shouldBeOpen && !hasManualState) {
-        openStates[item.title] = true;
-      }
-      else if (hasManualState) {
-        openStates[item.title] = true;
+        // Still process nested items
       }
       else {
-        openStates[item.title] = false;
+        // Items with defaultExpanded always start expanded
+        if (item.defaultExpanded) {
+          openStates[item.title] = true;
+        }
+        else {
+          const shouldBeOpen = hasActiveSubItem(item) || isItemActive(item);
+          const hasManualState = isManuallyExpanded(item.title);
+
+          if (shouldBeOpen && !hasManualState) {
+            openStates[item.title] = true;
+          }
+          else if (hasManualState) {
+            openStates[item.title] = true;
+          }
+          else {
+            openStates[item.title] = false;
+          }
+        }
       }
+
+      // Initialize nested sub-items (e.g., versioned nodes)
+      item.items.forEach((subItem) => {
+        if (subItem.items?.length) {
+          if (openStates[subItem.title] === undefined) {
+            const shouldBeOpen = isItemActive(subItem)
+              || subItem.items.some(nested => isItemActive(nested));
+            const hasManualState = isManuallyExpanded(subItem.title);
+
+            if (shouldBeOpen && !hasManualState) {
+              openStates[subItem.title] = true;
+            }
+            else if (hasManualState) {
+              openStates[subItem.title] = true;
+            }
+            else {
+              openStates[subItem.title] = false;
+            }
+          }
+        }
+      });
     }
   });
 }
@@ -96,6 +118,17 @@ watch(() => useRoute().path, () => {
       if (shouldBeOpen && !openStates[item.title]) {
         openStates[item.title] = true;
       }
+
+      // Also expand nested items if active
+      item.items.forEach((subItem) => {
+        if (subItem.items?.length) {
+          const nestedShouldBeOpen = isItemActive(subItem)
+            || subItem.items.some(nested => isItemActive(nested));
+          if (nestedShouldBeOpen && !openStates[subItem.title]) {
+            openStates[subItem.title] = true;
+          }
+        }
+      });
     }
   });
 });
@@ -130,7 +163,7 @@ function handleAction(action: string, event: Event) {
         >
           <SidebarMenuItem>
             <!--
-              Note: Don't use tooltip on SidebarMenuButton when used with CollapsibleTrigger as-child
+              Don't use tooltip on SidebarMenuButton when used with CollapsibleTrigger as-child
               The Tooltip wrapper breaks the as-child chain and prevents clicks from working
             -->
             <CollapsibleTrigger as-child>
@@ -161,37 +194,107 @@ function handleAction(action: string, event: Event) {
             </CollapsibleTrigger>
             <CollapsibleContent>
               <SidebarMenuSub>
-                <SidebarMenuSubItem
+                <template
                   v-for="subItem in item.items"
                   :key="subItem.to"
                 >
-                  <SidebarMenuSubButton
-                    as-child
-                    :data-active="isItemActive(subItem)"
+                  <!-- Sub-item with nested items (e.g., versioned nodes) -->
+                  <Collapsible
+                    v-if="subItem.items?.length"
+                    v-model:open="openStates[subItem.title]"
+                    class="group/nested"
                   >
-                    <NuxtLink
-                      :to="subItem.to"
-                      prefetch
-                      class="flex items-center justify-between w-full min-w-0"
+                    <SidebarMenuSubItem>
+                      <CollapsibleTrigger as-child>
+                        <SidebarMenuSubButton
+                          :data-active="isItemActive(subItem)"
+                          class="cursor-pointer"
+                          @click="toggleExpanded(subItem.title)"
+                        >
+                          <span class="flex items-center gap-2 min-w-0 flex-1">
+                            <component
+                              :is="subItem.icon"
+                              v-if="subItem.icon"
+                              class="h-4 w-4 shrink-0"
+                            />
+                            <span class="truncate">{{ subItem.title }}</span>
+                          </span>
+                          <ChevronRight
+                            class="
+                              ml-auto h-4 w-4 shrink-0 transition-transform duration-200
+                              group-data-[state=open]/nested:rotate-90
+                            "
+                          />
+                        </SidebarMenuSubButton>
+                      </CollapsibleTrigger>
+                      <CollapsibleContent>
+                        <SidebarMenuSub class="ml-4 border-l">
+                          <SidebarMenuSubItem
+                            v-for="nestedItem in subItem.items"
+                            :key="nestedItem.to"
+                          >
+                            <SidebarMenuSubButton
+                              as-child
+                              :data-active="isItemActive(nestedItem)"
+                            >
+                              <NuxtLink
+                                :to="nestedItem.to"
+                                prefetch
+                                class="flex items-center justify-between w-full min-w-0"
+                              >
+                                <span class="flex items-center gap-2 min-w-0 flex-1">
+                                  <component
+                                    :is="nestedItem.icon"
+                                    v-if="nestedItem.icon"
+                                    class="h-4 w-4 shrink-0"
+                                  />
+                                  <span class="truncate">{{ nestedItem.title }}</span>
+                                </span>
+                                <Badge
+                                  v-if="nestedItem.badge"
+                                  :variant="nestedItem.badgeVariant || 'secondary'"
+                                  class="ml-auto text-[10px] px-1.5 py-0"
+                                >
+                                  {{ nestedItem.badge }}
+                                </Badge>
+                              </NuxtLink>
+                            </SidebarMenuSubButton>
+                          </SidebarMenuSubItem>
+                        </SidebarMenuSub>
+                      </CollapsibleContent>
+                    </SidebarMenuSubItem>
+                  </Collapsible>
+
+                  <!-- Simple sub-item (no nested items) -->
+                  <SidebarMenuSubItem v-else>
+                    <SidebarMenuSubButton
+                      as-child
+                      :data-active="isItemActive(subItem)"
                     >
-                      <span class="flex items-center gap-2 min-w-0 flex-1">
-                        <component
-                          :is="subItem.icon"
-                          v-if="subItem.icon"
-                          class="h-4 w-4 shrink-0"
-                        />
-                        <span class="truncate">{{ subItem.title }}</span>
-                      </span>
-                      <Badge
-                        v-if="subItem.badge"
-                        :variant="subItem.badgeVariant || 'secondary'"
-                        class="ml-auto text-[10px] px-1.5 py-0"
+                      <NuxtLink
+                        :to="subItem.to"
+                        prefetch
+                        class="flex items-center justify-between w-full min-w-0"
                       >
-                        {{ subItem.badge }}
-                      </Badge>
-                    </NuxtLink>
-                  </SidebarMenuSubButton>
-                </SidebarMenuSubItem>
+                        <span class="flex items-center gap-2 min-w-0 flex-1">
+                          <component
+                            :is="subItem.icon"
+                            v-if="subItem.icon"
+                            class="h-4 w-4 shrink-0"
+                          />
+                          <span class="truncate">{{ subItem.title }}</span>
+                        </span>
+                        <Badge
+                          v-if="subItem.badge"
+                          :variant="subItem.badgeVariant || 'secondary'"
+                          class="ml-auto text-[10px] px-1.5 py-0"
+                        >
+                          {{ subItem.badge }}
+                        </Badge>
+                      </NuxtLink>
+                    </SidebarMenuSubButton>
+                  </SidebarMenuSubItem>
+                </template>
               </SidebarMenuSub>
             </CollapsibleContent>
           </SidebarMenuItem>

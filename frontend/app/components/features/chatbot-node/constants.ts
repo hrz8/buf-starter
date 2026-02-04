@@ -47,7 +47,11 @@ export const NODE_NAME_PATTERN = /^[a-z][a-z0-9_]*$/;
 export const VALIDATION_LIMITS = {
   nameMinLength: 2,
   nameMaxLength: 100,
+  versionMaxLength: 50,
   triggerValueMaxLength: 500,
   messageContentMaxLength: 5000,
   tagMaxLength: 50,
 } as const;
+
+// Version pattern regex (lowercase_snake_case, same as node name)
+export const VERSION_PATTERN = /^[a-z][a-z0-9_]*$/;

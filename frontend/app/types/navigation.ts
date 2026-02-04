@@ -38,6 +38,7 @@ export interface BreadcrumbConfig {
 
 /**
  * Sub-navigation item (child menu item)
+ * Supports recursive nesting for features like versioned nodes
  */
 export interface NavSubItem {
   title: string;
@@ -57,6 +58,10 @@ export interface NavSubItem {
    * Badge variant for styling
    */
   badgeVariant?: 'default' | 'secondary' | 'destructive' | 'outline';
+  /**
+   * Nested sub-items (e.g., node versions)
+   */
+  items?: NavSubItem[];
 }
 
 /**

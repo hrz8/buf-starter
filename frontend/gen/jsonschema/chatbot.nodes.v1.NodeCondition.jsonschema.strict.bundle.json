@@ -1,0 +1,59 @@
+{
+  "$defs": {
+    "chatbot.nodes.v1.NodeCondition.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeCondition defines a json-rules-engine compatible condition structure.\n Supports composite logic (all/any/not) and atomic fact comparisons.\n Example: { \"all\": [{ \"fact\": \"session.mode\", \"operator\": \"equal\", \"value\": \"liveChat\" }] }",
+      "properties": {
+        "all": {
+          "description": "all - AND logic: all conditions must pass (composite)",
+          "items": {
+            "$ref": "#/$defs/chatbot.nodes.v1.NodeCondition.jsonschema.strict.json"
+          },
+          "type": "array"
+        },
+        "any": {
+          "description": "any - OR logic: at least one condition must pass (composite)",
+          "items": {
+            "$ref": "#/$defs/chatbot.nodes.v1.NodeCondition.jsonschema.strict.json"
+          },
+          "type": "array"
+        },
+        "fact": {
+          "description": "fact - fact name for atomic condition (e.g., \"session.mode\", \"message.text\")",
+          "type": "string"
+        },
+        "not": {
+          "$ref": "#/$defs/chatbot.nodes.v1.NodeCondition.jsonschema.strict.json",
+          "description": "not - NOT logic: condition must fail (composite)"
+        },
+        "operator": {
+          "description": "operator - comparison operator (e.g., \"equal\", \"notEqual\", \"contains\", \"greaterThan\")",
+          "type": "string"
+        },
+        "path": {
+          "description": "path - JSONPath for nested data access (e.g., \"$.stage\" for contextLast)",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/google.protobuf.Value.jsonschema.strict.json",
+          "description": "value - comparison value (can be string, number, boolean, or object)"
+        }
+      },
+      "required": [
+        "fact",
+        "operator",
+        "path"
+      ],
+      "title": "Node Condition",
+      "type": "object"
+    },
+    "google.protobuf.Value.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Value"
+    }
+  },
+  "$id": "chatbot.nodes.v1.NodeCondition.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.nodes.v1.NodeCondition.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

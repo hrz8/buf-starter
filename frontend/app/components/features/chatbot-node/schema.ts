@@ -22,6 +22,8 @@ export const messageSchema = z.object({
 export type MessageFormData = z.infer<typeof messageSchema>;
 
 // Node create schema (for creating new nodes)
+// Note: version is NOT included here - users create default nodes first,
+// then use "Add Version" to create variants
 export const nodeCreateSchema = z.object({
   name: z.string()
     .min(VALIDATION_LIMITS.nameMinLength, `Name must be at least ${VALIDATION_LIMITS.nameMinLength} characters`)
@@ -34,6 +36,7 @@ export const nodeCreateSchema = z.object({
 export type NodeCreateFormData = z.infer<typeof nodeCreateSchema>;
 
 // Node edit schema (for editing existing nodes)
+// Note: triggers are optional - a node can match based on conditions only
 export const nodeEditSchema = z.object({
   name: z.string()
     .min(VALIDATION_LIMITS.nameMinLength, `Name must be at least ${VALIDATION_LIMITS.nameMinLength} characters`)
@@ -41,7 +44,7 @@ export const nodeEditSchema = z.object({
     .regex(NODE_NAME_PATTERN, 'Name must be lowercase letters, numbers, and underscores'),
   tags: z.array(z.string().max(VALIDATION_LIMITS.tagMaxLength)).optional(),
   enabled: z.boolean(),
-  triggers: z.array(triggerSchema).min(1, 'At least one trigger is required'),
+  triggers: z.array(triggerSchema), // Optional - can be empty if node uses conditions
   messages: z.array(messageSchema).min(1, 'At least one message is required'),
 });
 

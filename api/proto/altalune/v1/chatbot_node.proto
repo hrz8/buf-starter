@@ -56,6 +56,11 @@ message CreateNodeRequest {
     }
   ];
   repeated string tags = 4;
+  // version - optional version identifier for node variants (e.g., "roundtrip", "oneway")
+  optional string version = 5 [(buf.validate.field).string = {
+    max_len: 50,
+    pattern: "^[a-z][a-z0-9_]*$"
+  }];
 }
 
 // CreateNodeResponse returns the created node
@@ -104,6 +109,20 @@ message UpdateNodeRequest {
   repeated chatbot.nodes.v1.ChatbotNodeTrigger triggers = 6;
   // messages - at least one required when provided
   repeated chatbot.nodes.v1.ChatbotNodeMessage messages = 7;
+  // priority - matching order (higher = checked first)
+  optional int32 priority = 8;
+  // condition - json-rules-engine conditions (optional, null to clear)
+  chatbot.nodes.v1.NodeCondition condition = 9;
+  // effect - immediate action (set_mode, set_context, goto) executed after messages
+  chatbot.nodes.v1.NodeEffect effect = 10;
+  // next_action - deferred action (goto, capture) executed when user replies
+  chatbot.nodes.v1.NodeNextAction next_action = 11;
+  // clear_condition - set to true to explicitly clear the condition
+  bool clear_condition = 12;
+  // clear_effect - set to true to explicitly clear the effect
+  bool clear_effect = 13;
+  // clear_next_action - set to true to explicitly clear the next action
+  bool clear_next_action = 14;
 }
 
 // UpdateNodeResponse returns the updated node

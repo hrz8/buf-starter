@@ -5,6 +5,7 @@ package chatbot.nodes.v1;
 option go_package = "github.com/hrz8/altalune/gen/chatbot/nodes/v1;chatbotnodesv1";
 
 import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
 import "buf/validate/validate.proto";
 
 // ChatbotNode represents a chatbot response node with triggers and messages.
@@ -24,6 +25,22 @@ message ChatbotNode {
   repeated ChatbotNodeTrigger triggers = 6;
   // messages - responses sent when node is triggered (OpenAI format)
   repeated ChatbotNodeMessage messages = 7;
+  // is_predefined - system nodes that cannot be deleted (e.g., talk_to_agent, end_chat)
+  bool is_predefined = 8;
+  // priority - matching order (higher priority = checked first, default 0)
+  int32 priority = 9;
+  // condition - json-rules-engine conditions for advanced matching
+  NodeCondition condition = 10;
+  // effect - immediate action (SINGLE, executed after messages are sent)
+  NodeEffect effect = 11;
+  // next_action - deferred action (SINGLE, executed when user replies)
+  NodeNextAction next_action = 12;
+  // version - optional version identifier for node variants (e.g., "roundtrip", "oneway")
+  // When null, this is the default version. Multiple versions with same name+lang can exist.
+  optional string version = 13;
+  // force_condition - when true, conditions are always evaluated on goto navigation
+  // Use for versioned nodes where condition determines which version to execute
+  bool force_condition = 14;
   // created_at - timestamp of creation
   google.protobuf.Timestamp created_at = 98;
   // updated_at - timestamp of last update
@@ -56,4 +73,94 @@ message ChatbotNodeMessage {
     min_len: 1,
     max_len: 5000
   }];
+}
+
+// NodeCondition defines a json-rules-engine compatible condition structure.
+// Supports composite logic (all/any/not) and atomic fact comparisons.
+// Example: { "all": [{ "fact": "session.mode", "operator": "equal", "value": "liveChat" }] }
+message NodeCondition {
+  // all - AND logic: all conditions must pass (composite)
+  repeated NodeCondition all = 1;
+  // any - OR logic: at least one condition must pass (composite)
+  repeated NodeCondition any = 2;
+  // not - NOT logic: condition must fail (composite)
+  NodeCondition not = 3;
+  // fact - fact name for atomic condition (e.g., "session.mode", "message.text")
+  string fact = 4;
+  // operator - comparison operator (e.g., "equal", "notEqual", "contains", "greaterThan")
+  string operator = 5;
+  // value - comparison value (can be string, number, boolean, or object)
+  google.protobuf.Value value = 6;
+  // path - JSONPath for nested data access (e.g., "$.stage" for contextLast)
+  string path = 7;
+}
+
+// NodeEffect defines an immediate action executed after sending node messages.
+// This is a SINGLE effect (not array) - executes right after response is sent.
+message NodeEffect {
+  // type - effect type: "set_mode", "set_context", "goto"
+  string type = 1 [(buf.validate.field).string = {
+    in: ["set_mode", "set_context", "goto"]
+  }];
+  // target - mode name for set_mode (assistant, flow, liveChat), node_id for goto
+  string target = 2;
+  // context - key-value pairs for set_context effect
+  map<string, google.protobuf.Value> context = 3;
+}
+
+// NodeNextAction defines a deferred action executed when user replies.
+// This is a SINGLE action - either goto or capture.
+message NodeNextAction {
+  // type - action type: "goto", "capture"
+  string type = 1 [(buf.validate.field).string = {
+    in: ["goto", "capture"]
+  }];
+  // target - node_id for goto type
+  string target = 2;
+  // capture - configuration for capture type
+  NodeCapture capture = 3;
+}
+
+// NodeCapture defines configuration for capturing user input with Zod-style validation.
+message NodeCapture {
+  // variable_name - where to store captured value in context (e.g., "userEmail")
+  string variable_name = 1 [(buf.validate.field).string.min_len = 1];
+  // validation - Zod-inspired validation rules
+  NodeCaptureValidation validation = 2;
+  // on_fail_message - message shown each time validation fails (supports {{variables}})
+  string on_fail_message = 3;
+  // max_retries - max retry attempts (0 = unlimited)
+  int32 max_retries = 4;
+  // on_success_context - additional context to set on success (beyond captured value)
+  map<string, google.protobuf.Value> on_success_context = 5;
+  // on_success_goto - node to execute after successful capture (optional)
+  string on_success_goto = 6;
+  // on_fail_goto - node to execute when maxRetries exceeded (optional escape route)
+  string on_fail_goto = 7;
+}
+
+// NodeCaptureValidation defines Zod-inspired validation rules for captured input.
+message NodeCaptureValidation {
+  // type - validation preset type
+  // "string" - any non-empty string
+  // "email" - valid email format
+  // "phone" - valid phone number (international)
+  // "number" - numeric value (int or float)
+  // "regex" - custom regex pattern
+  // "options" - must match one of provided options
+  string type = 1 [(buf.validate.field).string = {
+    in: ["string", "email", "phone", "number", "regex", "options"]
+  }];
+  // pattern - custom regex pattern (for type="regex")
+  string pattern = 2;
+  // options - valid option values (for type="options")
+  repeated string options = 3;
+  // min_length - minimum string length (for type="string")
+  int32 min_length = 4;
+  // max_length - maximum string length (for type="string")
+  int32 max_length = 5;
+  // min - minimum numeric value (for type="number")
+  double min = 6;
+  // max - maximum numeric value (for type="number")
+  double max = 7;
 }

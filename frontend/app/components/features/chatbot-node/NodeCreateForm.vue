@@ -56,6 +56,8 @@ const onSubmit = form.handleSubmit(async (values) => {
   }
 
   try {
+    // Always create as default node (no version)
+    // Users can add versions later via "Add Version" button
     const node = await nodeService.createNode(
       projectId,
       values.name,

@@ -5,6 +5,7 @@ import {
   Brain,
   Cog,
   FileText,
+  FolderTree,
   Key,
   KeyRound,
   LucideHome,
@@ -82,26 +83,78 @@ export function useNavigationItems() {
   });
 
   /**
-   * Generate chatbot node nav items
+   * Generate chatbot node nav items with version hierarchy
    * Reactive to node store changes
    */
   const chatbotNodeItems = computed<NavSubItem[]>(() => {
-    return nodeStore.sortedNodes.map((node) => {
-      const displayName = `${node.name}_${node.lang}`;
-      return {
-        title: displayName,
-        to: `/platform/node/${node.id}`,
-        icon: FileText,
-        breadcrumb: {
-          path: `/platform/node/${node.id}`,
-          label: displayName,
-          parent: '/platform/nodes',
-        },
-        // Show badge for disabled nodes
-        badge: node.enabled ? undefined : t('common.label.disabled'),
-        badgeVariant: 'secondary' as const,
-      };
-    });
+    const items: NavSubItem[] = [];
+    const processedKeys = new Set<string>();
+
+    for (const node of nodeStore.sortedNodes) {
+      const key = `${node.name}_${node.lang}`;
+
+      // Skip if already processed this name_lang combo
+      if (processedKeys.has(key))
+        continue;
+      processedKeys.add(key);
+
+      const versions = nodeStore.getNodeVersions(node.name, node.lang);
+      const hasVersions = versions.length > 1 || versions.some(v => v.version);
+
+      if (hasVersions) {
+        // Get default node for the parent URL
+        const defaultNode = versions.find(v => !v.version) || versions[0];
+        if (!defaultNode)
+          continue;
+
+        // Expandable parent with version sub-items
+        items.push({
+          title: key,
+          to: `/platform/node/${key}`,
+          icon: FolderTree,
+          breadcrumb: {
+            path: `/platform/node/${key}`,
+            label: key,
+            parent: '/platform/nodes',
+          },
+          items: versions.map((v) => {
+            const versionLabel = v.version || t('features.chatbotNode.defaultVersion');
+            const versionUrl = v.version
+              ? `/platform/node/${key}?v=${v.version}`
+              : `/platform/node/${key}`;
+            return {
+              title: versionLabel,
+              to: versionUrl,
+              icon: FileText,
+              breadcrumb: {
+                path: versionUrl,
+                label: versionLabel,
+                parent: `/platform/node/${key}`,
+              },
+              badge: v.enabled ? undefined : t('common.label.disabled'),
+              badgeVariant: 'secondary' as const,
+            };
+          }),
+        });
+      }
+      else {
+        // Single node (no versions) - use slug URL
+        items.push({
+          title: key,
+          to: `/platform/node/${key}`,
+          icon: FileText,
+          breadcrumb: {
+            path: `/platform/node/${key}`,
+            label: key,
+            parent: '/platform/nodes',
+          },
+          badge: node.enabled ? undefined : t('common.label.disabled'),
+          badgeVariant: 'secondary' as const,
+        });
+      }
+    }
+
+    return items;
   });
 
   /**

@@ -1,0 +1,177 @@
+{
+  "$defs": {
+    "chatbot.nodes.v1.NodeCapture.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeCapture defines configuration for capturing user input with Zod-style validation.",
+      "properties": {
+        "maxRetries": {
+          "description": "max_retries - max retry attempts (0 = unlimited)",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        },
+        "onFailGoto": {
+          "description": "on_fail_goto - node to execute when maxRetries exceeded (optional escape route)",
+          "type": "string"
+        },
+        "onFailMessage": {
+          "description": "on_fail_message - message shown each time validation fails (supports {{variables}})",
+          "type": "string"
+        },
+        "onSuccessContext": {
+          "additionalProperties": {
+            "$ref": "#/$defs/google.protobuf.Value.jsonschema.strict.json"
+          },
+          "description": "on_success_context - additional context to set on success (beyond captured value)",
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "onSuccessGoto": {
+          "description": "on_success_goto - node to execute after successful capture (optional)",
+          "type": "string"
+        },
+        "validation": {
+          "$ref": "#/$defs/chatbot.nodes.v1.NodeCaptureValidation.jsonschema.strict.json",
+          "description": "validation - Zod-inspired validation rules"
+        },
+        "variableName": {
+          "description": "variable_name - where to store captured value in context (e.g., \"userEmail\")",
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "variableName",
+        "onFailMessage",
+        "maxRetries",
+        "onSuccessGoto",
+        "onFailGoto"
+      ],
+      "title": "Node Capture",
+      "type": "object"
+    },
+    "chatbot.nodes.v1.NodeCaptureValidation.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeCaptureValidation defines Zod-inspired validation rules for captured input.",
+      "properties": {
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "enum": [
+                "Infinity",
+                "-Infinity",
+                "NaN"
+              ],
+              "type": "string"
+            }
+          ],
+          "description": "max - maximum numeric value (for type=\"number\")"
+        },
+        "maxLength": {
+          "description": "max_length - maximum string length (for type=\"string\")",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "enum": [
+                "Infinity",
+                "-Infinity",
+                "NaN"
+              ],
+              "type": "string"
+            }
+          ],
+          "description": "min - minimum numeric value (for type=\"number\")"
+        },
+        "minLength": {
+          "description": "min_length - minimum string length (for type=\"string\")",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        },
+        "options": {
+          "description": "options - valid option values (for type=\"options\")",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pattern": {
+          "description": "pattern - custom regex pattern (for type=\"regex\")",
+          "type": "string"
+        },
+        "type": {
+          "description": "type - validation preset type\n \"string\" - any non-empty string\n \"email\" - valid email format\n \"phone\" - valid phone number (international)\n \"number\" - numeric value (int or float)\n \"regex\" - custom regex pattern\n \"options\" - must match one of provided options",
+          "enum": [
+            "string",
+            "email",
+            "phone",
+            "number",
+            "regex",
+            "options"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "pattern",
+        "minLength",
+        "maxLength",
+        "min",
+        "max"
+      ],
+      "title": "Node Capture Validation",
+      "type": "object"
+    },
+    "chatbot.nodes.v1.NodeNextAction.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeNextAction defines a deferred action executed when user replies.\n This is a SINGLE action - either goto or capture.",
+      "properties": {
+        "capture": {
+          "$ref": "#/$defs/chatbot.nodes.v1.NodeCapture.jsonschema.strict.json",
+          "description": "capture - configuration for capture type"
+        },
+        "target": {
+          "description": "target - node_id for goto type",
+          "type": "string"
+        },
+        "type": {
+          "description": "type - action type: \"goto\", \"capture\"",
+          "enum": [
+            "goto",
+            "capture"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "target"
+      ],
+      "title": "Node Next Action",
+      "type": "object"
+    },
+    "google.protobuf.Value.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Value"
+    }
+  },
+  "$id": "chatbot.nodes.v1.NodeNextAction.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.nodes.v1.NodeNextAction.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

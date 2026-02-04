@@ -5,7 +5,7 @@
 import type { GenFile, GenMessage, GenService } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc, serviceDesc } from "@bufbuild/protobuf/codegenv2";
 import { file_buf_validate_validate } from "../../buf/validate/validate_pb.js";
-import type { ChatbotNode, ChatbotNodeMessage, ChatbotNodeTrigger } from "../../chatbot/nodes/v1/node_pb.js";
+import type { ChatbotNode, ChatbotNodeMessage, ChatbotNodeTrigger, NodeCondition, NodeEffect, NodeNextAction } from "../../chatbot/nodes/v1/node_pb.js";
 import { file_chatbot_nodes_v1_node } from "../../chatbot/nodes/v1/node_pb.js";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file altalune/v1/chatbot_node.proto.
  */
 export const file_altalune_v1_chatbot_node: GenFile = /*@__PURE__*/
-  fileDesc("Ch5hbHRhbHVuZS92MS9jaGF0Ym90X25vZGUucHJvdG8SC2FsdGFsdW5lLnYxIjMKEExpc3ROb2Rlc1JlcXVlc3QSHwoKcHJvamVjdF9pZBgBIAEoCUILukgIyAEBcgOYAQ4iQQoRTGlzdE5vZGVzUmVzcG9uc2USLAoFbm9kZXMYASADKAsyHS5jaGF0Ym90Lm5vZGVzLnYxLkNoYXRib3ROb2RlIpcBChFDcmVhdGVOb2RlUmVxdWVzdBIfCgpwcm9qZWN0X2lkGAEgASgJQgu6SAjIAQFyA5gBDhItCgRuYW1lGAIgASgJQh+6SBzIAQFyFxACGGQyEV5bYS16XVthLXowLTlfXSokEiQKBGxhbmcYAyABKAlCFrpIE8gBAXIOUgVlbi1VU1IFaWQtSUQSDAoEdGFncxgEIAMoCSJBChJDcmVhdGVOb2RlUmVzcG9uc2USKwoEbm9kZRgBIAEoCzIdLmNoYXRib3Qubm9kZXMudjEuQ2hhdGJvdE5vZGUiTwoOR2V0Tm9kZVJlcXVlc3QSHwoKcHJvamVjdF9pZBgBIAEoCUILukgIyAEBcgOYAQ4SHAoHbm9kZV9pZBgCIAEoCUILukgIyAEBcgOYAQ4iPgoPR2V0Tm9kZVJlc3BvbnNlEisKBG5vZGUYASABKAsyHS5jaGF0Ym90Lm5vZGVzLnYxLkNoYXRib3ROb2RlIqwCChFVcGRhdGVOb2RlUmVxdWVzdBIfCgpwcm9qZWN0X2lkGAEgASgJQgu6SAjIAQFyA5gBDhIcCgdub2RlX2lkGAIgASgJQgu6SAjIAQFyA5gBDhIvCgRuYW1lGAMgASgJQhy6SBlyFxACGGQyEV5bYS16XVthLXowLTlfXSokSACIAQESDAoEdGFncxgEIAMoCRIUCgdlbmFibGVkGAUgASgISAGIAQESNgoIdHJpZ2dlcnMYBiADKAsyJC5jaGF0Ym90Lm5vZGVzLnYxLkNoYXRib3ROb2RlVHJpZ2dlchI2CghtZXNzYWdlcxgHIAMoCzIkLmNoYXRib3Qubm9kZXMudjEuQ2hhdGJvdE5vZGVNZXNzYWdlQgcKBV9uYW1lQgoKCF9lbmFibGVkIlIKElVwZGF0ZU5vZGVSZXNwb25zZRIrCgRub2RlGAEgASgLMh0uY2hhdGJvdC5ub2Rlcy52MS5DaGF0Ym90Tm9kZRIPCgdtZXNzYWdlGAIgASgJIlIKEURlbGV0ZU5vZGVSZXF1ZXN0Eh8KCnByb2plY3RfaWQYASABKAlCC7pICMgBAXIDmAEOEhwKB25vZGVfaWQYAiABKAlCC7pICMgBAXIDmAEOIiUKEkRlbGV0ZU5vZGVSZXNwb25zZRIPCgdtZXNzYWdlGAEgASgJMp0DChJDaGF0Ym90Tm9kZVNlcnZpY2USTAoJTGlzdE5vZGVzEh0uYWx0YWx1bmUudjEuTGlzdE5vZGVzUmVxdWVzdBoeLmFsdGFsdW5lLnYxLkxpc3ROb2Rlc1Jlc3BvbnNlIgASTwoKQ3JlYXRlTm9kZRIeLmFsdGFsdW5lLnYxLkNyZWF0ZU5vZGVSZXF1ZXN0Gh8uYWx0YWx1bmUudjEuQ3JlYXRlTm9kZVJlc3BvbnNlIgASRgoHR2V0Tm9kZRIbLmFsdGFsdW5lLnYxLkdldE5vZGVSZXF1ZXN0GhwuYWx0YWx1bmUudjEuR2V0Tm9kZVJlc3BvbnNlIgASTwoKVXBkYXRlTm9kZRIeLmFsdGFsdW5lLnYxLlVwZGF0ZU5vZGVSZXF1ZXN0Gh8uYWx0YWx1bmUudjEuVXBkYXRlTm9kZVJlc3BvbnNlIgASTwoKRGVsZXRlTm9kZRIeLmFsdGFsdW5lLnYxLkRlbGV0ZU5vZGVSZXF1ZXN0Gh8uYWx0YWx1bmUudjEuRGVsZXRlTm9kZVJlc3BvbnNlIgBCpQEKD2NvbS5hbHRhbHVuZS52MUIQQ2hhdGJvdE5vZGVQcm90b1ABWjNnaXRodWIuY29tL2hyejgvYWx0YWx1bmUvZ2VuL2FsdGFsdW5lL3YxO2FsdGFsdW5ldjGiAgNBWFiqAgtBbHRhbHVuZS5WMcoCC0FsdGFsdW5lXFYx4gIXQWx0YWx1bmVcVjFcR1BCTWV0YWRhdGHqAgxBbHRhbHVuZTo6VjFiBnByb3RvMw", [file_buf_validate_validate, file_chatbot_nodes_v1_node]);
+  fileDesc("Ch5hbHRhbHVuZS92MS9jaGF0Ym90X25vZGUucHJvdG8SC2FsdGFsdW5lLnYxIjMKEExpc3ROb2Rlc1JlcXVlc3QSHwoKcHJvamVjdF9pZBgBIAEoCUILukgIyAEBcgOYAQ4iQQoRTGlzdE5vZGVzUmVzcG9uc2USLAoFbm9kZXMYASADKAsyHS5jaGF0Ym90Lm5vZGVzLnYxLkNoYXRib3ROb2RlItUBChFDcmVhdGVOb2RlUmVxdWVzdBIfCgpwcm9qZWN0X2lkGAEgASgJQgu6SAjIAQFyA5gBDhItCgRuYW1lGAIgASgJQh+6SBzIAQFyFxACGGQyEV5bYS16XVthLXowLTlfXSokEiQKBGxhbmcYAyABKAlCFrpIE8gBAXIOUgVlbi1VU1IFaWQtSUQSDAoEdGFncxgEIAMoCRIwCgd2ZXJzaW9uGAUgASgJQhq6SBdyFRgyMhFeW2Etel1bYS16MC05X10qJEgAiAEBQgoKCF92ZXJzaW9uIkEKEkNyZWF0ZU5vZGVSZXNwb25zZRIrCgRub2RlGAEgASgLMh0uY2hhdGJvdC5ub2Rlcy52MS5DaGF0Ym90Tm9kZSJPCg5HZXROb2RlUmVxdWVzdBIfCgpwcm9qZWN0X2lkGAEgASgJQgu6SAjIAQFyA5gBDhIcCgdub2RlX2lkGAIgASgJQgu6SAjIAQFyA5gBDiI+Cg9HZXROb2RlUmVzcG9uc2USKwoEbm9kZRgBIAEoCzIdLmNoYXRib3Qubm9kZXMudjEuQ2hhdGJvdE5vZGUiswQKEVVwZGF0ZU5vZGVSZXF1ZXN0Eh8KCnByb2plY3RfaWQYASABKAlCC7pICMgBAXIDmAEOEhwKB25vZGVfaWQYAiABKAlCC7pICMgBAXIDmAEOEi8KBG5hbWUYAyABKAlCHLpIGXIXEAIYZDIRXlthLXpdW2EtejAtOV9dKiRIAIgBARIMCgR0YWdzGAQgAygJEhQKB2VuYWJsZWQYBSABKAhIAYgBARI2Cgh0cmlnZ2VycxgGIAMoCzIkLmNoYXRib3Qubm9kZXMudjEuQ2hhdGJvdE5vZGVUcmlnZ2VyEjYKCG1lc3NhZ2VzGAcgAygLMiQuY2hhdGJvdC5ub2Rlcy52MS5DaGF0Ym90Tm9kZU1lc3NhZ2USFQoIcHJpb3JpdHkYCCABKAVIAogBARIyCgljb25kaXRpb24YCSABKAsyHy5jaGF0Ym90Lm5vZGVzLnYxLk5vZGVDb25kaXRpb24SLAoGZWZmZWN0GAogASgLMhwuY2hhdGJvdC5ub2Rlcy52MS5Ob2RlRWZmZWN0EjUKC25leHRfYWN0aW9uGAsgASgLMiAuY2hhdGJvdC5ub2Rlcy52MS5Ob2RlTmV4dEFjdGlvbhIXCg9jbGVhcl9jb25kaXRpb24YDCABKAgSFAoMY2xlYXJfZWZmZWN0GA0gASgIEhkKEWNsZWFyX25leHRfYWN0aW9uGA4gASgIQgcKBV9uYW1lQgoKCF9lbmFibGVkQgsKCV9wcmlvcml0eSJSChJVcGRhdGVOb2RlUmVzcG9uc2USKwoEbm9kZRgBIAEoCzIdLmNoYXRib3Qubm9kZXMudjEuQ2hhdGJvdE5vZGUSDwoHbWVzc2FnZRgCIAEoCSJSChFEZWxldGVOb2RlUmVxdWVzdBIfCgpwcm9qZWN0X2lkGAEgASgJQgu6SAjIAQFyA5gBDhIcCgdub2RlX2lkGAIgASgJQgu6SAjIAQFyA5gBDiIlChJEZWxldGVOb2RlUmVzcG9uc2USDwoHbWVzc2FnZRgBIAEoCTKdAwoSQ2hhdGJvdE5vZGVTZXJ2aWNlEkwKCUxpc3ROb2RlcxIdLmFsdGFsdW5lLnYxLkxpc3ROb2Rlc1JlcXVlc3QaHi5hbHRhbHVuZS52MS5MaXN0Tm9kZXNSZXNwb25zZSIAEk8KCkNyZWF0ZU5vZGUSHi5hbHRhbHVuZS52MS5DcmVhdGVOb2RlUmVxdWVzdBofLmFsdGFsdW5lLnYxLkNyZWF0ZU5vZGVSZXNwb25zZSIAEkYKB0dldE5vZGUSGy5hbHRhbHVuZS52MS5HZXROb2RlUmVxdWVzdBocLmFsdGFsdW5lLnYxLkdldE5vZGVSZXNwb25zZSIAEk8KClVwZGF0ZU5vZGUSHi5hbHRhbHVuZS52MS5VcGRhdGVOb2RlUmVxdWVzdBofLmFsdGFsdW5lLnYxLlVwZGF0ZU5vZGVSZXNwb25zZSIAEk8KCkRlbGV0ZU5vZGUSHi5hbHRhbHVuZS52MS5EZWxldGVOb2RlUmVxdWVzdBofLmFsdGFsdW5lLnYxLkRlbGV0ZU5vZGVSZXNwb25zZSIAQqUBCg9jb20uYWx0YWx1bmUudjFCEENoYXRib3ROb2RlUHJvdG9QAVozZ2l0aHViLmNvbS9ocno4L2FsdGFsdW5lL2dlbi9hbHRhbHVuZS92MTthbHRhbHVuZXYxogIDQVhYqgILQWx0YWx1bmUuVjHKAgtBbHRhbHVuZVxWMeICF0FsdGFsdW5lXFYxXEdQQk1ldGFkYXRh6gIMQWx0YWx1bmU6OlYxYgZwcm90bzM", [file_buf_validate_validate, file_chatbot_nodes_v1_node]);
 
 /**
  * ListNodesRequest retrieves all nodes for sidebar display
@@ -78,6 +78,13 @@ export type CreateNodeRequest = Message<"altalune.v1.CreateNodeRequest"> & {
    * @generated from field: repeated string tags = 4;
    */
   tags: string[];
+
+  /**
+   * version - optional version identifier for node variants (e.g., "roundtrip", "oneway")
+   *
+   * @generated from field: optional string version = 5;
+   */
+  version?: string;
 };
 
 /**
@@ -199,6 +206,55 @@ export type UpdateNodeRequest = Message<"altalune.v1.UpdateNodeRequest"> & {
    * @generated from field: repeated chatbot.nodes.v1.ChatbotNodeMessage messages = 7;
    */
   messages: ChatbotNodeMessage[];
+
+  /**
+   * priority - matching order (higher = checked first)
+   *
+   * @generated from field: optional int32 priority = 8;
+   */
+  priority?: number;
+
+  /**
+   * condition - json-rules-engine conditions (optional, null to clear)
+   *
+   * @generated from field: chatbot.nodes.v1.NodeCondition condition = 9;
+   */
+  condition?: NodeCondition;
+
+  /**
+   * effect - immediate action (set_mode, set_context, goto) executed after messages
+   *
+   * @generated from field: chatbot.nodes.v1.NodeEffect effect = 10;
+   */
+  effect?: NodeEffect;
+
+  /**
+   * next_action - deferred action (goto, capture) executed when user replies
+   *
+   * @generated from field: chatbot.nodes.v1.NodeNextAction next_action = 11;
+   */
+  nextAction?: NodeNextAction;
+
+  /**
+   * clear_condition - set to true to explicitly clear the condition
+   *
+   * @generated from field: bool clear_condition = 12;
+   */
+  clearCondition: boolean;
+
+  /**
+   * clear_effect - set to true to explicitly clear the effect
+   *
+   * @generated from field: bool clear_effect = 13;
+   */
+  clearEffect: boolean;
+
+  /**
+   * clear_next_action - set to true to explicitly clear the next action
+   *
+   * @generated from field: bool clear_next_action = 14;
+   */
+  clearNextAction: boolean;
 };
 
 /**

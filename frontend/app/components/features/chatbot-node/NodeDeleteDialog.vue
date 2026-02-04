@@ -14,6 +14,12 @@ import {
   AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 import { Button } from '@/components/ui/button';
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from '@/components/ui/tooltip';
 import { useChatbotNodeService } from '@/composables/services/useChatbotNodeService';
 import { useChatbotNodeStore } from '@/stores/chatbot-node';
 import { useProjectStore } from '@/stores/project';
@@ -38,9 +44,12 @@ const isDeleting = computed(() => nodeService.deleteLoading.value);
 
 const nodeName = computed(() => `${props.node.name}_${props.node.lang}`);
 
+// Predefined nodes cannot be deleted
+const isPredefined = computed(() => props.node.isPredefined);
+
 async function handleDelete() {
   const projectId = projectStore.activeProjectId;
-  if (!projectId) {
+  if (!projectId || isPredefined.value) {
     return;
   }
 
@@ -64,7 +73,21 @@ async function handleDelete() {
 </script>
 
 <template>
-  <AlertDialog v-model:open="isOpen">
+  <TooltipProvider v-if="isPredefined">
+    <Tooltip>
+      <TooltipTrigger as-child>
+        <Button variant="destructive" size="sm" disabled>
+          <Trash2 class="h-4 w-4 mr-2" />
+          {{ t('features.chatbotNode.delete.button') }}
+        </Button>
+      </TooltipTrigger>
+      <TooltipContent>
+        <p>{{ t('features.chatbotNode.delete.predefinedTooltip') }}</p>
+      </TooltipContent>
+    </Tooltip>
+  </TooltipProvider>
+
+  <AlertDialog v-else v-model:open="isOpen">
     <AlertDialogTrigger as-child>
       <Button variant="destructive" size="sm">
         <Trash2 class="h-4 w-4 mr-2" />

@@ -1,5 +1,12 @@
 import type { MessageInitShape } from '@bufbuild/protobuf';
-import type { ChatbotNode, ChatbotNodeMessage, ChatbotNodeTrigger } from '~~/gen/chatbot/nodes/v1/node_pb';
+import type {
+  ChatbotNode,
+  ChatbotNodeMessage,
+  ChatbotNodeTrigger,
+  NodeCondition,
+  NodeEffect,
+  NodeNextAction,
+} from '~~/gen/chatbot/nodes/v1/node_pb';
 
 import { chatbotNodeRepository } from '#shared/repository/chatbot-node';
 
@@ -57,6 +64,7 @@ export function useChatbotNodeService() {
     name: string,
     lang: string,
     tags: string[] = [],
+    version?: string,
   ): Promise<ChatbotNode | null> {
     createState.loading = true;
     createState.error = '';
@@ -68,6 +76,7 @@ export function useChatbotNodeService() {
       name,
       lang,
       tags,
+      version,
     };
 
     if (!createValidator.validate(req)) {
@@ -133,6 +142,10 @@ export function useChatbotNodeService() {
       enabled?: boolean;
       triggers?: ChatbotNodeTrigger[];
       messages?: ChatbotNodeMessage[];
+      priority?: number;
+      condition?: NodeCondition;
+      effect?: NodeEffect;
+      nextAction?: NodeNextAction;
     },
   ): Promise<ChatbotNode | null> {
     updateState.loading = true;
@@ -148,6 +161,14 @@ export function useChatbotNodeService() {
       enabled: data.enabled,
       triggers: data.triggers || [],
       messages: data.messages || [],
+      priority: data.priority,
+      condition: data.condition,
+      effect: data.effect,
+      nextAction: data.nextAction,
+      // Set clear flags when the field is explicitly undefined/removed
+      clearCondition: data.condition === undefined,
+      clearEffect: data.effect === undefined,
+      clearNextAction: data.nextAction === undefined,
     };
 
     if (!updateValidator.validate(req)) {

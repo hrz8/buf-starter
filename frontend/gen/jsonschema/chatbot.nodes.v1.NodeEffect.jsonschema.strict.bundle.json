@@ -1,0 +1,47 @@
+{
+  "$defs": {
+    "chatbot.nodes.v1.NodeEffect.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeEffect defines an immediate action executed after sending node messages.\n This is a SINGLE effect (not array) - executes right after response is sent.",
+      "properties": {
+        "context": {
+          "additionalProperties": {
+            "$ref": "#/$defs/google.protobuf.Value.jsonschema.strict.json"
+          },
+          "description": "context - key-value pairs for set_context effect",
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "target": {
+          "description": "target - mode name for set_mode (assistant, flow, liveChat), node_id for goto",
+          "type": "string"
+        },
+        "type": {
+          "description": "type - effect type: \"set_mode\", \"set_context\", \"goto\"",
+          "enum": [
+            "set_mode",
+            "set_context",
+            "goto"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "target"
+      ],
+      "title": "Node Effect",
+      "type": "object"
+    },
+    "google.protobuf.Value.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Value"
+    }
+  },
+  "$id": "chatbot.nodes.v1.NodeEffect.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.nodes.v1.NodeEffect.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

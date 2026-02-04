@@ -1,16 +1,7 @@
-import type { LucideIcon } from 'lucide-vue-next';
-import type { RouteLocationNormalizedLoaded } from 'vue-router';
+import type { NavItem, NavSubItem } from '~/types/navigation';
 
-export interface NavSubItem {
-  title: string;
-  to: string;
-  icon?: LucideIcon;
-  match?: string | RegExp | ((route: RouteLocationNormalizedLoaded) => boolean);
-}
-
-export interface NavItem extends NavSubItem {
-  items?: NavSubItem[];
-}
+// Re-export types from the central type definition
+export type { NavItem, NavSubItem } from '~/types/navigation';
 
 /**
  * Core navigation composable for active state detection
@@ -23,9 +14,25 @@ export function useNavigation() {
    */
   function isItemActive(item: NavSubItem): boolean {
     const currentPath = route.path;
+    const currentQuery = route.query;
 
     // Handle relative paths by prepending /
-    const itemPath = item.to.startsWith('/') ? item.to : `/${item.to}`;
+    let itemPath = item.to.startsWith('/') ? item.to : `/${item.to}`;
+    const itemQuery: Record<string, string> = {};
+
+    // Parse query params from item.to if present (e.g., "/platform/node/xxx?v=roundtrip")
+    const queryIndex = itemPath.indexOf('?');
+    if (queryIndex !== -1) {
+      const queryString = itemPath.slice(queryIndex + 1);
+      itemPath = itemPath.slice(0, queryIndex);
+      // Parse query string
+      for (const param of queryString.split('&')) {
+        const [key, value] = param.split('=');
+        if (key && value !== undefined) {
+          itemQuery[key] = decodeURIComponent(value);
+        }
+      }
+    }
 
     // Custom match function
     if (typeof item.match === 'function') {
@@ -43,16 +50,45 @@ export function useNavigation() {
       return currentPath.startsWith(matchPath);
     }
 
-    // Default: exact match or prefix match for parent routes
-    return currentPath === itemPath
+    // Check if paths match
+    const pathMatches = currentPath === itemPath
       || (itemPath !== '/' && currentPath.startsWith(`${itemPath}/`));
+
+    if (!pathMatches) {
+      return false;
+    }
+
+    // If item has query params, they must match too
+    if (Object.keys(itemQuery).length > 0) {
+      return Object.entries(itemQuery).every(
+        ([key, value]) => currentQuery[key] === value,
+      );
+    }
+
+    // For items without query params, only match if current route also has no relevant query
+    // This prevents the default version from staying active when viewing a specific version
+    if (currentPath === itemPath && currentQuery.v) {
+      return false;
+    }
+
+    return true;
   }
 
   /**
-   * Check if any sub-item is active
+   * Check if any sub-item is active (including nested items)
    */
-  function hasActiveSubItem(item: NavItem): boolean {
-    return item.items?.some(subItem => isItemActive(subItem)) || false;
+  function hasActiveSubItem(item: NavItem | NavSubItem): boolean {
+    if (!item.items?.length)
+      return false;
+
+    return item.items.some((subItem) => {
+      if (isItemActive(subItem))
+        return true;
+      // Recursively check nested items
+      if (subItem.items?.length)
+        return hasActiveSubItem(subItem);
+      return false;
+    });
   }
 
   /**

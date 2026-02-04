@@ -77,9 +77,7 @@ function updateTriggerValue(index: number, value: string) {
 }
 
 function removeTrigger(index: number) {
-  if (props.triggers.length <= 1) {
-    return;
-  }
+  // Allow removing all triggers - nodes can match based on conditions only
   const newTriggers = props.triggers.filter((_, i) => i !== index);
   // Re-index regex errors
   const newErrors: Record<number, string> = {};
@@ -175,9 +173,8 @@ function addTrigger() {
           </p>
         </div>
 
-        <!-- Remove button -->
+        <!-- Remove button - always show since triggers are now optional -->
         <Button
-          v-if="triggers.length > 1"
           variant="ghost"
           size="icon"
           class="h-9 w-9 text-destructive hover:text-destructive shrink-0"

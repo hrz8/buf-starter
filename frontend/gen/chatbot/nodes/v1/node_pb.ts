@@ -4,8 +4,8 @@
 
 import type { GenFile, GenMessage } from "@bufbuild/protobuf/codegenv2";
 import { fileDesc, messageDesc } from "@bufbuild/protobuf/codegenv2";
-import type { Timestamp } from "@bufbuild/protobuf/wkt";
-import { file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
+import type { Timestamp, Value } from "@bufbuild/protobuf/wkt";
+import { file_google_protobuf_struct, file_google_protobuf_timestamp } from "@bufbuild/protobuf/wkt";
 import { file_buf_validate_validate } from "../../../buf/validate/validate_pb.js";
 import type { Message } from "@bufbuild/protobuf";
 
@@ -13,7 +13,7 @@ import type { Message } from "@bufbuild/protobuf";
  * Describes the file chatbot/nodes/v1/node.proto.
  */
 export const file_chatbot_nodes_v1_node: GenFile = /*@__PURE__*/
-  fileDesc("ChtjaGF0Ym90L25vZGVzL3YxL25vZGUucHJvdG8SEGNoYXRib3Qubm9kZXMudjEipAIKC0NoYXRib3ROb2RlEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEbGFuZxgDIAEoCRIMCgR0YWdzGAQgAygJEg8KB2VuYWJsZWQYBSABKAgSNgoIdHJpZ2dlcnMYBiADKAsyJC5jaGF0Ym90Lm5vZGVzLnYxLkNoYXRib3ROb2RlVHJpZ2dlchI2CghtZXNzYWdlcxgHIAMoCzIkLmNoYXRib3Qubm9kZXMudjEuQ2hhdGJvdE5vZGVNZXNzYWdlEi4KCmNyZWF0ZWRfYXQYYiABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wEi4KCnVwZGF0ZWRfYXQYYyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1wImYKEkNoYXRib3ROb2RlVHJpZ2dlchI1CgR0eXBlGAEgASgJQie6SCRyIlIHa2V5d29yZFIIY29udGFpbnNSBXJlZ2V4UgZlcXVhbHMSGQoFdmFsdWUYAiABKAlCCrpIB3IFEAEY9AMiUQoSQ2hhdGJvdE5vZGVNZXNzYWdlEh4KBHJvbGUYASABKAlCELpIDXILUglhc3Npc3RhbnQSGwoHY29udGVudBgCIAEoCUIKukgHcgUQARiIJ0LBAQoUY29tLmNoYXRib3Qubm9kZXMudjFCCU5vZGVQcm90b1ABWjxnaXRodWIuY29tL2hyejgvYWx0YWx1bmUvZ2VuL2NoYXRib3Qvbm9kZXMvdjE7Y2hhdGJvdG5vZGVzdjGiAgNDTliqAhBDaGF0Ym90Lk5vZGVzLlYxygIQQ2hhdGJvdFxOb2Rlc1xWMeICHENoYXRib3RcTm9kZXNcVjFcR1BCTWV0YWRhdGHqAhJDaGF0Ym90OjpOb2Rlczo6VjFiBnByb3RvMw", [file_google_protobuf_timestamp, file_buf_validate_validate]);
+  fileDesc("ChtjaGF0Ym90L25vZGVzL3YxL25vZGUucHJvdG8SEGNoYXRib3Qubm9kZXMudjEioQQKC0NoYXRib3ROb2RlEgoKAmlkGAEgASgJEgwKBG5hbWUYAiABKAkSDAoEbGFuZxgDIAEoCRIMCgR0YWdzGAQgAygJEg8KB2VuYWJsZWQYBSABKAgSNgoIdHJpZ2dlcnMYBiADKAsyJC5jaGF0Ym90Lm5vZGVzLnYxLkNoYXRib3ROb2RlVHJpZ2dlchI2CghtZXNzYWdlcxgHIAMoCzIkLmNoYXRib3Qubm9kZXMudjEuQ2hhdGJvdE5vZGVNZXNzYWdlEhUKDWlzX3ByZWRlZmluZWQYCCABKAgSEAoIcHJpb3JpdHkYCSABKAUSMgoJY29uZGl0aW9uGAogASgLMh8uY2hhdGJvdC5ub2Rlcy52MS5Ob2RlQ29uZGl0aW9uEiwKBmVmZmVjdBgLIAEoCzIcLmNoYXRib3Qubm9kZXMudjEuTm9kZUVmZmVjdBI1CgtuZXh0X2FjdGlvbhgMIAEoCzIgLmNoYXRib3Qubm9kZXMudjEuTm9kZU5leHRBY3Rpb24SFAoHdmVyc2lvbhgNIAEoCUgAiAEBEhcKD2ZvcmNlX2NvbmRpdGlvbhgOIAEoCBIuCgpjcmVhdGVkX2F0GGIgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcBIuCgp1cGRhdGVkX2F0GGMgASgLMhouZ29vZ2xlLnByb3RvYnVmLlRpbWVzdGFtcEIKCghfdmVyc2lvbiJmChJDaGF0Ym90Tm9kZVRyaWdnZXISNQoEdHlwZRgBIAEoCUInukgkciJSB2tleXdvcmRSCGNvbnRhaW5zUgVyZWdleFIGZXF1YWxzEhkKBXZhbHVlGAIgASgJQgq6SAdyBRABGPQDIlEKEkNoYXRib3ROb2RlTWVzc2FnZRIeCgRyb2xlGAEgASgJQhC6SA1yC1IJYXNzaXN0YW50EhsKB2NvbnRlbnQYAiABKAlCCrpIB3IFEAEYiCci7gEKDU5vZGVDb25kaXRpb24SLAoDYWxsGAEgAygLMh8uY2hhdGJvdC5ub2Rlcy52MS5Ob2RlQ29uZGl0aW9uEiwKA2FueRgCIAMoCzIfLmNoYXRib3Qubm9kZXMudjEuTm9kZUNvbmRpdGlvbhIsCgNub3QYAyABKAsyHy5jaGF0Ym90Lm5vZGVzLnYxLk5vZGVDb25kaXRpb24SDAoEZmFjdBgEIAEoCRIQCghvcGVyYXRvchgFIAEoCRIlCgV2YWx1ZRgGIAEoCzIWLmdvb2dsZS5wcm90b2J1Zi5WYWx1ZRIMCgRwYXRoGAcgASgJItIBCgpOb2RlRWZmZWN0EjAKBHR5cGUYASABKAlCIrpIH3IdUghzZXRfbW9kZVILc2V0X2NvbnRleHRSBGdvdG8SDgoGdGFyZ2V0GAIgASgJEjoKB2NvbnRleHQYAyADKAsyKS5jaGF0Ym90Lm5vZGVzLnYxLk5vZGVFZmZlY3QuQ29udGV4dEVudHJ5GkYKDENvbnRleHRFbnRyeRILCgNrZXkYASABKAkSJQoFdmFsdWUYAiABKAsyFi5nb29nbGUucHJvdG9idWYuVmFsdWU6AjgBInQKDk5vZGVOZXh0QWN0aW9uEiIKBHR5cGUYASABKAlCFLpIEXIPUgRnb3RvUgdjYXB0dXJlEg4KBnRhcmdldBgCIAEoCRIuCgdjYXB0dXJlGAMgASgLMh0uY2hhdGJvdC5ub2Rlcy52MS5Ob2RlQ2FwdHVyZSLpAgoLTm9kZUNhcHR1cmUSHgoNdmFyaWFibGVfbmFtZRgBIAEoCUIHukgEcgIQARI7Cgp2YWxpZGF0aW9uGAIgASgLMicuY2hhdGJvdC5ub2Rlcy52MS5Ob2RlQ2FwdHVyZVZhbGlkYXRpb24SFwoPb25fZmFpbF9tZXNzYWdlGAMgASgJEhMKC21heF9yZXRyaWVzGAQgASgFEk8KEm9uX3N1Y2Nlc3NfY29udGV4dBgFIAMoCzIzLmNoYXRib3Qubm9kZXMudjEuTm9kZUNhcHR1cmUuT25TdWNjZXNzQ29udGV4dEVudHJ5EhcKD29uX3N1Y2Nlc3NfZ290bxgGIAEoCRIUCgxvbl9mYWlsX2dvdG8YByABKAkaTwoVT25TdWNjZXNzQ29udGV4dEVudHJ5EgsKA2tleRgBIAEoCRIlCgV2YWx1ZRgCIAEoCzIWLmdvb2dsZS5wcm90b2J1Zi5WYWx1ZToCOAEivgEKFU5vZGVDYXB0dXJlVmFsaWRhdGlvbhJBCgR0eXBlGAEgASgJQjO6SDByLlIGc3RyaW5nUgVlbWFpbFIFcGhvbmVSBm51bWJlclIFcmVnZXhSB29wdGlvbnMSDwoHcGF0dGVybhgCIAEoCRIPCgdvcHRpb25zGAMgAygJEhIKCm1pbl9sZW5ndGgYBCABKAUSEgoKbWF4X2xlbmd0aBgFIAEoBRILCgNtaW4YBiABKAESCwoDbWF4GAcgASgBQsEBChRjb20uY2hhdGJvdC5ub2Rlcy52MUIJTm9kZVByb3RvUAFaPGdpdGh1Yi5jb20vaHJ6OC9hbHRhbHVuZS9nZW4vY2hhdGJvdC9ub2Rlcy92MTtjaGF0Ym90bm9kZXN2MaICA0NOWKoCEENoYXRib3QuTm9kZXMuVjHKAhBDaGF0Ym90XE5vZGVzXFYx4gIcQ2hhdGJvdFxOb2Rlc1xWMVxHUEJNZXRhZGF0YeoCEkNoYXRib3Q6Ok5vZGVzOjpWMWIGcHJvdG8z", [file_google_protobuf_timestamp, file_google_protobuf_struct, file_buf_validate_validate]);
 
 /**
  * ChatbotNode represents a chatbot response node with triggers and messages.
@@ -70,6 +70,57 @@ export type ChatbotNode = Message<"chatbot.nodes.v1.ChatbotNode"> & {
    * @generated from field: repeated chatbot.nodes.v1.ChatbotNodeMessage messages = 7;
    */
   messages: ChatbotNodeMessage[];
+
+  /**
+   * is_predefined - system nodes that cannot be deleted (e.g., talk_to_agent, end_chat)
+   *
+   * @generated from field: bool is_predefined = 8;
+   */
+  isPredefined: boolean;
+
+  /**
+   * priority - matching order (higher priority = checked first, default 0)
+   *
+   * @generated from field: int32 priority = 9;
+   */
+  priority: number;
+
+  /**
+   * condition - json-rules-engine conditions for advanced matching
+   *
+   * @generated from field: chatbot.nodes.v1.NodeCondition condition = 10;
+   */
+  condition?: NodeCondition;
+
+  /**
+   * effect - immediate action (SINGLE, executed after messages are sent)
+   *
+   * @generated from field: chatbot.nodes.v1.NodeEffect effect = 11;
+   */
+  effect?: NodeEffect;
+
+  /**
+   * next_action - deferred action (SINGLE, executed when user replies)
+   *
+   * @generated from field: chatbot.nodes.v1.NodeNextAction next_action = 12;
+   */
+  nextAction?: NodeNextAction;
+
+  /**
+   * version - optional version identifier for node variants (e.g., "roundtrip", "oneway")
+   * When null, this is the default version. Multiple versions with same name+lang can exist.
+   *
+   * @generated from field: optional string version = 13;
+   */
+  version?: string;
+
+  /**
+   * force_condition - when true, conditions are always evaluated on goto navigation
+   * Use for versioned nodes where condition determines which version to execute
+   *
+   * @generated from field: bool force_condition = 14;
+   */
+  forceCondition: boolean;
 
   /**
    * created_at - timestamp of creation
@@ -150,4 +201,273 @@ export type ChatbotNodeMessage = Message<"chatbot.nodes.v1.ChatbotNodeMessage"> 
  */
 export const ChatbotNodeMessageSchema: GenMessage<ChatbotNodeMessage> = /*@__PURE__*/
   messageDesc(file_chatbot_nodes_v1_node, 2);
+
+/**
+ * NodeCondition defines a json-rules-engine compatible condition structure.
+ * Supports composite logic (all/any/not) and atomic fact comparisons.
+ * Example: { "all": [{ "fact": "session.mode", "operator": "equal", "value": "liveChat" }] }
+ *
+ * @generated from message chatbot.nodes.v1.NodeCondition
+ */
+export type NodeCondition = Message<"chatbot.nodes.v1.NodeCondition"> & {
+  /**
+   * all - AND logic: all conditions must pass (composite)
+   *
+   * @generated from field: repeated chatbot.nodes.v1.NodeCondition all = 1;
+   */
+  all: NodeCondition[];
+
+  /**
+   * any - OR logic: at least one condition must pass (composite)
+   *
+   * @generated from field: repeated chatbot.nodes.v1.NodeCondition any = 2;
+   */
+  any: NodeCondition[];
+
+  /**
+   * not - NOT logic: condition must fail (composite)
+   *
+   * @generated from field: chatbot.nodes.v1.NodeCondition not = 3;
+   */
+  not?: NodeCondition;
+
+  /**
+   * fact - fact name for atomic condition (e.g., "session.mode", "message.text")
+   *
+   * @generated from field: string fact = 4;
+   */
+  fact: string;
+
+  /**
+   * operator - comparison operator (e.g., "equal", "notEqual", "contains", "greaterThan")
+   *
+   * @generated from field: string operator = 5;
+   */
+  operator: string;
+
+  /**
+   * value - comparison value (can be string, number, boolean, or object)
+   *
+   * @generated from field: google.protobuf.Value value = 6;
+   */
+  value?: Value;
+
+  /**
+   * path - JSONPath for nested data access (e.g., "$.stage" for contextLast)
+   *
+   * @generated from field: string path = 7;
+   */
+  path: string;
+};
+
+/**
+ * Describes the message chatbot.nodes.v1.NodeCondition.
+ * Use `create(NodeConditionSchema)` to create a new message.
+ */
+export const NodeConditionSchema: GenMessage<NodeCondition> = /*@__PURE__*/
+  messageDesc(file_chatbot_nodes_v1_node, 3);
+
+/**
+ * NodeEffect defines an immediate action executed after sending node messages.
+ * This is a SINGLE effect (not array) - executes right after response is sent.
+ *
+ * @generated from message chatbot.nodes.v1.NodeEffect
+ */
+export type NodeEffect = Message<"chatbot.nodes.v1.NodeEffect"> & {
+  /**
+   * type - effect type: "set_mode", "set_context", "goto"
+   *
+   * @generated from field: string type = 1;
+   */
+  type: string;
+
+  /**
+   * target - mode name for set_mode (assistant, flow, liveChat), node_id for goto
+   *
+   * @generated from field: string target = 2;
+   */
+  target: string;
+
+  /**
+   * context - key-value pairs for set_context effect
+   *
+   * @generated from field: map<string, google.protobuf.Value> context = 3;
+   */
+  context: { [key: string]: Value };
+};
+
+/**
+ * Describes the message chatbot.nodes.v1.NodeEffect.
+ * Use `create(NodeEffectSchema)` to create a new message.
+ */
+export const NodeEffectSchema: GenMessage<NodeEffect> = /*@__PURE__*/
+  messageDesc(file_chatbot_nodes_v1_node, 4);
+
+/**
+ * NodeNextAction defines a deferred action executed when user replies.
+ * This is a SINGLE action - either goto or capture.
+ *
+ * @generated from message chatbot.nodes.v1.NodeNextAction
+ */
+export type NodeNextAction = Message<"chatbot.nodes.v1.NodeNextAction"> & {
+  /**
+   * type - action type: "goto", "capture"
+   *
+   * @generated from field: string type = 1;
+   */
+  type: string;
+
+  /**
+   * target - node_id for goto type
+   *
+   * @generated from field: string target = 2;
+   */
+  target: string;
+
+  /**
+   * capture - configuration for capture type
+   *
+   * @generated from field: chatbot.nodes.v1.NodeCapture capture = 3;
+   */
+  capture?: NodeCapture;
+};
+
+/**
+ * Describes the message chatbot.nodes.v1.NodeNextAction.
+ * Use `create(NodeNextActionSchema)` to create a new message.
+ */
+export const NodeNextActionSchema: GenMessage<NodeNextAction> = /*@__PURE__*/
+  messageDesc(file_chatbot_nodes_v1_node, 5);
+
+/**
+ * NodeCapture defines configuration for capturing user input with Zod-style validation.
+ *
+ * @generated from message chatbot.nodes.v1.NodeCapture
+ */
+export type NodeCapture = Message<"chatbot.nodes.v1.NodeCapture"> & {
+  /**
+   * variable_name - where to store captured value in context (e.g., "userEmail")
+   *
+   * @generated from field: string variable_name = 1;
+   */
+  variableName: string;
+
+  /**
+   * validation - Zod-inspired validation rules
+   *
+   * @generated from field: chatbot.nodes.v1.NodeCaptureValidation validation = 2;
+   */
+  validation?: NodeCaptureValidation;
+
+  /**
+   * on_fail_message - message shown each time validation fails (supports {{variables}})
+   *
+   * @generated from field: string on_fail_message = 3;
+   */
+  onFailMessage: string;
+
+  /**
+   * max_retries - max retry attempts (0 = unlimited)
+   *
+   * @generated from field: int32 max_retries = 4;
+   */
+  maxRetries: number;
+
+  /**
+   * on_success_context - additional context to set on success (beyond captured value)
+   *
+   * @generated from field: map<string, google.protobuf.Value> on_success_context = 5;
+   */
+  onSuccessContext: { [key: string]: Value };
+
+  /**
+   * on_success_goto - node to execute after successful capture (optional)
+   *
+   * @generated from field: string on_success_goto = 6;
+   */
+  onSuccessGoto: string;
+
+  /**
+   * on_fail_goto - node to execute when maxRetries exceeded (optional escape route)
+   *
+   * @generated from field: string on_fail_goto = 7;
+   */
+  onFailGoto: string;
+};
+
+/**
+ * Describes the message chatbot.nodes.v1.NodeCapture.
+ * Use `create(NodeCaptureSchema)` to create a new message.
+ */
+export const NodeCaptureSchema: GenMessage<NodeCapture> = /*@__PURE__*/
+  messageDesc(file_chatbot_nodes_v1_node, 6);
+
+/**
+ * NodeCaptureValidation defines Zod-inspired validation rules for captured input.
+ *
+ * @generated from message chatbot.nodes.v1.NodeCaptureValidation
+ */
+export type NodeCaptureValidation = Message<"chatbot.nodes.v1.NodeCaptureValidation"> & {
+  /**
+   * type - validation preset type
+   * "string" - any non-empty string
+   * "email" - valid email format
+   * "phone" - valid phone number (international)
+   * "number" - numeric value (int or float)
+   * "regex" - custom regex pattern
+   * "options" - must match one of provided options
+   *
+   * @generated from field: string type = 1;
+   */
+  type: string;
+
+  /**
+   * pattern - custom regex pattern (for type="regex")
+   *
+   * @generated from field: string pattern = 2;
+   */
+  pattern: string;
+
+  /**
+   * options - valid option values (for type="options")
+   *
+   * @generated from field: repeated string options = 3;
+   */
+  options: string[];
+
+  /**
+   * min_length - minimum string length (for type="string")
+   *
+   * @generated from field: int32 min_length = 4;
+   */
+  minLength: number;
+
+  /**
+   * max_length - maximum string length (for type="string")
+   *
+   * @generated from field: int32 max_length = 5;
+   */
+  maxLength: number;
+
+  /**
+   * min - minimum numeric value (for type="number")
+   *
+   * @generated from field: double min = 6;
+   */
+  min: number;
+
+  /**
+   * max - maximum numeric value (for type="number")
+   *
+   * @generated from field: double max = 7;
+   */
+  max: number;
+};
+
+/**
+ * Describes the message chatbot.nodes.v1.NodeCaptureValidation.
+ * Use `create(NodeCaptureValidationSchema)` to create a new message.
+ */
+export const NodeCaptureValidationSchema: GenMessage<NodeCaptureValidation> = /*@__PURE__*/
+  messageDesc(file_chatbot_nodes_v1_node, 7);
 

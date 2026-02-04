@@ -5,17 +5,33 @@
       "additionalProperties": false,
       "description": "ChatbotNode represents a chatbot response node with triggers and messages.\n This type is shared between the dashboard (altalune) and inference services.",
       "properties": {
+        "condition": {
+          "$ref": "#/$defs/chatbot.nodes.v1.NodeCondition.jsonschema.strict.json",
+          "description": "condition - json-rules-engine conditions for advanced matching"
+        },
         "createdAt": {
           "$ref": "#/$defs/google.protobuf.Timestamp.jsonschema.strict.json",
           "description": "created_at - timestamp of creation"
+        },
+        "effect": {
+          "$ref": "#/$defs/chatbot.nodes.v1.NodeEffect.jsonschema.strict.json",
+          "description": "effect - immediate action (SINGLE, executed after messages are sent)"
         },
         "enabled": {
           "description": "enabled - whether the node is active",
           "type": "boolean"
         },
+        "forceCondition": {
+          "description": "force_condition - when true, conditions are always evaluated on goto navigation\n Use for versioned nodes where condition determines which version to execute",
+          "type": "boolean"
+        },
         "id": {
           "description": "public_id - unique identifier for the node",
           "type": "string"
+        },
+        "isPredefined": {
+          "description": "is_predefined - system nodes that cannot be deleted (e.g., talk_to_agent, end_chat)",
+          "type": "boolean"
         },
         "lang": {
           "description": "lang - language code (en-US, id-ID)",
@@ -31,6 +47,16 @@
         "name": {
           "description": "name - lowercase_snake_case identifier (e.g., start_conversation, faq_pricing)",
           "type": "string"
+        },
+        "nextAction": {
+          "$ref": "#/$defs/chatbot.nodes.v1.NodeNextAction.jsonschema.strict.json",
+          "description": "next_action - deferred action (SINGLE, executed when user replies)"
+        },
+        "priority": {
+          "description": "priority - matching order (higher priority = checked first, default 0)",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
         },
         "tags": {
           "description": "tags - optional categorization tags",
@@ -49,13 +75,20 @@
         "updatedAt": {
           "$ref": "#/$defs/google.protobuf.Timestamp.jsonschema.strict.json",
           "description": "updated_at - timestamp of last update"
+        },
+        "version": {
+          "description": "version - optional version identifier for node variants (e.g., \"roundtrip\", \"oneway\")\n When null, this is the default version. Multiple versions with same name+lang can exist.",
+          "type": "string"
         }
       },
       "required": [
         "id",
         "name",
         "lang",
-        "enabled"
+        "enabled",
+        "isPredefined",
+        "priority",
+        "forceCondition"
       ],
       "title": "Chatbot Node",
       "type": "object"
@@ -115,11 +148,265 @@
       "title": "Chatbot Node Trigger",
       "type": "object"
     },
+    "chatbot.nodes.v1.NodeCapture.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeCapture defines configuration for capturing user input with Zod-style validation.",
+      "properties": {
+        "maxRetries": {
+          "description": "max_retries - max retry attempts (0 = unlimited)",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        },
+        "onFailGoto": {
+          "description": "on_fail_goto - node to execute when maxRetries exceeded (optional escape route)",
+          "type": "string"
+        },
+        "onFailMessage": {
+          "description": "on_fail_message - message shown each time validation fails (supports {{variables}})",
+          "type": "string"
+        },
+        "onSuccessContext": {
+          "additionalProperties": {
+            "$ref": "#/$defs/google.protobuf.Value.jsonschema.strict.json"
+          },
+          "description": "on_success_context - additional context to set on success (beyond captured value)",
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "onSuccessGoto": {
+          "description": "on_success_goto - node to execute after successful capture (optional)",
+          "type": "string"
+        },
+        "validation": {
+          "$ref": "#/$defs/chatbot.nodes.v1.NodeCaptureValidation.jsonschema.strict.json",
+          "description": "validation - Zod-inspired validation rules"
+        },
+        "variableName": {
+          "description": "variable_name - where to store captured value in context (e.g., \"userEmail\")",
+          "minLength": 1,
+          "type": "string"
+        }
+      },
+      "required": [
+        "variableName",
+        "onFailMessage",
+        "maxRetries",
+        "onSuccessGoto",
+        "onFailGoto"
+      ],
+      "title": "Node Capture",
+      "type": "object"
+    },
+    "chatbot.nodes.v1.NodeCaptureValidation.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeCaptureValidation defines Zod-inspired validation rules for captured input.",
+      "properties": {
+        "max": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "enum": [
+                "Infinity",
+                "-Infinity",
+                "NaN"
+              ],
+              "type": "string"
+            }
+          ],
+          "description": "max - maximum numeric value (for type=\"number\")"
+        },
+        "maxLength": {
+          "description": "max_length - maximum string length (for type=\"string\")",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        },
+        "min": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "enum": [
+                "Infinity",
+                "-Infinity",
+                "NaN"
+              ],
+              "type": "string"
+            }
+          ],
+          "description": "min - minimum numeric value (for type=\"number\")"
+        },
+        "minLength": {
+          "description": "min_length - minimum string length (for type=\"string\")",
+          "maximum": 2147483647,
+          "minimum": -2147483648,
+          "type": "integer"
+        },
+        "options": {
+          "description": "options - valid option values (for type=\"options\")",
+          "items": {
+            "type": "string"
+          },
+          "type": "array"
+        },
+        "pattern": {
+          "description": "pattern - custom regex pattern (for type=\"regex\")",
+          "type": "string"
+        },
+        "type": {
+          "description": "type - validation preset type\n \"string\" - any non-empty string\n \"email\" - valid email format\n \"phone\" - valid phone number (international)\n \"number\" - numeric value (int or float)\n \"regex\" - custom regex pattern\n \"options\" - must match one of provided options",
+          "enum": [
+            "string",
+            "email",
+            "phone",
+            "number",
+            "regex",
+            "options"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "pattern",
+        "minLength",
+        "maxLength",
+        "min",
+        "max"
+      ],
+      "title": "Node Capture Validation",
+      "type": "object"
+    },
+    "chatbot.nodes.v1.NodeCondition.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeCondition defines a json-rules-engine compatible condition structure.\n Supports composite logic (all/any/not) and atomic fact comparisons.\n Example: { \"all\": [{ \"fact\": \"session.mode\", \"operator\": \"equal\", \"value\": \"liveChat\" }] }",
+      "properties": {
+        "all": {
+          "description": "all - AND logic: all conditions must pass (composite)",
+          "items": {
+            "$ref": "#/$defs/chatbot.nodes.v1.NodeCondition.jsonschema.strict.json"
+          },
+          "type": "array"
+        },
+        "any": {
+          "description": "any - OR logic: at least one condition must pass (composite)",
+          "items": {
+            "$ref": "#/$defs/chatbot.nodes.v1.NodeCondition.jsonschema.strict.json"
+          },
+          "type": "array"
+        },
+        "fact": {
+          "description": "fact - fact name for atomic condition (e.g., \"session.mode\", \"message.text\")",
+          "type": "string"
+        },
+        "not": {
+          "$ref": "#/$defs/chatbot.nodes.v1.NodeCondition.jsonschema.strict.json",
+          "description": "not - NOT logic: condition must fail (composite)"
+        },
+        "operator": {
+          "description": "operator - comparison operator (e.g., \"equal\", \"notEqual\", \"contains\", \"greaterThan\")",
+          "type": "string"
+        },
+        "path": {
+          "description": "path - JSONPath for nested data access (e.g., \"$.stage\" for contextLast)",
+          "type": "string"
+        },
+        "value": {
+          "$ref": "#/$defs/google.protobuf.Value.jsonschema.strict.json",
+          "description": "value - comparison value (can be string, number, boolean, or object)"
+        }
+      },
+      "required": [
+        "fact",
+        "operator",
+        "path"
+      ],
+      "title": "Node Condition",
+      "type": "object"
+    },
+    "chatbot.nodes.v1.NodeEffect.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeEffect defines an immediate action executed after sending node messages.\n This is a SINGLE effect (not array) - executes right after response is sent.",
+      "properties": {
+        "context": {
+          "additionalProperties": {
+            "$ref": "#/$defs/google.protobuf.Value.jsonschema.strict.json"
+          },
+          "description": "context - key-value pairs for set_context effect",
+          "propertyNames": {
+            "type": "string"
+          },
+          "type": "object"
+        },
+        "target": {
+          "description": "target - mode name for set_mode (assistant, flow, liveChat), node_id for goto",
+          "type": "string"
+        },
+        "type": {
+          "description": "type - effect type: \"set_mode\", \"set_context\", \"goto\"",
+          "enum": [
+            "set_mode",
+            "set_context",
+            "goto"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "target"
+      ],
+      "title": "Node Effect",
+      "type": "object"
+    },
+    "chatbot.nodes.v1.NodeNextAction.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "NodeNextAction defines a deferred action executed when user replies.\n This is a SINGLE action - either goto or capture.",
+      "properties": {
+        "capture": {
+          "$ref": "#/$defs/chatbot.nodes.v1.NodeCapture.jsonschema.strict.json",
+          "description": "capture - configuration for capture type"
+        },
+        "target": {
+          "description": "target - node_id for goto type",
+          "type": "string"
+        },
+        "type": {
+          "description": "type - action type: \"goto\", \"capture\"",
+          "enum": [
+            "goto",
+            "capture"
+          ],
+          "type": "string"
+        }
+      },
+      "required": [
+        "type",
+        "target"
+      ],
+      "title": "Node Next Action",
+      "type": "object"
+    },
     "google.protobuf.Timestamp.jsonschema.strict.json": {
       "$schema": "https://json-schema.org/draft/2020-12/schema",
       "format": "date-time",
       "title": "Timestamp",
       "type": "string"
+    },
+    "google.protobuf.Value.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "title": "Value"
     }
   },
   "$id": "chatbot.nodes.v1.ChatbotNode.jsonschema.strict.bundle.json",

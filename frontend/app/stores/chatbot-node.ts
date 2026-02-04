@@ -16,13 +16,46 @@ export const useChatbotNodeStore = defineStore('chatbot-node', () => {
   const initialized = ref(false);
   const lastFetchedProjectId = ref<string | null>(null);
 
-  // Computed: sorted nodes by name_lang
+  // Computed: sorted nodes by name_lang, with default versions first
   const sortedNodes = computed(() => {
     return [...nodes.value].sort((a, b) => {
       const aKey = `${a.name}_${a.lang}`;
       const bKey = `${b.name}_${b.lang}`;
-      return aKey.localeCompare(bKey);
+      const keyCompare = aKey.localeCompare(bKey);
+      if (keyCompare !== 0)
+        return keyCompare;
+      // Same name_lang: default (no version) first, then by version name
+      if (!a.version && b.version)
+        return -1;
+      if (a.version && !b.version)
+        return 1;
+      return (a.version || '').localeCompare(b.version || '');
     });
+  });
+
+  // Computed: nodes grouped by name_lang
+  const groupedNodes = computed(() => {
+    const groups = new Map<string, ChatbotNode[]>();
+    for (const node of nodes.value) {
+      const key = `${node.name}_${node.lang}`;
+      const existing = groups.get(key) || [];
+      existing.push(node);
+      groups.set(key, existing);
+    }
+    // Sort each group: default (no version) first, then by version name
+    for (const [key, group] of groups.entries()) {
+      groups.set(
+        key,
+        group.sort((a, b) => {
+          if (!a.version && b.version)
+            return -1;
+          if (a.version && !b.version)
+            return 1;
+          return (a.version || '').localeCompare(b.version || '');
+        }),
+      );
+    }
+    return groups;
   });
 
   // Getters
@@ -32,6 +65,32 @@ export const useChatbotNodeStore = defineStore('chatbot-node', () => {
 
   function getNodeDisplayName(node: ChatbotNode): string {
     return `${node.name}_${node.lang}`;
+  }
+
+  // Get all versions of a node by name and lang
+  function getNodeVersions(name: string, lang: string): ChatbotNode[] {
+    const key = `${name}_${lang}`;
+    return groupedNodes.value.get(key) || [];
+  }
+
+  // Check if a node has multiple versions
+  function hasMultipleVersions(name: string, lang: string): boolean {
+    const versions = getNodeVersions(name, lang);
+    return versions.length > 1 || versions.some(v => v.version);
+  }
+
+  // Get a specific node by name, lang, and optional version
+  function getNodeByNameVersion(
+    name: string,
+    lang: string,
+    version?: string,
+  ): ChatbotNode | undefined {
+    const versions = getNodeVersions(name, lang);
+    if (version) {
+      return versions.find(n => n.version === version);
+    }
+    // Return default (no version) or first
+    return versions.find(n => !n.version) || versions[0];
   }
 
   // Actions
@@ -127,6 +186,7 @@ export const useChatbotNodeStore = defineStore('chatbot-node', () => {
     // State (readonly)
     nodes: readonly(nodes),
     sortedNodes,
+    groupedNodes,
     loading: readonly(loading),
     error: readonly(error),
     initialized: readonly(initialized),
@@ -134,6 +194,9 @@ export const useChatbotNodeStore = defineStore('chatbot-node', () => {
     // Getters
     getNodeById,
     getNodeDisplayName,
+    getNodeVersions,
+    hasMultipleVersions,
+    getNodeByNameVersion,
 
     // Actions
     fetchNodes,
