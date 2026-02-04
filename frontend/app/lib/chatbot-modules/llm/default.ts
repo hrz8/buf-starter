@@ -4,7 +4,7 @@ import type { LlmConfig } from '~~/gen/chatbot/modules/v1/llm_pb';
 
 export type LlmConfigInit = MessageInitShape<GenMessage<LlmConfig>>;
 
-export const llmDefaults: LlmConfigInit = {
+export const DEFAULT_LLM_CONFIG: LlmConfigInit = {
   enabled: false,
   sdk: 'ai-sdk',
   provider: 'bedrock',

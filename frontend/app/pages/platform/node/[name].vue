@@ -56,24 +56,11 @@ const nodeService = useChatbotNodeService();
 
 usePageTitle(computed(() => t('features.chatbotNode.page.title')));
 
-// Parse slug: "node_name_en-US" -> { name, lang }
-function parseSlug(slug: string): { nodeName: string; nodeLang: string } | null {
-  // Lang is always the last part after underscore (e.g., en-US, id-ID)
-  const langPattern = /^(.+)_(en-US|id-ID)$/;
-  const match = slug.match(langPattern);
-  if (match && match[1] && match[2]) {
-    return { nodeName: match[1], nodeLang: match[2] };
-  }
-  return null;
-}
-
-// Get slug and version from route
-const nodeSlug = computed(() => route.params.slug as string);
+// Get name from route params, lang and version from query
+const nodeName = computed(() => route.params.name as string);
+const requestedLang = computed(() => (route.query.lang as string) || '');
 const requestedVersion = computed(() => route.query.v as string | undefined);
 const projectId = computed(() => projectStore.activeProjectId);
-
-// Parse slug into name and lang
-const parsedSlug = computed(() => parseSlug(nodeSlug.value));
 
 // Loading states
 const isLoading = ref(true);
@@ -82,16 +69,31 @@ const isSaving = computed(() => nodeService.updateLoading.value);
 // Node data
 const node = ref<ChatbotNode | null>(null);
 
-// Get all versions for the current slug
-const versions = computed(() => {
-  if (!parsedSlug.value)
+// Get all languages available for the current version
+const availableLanguages = computed(() => {
+  if (!nodeName.value)
     return [];
-  return nodeStore.getNodeVersions(parsedSlug.value.nodeName, parsedSlug.value.nodeLang);
+  return nodeStore.getLanguagesForVersion(nodeName.value, requestedVersion.value);
+});
+
+// Get current language (from query or first available)
+const currentLang = computed(() => {
+  if (requestedLang.value && availableLanguages.value.includes(requestedLang.value)) {
+    return requestedLang.value;
+  }
+  return availableLanguages.value[0] || 'en-US';
+});
+
+// Get all unique versions across all languages (for version selector)
+const uniqueVersions = computed(() => {
+  if (!nodeName.value)
+    return [];
+  return nodeStore.getUniqueVersions(nodeName.value);
 });
 
 // Check if there are multiple versions
 const hasVersions = computed(() => {
-  return versions.value.length > 1 || versions.value.some(v => v.version);
+  return uniqueVersions.value.length > 1 || uniqueVersions.value.some(v => v !== '');
 });
 
 // Form state (local edits)
@@ -105,9 +107,10 @@ const formData = ref({
   condition: undefined as NodeCondition | undefined,
   effect: undefined as NodeEffect | undefined,
   nextAction: undefined as NodeNextAction | undefined,
+  forceCondition: false,
 });
 
-// Check if node is predefined (system node)
+// Check if node is predefined (system node) - based on actual node data
 const isPredefined = computed(() => node.value?.isPredefined ?? false);
 
 // Track if form has unsaved changes
@@ -119,6 +122,7 @@ const hasChanges = computed(() => {
     formData.value.name !== node.value.name
     || formData.value.enabled !== node.value.enabled
     || formData.value.priority !== (node.value.priority ?? 0)
+    || formData.value.forceCondition !== (node.value.forceCondition ?? false)
     || JSON.stringify(formData.value.triggers) !== JSON.stringify(node.value.triggers)
     || JSON.stringify(formData.value.messages) !== JSON.stringify(node.value.messages)
     || JSON.stringify(formData.value.condition) !== JSON.stringify(node.value.condition)
@@ -127,24 +131,22 @@ const hasChanges = computed(() => {
   );
 });
 
-// Display name for the node
-const nodeName = computed(() => {
-  if (!node.value) {
-    return '';
-  }
-  return `${node.value.name}_${node.value.lang}`;
+// Display name for the header (just node name, no lang)
+const displayName = computed(() => {
+  return node.value?.name || nodeName.value || '';
 });
 
-// Find the current node based on slug and version query param
+// Find the current node based on name, lang, and version query params
 function findCurrentNode(): ChatbotNode | undefined {
-  if (!parsedSlug.value)
+  if (!nodeName.value)
     return undefined;
 
-  const { nodeName, nodeLang } = parsedSlug.value;
-  const nodeVersions = nodeStore.getNodeVersions(nodeName, nodeLang);
+  const nodeVersions = nodeStore.getNodeVersions(nodeName.value, currentLang.value);
 
-  if (nodeVersions.length === 0)
-    return undefined;
+  if (nodeVersions.length === 0) {
+    // Try to find any node with this name (for first load when lang might not be in URL)
+    return nodeStore.findNodeWithVersion(nodeName.value, requestedVersion.value);
+  }
 
   // If version is requested, try to find it
   if (requestedVersion.value) {
@@ -160,7 +162,7 @@ function findCurrentNode(): ChatbotNode | undefined {
 
 // Load node data
 async function loadNode() {
-  if (!projectId.value || !nodeSlug.value) {
+  if (!projectId.value || !nodeName.value) {
     return;
   }
 
@@ -189,7 +191,18 @@ async function loadNode() {
           condition: result.condition,
           effect: result.effect,
           nextAction: result.nextAction,
+          forceCondition: result.forceCondition ?? false,
         };
+
+        // Update URL if lang is not in query params (ensure URL has lang)
+        if (!requestedLang.value && result.lang) {
+          router.replace({
+            query: {
+              ...route.query,
+              lang: result.lang,
+            },
+          });
+        }
       }
       else {
         node.value = null;
@@ -224,6 +237,7 @@ async function handleSave() {
       condition: formData.value.condition,
       effect: formData.value.effect,
       nextAction: formData.value.nextAction,
+      forceCondition: formData.value.forceCondition,
     });
 
     if (result) {
@@ -247,7 +261,7 @@ function handleDeleted() {
   const remainingNodes = nodeStore.sortedNodes.filter(n => n.id !== node.value?.id);
   if (remainingNodes.length > 0 && remainingNodes[0]) {
     const firstNode = remainingNodes[0];
-    router.push(`/platform/node/${firstNode.name}_${firstNode.lang}`);
+    router.push(`/platform/node/${firstNode.name}?lang=${firstNode.lang}`);
   }
   else {
     router.push('/platform');
@@ -257,15 +271,44 @@ function handleDeleted() {
 // Special value for default version (empty string not allowed by SelectItem)
 const DEFAULT_VERSION_VALUE = '__default__';
 
-// Handle version selection
+// Handle version selection - find the language that has this version
 function selectVersion(version: string) {
-  if (version && version !== DEFAULT_VERSION_VALUE) {
-    router.push({ query: { ...route.query, v: version } });
+  const actualVersion = version === DEFAULT_VERSION_VALUE ? undefined : version;
+
+  // Find a node with this version to get its language
+  const nodeWithVersion = nodeStore.findNodeWithVersion(nodeName.value, actualVersion);
+  const lang = nodeWithVersion?.lang || currentLang.value;
+
+  if (actualVersion) {
+    router.push({
+      query: { lang, v: actualVersion },
+    });
   }
   else {
     // Navigate to default version (remove v query param)
-    const { v: _, ...rest } = route.query;
-    router.push({ query: rest });
+    router.push({
+      query: { lang },
+    });
+  }
+}
+
+// Handle language selection - keep version if it exists in that language
+function selectLanguage(lang: string) {
+  // Check if current version exists in the selected language
+  const nodeInLang = nodeStore.getNodeByNameVersion(nodeName.value, lang, requestedVersion.value);
+
+  if (nodeInLang) {
+    // Version exists in this language, keep it
+    if (requestedVersion.value) {
+      router.push({ query: { lang, v: requestedVersion.value } });
+    }
+    else {
+      router.push({ query: { lang } });
+    }
+  }
+  else {
+    // Version doesn't exist, navigate to default in that language
+    router.push({ query: { lang } });
   }
 }
 
@@ -280,15 +323,18 @@ const showAddVersionDialog = ref(false);
 // Handle version creation
 function handleVersionCreated(newNode: ChatbotNode) {
   showAddVersionDialog.value = false;
-  // Navigate to the new version
-  if (newNode.version) {
-    router.push({ query: { v: newNode.version } });
-  }
+  // Navigate to the new version with its language
+  router.push({
+    query: {
+      lang: newNode.lang,
+      ...(newNode.version ? { v: newNode.version } : {}),
+    },
+  });
 }
 
 // Watch for route changes and reload node
 watch(
-  [() => route.params.slug, () => route.query.v],
+  [() => route.params.name, () => route.query.lang, () => route.query.v],
   () => {
     loadNode();
   },
@@ -330,12 +376,12 @@ onMounted(() => {
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-2 min-w-0">
             <h1 class="text-2xl font-bold truncate">
-              {{ nodeName }}
+              {{ displayName }}
             </h1>
             <Badge :variant="formData.enabled ? 'default' : 'secondary'" class="shrink-0">
               {{ formData.enabled ? t('common.enabled') : t('common.disabled') }}
             </Badge>
-            <!-- System badge for predefined nodes -->
+            <!-- System badge for predefined nodes - based on actual node data -->
             <TooltipProvider v-if="isPredefined">
               <Tooltip>
                 <TooltipTrigger as-child>
@@ -365,11 +411,31 @@ onMounted(() => {
           </div>
         </div>
 
-        <!-- Version row (only if has versions) -->
+        <!-- Language and Version row -->
         <div class="flex items-center justify-between">
-          <p class="text-sm text-muted-foreground">
-            {{ t('features.chatbotNode.page.subtitle', { lang: node.lang }) }}
-          </p>
+          <!-- Language selector -->
+          <div class="flex items-center gap-2">
+            <Label class="text-sm text-muted-foreground">
+              {{ t('features.chatbotNode.form.lang') }}:
+            </Label>
+            <Select
+              :model-value="node.lang"
+              @update:model-value="(v) => selectLanguage(String(v))"
+            >
+              <SelectTrigger class="w-[120px]">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="lang in availableLanguages"
+                  :key="lang"
+                  :value="lang"
+                >
+                  {{ lang }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
 
           <div class="flex items-center gap-2">
             <!-- Version selector (if multiple versions exist) -->
@@ -383,11 +449,11 @@ onMounted(() => {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem
-                  v-for="v in versions"
-                  :key="v.id"
-                  :value="getVersionSelectValue(v.version)"
+                  v-for="version in uniqueVersions"
+                  :key="version || '__default__'"
+                  :value="getVersionSelectValue(version || undefined)"
                 >
-                  {{ v.version || t('features.chatbotNode.defaultVersion') }}
+                  {{ version || t('features.chatbotNode.defaultVersion') }}
                 </SelectItem>
               </SelectContent>
             </Select>
@@ -490,13 +556,34 @@ onMounted(() => {
                 <Badge v-if="formData.condition" variant="secondary" class="text-xs">
                   Active
                 </Badge>
+                <Badge v-if="formData.forceCondition" variant="outline" class="text-xs">
+                  {{ t('features.chatbotNode.form.forceCondition') }}
+                </Badge>
               </div>
               <ChevronDown
                 class="h-4 w-4 text-muted-foreground transition-transform
                   group-data-[state=open]:rotate-180"
               />
             </CollapsibleTrigger>
-            <CollapsibleContent>
+            <CollapsibleContent class="space-y-4">
+              <!-- Force Condition toggle -->
+              <div class="flex items-center justify-between p-3 rounded-lg border bg-muted/50">
+                <div class="space-y-0.5">
+                  <Label for="force-condition" class="text-sm font-medium">
+                    {{ t('features.chatbotNode.form.forceCondition') }}
+                  </Label>
+                  <p class="text-xs text-muted-foreground">
+                    {{ t('features.chatbotNode.form.forceConditionHelp') }}
+                  </p>
+                </div>
+                <Switch
+                  id="force-condition"
+                  :model-value="formData.forceCondition"
+                  :disabled="isSaving"
+                  @update:model-value="formData.forceCondition = $event"
+                />
+              </div>
+
               <ConditionBuilder
                 :condition="formData.condition"
                 :disabled="isSaving"
@@ -589,10 +676,10 @@ onMounted(() => {
 
       <!-- Add Version Dialog -->
       <NodeAddVersionDialog
-        v-if="parsedSlug"
+        v-if="node"
         v-model:open="showAddVersionDialog"
-        :node-name="parsedSlug.nodeName"
-        :node-lang="parsedSlug.nodeLang"
+        :node-name="node.name"
+        :node-lang="node.lang"
         @success="handleVersionCreated"
         @cancel="showAddVersionDialog = false"
       />

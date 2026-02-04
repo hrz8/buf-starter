@@ -1,0 +1,32 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.QueueSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "QueueSettings controls the live chat queue behavior",
+      "properties": {
+        "estimatedWaitPerPositionSeconds": {
+          "description": "Estimated wait time per queue position in seconds (default: 120 = 2 minutes)",
+          "maximum": 600,
+          "minimum": 10,
+          "type": "integer"
+        },
+        "maxSize": {
+          "description": "Maximum number of sessions in queue (default: 100)",
+          "maximum": 10000,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxSize",
+        "estimatedWaitPerPositionSeconds"
+      ],
+      "title": "Queue Settings",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.QueueSettings.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.QueueSettings.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -1,0 +1,85 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.AgentSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "AgentSettings controls how agents are assigned to chat sessions",
+      "properties": {
+        "assignmentStrategy": {
+          "description": "Agent assignment strategy: 'round-robin', 'least-busy', or 'manual'",
+          "enum": [
+            "round-robin",
+            "least-busy",
+            "manual",
+            ""
+          ],
+          "type": "string"
+        },
+        "maxConcurrentChats": {
+          "description": "Maximum concurrent chats per agent (default: 5)",
+          "maximum": 50,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "assignmentStrategy",
+        "maxConcurrentChats"
+      ],
+      "title": "Agent Settings",
+      "type": "object"
+    },
+    "chatbot.modules.v1.LiveChatConfig.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "LiveChatConfig defines configuration for live chat functionality.\n NOTE: This module is a placeholder for future implementation.",
+      "properties": {
+        "agent": {
+          "$ref": "#/$defs/chatbot.modules.v1.AgentSettings.jsonschema.strict.json",
+          "description": "Agent assignment settings"
+        },
+        "enabled": {
+          "description": "Whether live chat is enabled for this project (default: false)",
+          "type": "boolean"
+        },
+        "queue": {
+          "$ref": "#/$defs/chatbot.modules.v1.QueueSettings.jsonschema.strict.json",
+          "description": "Queue settings"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "Live Chat Config",
+      "type": "object"
+    },
+    "chatbot.modules.v1.QueueSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "QueueSettings controls the live chat queue behavior",
+      "properties": {
+        "estimatedWaitPerPositionSeconds": {
+          "description": "Estimated wait time per queue position in seconds (default: 120 = 2 minutes)",
+          "maximum": 600,
+          "minimum": 10,
+          "type": "integer"
+        },
+        "maxSize": {
+          "description": "Maximum number of sessions in queue (default: 100)",
+          "maximum": 10000,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "maxSize",
+        "estimatedWaitPerPositionSeconds"
+      ],
+      "title": "Queue Settings",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.LiveChatConfig.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.LiveChatConfig.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

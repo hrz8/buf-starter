@@ -1,0 +1,30 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.FlowSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "FlowSettings controls static flow execution behavior",
+      "properties": {
+        "maxGotoDepth": {
+          "description": "Maximum depth for chained goto executions (default: 10)\n Prevents infinite loops in node graphs",
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "useFallbackWhenNoMatch": {
+          "description": "Whether to use fallback response when no node matches (default: true)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "maxGotoDepth",
+        "useFallbackWhenNoMatch"
+      ],
+      "title": "Flow Settings",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.FlowSettings.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.FlowSettings.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

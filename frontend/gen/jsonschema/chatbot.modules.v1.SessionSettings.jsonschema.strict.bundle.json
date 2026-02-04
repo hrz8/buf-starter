@@ -1,0 +1,43 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.SessionSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "SessionSettings controls session lifecycle behavior",
+      "properties": {
+        "cleanupIntervalSeconds": {
+          "description": "Cleanup interval in seconds (default: 300 = 5 minutes)\n Range: 30 seconds to 1 hour",
+          "maximum": 3600,
+          "minimum": 30,
+          "type": "integer"
+        },
+        "defaultMode": {
+          "description": "Default conversation mode when session starts: 'assistant', 'flow', or 'liveChat'",
+          "enum": [
+            "assistant",
+            "flow",
+            "liveChat",
+            ""
+          ],
+          "type": "string"
+        },
+        "ttlSeconds": {
+          "description": "Session time-to-live in seconds (default: 1800 = 30 minutes)\n Range: 60 seconds to 24 hours",
+          "maximum": 86400,
+          "minimum": 60,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "ttlSeconds",
+        "cleanupIntervalSeconds",
+        "defaultMode"
+      ],
+      "title": "Session Settings",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.SessionSettings.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.SessionSettings.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

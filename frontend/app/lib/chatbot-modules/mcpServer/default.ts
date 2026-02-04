@@ -4,7 +4,7 @@ import type { McpServerConfig } from '~~/gen/chatbot/modules/v1/mcp_server_pb';
 
 export type McpServerConfigInit = MessageInitShape<GenMessage<McpServerConfig>>;
 
-export const mcpServerDefaults: McpServerConfigInit = {
+export const DEFAULT_MCPSERVER_CONFIG: McpServerConfigInit = {
   enabled: false,
   urls: [],
   structuredOutputs: [],

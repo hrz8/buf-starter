@@ -4,7 +4,7 @@ import type { PromptConfig } from '~~/gen/chatbot/modules/v1/prompt_pb';
 
 export type PromptConfigInit = MessageInitShape<GenMessage<PromptConfig>>;
 
-export const promptDefaults: PromptConfigInit = {
+export const DEFAULT_PROMPT_CONFIG: PromptConfigInit = {
   enabled: true,
   systemPrompt: 'You are a helpful assistant.',
 };

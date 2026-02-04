@@ -211,7 +211,9 @@
         "createVersion": "Buat Versi",
         "priority": "Prioritas",
         "priorityHelp": "Node dengan prioritas lebih tinggi akan dicocokkan terlebih dahulu (0-1000)",
-        "priorityPlaceholder": "0"
+        "priorityPlaceholder": "0",
+        "forceCondition": "Paksa Kondisi",
+        "forceConditionHelp": "Jika aktif, kondisi akan selalu dievaluasi saat navigasi goto. Gunakan untuk node berversi di mana kondisi menentukan versi mana yang dieksekusi."
       },
       "defaultVersion": "(default)",
       "addVersion": "Tambah Versi",

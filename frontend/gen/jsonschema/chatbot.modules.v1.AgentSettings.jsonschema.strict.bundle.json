@@ -1,0 +1,36 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.AgentSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "AgentSettings controls how agents are assigned to chat sessions",
+      "properties": {
+        "assignmentStrategy": {
+          "description": "Agent assignment strategy: 'round-robin', 'least-busy', or 'manual'",
+          "enum": [
+            "round-robin",
+            "least-busy",
+            "manual",
+            ""
+          ],
+          "type": "string"
+        },
+        "maxConcurrentChats": {
+          "description": "Maximum concurrent chats per agent (default: 5)",
+          "maximum": 50,
+          "minimum": 1,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "assignmentStrategy",
+        "maxConcurrentChats"
+      ],
+      "title": "Agent Settings",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.AgentSettings.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.AgentSettings.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

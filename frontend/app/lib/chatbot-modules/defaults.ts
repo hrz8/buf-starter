@@ -8,6 +8,14 @@ const moduleExports = import.meta.glob<Record<string, Record<string, unknown>>>(
 );
 
 /**
+ * Convert module name to DEFAULT_XXX_CONFIG constant name.
+ * e.g., 'llm' -> 'DEFAULT_LLM_CONFIG', 'mcpServer' -> 'DEFAULT_MCPSERVER_CONFIG'
+ */
+function toDefaultsConstName(moduleName: string): string {
+  return `DEFAULT_${moduleName.toUpperCase()}_CONFIG`;
+}
+
+/**
  * Build MODULE_DEFAULTS dynamically by discovering modules.
  */
 function buildModuleDefaults(): Record<string, Record<string, unknown>> {
@@ -20,7 +28,8 @@ function buildModuleDefaults(): Record<string, Record<string, unknown>> {
       continue;
 
     const moduleName = match[1];
-    const defaultsKey = `${moduleName}Defaults`;
+    // Look for DEFAULT_{MODULE_NAME}_CONFIG pattern
+    const defaultsKey = toDefaultsConstName(moduleName);
     const moduleDefaults = exports[defaultsKey];
 
     if (moduleDefaults) {

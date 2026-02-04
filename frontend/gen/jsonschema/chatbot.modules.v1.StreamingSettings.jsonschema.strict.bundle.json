@@ -1,0 +1,37 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.StreamingSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "StreamingSettings controls text streaming behavior for typing effects",
+      "properties": {
+        "chunkSize": {
+          "description": "Number of characters per chunk (default: 5)",
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "textDelayMs": {
+          "description": "Delay between text chunks in milliseconds (default: 15)\n Set to 0 for instant streaming without typing effect",
+          "maximum": 200,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "typingEffectEnabled": {
+          "description": "Whether typing effect is enabled (default: true)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "textDelayMs",
+        "chunkSize",
+        "typingEffectEnabled"
+      ],
+      "title": "Streaming Settings",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.StreamingSettings.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.StreamingSettings.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

@@ -1,0 +1,124 @@
+{
+  "$defs": {
+    "chatbot.modules.v1.CoreConfig.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "CoreConfig defines the core runtime configuration for the chatbot inference server.\n Controls session management, streaming behavior, and flow handling.",
+      "properties": {
+        "enabled": {
+          "description": "Whether the core module is enabled (always true for this module)",
+          "type": "boolean"
+        },
+        "flow": {
+          "$ref": "#/$defs/chatbot.modules.v1.FlowSettings.jsonschema.strict.json",
+          "description": "Static flow handler settings"
+        },
+        "session": {
+          "$ref": "#/$defs/chatbot.modules.v1.SessionSettings.jsonschema.strict.json",
+          "description": "Session management settings"
+        },
+        "streaming": {
+          "$ref": "#/$defs/chatbot.modules.v1.StreamingSettings.jsonschema.strict.json",
+          "description": "Streaming behavior settings"
+        }
+      },
+      "required": [
+        "enabled"
+      ],
+      "title": "Core Config",
+      "type": "object"
+    },
+    "chatbot.modules.v1.FlowSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "FlowSettings controls static flow execution behavior",
+      "properties": {
+        "maxGotoDepth": {
+          "description": "Maximum depth for chained goto executions (default: 10)\n Prevents infinite loops in node graphs",
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "useFallbackWhenNoMatch": {
+          "description": "Whether to use fallback response when no node matches (default: true)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "maxGotoDepth",
+        "useFallbackWhenNoMatch"
+      ],
+      "title": "Flow Settings",
+      "type": "object"
+    },
+    "chatbot.modules.v1.SessionSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "SessionSettings controls session lifecycle behavior",
+      "properties": {
+        "cleanupIntervalSeconds": {
+          "description": "Cleanup interval in seconds (default: 300 = 5 minutes)\n Range: 30 seconds to 1 hour",
+          "maximum": 3600,
+          "minimum": 30,
+          "type": "integer"
+        },
+        "defaultMode": {
+          "description": "Default conversation mode when session starts: 'assistant', 'flow', or 'liveChat'",
+          "enum": [
+            "assistant",
+            "flow",
+            "liveChat",
+            ""
+          ],
+          "type": "string"
+        },
+        "ttlSeconds": {
+          "description": "Session time-to-live in seconds (default: 1800 = 30 minutes)\n Range: 60 seconds to 24 hours",
+          "maximum": 86400,
+          "minimum": 60,
+          "type": "integer"
+        }
+      },
+      "required": [
+        "ttlSeconds",
+        "cleanupIntervalSeconds",
+        "defaultMode"
+      ],
+      "title": "Session Settings",
+      "type": "object"
+    },
+    "chatbot.modules.v1.StreamingSettings.jsonschema.strict.json": {
+      "$schema": "https://json-schema.org/draft/2020-12/schema",
+      "additionalProperties": false,
+      "description": "StreamingSettings controls text streaming behavior for typing effects",
+      "properties": {
+        "chunkSize": {
+          "description": "Number of characters per chunk (default: 5)",
+          "maximum": 100,
+          "minimum": 1,
+          "type": "integer"
+        },
+        "textDelayMs": {
+          "description": "Delay between text chunks in milliseconds (default: 15)\n Set to 0 for instant streaming without typing effect",
+          "maximum": 200,
+          "minimum": 0,
+          "type": "integer"
+        },
+        "typingEffectEnabled": {
+          "description": "Whether typing effect is enabled (default: true)",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "textDelayMs",
+        "chunkSize",
+        "typingEffectEnabled"
+      ],
+      "title": "Streaming Settings",
+      "type": "object"
+    }
+  },
+  "$id": "chatbot.modules.v1.CoreConfig.jsonschema.strict.bundle.json",
+  "$ref": "#/$defs/chatbot.modules.v1.CoreConfig.jsonschema.strict.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema"
+}

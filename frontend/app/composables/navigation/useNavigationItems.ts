@@ -84,44 +84,48 @@ export function useNavigationItems() {
 
   /**
    * Generate chatbot node nav items with version hierarchy
-   * Reactive to node store changes
+   * Groups by node name only, flattens versions across all languages
+   * When clicking a version, navigates to the language that has it
    */
   const chatbotNodeItems = computed<NavSubItem[]>(() => {
     const items: NavSubItem[] = [];
-    const processedKeys = new Set<string>();
+    const processedNames = new Set<string>();
 
     for (const node of nodeStore.sortedNodes) {
-      const key = `${node.name}_${node.lang}`;
-
-      // Skip if already processed this name_lang combo
-      if (processedKeys.has(key))
+      // Skip if already processed this node name
+      if (processedNames.has(node.name))
         continue;
-      processedKeys.add(key);
+      processedNames.add(node.name);
 
-      const versions = nodeStore.getNodeVersions(node.name, node.lang);
-      const hasVersions = versions.length > 1 || versions.some(v => v.version);
+      const uniqueVersions = nodeStore.getUniqueVersions(node.name);
+      const hasVersions = uniqueVersions.length > 1 || uniqueVersions.some(v => v !== '');
+
+      // Find the first node to determine default URL
+      const firstNode = nodeStore.findNodeWithVersion(node.name);
+      if (!firstNode)
+        continue;
+
+      const defaultUrl = `/platform/node/${node.name}?lang=${firstNode.lang}`;
 
       if (hasVersions) {
-        // Get default node for the parent URL
-        const defaultNode = versions.find(v => !v.version) || versions[0];
-        if (!defaultNode)
-          continue;
-
-        // Expandable parent with version sub-items
+        // Expandable parent with version sub-items (flattened across languages)
         items.push({
-          title: key,
-          to: `/platform/node/${key}`,
+          title: node.name,
+          to: defaultUrl,
           icon: FolderTree,
           breadcrumb: {
-            path: `/platform/node/${key}`,
-            label: key,
+            path: `/platform/node/${node.name}`,
+            label: node.name,
             parent: '/platform/nodes',
           },
-          items: versions.map((v) => {
-            const versionLabel = v.version || t('features.chatbotNode.defaultVersion');
-            const versionUrl = v.version
-              ? `/platform/node/${key}?v=${v.version}`
-              : `/platform/node/${key}`;
+          items: uniqueVersions.map((version) => {
+            // Find the first node that has this version to get its lang
+            const nodeWithVersion = nodeStore.findNodeWithVersion(node.name, version || undefined);
+            const lang = nodeWithVersion?.lang || 'en-US';
+            const versionLabel = version || t('features.chatbotNode.defaultVersion');
+            const versionUrl = version
+              ? `/platform/node/${node.name}?lang=${lang}&v=${version}`
+              : `/platform/node/${node.name}?lang=${lang}`;
             return {
               title: versionLabel,
               to: versionUrl,
@@ -129,26 +133,27 @@ export function useNavigationItems() {
               breadcrumb: {
                 path: versionUrl,
                 label: versionLabel,
-                parent: `/platform/node/${key}`,
+                parent: `/platform/node/${node.name}`,
               },
-              badge: v.enabled ? undefined : t('common.label.disabled'),
+              // Show disabled badge if any node with this version is disabled
+              badge: nodeWithVersion?.enabled === false ? t('common.label.disabled') : undefined,
               badgeVariant: 'secondary' as const,
             };
           }),
         });
       }
       else {
-        // Single node (no versions) - use slug URL
+        // Single node (no versions) - use name-based URL
         items.push({
-          title: key,
-          to: `/platform/node/${key}`,
+          title: node.name,
+          to: defaultUrl,
           icon: FileText,
           breadcrumb: {
-            path: `/platform/node/${key}`,
-            label: key,
+            path: `/platform/node/${node.name}`,
+            label: node.name,
             parent: '/platform/nodes',
           },
-          badge: node.enabled ? undefined : t('common.label.disabled'),
+          badge: firstNode.enabled ? undefined : t('common.label.disabled'),
           badgeVariant: 'secondary' as const,
         });
       }

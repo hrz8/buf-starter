@@ -69,8 +69,8 @@ function handleNavAction(action: string) {
 }
 
 function handleNodeCreated(node: ChatbotNode) {
-  // Navigate to the newly created node
-  router.push(`/platform/node/${node.id}`);
+  // Navigate to the newly created node using name-based URL
+  router.push(`/platform/node/${node.name}?lang=${node.lang}`);
 }
 </script>
 

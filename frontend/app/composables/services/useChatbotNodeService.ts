@@ -146,6 +146,7 @@ export function useChatbotNodeService() {
       condition?: NodeCondition;
       effect?: NodeEffect;
       nextAction?: NodeNextAction;
+      forceCondition?: boolean;
     },
   ): Promise<ChatbotNode | null> {
     updateState.loading = true;
@@ -165,6 +166,7 @@ export function useChatbotNodeService() {
       condition: data.condition,
       effect: data.effect,
       nextAction: data.nextAction,
+      forceCondition: data.forceCondition,
       // Set clear flags when the field is explicitly undefined/removed
       clearCondition: data.condition === undefined,
       clearEffect: data.effect === undefined,

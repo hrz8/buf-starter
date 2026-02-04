@@ -211,7 +211,9 @@
         "createVersion": "Cipta Versi",
         "priority": "Keutamaan",
         "priorityHelp": "Nod dengan keutamaan lebih tinggi akan dipadankan dahulu (0-1000)",
-        "priorityPlaceholder": "0"
+        "priorityPlaceholder": "0",
+        "forceCondition": "Paksa Syarat",
+        "forceConditionHelp": "Jika diaktifkan, syarat sentiasa dinilai semasa navigasi goto. Gunakan untuk nod berversi di mana syarat menentukan versi yang dilaksanakan."
       },
       "defaultVersion": "(lalai)",
       "addVersion": "Tambah Versi",

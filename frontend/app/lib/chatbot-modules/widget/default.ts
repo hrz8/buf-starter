@@ -4,7 +4,7 @@ import type { WidgetConfig } from '~~/gen/chatbot/modules/v1/widget_pb';
 
 export type WidgetConfigInit = MessageInitShape<GenMessage<WidgetConfig>>;
 
-export const widgetDefaults: WidgetConfigInit = {
+export const DEFAULT_WIDGET_CONFIG: WidgetConfigInit = {
   enabled: false,
   cors: {
     allowedOrigins: [],

@@ -211,7 +211,9 @@
         "createVersion": "Create Version",
         "priority": "Priority",
         "priorityHelp": "Higher priority nodes are matched first (0-1000)",
-        "priorityPlaceholder": "0"
+        "priorityPlaceholder": "0",
+        "forceCondition": "Force Condition",
+        "forceConditionHelp": "When enabled, conditions are always evaluated on goto navigation. Use for versioned nodes where conditions determine which version executes."
       },
       "defaultVersion": "(default)",
       "addVersion": "Add Version",
