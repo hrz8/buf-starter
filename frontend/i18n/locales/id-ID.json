@@ -272,6 +272,7 @@
         "operator": "Operator",
         "value": "Nilai",
         "valuePlaceholder": "Masukkan nilai...",
+        "selectValue": "Pilih nilai...",
         "path": "JSON Path (opsional)",
         "pathPlaceholder": "$.namaField",
         "pathHelp": "Gunakan JSONPath untuk mengakses field bersarang di contextLast (contoh: $.stage, $.userIntent)",

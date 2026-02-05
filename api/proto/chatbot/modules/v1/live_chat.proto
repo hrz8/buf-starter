@@ -1,0 +1,40 @@
+syntax = "proto3";
+
+package chatbot.modules.v1;
+
+option go_package = "github.com/hrz8/altalune/gen/chatbot/modules/v1;chatbotmodulesv1";
+
+import "buf/validate/validate.proto";
+
+// LiveChatConfig defines configuration for live chat functionality.
+// NOTE: This module is a placeholder for future implementation.
+message LiveChatConfig {
+  // Whether live chat is enabled for this project (default: false)
+  bool enabled = 1;
+
+  // Queue settings
+  QueueSettings queue = 2;
+
+  // Agent assignment settings
+  AgentSettings agent = 3;
+}
+
+// QueueSettings controls the live chat queue behavior
+message QueueSettings {
+  // Maximum number of sessions in queue (default: 100)
+  int32 max_size = 1 [(buf.validate.field).int32 = {gte: 1, lte: 10000}];
+
+  // Estimated wait time per queue position in seconds (default: 120 = 2 minutes)
+  int32 estimated_wait_per_position_seconds = 2 [(buf.validate.field).int32 = {gte: 10, lte: 600}];
+}
+
+// AgentSettings controls how agents are assigned to chat sessions
+message AgentSettings {
+  // Agent assignment strategy: 'round-robin', 'least-busy', or 'manual'
+  string assignment_strategy = 1 [(buf.validate.field).string = {
+    in: ["round-robin", "least-busy", "manual", ""]
+  }];
+
+  // Maximum concurrent chats per agent (default: 5)
+  int32 max_concurrent_chats = 2 [(buf.validate.field).int32 = {gte: 1, lte: 50}];
+}

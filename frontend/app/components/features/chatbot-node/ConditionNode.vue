@@ -20,6 +20,7 @@ interface EditableCondition {
   customFact?: string;
   operator?: string;
   value?: string;
+  isNullValue?: boolean;
 }
 
 interface OptionItem {
@@ -36,6 +37,7 @@ interface Props {
   factTypeOptions: OptionItem[];
   operatorOptions: OptionItem[];
   logicTypeOptions: OptionItem[];
+  predefinedValueOptions?: Record<string, OptionItem[]>;
 }
 
 // Enable recursive component
@@ -43,7 +45,7 @@ defineOptions({
   name: 'ConditionNode',
 });
 
-withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<Props>(), {
   disabled: false,
   isRoot: false,
   depth: 0,
@@ -61,6 +63,24 @@ const { t } = useI18n();
 
 function needsCustomInput(factType: string | undefined): boolean {
   return factType === 'context' || factType === 'custom';
+}
+
+function hasPredefinedValues(
+  factType: string | undefined,
+  predefinedOptions?: Record<string, OptionItem[]>,
+): boolean {
+  if (!factType || !predefinedOptions)
+    return false;
+  return factType in predefinedOptions;
+}
+
+function getPredefinedValues(
+  factType: string | undefined,
+  predefinedOptions?: Record<string, OptionItem[]>,
+): OptionItem[] {
+  if (!factType || !predefinedOptions)
+    return [];
+  return predefinedOptions[factType] || [];
 }
 
 function getCustomInputPlaceholder(factType: string | undefined): string {
@@ -190,6 +210,7 @@ function handleRemoveChild(group: EditableCondition, index: number) {
                 :fact-type-options="factTypeOptions"
                 :operator-options="operatorOptions"
                 :logic-type-options="logicTypeOptions"
+                :predefined-value-options="predefinedValueOptions"
                 @update-logic-type="handleUpdateLogicType"
                 @update-atomic-field="handleUpdateAtomicField"
                 @add-child="handleAddChild"
@@ -256,7 +277,32 @@ function handleRemoveChild(group: EditableCondition, index: number) {
                     </SelectContent>
                   </Select>
 
+                  <!-- Predefined value dropdown for certain fact types -->
+                  <Select
+                    v-if="hasPredefinedValues(child.factType, props.predefinedValueOptions)"
+                    :model-value="child.value"
+                    :disabled="disabled"
+                    @update:model-value="
+                      (v) => emit('updateAtomicField', child, 'value', String(v))
+                    "
+                  >
+                    <SelectTrigger class="flex-1 min-w-[160px] h-8">
+                      <SelectValue :placeholder="t('features.chatbotNode.condition.selectValue')" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem
+                        v-for="opt in getPredefinedValues(child.factType, props.predefinedValueOptions)"
+                        :key="opt.value"
+                        :value="opt.value"
+                      >
+                        {{ opt.label }}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <!-- Free text input for other fact types -->
                   <Input
+                    v-else
                     :model-value="child.value"
                     :placeholder="t('features.chatbotNode.condition.valuePlaceholder')"
                     :disabled="disabled"
@@ -370,7 +416,32 @@ function handleRemoveChild(group: EditableCondition, index: number) {
         </SelectContent>
       </Select>
 
+      <!-- Predefined value dropdown for certain fact types -->
+      <Select
+        v-if="hasPredefinedValues(condition.factType, props.predefinedValueOptions)"
+        :model-value="condition.value"
+        :disabled="disabled"
+        @update:model-value="
+          (v) => emit('updateAtomicField', condition, 'value', String(v))
+        "
+      >
+        <SelectTrigger class="flex-1 min-w-[160px] h-8">
+          <SelectValue :placeholder="t('features.chatbotNode.condition.selectValue')" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectItem
+            v-for="opt in getPredefinedValues(condition.factType, props.predefinedValueOptions)"
+            :key="opt.value"
+            :value="opt.value"
+          >
+            {{ opt.label }}
+          </SelectItem>
+        </SelectContent>
+      </Select>
+
+      <!-- Free text input for other fact types -->
       <Input
+        v-else
         :model-value="condition.value"
         :placeholder="t('features.chatbotNode.condition.valuePlaceholder')"
         :disabled="disabled"

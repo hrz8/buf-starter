@@ -123,6 +123,8 @@ message UpdateNodeRequest {
   bool clear_effect = 13;
   // clear_next_action - set to true to explicitly clear the next action
   bool clear_next_action = 14;
+  // force_condition - when true, conditions are always evaluated on goto navigation
+  optional bool force_condition = 15;
 }
 
 // UpdateNodeResponse returns the updated node

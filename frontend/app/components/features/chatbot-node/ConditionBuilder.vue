@@ -22,6 +22,8 @@ interface EditableCondition {
   customFact?: string;
   operator?: string;
   value?: string;
+  /** Whether value is null (for null comparisons) */
+  isNullValue?: boolean;
 }
 
 interface Props {
@@ -53,11 +55,27 @@ function generateId(): string {
 // Available fact types
 const factTypeOptions = [
   { value: 'session.mode', label: 'Session Mode' },
+  { value: 'session.respondedBy', label: 'Responded By' },
   { value: 'context', label: 'Context Variable' },
   { value: 'message.text', label: 'Message Text' },
   { value: 'message.lang', label: 'Message Language' },
   { value: 'custom', label: 'Custom Fact' },
 ];
+
+// Predefined value options for specific fact types
+const predefinedValueOptions: Record<string, { value: string; label: string }[]> = {
+  'session.mode': [
+    { value: 'assistant', label: 'Assistant (AI)' },
+    { value: 'flow', label: 'Flow (Static)' },
+    { value: 'liveChat', label: 'Live Chat' },
+  ],
+  'session.respondedBy': [
+    { value: '__null__', label: 'Null (Fresh conversation)' },
+    { value: 'assistant', label: 'Assistant (AI)' },
+    { value: 'flow', label: 'Flow (Static)' },
+    { value: 'liveChat', label: 'Live Chat' },
+  ],
+};
 
 // Available operators
 const operatorOptions = [
@@ -87,13 +105,20 @@ function determineFaType(fact: string, path: string): { factType: string; custom
     }
     return { factType: 'custom', customFact: '' };
   }
-  if (fact === 'session' && path.startsWith('$.contextLast.')) {
-    return {
-      factType: 'context',
-      customFact: path.replace('$.contextLast.', ''),
-    };
+  // Handle session fact with various paths
+  if (fact === 'session') {
+    if (path.startsWith('$.contextLast.')) {
+      return { factType: 'context', customFact: path.replace('$.contextLast.', '') };
+    }
+    if (path === '$.respondedBy') {
+      return { factType: 'session.respondedBy', customFact: '' };
+    }
+    if (path === '$.mode') {
+      return { factType: 'session.mode', customFact: '' };
+    }
   }
-  if (fact === 'session.mode' || fact === 'message.text' || fact === 'message.lang') {
+  // Handle direct fact types
+  if (fact === 'session.mode' || fact === 'session.respondedBy' || fact === 'message.text' || fact === 'message.lang') {
     return { factType: fact, customFact: '' };
   }
   return { factType: 'custom', customFact: fact };
@@ -102,6 +127,18 @@ function determineFaType(fact: string, path: string): { factType: string; custom
 function factTypeToFactPath(factType: string, customFact: string): { fact: string; path: string } {
   if (factType === 'context') {
     return { fact: 'session', path: `$.contextLast.${customFact}` };
+  }
+  if (factType === 'session.respondedBy') {
+    return { fact: 'session', path: '$.respondedBy' };
+  }
+  if (factType === 'session.mode') {
+    return { fact: 'session', path: '$.mode' };
+  }
+  if (factType === 'message.text') {
+    return { fact: 'message', path: '$.text' };
+  }
+  if (factType === 'message.lang') {
+    return { fact: 'message', path: '$.lang' };
   }
   if (factType === 'custom') {
     return { fact: customFact, path: '' };
@@ -147,12 +184,25 @@ function protoToEditable(condition: NodeCondition | undefined): EditableConditio
   // Atomic condition - check operator (fact can be empty for custom types)
   if (condition.operator) {
     let valueStr = '';
+    let isNullValue = false;
+
     if (condition.value) {
       // Handle protobuf-es Value structure: { kind: { case: 'stringValue', value: '...' } }
       const v = condition.value as { kind?: { case: string; value: unknown } };
-      if (v.kind && v.kind.value !== undefined) {
-        valueStr = String(v.kind.value);
+      if (v.kind) {
+        if (v.kind.case === 'nullValue') {
+          isNullValue = true;
+          valueStr = '__null__'; // Special marker for null
+        }
+        else if (v.kind.value !== undefined) {
+          valueStr = String(v.kind.value);
+        }
       }
+    }
+    else {
+      // No value object means null
+      isNullValue = true;
+      valueStr = '__null__';
     }
 
     const { factType, customFact } = determineFaType(condition.fact, condition.path || '');
@@ -164,6 +214,7 @@ function protoToEditable(condition: NodeCondition | undefined): EditableConditio
       customFact,
       operator: condition.operator,
       value: valueStr,
+      isNullValue,
     };
   }
 
@@ -216,12 +267,16 @@ function editableToProto(editable: EditableCondition | null): NodeCondition | un
   if (editable.factType && editable.operator) {
     const { fact, path } = factTypeToFactPath(editable.factType, editable.customFact || '');
 
-    // Only create valueObj if value is non-empty
-    // Empty string causes "google.protobuf.Value must have a value" error
+    // Handle null values
     // Use protobuf-es Value structure: { kind: { case: '...', value: ... } }
     let valueObj: unknown;
     const trimmedValue = (editable.value || '').trim();
-    if (trimmedValue) {
+
+    // Check for null value (either explicit marker or isNullValue flag)
+    if (editable.isNullValue || trimmedValue === '__null__') {
+      valueObj = { kind: { case: 'nullValue', value: 0 } };
+    }
+    else if (trimmedValue) {
       if (trimmedValue === 'true' || trimmedValue === 'false') {
         valueObj = { kind: { case: 'boolValue', value: trimmedValue === 'true' } };
       }
@@ -399,6 +454,7 @@ function updateAtomicField(condition: EditableCondition, field: string, value: s
           :fact-type-options="factTypeOptions"
           :operator-options="operatorOptions"
           :logic-type-options="logicTypeOptions"
+          :predefined-value-options="predefinedValueOptions"
           @update-logic-type="
             (c: EditableCondition, v: string) => updateGroupLogicType(c, v)
           "

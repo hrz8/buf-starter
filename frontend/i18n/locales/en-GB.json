@@ -272,6 +272,7 @@
         "operator": "Operator",
         "value": "Value",
         "valuePlaceholder": "Enter value...",
+        "selectValue": "Select value...",
         "path": "JSON Path (optional)",
         "pathPlaceholder": "$.fieldName",
         "pathHelp": "Use JSONPath to access nested fields in contextLast (e.g., $.stage, $.userIntent)",

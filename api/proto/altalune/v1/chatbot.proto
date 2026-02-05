@@ -40,7 +40,7 @@ message UpdateModuleConfigRequest {
     (buf.validate.field).string = {
       min_len: 1,
       max_len: 50,
-      in: ["llm", "mcpServer", "widget", "prompt"]
+      in: ["core", "liveChat", "llm", "mcpServer", "widget", "prompt"]
     }
   ];
   google.protobuf.Struct config = 3 [

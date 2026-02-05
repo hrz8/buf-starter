@@ -246,10 +246,16 @@ const uniqueNodesByNameLang = computed(() => {
 
 // Get URL to navigate to a node by name
 function getNodeUrl(nodeName: string): string {
-  // Find the node to get its lang
+  // Find the node to get its lang and version
   const node = props.nodes.find(n => n.name === nodeName);
   if (node) {
-    return `/platform/node/${node.name}_${node.lang}`;
+    const params = new URLSearchParams();
+    if (node.lang)
+      params.set('lang', node.lang);
+    if (node.version)
+      params.set('v', node.version);
+    const queryString = params.toString();
+    return `/platform/node/${node.name}${queryString ? `?${queryString}` : ''}`;
   }
   return '';
 }
